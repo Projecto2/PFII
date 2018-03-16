@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title> Hospital Divina Providência - Tela de Atendimento </title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="css/style.css"/>
+        <h:outputStylesheet name="css/pages/signin.css"/>
+        <h:outputStylesheet name="css/bootstrap.min.css"/>
+        <h:outputStylesheet name="css/bootstrap-responsive.min.css"/>
+    </h:head>
+    <h:body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <span class="brand">
+                        <p:graphicImage url="/resources/Imagens/logotipo.jpg" width="5%"/>
+                        Sistema Integrado de Gestão Hospitalar
+                    </span>
+                </div>
+            </div> <!-- /navbar-inner -->
+        </div> <!-- /navbar -->
+
+        <br/><br/><br/><br/>
+
+        <h:form>
+
+            <div class="ui-fluid">
+
+                <div class="account-container" style="height: 180px; margin-top: 15px;">
+                    <div class="content clearfix">
+                        <center><h1>Nº de Processo</h1></center>
+
+
+
+                    </div>
+                </div>
+
+                <div class="account-container" style="height: 365px; margin-top: 7px; margin-left: 301px;">
+                    <div class="content clearfix">
+                        <center><h1>Paciente</h1></center>
+
+
+
+                    </div>
+                </div>
+
+                <div class="account-container" style="height: 365px; margin-top: -366px; margin-left: 903px;">
+                    <div class="content clearfix">
+                        <center><h1>Médico</h1></center>
+
+
+
+                    </div>
+                </div>
+
+                <div class="account-container" style="height: 180px; margin-top: 7px;">
+                    <div class="content clearfix">
+                        <center><h1>Consultório</h1></center>
+
+
+                    </div>
+                </div>
+                
+            </div>
+            
+        </h:form>
+
+        <div id="rodape_pagina" style="width: 100%; bottom: 0; float: bottom; position: fixed">
+            <ui:include src="./../../template/rodape.xhtml" />
+        </div>
+    </h:body>
+
+</html>

@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Registo das Faltas de Funcionários</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Registo das Faltas dos Funcionários</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+                    <p:growl id="ms2" autoUpdate="true"/>
+
+                    <h:form id="formulario">
+                         <br/>
+                         <p:fieldset id="fieldsetPrincipal" style="border: none; width: 1000px;">
+                              <p:panel id="painelMesAno" style="height: 170px;">
+                                   <h:panelGrid columns="2" cellpadding="5">
+                                        <h:panelGrid columns="4" cellpadding="5">
+                                             <p:outputLabel value="Departamento*:"/>
+                                             <h:selectOneMenu id="comboDepartamento" style="width: 250px; text-align: center" value="#{itensAjaxBean.departamento}"
+                                                              valueChangeListener="#{itensAjaxBean.changeDepartamento}"
+                                                              disabled="#{rhFaltasRegistarBean.desabilitarCampos}">
+                                                  <f:selectItems value="#{itensAjaxBean.departamentoList}" var="depart"
+                                                                 itemLabel="#{depart.descricao}" itemValue="#{depart.pkIdDepartamento}"/>
+                                                  <f:ajax execute="@this" event="change" render="comboSeccao"/>
+                                             </h:selectOneMenu>
+                                             <p:outputLabel value="Secção*:"/>
+                                             <h:selectOneMenu id="comboSeccao" style="width: 250px; text-align: center"
+                                                              value="#{rhFaltasRegistarBean.idSeccaoTrabalho}"
+                                                              required="true" requiredMessage="Indique a secção"
+                                                              disabled="#{rhFaltasRegistarBean.desabilitarCampos}">
+                                                  <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                                  <f:selectItems value="#{itensAjaxBean.seccaoTrabalhoList}" var="sec"
+                                                                 itemLabel="#{sec.descricao}" itemValue="#{sec.pkIdSeccaoTrabalho}"/>
+                                             </h:selectOneMenu>
+                                             <p:outputLabel value="Mês*:"/>
+                                             <h:selectOneMenu value="#{rhFaltasRegistarBean.mes}" style="width: 250px; text-align: center"
+                                                              disabled="#{rhFaltasRegistarBean.desabilitarCampos}" required="true"
+                                                              requiredMessage="Indique o mês !">
+                                                  <f:selectItem itemLabel="------ Selecione ------"/>
+                                                  <f:selectItems value="#{rhFaltasRegistarBean.selectMeses()}"/>
+                                             </h:selectOneMenu>
+                                             <p:outputLabel value="Ano*:"/>
+                                             <p:inputNumber value="#{rhFaltasRegistarBean.ano}" size="30" disabled="#{rhFaltasRegistarBean.desabilitarCampos}" 
+                                                            decimalPlaces="0" minValue="0" maxValue="#{rhValidarBean.anoActual()}"
+                                                            required="true" requiredMessage="Indique o ano !" thousandSeparator=""/>
+                                        </h:panelGrid>
+                                   </h:panelGrid>
+                                   <h:panelGrid columns="2" cellpadding="4">
+                                        <p:commandButton value="Continuar Registo" process="painelMesAno" update="fieldsetPrincipal" 
+                                                         actionListener="#{rhFaltasRegistarBean.continuarRegistoFaltas()}"
+                                                         disabled="#{rhFaltasRegistarBean.desabilitarCampos}" style="width: 330px"/>
+                                        <p:commandButton value="Limpar" type="button" style="width: 330px" onclick="PF('confirmDialogLimpar').show();"/>
+                                   </h:panelGrid>
+
+                                   <p:confirmDialog message="Tem certeza que pretende limpar ? Todos os dados serão perdidos !"
+                                                    header="Limpar" severity="alert" widgetVar="confirmDialogLimpar">
+                                        <p:commandButton value="Sim" actionListener="#{rhFaltasRegistarBean.limpar()}" 
+                                                         process="@this" update="fieldsetPrincipal" oncomplete="PF('confirmDialogLimpar').hide()"/>
+                                        <p:commandButton value="Não" onclick="PF('confirmDialogLimpar').hide();" type="button"/>
+                                   </p:confirmDialog>
+                              </p:panel>
+
+                              <br/>
+                              <p:panel id="painelTabela" style="width: 1000px; overflow-x: scroll">
+                                   <table style="width: #{rhFaltasRegistarBean.diasDoMesList.size() * 175}px">
+                                        <thead>
+                                             <tr>
+                                                  <th class="ui-state-default" style="width: 260px">Funcionários</th>
+                                                  <th class="ui-state-default">
+                                                       <ui:repeat value="#{rhFaltasRegistarBean.diasDoMesList}" var="dia">
+                                                            <p:panel style="width: 150px; display: inline-block">
+                                                                 #{dia}
+                                                            </p:panel>
+                                                       </ui:repeat>
+                                                  </th>
+                                                  <th class="ui-state-default" style="width: 260px">
+                                                       <p:outputLabel value="Nº Faltas Não Justificadas"/>
+                                                  </th>
+                                             </tr>
+                                        </thead>
+                                   </table>
+
+                                   <table style="width: #{rhFaltasRegistarBean.diasDoMesList.size() * 175}px">
+                                        <tbody class="ui-datatable-data ui-widget-content">
+                                             <ui:repeat value="#{rhFaltasRegistarBean.funcionariosList}" var="funcionario">
+                                                  <tr data-ri="1" class="ui-widget-content ui-datatable-odd">
+                                                       <td style="width: 260px">
+                                                            <p:panel style="width:240px; height:60px; overflow-x: scroll; border: none">
+                                                                 <center>
+                                                                      <p:outputLabel value="#{funcionario.fkIdPessoa.nome}
+                                                                                     #{funcionario.fkIdPessoa.nomeDoMeio}
+                                                                                     #{funcionario.fkIdPessoa.sobreNome}"/>
+                                                                      <br/><p:outputLabel value="Nº Cartão Identidade: #{funcionario.numeroCartao}"/>
+                                                                 </center>
+                                                            </p:panel>
+                                                       </td>
+                                                       <td style="text-align: center">
+                                                            <ui:repeat value="#{funcionario.rhFuncionarioHasRhTipoFaltaList}" var="falta">
+                                                                 <p:panel style="width: 150px; height: 50px; display: inline-block;">
+                                                                      <center>
+                                                                           <p:commandButton style="border: none; background: none; width: 130px; color: #{rhFaltasRegistarBean.corDaFalta(falta.fkIdTipoFalta)}" onclick="PF('dialogFalta').show()" process="@this" 
+                                                                                            value="#{falta.fkIdTipoFalta.descricao == null ? '-----------':falta.fkIdTipoFalta.descricao}"
+                                                                                            update=":formFalta:painelCampos" actionListener="#{rhFaltasRegistarBean.setFalta(falta)}"
+                                                                                            disabled="#{rhValidarBean.dataDeHoje.before(falta.data)}"/>
+                                                                      </center>
+                                                                 </p:panel>
+                                                            </ui:repeat>
+                                                       </td>
+                                                       <td style="text-align: center; width: 260px">
+                                                            <p:outputLabel value="#{rhFaltasRegistarBean.contarFaltasNaoJustificadas(funcionario)}"/>
+                                                       </td>
+                                                  </tr>
+                                             </ui:repeat>
+                                        </tbody>
+                                   </table>
+                              </p:panel>
+
+                              <br/>
+                              <h:panelGrid columns="2" class="float-right">
+                                   <p:commandButton style="width: 170px" value="Guardar" action="#{rhFaltasRegistarBean.create()}" update="fieldsetPrincipal"/>
+                                   <p:commandButton style="width: 170px" value="Sair" onclick="PF('confirmDialogSair').show();" type="button"/>
+                              </h:panelGrid>
+                         </p:fieldset>
+
+                         <p:confirmDialog message="Tem certeza que pretende sair ? Todas alterações não guardadas serão perdidas"
+                                          header="Sair" severity="alert" widgetVar="confirmDialogSair">
+                              <p:commandButton value="Sim" action="#{rhFaltasRegistarBean.sair()}" 
+                                               process="@this" oncomplete="PF('confirmDialogSair').hide()"/>
+                              <p:commandButton value="Não" onclick="PF('confirmDialogSair').hide();" type="button"/>
+                         </p:confirmDialog>
+
+                    </h:form>
+                    <center>
+                         <p:dialog header="Registar Falta" closable="true" showEffect="fade" width="45%"
+                                   widgetVar="dialogFalta" modal="true" closeOnEscape="true">
+                              <h:form id="formFalta">
+                                   <p:panel id="painelCampos">
+                                        <center>
+                                             <p:panel style="width:350px; height:125px; overflow-x: scroll;">
+                                                  <center>
+                                                       <h:graphicImage url="#{rhPessoaBean.pastaFoto}#{rhFaltasRegistarBean.falta.fkIdFuncionario.fkIdPessoa.fkIdFoto.ficheiro}"
+                                                                       height="60px" width="100px"/>
+                                                       <br/><p:outputLabel value="#{rhFaltasRegistarBean.falta.fkIdFuncionario.fkIdPessoa.nome}
+                                                                           #{rhFaltasRegistarBean.falta.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                                           #{rhFaltasRegistarBean.falta.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                                       <br/><p:outputLabel value="Nº Cartão Identidade: #{rhFaltasRegistarBean.falta.fkIdFuncionario.numeroCartao}"/>
+                                                  </center>
+                                             </p:panel>
+                                        </center>
+                                        <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                                             <p:outputLabel value="Tipo de Falta: "/>
+                                             <f:validateBean disabled="true">
+                                                  <h:selectOneMenu style="width: 250px; text-align: center" 
+                                                                   value="#{rhFaltasRegistarBean.falta.fkIdTipoFalta.pkIdTipoFalta}"
+                                                                   valueChangeListener="#{rhFaltasRegistarBean.changeTipoFalta}">
+                                                       <f:selectItem itemLabel="----- Selecione -----" itemValue="#{null}"/>
+                                                       <f:selectItems value="#{itensAjaxBean.tipoFaltaList}" var="tipoFalt"
+                                                                      itemLabel="#{tipoFalt.descricao}" itemValue="#{tipoFalt.pkIdTipoFalta}"/>
+                                                       <f:ajax execute="@this" event="change" render="gridCampos"/>
+                                                  </h:selectOneMenu>
+                                             </f:validateBean>
+
+                                             <p:outputLabel value="Data de Falta: "/>
+                                             <p:inputText value="#{rhFaltasRegistarBean.falta.data}" size="30"
+                                                          style="text-align: center" disabled="true">
+                                                  <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                             </p:inputText>    
+
+                                             <p:outputLabel value="Observação: "/>
+                                             <p:inputTextarea value="#{rhFaltasRegistarBean.falta.observacao}" autoResize="false"
+                                                              style="width: 240px; height: 60px; overflow-y: scroll"
+                                                              disabled="#{rhFaltasRegistarBean.falta.fkIdTipoFalta.descricao.charAt(0) != 'J'}"/>
+                                             <br/>
+                                             <p:commandButton value="Actualizar" action="#{rhFaltasRegistarBean.alterarFalta()}"
+                                                              style="width: 250px" update=":formulario:painelTabela"
+                                                              onclick="PF('dialogFalta').hide()"/>
+                                        </h:panelGrid>
+                                   </p:panel>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+
+               </ui:define>
+
+          </ui:composition>
+
+     </h:body>
+</html>

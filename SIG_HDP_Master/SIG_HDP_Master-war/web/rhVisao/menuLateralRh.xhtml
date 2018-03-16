@@ -1,0 +1,41 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+     <!-- Definindo a cor da barra lateral-->
+     <h:form style="background-color: rgba(230,230,230,0.05); height: 750px">
+
+          <p:panelMenu style="width: 100%" stateful="false">
+              <p:submenu label="Ingressos" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[0])}">
+                    <p:menuitem value="Pessoas" action="/rhVisao/rhIngresso/rhPessoa/pessoaPesquisarGrl.xhtml?faces-redirect=true" actionListener="#{rhPessoaBean.limparPesquisaRH()}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[5])}"/>
+                    <p:menuitem value="Funcionários" action="/rhVisao/rhIngresso/rhFuncionario/funcionarioPesquisarRh.xhtml?faces-redirect=true" actionListener="#{rhFuncionarioPesquisarBean.limparPesquisa}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[6])}"/>
+                    <p:menuitem value="Candidatos" action="/rhVisao/rhIngresso/rhCandidato/candidatoPesquisarRh.xhtml?faces-redirect=true" actionListener="#{rhCandidatoPesquisarBean.limparPesquisa}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[7])}"/>
+                    <p:menuitem value="Estagiários" action="/rhVisao/rhIngresso/rhEstagiario/estagiarioPesquisarRh.xhtml?faces-redirect=true"  actionListener="#{rhEstagiarioPesquisarBean.limparPesquisa}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[8])}"/>
+               </p:submenu>
+               <p:submenu label="Contratos" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[1])}">
+                    <p:menuitem value="Novo Contrato" action="/rhVisao/rhContratos/contratoNovoRh.xhtml?faces-redirect=true"
+                                actionListener="#{rhContratoNovoBean.limpar()}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[9])}"/>
+                    <p:menuitem value="Renovação e Pesquisa de Contratos" actionListener="#{rhContratoRenovarPesquisarBean.limparPesquisa()}"
+                                action="/rhVisao/rhContratos/contratoRenovarPesquisarRh.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[10])}"/>
+                    <p:menuitem value="Histórico de Contratos" action="/rhVisao/rhContratos/contratoHistoricosRh.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[11])}"/>
+               </p:submenu>
+               <p:submenu label="Horários" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[2])}">
+                    <p:menuitem value="Horário Geral de Trabalho" actionListener="#{rhHorarioGeralDeTrabalhoBean.limpar()}"
+                                action="/rhVisao/rhHorario/horarioGeralDeTrabalhoRh.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[12])}"/>
+                    <p:menuitem value="Definir Horário de Funcionários"
+                                action="/rhVisao/rhHorario/horarioDeFuncionariosDefinirRh.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[13])}"/>
+                    <p:menuitem value="Remover Horário de Funcionários"
+                                action="/rhVisao/rhHorario/horarioDeFuncionariosRemoverRh.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[14])}"/>
+               </p:submenu>
+               <p:submenu label="Assiduidade" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[3])}">
+                    <p:menuitem value="Avaliação de Desempenho" action="/rhVisao/rhAssiduidade/avaliacaoDeDesempenhoHomeRh.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[15])}"/>
+                    <p:menuitem value="Registo de Faltas de Funcionários" actionListener="#{rhFaltasVisualizarBean.limparPesquisa()}"
+                                action="/rhVisao/rhAssiduidade/faltasVisualizarRh.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[16])}"/>
+               </p:submenu>
+               <p:submenu label="Férias" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[4])}">
+                    <p:menuitem value="Plano de Férias" action="/rhVisao/rhFerias/feriasPlanoRh.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeRH[17])}"/>
+               </p:submenu>
+          </p:panelMenu>
+     </h:form>
+</ui:composition>

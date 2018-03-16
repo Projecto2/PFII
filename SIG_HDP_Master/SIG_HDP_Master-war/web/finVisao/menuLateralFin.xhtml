@@ -1,0 +1,28 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml?faces-redirect=true"
+                xmlns:p="http://primefaces.org/ui">
+
+   <h:form style="background-color: rgba(230,230,230,0.05); height: 620px">
+      <p:panelMenu style="width: 100%">
+          <p:submenu label="Tesouraria">
+            <p:submenu label="#{msgs.pacientes}">
+                <p:menuitem value="#{msgs.encargosDevidos}" action="/finVisao/encargosDevidos/pacienteEncargoDevidoFin.xhtml?faces-redirect=true"/>
+                <p:menuitem value="#{msgs.pagamentos}" action="/finVisao/pagamento/pacientePagamentoListagemFin.xhtml?faces-redirect=true"/>
+            </p:submenu>
+              <p:submenu label="#{msgs.listagens}">
+                  <p:menuitem value="#{msgs.pagamentos}" action="/finVisao/pagamento/pagamentoListagemFin.xhtml?faces-redirect=true"/>
+              </p:submenu>
+          </p:submenu>
+
+
+      </p:panelMenu>
+       
+         <!--<p:submenu label="Pessoas">
+            <p:menuitem value="Tipo Doc. de Identificação" action="/grlVisao/grlLocalizacao/paisesListarGrl.xhtml?faces-redirect=true"/>
+            <p:menuitem value="Estado Civil" action="/grlVisao/grlLocalizacao/paisesListarGrl.xhtml?faces-redirect=true"/>
+            <p:menuitem value="Religião" action="/grlVisao/grlLocalizacao/paisesListarGrl.xhtml?faces-redirect=true"/>
+            <p:menuitem value="Sexo" action="/grlVisao/grlLocalizacao/paisesListarGrl.xhtml?faces-redirect=true"/>
+         </p:submenu>-->
+   </h:form>
+</ui:composition>

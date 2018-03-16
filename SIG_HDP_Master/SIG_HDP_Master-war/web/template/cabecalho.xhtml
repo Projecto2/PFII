@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+     <h:head>
+          <title>Facelet Title</title>
+          #{segcontroloSessaoBean.validarSessao()}
+     </h:head>
+     <h:body>
+          <h:form>
+               <div class="grid_12 header-repeat" style="position: fixed; float: top; z-index: 1;">
+                    <div id="branding">
+                         <div class="floatleft" style="margin-right: -25%;margin-top: -1%">
+                              <span class="brand" style="color: white">
+                                   <p:graphicImage url="/resources/Imagens/logotipo.jpg" width="5%"/>
+                                   Sistema Integrado de Gestão Hospitalar
+                              </span>
+                         </div>
+                         <div class="floatright">
+                              <div class="floatleft">
+                                   <p:graphicImage url="/resources/img/img-profile.jpg" alt="Profile Pic"/>
+                              </div>
+                              <div class="floatleft marginleft10">
+                                   <ul class="inline-ul floatleft">
+                                        <li>
+                                             <h:outputLabel value="#{segLoginBean.sessaoActual.fkIdFuncionario.fkIdPessoa.nome} #{segLoginBean.sessaoActual.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                        </li>
+
+                                        <li>
+                                             <p:commandLink value="Home" action="/faces/home.xhtml?faces-redirect=true"/>
+                                        </li>
+                                        <li>
+                                            <p:commandLink value="Terminar sessão" action="#{segLoginBean.logout()}"/>
+                                        </li>
+                                   </ul>
+                                   <br/>
+                                   <span class="small grey"> Último Login: 
+                                       <h:outputText value="#{segLoginBean.sessaoActual.ultimoAcessoConta}">
+                                             <f:convertDateTime pattern="dd-MM-yyyy - HH:mm:ss" />
+                                        </h:outputText>
+                                   </span>
+                              </div>
+                         </div>
+                         <div class="clear">
+                         </div>
+                    </div>
+               </div>
+
+               <div style="clear: both; height: 75px; background-color: rgba(255,255,255,0)"/>
+
+          </h:form>
+
+     </h:body>
+</html>
+

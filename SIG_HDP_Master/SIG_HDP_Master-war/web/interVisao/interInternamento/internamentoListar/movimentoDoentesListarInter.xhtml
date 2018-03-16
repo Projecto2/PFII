@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>#{interObjetosSessaoBean.menuTitulo} -> Movimento Doentes</h2>
+                <br/>                
+                <h:form id="ficha">                   
+                    <br/>
+                    <center>
+                        <p:fieldset>
+                            <h:panelGrid columns="2">
+                                <p:outputLabel value="Data : "/>
+                                <h:panelGrid columns="4">
+                                    <p:calendar navigator="true" id="de" size="25" value="#{interMovimentoDoentesListarBean.dataPesq1}" maxdate="#{interMovimentoDoentesListarBean.data}"/> 
+                                    <p:watermark for="de" value="De" />
+                                    <p:calendar navigator="true" id="a" size="26" value="#{interMovimentoDoentesListarBean.dataPesq2}" maxdate="#{interMovimentoDoentesListarBean.data}"/> 
+                                    <p:watermark for="a" value="A" />
+                                </h:panelGrid>
+                                <p:commandButton value="Visualizar" ajax="false" onclick="this.form.target = '_blank'" actionListener="#{interMovimentoDoentesListarBean.exportPDF}" icon="ui-icon-search"/>  
+                            </h:panelGrid>
+                        </p:fieldset>
+                    </center> 
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

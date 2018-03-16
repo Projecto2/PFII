@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <body>
+          <h:form id="formPrincipal">
+               <p:growl autoUpdate="true"/>
+               <p></p>
+               <p:fieldset>
+                    <p:fieldset>
+                         <f:validateBean disabled="true">
+                              <h:panelGrid columns="2" id="gridCamposPesquisa" cellpadding="4">
+                                   <p:outputLabel value="Origem do Pedido"/>
+                                   <p:selectOneMenu id="localOrigem" style="width: 100%" filter="true"
+                                                    value="#{farmMovimentoListarBean.pedido.fkLocalOrigemPedido.pkIdLocalArmazenamento}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{farmPedidoNovoBean.locaisArmazenamentoOrigemPedido}"/>
+                                   </p:selectOneMenu>
+
+                                   <p:outputLabel value="Destino do Pedido"/>
+                                   <p:selectOneMenu id="localDestino" style="width: 100%" filter="true"
+                                                    value="#{farmMovimentoListarBean.pedido.fkLocalDestinoPedido.pkIdLocalArmazenamento}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{farmPedidoNovoBean.locaisArmazenamentoDestinoPedido}"/>
+                                   </p:selectOneMenu>
+
+                                   <p:outputLabel value="Estado do Pedido"/>
+                                   <p:selectOneMenu id="estadoPedido" style="width: 100%" filter="true"
+                                                    value="#{farmMovimentoListarBean.pedido.fkIdEstadoPedido.pkIdEstadoPedido}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{farmListasUteisBean.todosEstadosDePedido}"/>
+                                   </p:selectOneMenu>
+
+                                   <p:outputLabel value="Datas entre"/>
+                                   <h:panelGrid columns="5">
+                                        <p:calendar id="datInicio" value="#{farmMovimentoListarBean.dataInicio}" /> 
+                                        <p:outputLabel value="e"/> 
+                                        <p:calendar id="dataFim" value="#{farmMovimentoListarBean.dataFim}" />
+                                   </h:panelGrid>
+                                   <p></p>
+                                   <h:panelGrid columns="3">
+                                        <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="false" 
+                                                         action="#{farmMovimentoListarBean.pesquisarPedidos()}"
+                                                         process="gridCamposPesquisa" update="resultado"/>
+
+                                   </h:panelGrid> 
+                              </h:panelGrid>
+                         </f:validateBean>
+                         <p></p>
+
+                    </p:fieldset>
+
+                    <p:dataTable style="width: 100%;" id="resultado" var="item" rows="6" rowsPerPageTemplate="6,12,16"
+                                 value="#{farmMovimentoListarBean.listaPedidosPesquisados}" 
+                                 emptyMessage="Sem pedidos de momento. Aguardando pesquisa."
+                                 paginator="true" paginatorPosition="bottom">
+
+                         <p:column headerText="Data">
+                              <center>
+                                   <h:outputText value="#{item.dataHoraPedido}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy - HH:mm" />
+                                   </h:outputText>
+                              </center>
+                         </p:column>
+                         <p:column headerText="Origem">
+                              <center>
+                                   <h:outputText value="#{item.fkLocalOrigemPedido.descricao}"/>
+                              </center>
+                         </p:column>
+                         <p:column headerText="Destino">
+                              <center>
+                                   <h:outputText value="#{item.fkLocalDestinoPedido.descricao}"/>
+                              </center>                                
+                         </p:column>
+                         <p:column headerText="Estado">
+                              <center>
+                                   <h:outputText value="#{item.fkIdEstadoPedido.descricao}"/>
+                                   <p></p>
+                                   <strong><h:outputText rendered="#{item.fkIdEstadoPedido.pkIdEstadoPedido == 2}" value="CANCELADO (#{item.motivoCancelamento})"/></strong>
+                              </center>                                
+                         </p:column>
+                         <p:column headerText="Responsável">
+                              <center>
+                                   <h:outputText value="#{item.fkIdFuncionarioSolicitou.fkIdPessoa.nome} 
+                                                 #{item.fkIdFuncionarioSolicitou.fkIdPessoa.sobreNome}"/>
+                              </center>                                
+                         </p:column>
+
+                         <p:column headerText="------">
+                              <center>
+                                   <p:menuButton value="Opções">
+                                        <p:menuitem value="Ver itens" partialSubmit="true" process="@this" 
+                                                    icon="ui-icon-zoomin" id="verItensPedidoNaoRealizado"
+                                                    rendered="#{!(item.fkIdEstadoPedido.pkIdEstadoPedido == 3)}"
+                                                    onclick="PF('dialogVerItens').show();" update=":formVerItens:tabVerItens"
+                                                    actionListener="#{farmVisualizarItensPedidoBean.setPedidoPesquisa(item)}">
+                                        </p:menuitem> 
+
+                                        <p:menuitem value="Mais detalhes" partialSubmit="true" process="@this" 
+                                                    icon="ui-icon-zoomin" id="verItensPedidoRealizado"
+                                                    rendered="#{item.fkIdEstadoPedido.pkIdEstadoPedido == 3}"
+                                                    onclick="PF('dialogMaisDetalhes').show();" update=":formMaisDetalhes:tabMaisDetalhes"
+                                                    actionListener="#{farmPedidoRealizadoVisualizarItensBean.setMovimentoRealizadoPesquisa(
+                                                                      farmMovimentoListarBean.getMovimentoByPedido(item))}">
+                                        </p:menuitem>
+
+                                        <p:menuitem value="Cancelar" partialSubmit="true" 
+                                                    icon="ui-icon-cancel"
+                                                    rendered="#{!(item.fkIdEstadoPedido.pkIdEstadoPedido == 2)}"
+                                                    actionListener="#{farmPedidoPesquisaBean.setPedidoPendentePesquisa(item)}"
+                                                    onclick="PF('dialogCancelar').show()" process="@form" update=":formPrincipal:resultado">
+                                        </p:menuitem>
+
+                                   </p:menuButton>
+                              </center>
+
+                         </p:column>
+                    </p:dataTable>
+               </p:fieldset>
+          </h:form>
+
+          <center>
+               <h:form id="formVerItens">
+                    <p:dialog header="Ver itens do Pedido" closable="true" showEffect="fade" 
+                              widgetVar="dialogVerItens" modal="true" width="70%" height="500px"
+                              resizable="false">
+                         <center>
+                              <h:panelGrid id="tabVerItens" width="100%">
+                                   <h:form id="formVerItensMovimento">
+                                        <p></p>
+                                        <h:panelGrid columns="1">
+                                             <p:outputLabel style="font-size: 16px;"
+                                                            value="Origem: #{farmVisualizarItensPedidoBean.pedidoPesquisa.fkLocalOrigemPedido.descricao}" />
+
+                                             <p:outputLabel style="font-size: 16px;"
+                                                            value="Destino: #{farmVisualizarItensPedidoBean.pedidoPesquisa.fkLocalDestinoPedido.descricao}" />
+
+                                             <h:panelGrid columns="2">
+                                                  <p:outputLabel style="font-size: 16px;"
+                                                                 value="Data:"/>
+
+                                                  <h:outputText style="font-size: 16px;" value="#{farmVisualizarItensPedidoBean.pedidoPesquisa.dataHoraPedido}">
+                                                       <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                                  </h:outputText>
+                                             </h:panelGrid>
+
+                                        </h:panelGrid>
+                                        <h:form id="formPrincipal">                        
+                                             <p:dataTable id="resultado" var="item" rows="6" paginator="true"
+                                                          value="#{farmVisualizarItensPedidoBean.produtosPedido}"
+                                                          paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  
+                                                          {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                                                          {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16">
+
+                                                  <f:facet name="header">
+                                                       Total de Itens do pedido: #{farmVisualizarItensPedidoBean.produtosPedido.size()}
+                                                  </f:facet>
+
+                                                  <p:column headerText="Descrição">
+                                                       <center>
+                                                            <p:outputLabel value="#{item.fkIdProduto.descricao}"/>
+                                                       </center>
+                                                  </p:column>
+
+                                                  <p:column headerText="Dosagem">
+                                                       <center>
+                                                            <p:outputLabel value="#{item.fkIdProduto.dosagem} 
+                                                                           #{item.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/>
+                                                       </center>
+                                                  </p:column>
+
+                                                  <p:column headerText="Forma">
+                                                       <center>
+                                                            <p:outputLabel value="#{item.fkIdProduto.fkIdFormaFarmaceutica.descricao}" />
+                                                       </center>
+                                                  </p:column>  
+
+                                                  <p:column headerText="Quantidade">
+                                                       <center>
+                                                            <p:outputLabel value="#{item.quantidade}" />
+                                                       </center>
+                                                  </p:column>                     
+                                             </p:dataTable>
+                                        </h:form>
+                                   </h:form>
+                              </h:panelGrid>
+                         </center>
+                    </p:dialog>
+               </h:form>
+          </center>
+
+
+
+
+          <center>
+               <h:form id="formMaisDetalhes">
+                    <p:dialog header="Detalhes do Movimento" closable="true" showEffect="fade" 
+                              widgetVar="dialogMaisDetalhes" modal="true" width="70%" height="500px"
+                              resizable="false">
+                         <center>
+                              <h:panelGrid id="tabMaisDetalhes" width="100%">
+                                   <h:form id="formDetalhesMovimento">
+                                        <p:fieldset id="tabVisualizar">
+                                             <p></p>
+                                             <center><h2 style="background-color: #FFF" >Detalhes do Movimento</h2></center>
+                                             <p></p>
+                                             <h:panelGrid columns="10" width="80%" style="margin: auto">
+
+                                                  <p:outputLabel><h3>Origem: </h3></p:outputLabel>
+                                                  <p:outputLabel style="font-size: 14px" value="#{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkLocalOrigemPedido.descricao}" />
+                                                  <p:outputLabel><h3>Destino: </h3></p:outputLabel>
+                                                  <p:outputLabel style="font-size: 14px" value="#{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkLocalDestinoPedido.descricao}" />
+                                                  <p:outputLabel><h3>Data: </h3></p:outputLabel>
+
+                                                  <h:outputText style="color: #002142;font-size: 14px" value="#{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.dataMovimento}">
+                                                       <f:convertDateTime pattern="dd-MM-yyyy - HH:mm" />
+                                                  </h:outputText>
+
+                                             </h:panelGrid>
+                                             <p></p>
+
+                                             <p:fieldset style="width: 90%; margin: auto; border: none">
+                                                  <p:dataTable style="" id="tabela" var="item" rows="12" 
+                                                               value="#{farmPedidoRealizadoVisualizarItensBean.produtosMovimento}"
+                                                               emptyMessage="Nenhum item encontrado.">
+
+                                                       <p:column headerText="Descrição">
+                                                            <center><p:outputLabel value="#{item.fkIdLoteProduto.fkIdProduto.descricao}"/></center>
+                                                       </p:column>
+
+                                                       <p:column headerText="Dosagem">
+                                                            <center><p:outputLabel value="#{item.fkIdLoteProduto.fkIdProduto.dosagem} 
+                                                                                   #{item.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/></center>
+                                                       </p:column> 
+
+                                                       <p:column headerText="Forma">
+                                                            <center><p:outputLabel value="#{item.fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao}"/></center>
+                                                       </p:column>
+
+                                                       <p:column headerText="Nº de Lote">
+                                                            <center><p:outputLabel value="#{item.fkIdLoteProduto.numeroLote}"/></center>
+                                                       </p:column>
+
+                                                       <p:column headerText="Data de Validade">
+                                                            <center><h:outputText value="#{item.fkIdLoteProduto.dataValidade}">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:outputText></center>
+                                                       </p:column>
+
+                                                       <p:column headerText="Quantidade Pedida">
+                                                            <center><p:outputLabel value="#{farmPedidoRealizadoVisualizarItensBean.getQuantidadePedida(item.fkIdMovimento.fkIdPedido, item.fkIdLoteProduto.fkIdProduto)}"/></center>
+                                                       </p:column>
+
+                                                       <p:column headerText="Quantidade Entregue">
+                                                            <center><p:outputLabel value="#{item.quantidadeMovimentada}"/></center>
+                                                       </p:column>
+
+                                                  </p:dataTable>
+                                             </p:fieldset>
+                                             <h:panelGrid columns="10" width="80%" style="margin: auto" cellspacing="100">
+
+                                                  <h:panelGrid columns="1" class="floatleft">
+                                                       <center><p:outputLabel><h3 style="text-align: center;">Solicitado Por </h3></p:outputLabel></center>
+                                                       <p></p>
+                                                       <center><p:separator style="width: 150px"/>
+                                                       </center>
+                                                       <center>
+                                                            <p style="text-align: center; font-size: 14px" >
+                                                                 #{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkIdFuncionarioSolicitou.fkIdPessoa.nome} 
+                                                                 #{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkIdFuncionarioSolicitou.fkIdPessoa.sobreNome}
+                                                            </p>
+                                                       </center>
+                                                  </h:panelGrid>
+
+                                                  <h:panelGrid columns="1" class="float-right">
+                                                       <center><p:outputLabel><h3 style="text-align: center;">Atendido Por </h3></p:outputLabel></center>
+                                                       <p></p>
+                                                       <center><p:separator style="width: 150px"/></center>
+                                                       <center>
+                                                            <p style="text-align: center; font-size: 14px" >
+                                                                 #{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkIdFuncionarioAtendeu.fkIdPessoa.nome} 
+                                                                 #{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkIdFuncionarioAtendeu.fkIdPessoa.sobreNome}
+                                                            </p>
+                                                       </center>
+                                                  </h:panelGrid>
+                                             </h:panelGrid>
+                                        </p:fieldset>
+                                   </h:form>
+                              </h:panelGrid>
+                         </center>
+                    </p:dialog>
+               </h:form>
+          </center>
+
+          <center>
+               <h:form id="formCancelar">
+                    <p:confirmDialog message="Deseja cancelar o pedido? " width="30%"
+                                     header="Cancelar Pedido" severity="alert"
+                                     widgetVar="dialogCancelar">
+                         <center>
+                              <p:inputText id="motivo" required="true" requiredMessage="Por favor especifique o motivo."
+                                           value="#{farmPedidoPesquisaBean.pedidoPendentePesquisa.motivoCancelamento}"/>
+                              <p:watermark for="motivo" value="Motivo"/>
+
+                              <p></p><p></p>
+                              <p:commandButton value="Sim" actionListener="#{farmPedidoPesquisaBean.cancelar()}"
+                                               update=":formPrincipal:resultado" process="motivo"
+                                               icon="ui-icon-check"
+                                               oncomplete="produtosListarFarm.xhtml?faces-redirect=true"/>
+
+                              <p:commandButton value="Não" icon="ui-icon-close"
+                                               onclick="PF('dialogCancelar').hide();" type="button" />
+                         </center>
+
+                    </p:confirmDialog>
+               </h:form>
+          </center>
+
+     </body>
+</html>

@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <body>
+
+          <ui:composition template="./../../template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalSupi.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralSupi.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <script src="../../../../resources/JS/suCalendarioPortugues.js"></script>
+
+                    <h:form acceptcharset="ISO-8859-1">
+                         <p:panel header="Gestão de Equipas">
+
+                              <p:tabView>
+                                   <p:tab title="Registo">
+
+
+                                        <p:fieldset legend="Registo de Equipas" toggleable="true">
+                                             <center>
+                                                  <h:panelGrid columns="2" cellspacing="10">
+
+                                                       <h:outputLabel value="Nome da Equipa:" for="grupo"/>
+                                                       <p:inputText id="grupo" value="#{supiGrupoBean.grupo.descricao}"/>
+                                                       <h:outputLabel value="Seçcão:"/> 
+                                                       <p:selectOneMenu id="seccao" value="#{supiEquipaFuncionario.seccao.idSeccaoTrabalho}" filter="true" filterMatchMode="startsWith">
+                                                            <f:selectItem itemLabel="Selecione a Secção"/>
+                                                            <f:selectItems var="seccao"
+                                                                           value="#{supiEquipaFuncionario.buscaSeccao()}"
+                                                                           itemLabel="#{seccao.descricao}"
+                                                                           itemValue="#{seccao.idSeccaoTrabalho}" /> 
+                                                            <p:ajax event="change" update="painelTabela" listener="#{supiEquipaFuncionario.redirecionar()}" />
+                                                       </p:selectOneMenu>
+                                                       <h:outputLabel value="Responsável:"/>
+                                                       <p:selectOneMenu  id="painelTabela" value="#{grupoControlo.funcionario.idFuncionario}" filter="true" filterMatchMode="startsWith">
+                                                            <f:selectItem itemLabel="Selecione o Responsável"
+                                                                          />
+                                                            <f:selectItems var="func"
+                                                                           value="#{supiEquipaFuncionarioBean.listaFuncionario}"
+                                                                           itemLabel="#{func.fkIdPessoa.nomeCompleto}"
+                                                                           itemValue="#{func.pkIdFuncionario}" />
+
+                                                       </p:selectOneMenu>
+                                                  </h:panelGrid>
+                                             </center>
+                                        </p:fieldset>
+
+                                        <p:panel>
+                                             <p:commandButton ajax="false" value="Guardar"
+                                                              action="#{grupoControlo.salvar()}" icon="ui-icon-disk" style="margin-left: 350px;"/>
+                                             <p:commandButton ajax="false" value="Limpar"
+                                                              action="#{grupoControlo.limpar()}"/>   
+                                        </p:panel>
+                                   </p:tab>
+                              </p:tabView>
+                         </p:panel>
+                    </h:form>
+
+               </ui:define>
+
+          </ui:composition>
+
+     </body>
+</html>

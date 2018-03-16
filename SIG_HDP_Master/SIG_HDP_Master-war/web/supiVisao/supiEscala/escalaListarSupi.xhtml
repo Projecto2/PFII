@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form acceptcharset="ISO-8859-1">
+                    <h2>Superintendência-> Escalas -> Listagem de Escalas</h2>
+                    <p:growl id="msg" autoUpdate="true"/>
+                    <p:fieldset>
+
+                        <h:panelGrid columns="4" cellpadding="7">
+                            <p:outputLabel value="Tipo de Escala*: "/>
+                            <f:validateBean disabled="true">
+                                <h:selectOneMenu id="comboTipoEscala" style="width: 200px" value="#{supiEscalaListarBean.supiSupervisorHasEscalaPesquisa.fkIdEscala.fkIdTipoEscala.pkIdTipoEscala}"
+                                                 required="true" requiredMessage="Indique o tipo de escala">
+                                    
+                                    <f:selectItems value="#{supiTipoEscalaBean.findall}" var="item" itemLabel="#{item.descricao}" itemValue="#{item.pkIdTipoEscala}" />
+                                </h:selectOneMenu>
+                            </f:validateBean>
+
+                            <p:outputLabel value="Secção*: "/>
+                            <f:validateBean disabled="true">
+                                <h:selectOneMenu id="comboSeccao" style="width: 200px" 
+                                                 required="true" requiredMessage="Indique a secção"
+                                                 value="#{supiEscalaListarBean.supiSupervisorHasEscalaPesquisa.fkIdEscala.fkIdSeccao.pkIdSeccao}">
+                                    
+                                    <f:selectItems value="#{supiSessaoSupiBean.findall()}" var="seccao" itemLabel="#{seccao.descricao}" itemValue="#{seccao.pkIdSeccao}" />
+                                </h:selectOneMenu>
+                            </f:validateBean>
+
+                            <p:outputLabel value="Ano: "/>
+                            <p:spinner id="ano" required="true" requiredMessage="Seleccione o ano"
+                                       value="#{supiEscalaListarBean.supiSupervisorHasEscalaPesquisa.fkIdEscala.ano}" converterMessage="Ano Inválido" stepFactor="1" min="2010"/>
+
+                            <p:outputLabel value="Mês*: "/>
+                            <h:selectOneMenu id="comboMes" required="true" requiredMessage="Seleccione o mês"
+                                             style="width: 200px" value="#{supiEscalaListarBean.supiSupervisorHasEscalaPesquisa.fkIdEscala.mes}">
+                                <f:selectItem itemLabel="Seleccione" noSelectionOption="true" />
+                                <f:selectItems value="#{supiEscalaTesteBean.selectMeses()}" var="item" itemValue="#{item.value}"/>
+                                <p:ajax event="change" update="tabela" listener="#{supiEscalaTesteBean.prepararEscalaMensalSupervisor()}"/>
+                            </h:selectOneMenu>
+
+                            <p:outputLabel value="Funcionário: "/>
+                            <f:validateBean disabled="true">
+                                <h:selectOneMenu id="comboFuncionario" style="width: 200px" value="#{supiEscalaListarBean.supiSupervisorHasEscalaPesquisa.fkIdFuncionario.pkIdFuncionario}">
+                                    <f:selectItem itemLabel="Seleccione" noSelectionOption="true" />
+                                </h:selectOneMenu>
+                            </f:validateBean>
+
+                            <p:outputLabel value="Turno: "/>
+                            <f:validateBean disabled="true">
+                                <h:selectOneMenu id="comboTurnoEscala" style="width: 200px" value="#{supiEscalaListarBean.supiSupervisorHasEscalaPesquisa.fkIdTurno.pkIdTurno}">
+                                    <f:selectItem itemLabel="Seleccione" noSelectionOption="true" />
+                                    <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="item" itemLabel="#{item.descricao}" itemValue="#{item.pkIdTurno}" />
+                                </h:selectOneMenu>
+                            </f:validateBean>
+
+                            <br></br>
+                            <h:panelGrid columns="3">
+                                <p:commandButton value="Pesquisar" action="#{supiEscalaListarBean.pesquisarEscalas()}" 
+                                                 icon="ui-icon-search" update="tabela" ajax="false"/>
+
+                                <p:commandButton value="Nova Escala" ajax="false" immediate="true" icon="ui-icon-plus" 
+                                                 action="testeEscalaPac_2Supi_1?faces-redirect=true"/>
+                            </h:panelGrid>
+
+
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <h:panelGrid style="margin: auto; width: 100%">
+
+                        <p:dataTable id="tabela" var="car" value="#{supiEscalaListarBean.obterFuncionarios()}" 
+                                     paginator="true" paginatorPosition="bottom" rowIndexVar="rowIndexVar" 
+                                     emptyMessage="nenhuma escala" style="margin: auto; width: 100%"> 
+
+                            <p:column  headerText="Funcionário"  width="150" resizable="true">
+                                <h:outputText value="#{car.fkIdPessoa.nome} #{car.fkIdPessoa.nomeDoMeio} #{car.fkIdPessoa.sobreNome}" style="width:100%" />
+                            </p:column>
+
+                            <p:column  headerText="Dias do Mês"  width="150">
+                                <p:carousel value="#{supiEscalaListarBean.getEscalaPorFuncionario(car)}"
+                                            var="escalaFuncionario" numVisible="5">
+                                    <center>
+                                        <strong>
+                                            <h:outputText style="color: #036fab" value="#{escalaFuncionario.data}">
+                                                <f:convertDateTime pattern="dd" />
+                                            </h:outputText>
+                                        </strong>
+                                        <br></br>
+                                        <h:outputText value="#{escalaFuncionario.fkIdTurno.sigla}"/>
+                                    </center>
+                                </p:carousel>
+
+                            </p:column>
+
+                        </p:dataTable>
+                        <p:outputLabel value="Campos de Preenchimento Obrigatório (*)"/>
+                  <p></p>
+
+                    </h:panelGrid>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagCandidatoDadorBean.temMensagemPendente == true}">
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Erro'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+        </c:if>
+
+        <h2>Laboratório -> Hemoterápia -> Candidatos à Dadores de Sangue -> Registo de Exames</h2>
+        
+        <center>
+
+            <br/>
+
+            <h:form>
+                <p:growl sticky="true" id="ms" autoUpdate="true"/>
+
+                <h:panelGrid columns="2">
+
+                    <h3>Candidato à Dador - #{diagCandidatoDadorBean.diagCandidatoDador.codigoCandidatoDador} : 
+
+                        #{diagCandidatoDadorBean.diagCandidatoDador.fkIdPessoa.nome} 
+                        #{diagCandidatoDadorBdiagCandidatoDadorador.fkIdPessoa.nomeDoMeio}
+                        #{diagCandidatoDadorBean.diagCandidatoDador.fkIdPessoa.sobreNome}
+                    </h3>
+
+                </h:panelGrid>
+
+                <p:fieldset style="width: 50%">
+                    <h:panelGrid columns="4" cellpadding="20" cellspacing="50" width="40%">
+
+                        <h:outputLabel value="Peso * : " style="margin-left:-40px"/>
+                        <p:inputNumber id="peso" value="#{diagCandidatoDadorBean.diagExameCandidato.peso}" style="width: 100%" minValue="0" maxValue="120" 
+                                       symbol=" kg" symbolPosition="s" required="true" requiredMessage="Por favor introduza o peso."/>
+
+                        <h:outputLabel value="TA * : "/>
+                        <p:inputMask id="tensaoArterial" value="#{diagCandidatoDadorBean.diagExameCandidato.ta}" required="true" mask="999/999" placeholder="Ex: 120/080"
+                                     requiredMessage="Por favor introduza o resultado do exame TA." maxlength="7"/>
+
+                        <h:outputLabel value="HB * : " style="margin-left:-40px"/>
+                        <p:inputNumber id="hemoglobina" value="#{diagCandidatoDadorBean.diagExameCandidato.hb}" style="width: 100%" maxValue="17" minValue="1"
+                                       symbol=" g/dl" symbolPosition="s" required="true" requiredMessage="Por favor introduza o resultado do exame HB."/>
+
+                        <h:outputLabel value="MAL * : "/>
+                        <p:selectOneMenu id="malaria" value="#{diagCandidatoDadorBean.mal.pkIdResultadoExameCandidato}" style="width: 85%" required="true"
+                                         requiredMessage="Por favor selecione o resultado do exame MAL.">
+                            <f:selectItems value="#{diagCandidatoDadorBean.getListaResultadosExamesCandidatos()}" var="resultadoExame"
+                                           itemLabel="#{resultadoExame.descricaoResultadoExameCandidato}" itemValue="#{resultadoExame.pkIdResultadoExameCandidato}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="VDRL * : " style="margin-left:-40px"/>
+                        <p:selectOneMenu id="vdrl" value="#{diagCandidatoDadorBean.vdrl.pkIdResultadoExameCandidato}" style="width: 85%" required="true"
+                                         requiredMessage="Por favor selecione o resultado do exame VDRL.">
+                            <f:selectItems value="#{diagCandidatoDadorBean.getListaResultadosExamesCandidatos()}" var="resultadoExame"
+                                           itemLabel="#{resultadoExame.descricaoResultadoExameCandidato}" itemValue="#{resultadoExame.pkIdResultadoExameCandidato}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="HIV * : "/>
+                        <p:selectOneMenu id="hiv" value="#{diagCandidatoDadorBean.hiv.pkIdResultadoExameCandidato}" style="width: 85%" required="true"
+                                         requiredMessage="Por favor selecione o resultado do exame HIV.">
+                            <f:selectItems value="#{diagCandidatoDadorBean.getListaResultadosExamesCandidatos()}" var="resultadoExame"
+                                           itemLabel="#{resultadoExame.descricaoResultadoExameCandidato}" itemValue="#{resultadoExame.pkIdResultadoExameCandidato}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="AGHBS * : " style="margin-left:-50px"/>
+                        <p:selectOneMenu id="aghbs" value="#{diagCandidatoDadorBean.aghbs.pkIdResultadoExameCandidato}" style="width: 85%" required="true"
+                                         requiredMessage="Por favor selecione o resultado do exame AGHBS.">
+                            <f:selectItems value="#{diagCandidatoDadorBean.getListaResultadosExamesCandidatos()}" var="resultadoExame"
+                                           itemLabel="#{resultadoExame.descricaoResultadoExameCandidato}" itemValue="#{resultadoExame.pkIdResultadoExameCandidato}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="HCV * : "/>
+                        <p:selectOneMenu id="hcv" value="#{diagCandidatoDadorBean.hcv.pkIdResultadoExameCandidato}" style="width: 85%" required="true"
+                                         requiredMessage="Por favor selecione o resultado do exame HCV.">
+                            <f:selectItems value="#{diagCandidatoDadorBean.getListaResultadosExamesCandidatos()}" var="resultadoExame"
+                                           itemLabel="#{resultadoExame.descricaoResultadoExameCandidato}" itemValue="#{resultadoExame.pkIdResultadoExameCandidato}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="Estado Clínico * : " style="margin-left:-100px"/>
+                        <p:selectOneMenu id="estadoClinico" value="#{diagCandidatoDadorBean.diagEstadoClinico.pkIdEstadoClinico}" style="width: 85%" required="true"
+                                         requiredMessage="Por favor selecione o estado clínico.">
+                            <f:selectItems value="#{diagCandidatoDadorBean.getListaEstadoClinico()}" var="estado"
+                                           itemLabel="#{estado.descricaoEstadoClinico}" itemValue="#{estado.pkIdEstadoClinico}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="Conclusão * : "/>
+                        <p:selectOneMenu id="conclusao" value="#{diagCandidatoDadorBean.diagConclusaoExame.pkIdResultadoTriagem}" required="true" style="width: 85%"
+                                         requiredMessage="Por favor selecione a conclusão para o candidato.">
+                            <f:selectItems value="#{diagCandidatoDadorBean.getListaResultadoTriagems()}" var="conclusao"
+                                           itemLabel="#{conclusao.descricaoResultadoTriagem}" itemValue="#{conclusao.pkIdResultadoTriagem}"/>
+                        </p:selectOneMenu>
+
+                    </h:panelGrid>
+
+                    <p:tooltip for="peso" value="Indicar o peso em kg"/>
+                    <p:tooltip for="tensaoArterial" value="Indicar a tensão arterial"/>
+                    <p:tooltip for="hemoglobina" value="Indicar o resultado do exame de hemoglobina"/>
+                    <p:tooltip for="malaria" value="Seleccionar o resultado do exame de malária"/>
+                    <p:tooltip for="vdrl" value="Seleccionar o resultado do exame de VDRL"/>
+                    <p:tooltip for="hiv" value="Seleccionar o resultado do exame de HIV"/>
+                    <p:tooltip for="aghbs" value="Seleccionar o resultado do exame de Hepatite B (AGHBS)"/>
+                    <p:tooltip for="hcv" value="Seleccionar o resultado do exame de Hepatite C (HCV)"/>
+                    <p:tooltip for="estadoClinico" value="Seleccionar o estado clínico"/>
+                    <p:tooltip for="conclusao" value="Seleccionar a conclusão"/>
+                    
+                    <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                    <p:separator/>
+
+                    <h:panelGroup style="float: right">
+                        <p:commandButton value="Registar Exames" icon="ui-icon-disk" action="#{diagCandidatoDadorBean.validarExames()}"/>
+                        <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagCandidatoDadorBean.redirecionarVisualizarCandidato()}"/>
+                    </h:panelGroup>
+
+                </p:fieldset>
+
+            </h:form>
+        </center>
+
+        <br/>
+
+    </ui:define>
+
+</ui:composition>

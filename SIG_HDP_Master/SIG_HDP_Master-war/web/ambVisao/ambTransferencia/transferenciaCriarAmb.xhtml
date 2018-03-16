@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAmb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAmb.xhtml"/>
+            </ui:define>
+            <p:growl autoUpdate="true"/>
+
+
+            <ui:define name="center">
+
+                <p:messages autoUpdate="true" closable="true"/>
+                <h:form acceptcharset="ISO-8859-1" id="form">
+
+                    <div class="ui-fluid">
+
+                        <h2>Encaminhamentos -> Tranferências</h2>
+
+                        <p:tabView>
+
+                            <p:tab title="Tranferências">
+
+                                <p:fieldset legend="Tranferências de Pacientes para outras Instituições" style="margin-top: 15px">
+
+                                    <h:panelGrid columns="4" id="panelPrincipal" styleClass="ui-noborder">
+                                        <h:panelGrid columns="2" styleClass="ui-noborder">
+                                            <h:outputLabel value="Data:" for="data"/>
+                                            <h:outputLabel id="data" value="#{ambTransferenciaListarBean.dataSistema()}"/>
+
+                                            <h:outputLabel value="Funcionário:" for="funcionario"/>
+                                            <h:outputLabel id="funcionario" value="#{ambTransferenciaCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.nome} 
+                                                                                   #{ambTransferenciaCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.nomeDoMeio} 
+                                                                                   #{ambTransferenciaCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.sobreNome}
+                                                                                  "/>
+
+                                            <h:outputLabel value="Paciente:" for="paciente"/>
+                                            <p:selectOneMenu id="paciente" value="#{ambTransferenciaListarBean.codigoPaciente}" filter="true" filterMatchMode="contains">
+                                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                <f:selectItems value="#{ambTransferenciaListarBean.findPacientesEncaminhados()}" var="lista" itemLabel=
+                                                                     "#{lista.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                                      #{lista.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                                      #{lista.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+
+                                                                     (#{ambConsultorioAtendimentoListarBean.dateToString(lista.dataHoraCadastro)})
+                                                                     " 
+                                                           itemValue="#{lista.pkIdConsultorioAtendimento}"/> 
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="Instituição " for="instituicao"/>
+                                            <p:selectOneMenu id="instituicao" value="#{ambTransferenciaListarBean.codigoInstituicao}" filter="true" filterMatchMode="contains">
+                                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                <f:selectItems value="#{ambTransferenciaListarBean.findInstituicoes()}" var="listaInstituicao" itemLabel="#{listaInstituicao.descricao}" 
+                                                           itemValue="#{listaInstituicao.pkIdInstituicao}"/>
+                                            </p:selectOneMenu>
+
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+
+                                </p:fieldset>
+
+                                <p:commandButton ajax="false" value="Guardar" icon="ui-icon-disk" 
+                                                 action="#{ambTransferenciaCriarBean.criarRegisto()}"
+
+                                                 style="margin-bottom: 25px" update="tabelaTransferencia"/>
+
+                                <ui:include src="transferenciaListarAmb.xhtml"/>
+
+                            </p:tab>
+
+                            <p:tab title="Histórico Geral">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder" id="teste">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="De:" for="data1"/>
+                                        <p:calendar id="data1" value="#{ambTransferenciaListarBean.dataInicio}" locale="pt"/>
+
+                                        <h:outputLabel value="Até:" for="data2"/>
+                                        <p:calendar id="data2" value="#{ambTransferenciaListarBean.dataFinal}" locale="pt"/>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="data1" value="Insira a Data Inicial"/>
+                                    <p:tooltip for="data2" value="Insira a Data Final"/>                                    
+
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true" 
+                                                     actionListener="#{ambTransferenciaListarBean.findTransferencias()}"
+                                                     update="tabelaHistoricoGeralTransferencia" style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="transferenciaHistoricoGeralAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>
+
+                            <p:tab title="Histórico do Paciente">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Processo:" for="numProc"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="numProc" value="#{ambTransferenciaListarBean.numeroPaciente}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="numProc" value="Insira o Nº de Processo"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoPacienteTransferencia" ajax="true"
+                                                     actionListener="#{ambTransferenciaListarBean.pesquisarPacienteTransferido(ambTransferenciaListarBean.numeroPaciente)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="transferenciaHistoricoPacienteAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>
+                            
+                        </p:tabView>
+
+                    </div>
+
+                </h:form>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogListarTransferencia" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="listarDetalhesTransferenciaAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+                
+                <center>
+                    <p:dialog header="Editar Transferências" closable="true" showEffect="fade" width="60%" height="530px" position="center"
+                              widgetVar="dialogEditarTransferencia" modal="true" closeOnEscape="true" resizable="false">
+                        <ui:include src="transferenciaEditarAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,399 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <p:growl autoUpdate="true"/>
+        <p:messages id="msg" autoUpdate="true" closable="true"/>
+        <br/>
+        <center>
+
+            <h:panelGrid columns="1" width="85%">
+
+                <div class="ui-fluid"> 
+                    <p:fieldset> 
+                        <p:panelGrid columns="2" style="width: 80%" layout="grid" styleClass="ui-noborder">
+                            <p:outputLabel value="#{msgs.nomeDoServico}: "/>
+                            #{admsCategoriaServicoBean.servico.nomeServico}
+
+                            <p:outputLabel value="#{msgs.codigoDoServico}: "/>
+                            #{admsCategoriaServicoBean.servico.codServico}
+                        </p:panelGrid>
+                    </p:fieldset>
+                </div>
+
+                <h:form id="formPesquisa">
+                    #{detetorAtualizacaoPagina.checkAtualizacao("")}
+                    <div class="ui-fluid"> 
+                        <p:fieldset> 
+
+                            <p:panelGrid columns="2" style="width: 80%" layout="grid" styleClass="ui-noborder">
+                                <p:outputLabel value="#{msgs.categoriaDoServico}: "/>
+                                <f:validateBean disabled="true">
+                                    <p:inputText id="descricaoCategoriaServicoPresquisa" style="width: 100%" value="#{admsCategoriaServicoBean.precoPesquisa.descricaoCategoriaServico}"/>
+                                </f:validateBean>
+
+                                <br/>
+                                <p:panelGrid columns="2" style="width: 100%" layout="grid" styleClass="ui-noborder">
+                                    <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{admsCategoriaServicoBean.pesquisar()}" 
+                                                     icon="ui-icon-search" partialSubmit="true" process="@this" update="descricaoCategoriaServicoPresquisa dataTable"/>
+                                    <p:commandButton value="#{msgs.carregar} Categorias" style="width: 100%" icon="ui-icon-refresh" 
+                                                     partialSubmit="true" process="@this" update="@this dataTable" actionListener="#{admsCategoriaServicoExcelBean.carregarCategoriaServicoTabela()}"/>
+                                </p:panelGrid>
+
+                            </p:panelGrid>
+
+                        </p:fieldset>
+                    </div>
+
+
+                    <p:dataTable id="dataTable" var="categoriaServico" value="#{admsCategoriaServicoBean.getPrecos()}"
+                                 style="width: 100%" emptyMessage="Não Existem Serviços"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+                        <p:column headerText="#{msgs.categoriaDoServico}">
+                            <center>                                        
+                                #{categoriaServico.descricaoCategoriaServico}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.estado}">
+                            <center>  
+                                #{admsCategoriaServicoBean.getEstadoPreco(categoriaServico.estadoCategoriaServico)}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.tipoPrecoUsado}">
+                            <center>                         
+                                #{admsCategoriaServicoBean.getTipoAserUsado(categoriaServico)}
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="#{msgs.precoAtual} (1 / 2 / DP / DP-FS)">
+                            <center>                                   
+                                #{admsCategoriaServicoBean.getValorPreco(categoriaServico)}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.opcoes}">
+                            <center>                                        
+                                <p:menuButton value="#{msgs.opcoes}">
+                                    <p:menuitem value="#{msgs.editar} Categoria" icon="ui-icon-arrowrefresh-1-w"
+                                        actionListener="#{admsCategoriaServicoBean.setPrecoEditar(categoriaServico)}"
+                                        update=":formEditar:editarDescricaoPreco :formEditar:estadoCategoriaServicoEditar"
+                                        process="@this" partialSubmit="true" onclick="PF('dialogEditar').show();"/>
+                                    <p:separator />
+
+                                    <p:menuitem value="#{msgs.valorPrecoUnico}" icon="ui-icon-arrowrefresh-1-w" actionListener="#{admsCategoriaServicoBean.setPrecoValores(categoriaServico, 'unico')}" 
+                                                partialSubmit="true" 
+                                                process="@this" update=":formPrecoValorUnico:dataTable" 
+                                                onclick="PF('dialogValoresPrecoUnico').show()"/>
+
+                                    <p:menuitem value="#{msgs.valorPreco1Vez}" icon="ui-icon-arrowrefresh-1-w" actionListener="#{admsCategoriaServicoBean.setPrecoValores(categoriaServico, 'primeira vez')}" 
+                                                partialSubmit="true" 
+                                                process="@this" update=":formPrecoValorPrimeiraVez:dataTable" 
+                                                onclick="PF('dialogValoresPrecoPrimeiraVez').show()"/>
+
+
+                                    <p:menuitem value="#{msgs.valorPrecoRetorno}" icon="ui-icon-arrowrefresh-1-w" actionListener="#{admsCategoriaServicoBean.setPrecoValores(categoriaServico, 'retorno')}" 
+                                                partialSubmit="true" 
+                                                process="@this" update=":formPrecoValorRetorno:dataTable" 
+                                                onclick="PF('dialogValoresPrecoRetorno').show()"/>
+                                </p:menuButton>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                    <br/>
+                    <p:separator/>
+                    <center>
+                        <p:commandButton value="#{msgs.voltar}" action="/admsVisao/auxiliares/servicoAdms.xhtml?faces-redirect=true"
+                                         actionListener="#{admsServicoBean.pesquisar()}" icon="ui-icon-arrowreturnthick-1-w"/>
+                    </center>
+                    <br/>
+                </h:form>
+
+                <!--<p:menuitem value="# {msgs.editar}" icon="ui-icon-arrowrefresh-1-w"
+            actionListener="# {admsCategoriaServicoBean.setPrecoEditar(categoriaServico)}"
+            update=":formEditar:editarDescricaoPreco :formEditar:estadoCategoriaServicoEditar"
+            process="@this" partialSubmit="true" onclick="PF('dialogEditar').show();"/>
+<p:separator />-->
+
+                <!--<p:dialog header="# {msgs.novo} # {msgs.preco}" closable="false" showEffect="fade"
+                          widgetVar="dialogNovo" modal="true" closeOnEscape="true" width="40%">
+                    <h:form id="novoPreco">
+                        <p:fieldset>
+                            <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                <p:outputLabel value="# {msgs.descricao}*: "/>
+                                <p:inputText id="novaDescricaoPreco" 
+                                             value="# {admsCategoriaServicoBean.preco.descricaoCategoriaServico}" style="width: 100%"
+                                             required="true" requiredMessage="Insira A descricao do Preco"/>
+
+                                <p:outputLabel value="# {msgs.estado}*: "/>
+                                <p:selectOneMenu id="estadoCategoriaServicoNovo" value="# {admsCategoriaServicoBean.preco.estadoCategoriaServico}"                        
+                                                 style="width: 95%">
+                                    <f:selectItem itemLabel="Desativo" itemValue="# {false}"/>
+                                    <f:selectItem itemLabel="Ativo" itemValue="# {true}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="# {msgs.tipoAtivo}: "/>
+                                <p:selectOneMenu id="tipoValorPreco" value="# {admsCategoriaServicoBean.preco.tipoUnico}"                        
+                                                 style="width: 95%">
+                                    <f:selectItem itemLabel="# {msgs.unico}" itemValue="# {true}"/>
+                                    <f:selectItem itemLabel="# {msgs.primeiraVezRetorno}" itemValue="# {false}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="# {msgs.valorPrecoUnico}"/>
+                                <p:inputNumber id="valorNovo" value="# {admsCategoriaServicoBean.valorPreco.valor}"
+                                               style="width: 100%" minValue="# {0}"
+                                               required="true" requiredMessage="Insira O Valor Do Preço"/>
+
+                                <p:outputLabel value="# {msgs.valorPreco1Vez}"/>
+                                <p:inputNumber id="valorNovo1Vez" value="# {admsCategoriaServicoBean.valorPrecoNovo1Vez.valor}"
+                                               style="width: 100%" minValue="# {0}"
+                                               required="true" requiredMessage="Insira O Valor Do Preço"/>
+
+                                <p:outputLabel value="# {msgs.valorPrecoRetorno}"/>
+                                <p:inputNumber id="valorNovoRetorno" value="# {admsCategoriaServicoBean.valorPrecoNovoRetorno.valor}"
+                                               style="width: 100%" minValue="# {0}"
+                                               required="true" requiredMessage="Insira O Valor Do Preço"/>
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <center>
+                            <h:panelGrid columns="2" cellspacing="2">
+                                <p:commandButton value="# {msgs.gravar}" actionListener="# {admsCategoriaServicoBean.gravarPrecoPesquisar()}"
+                                                 icon="ui-icon-disk"
+                                                 update="novaDescricaoPreco estadoCategoriaServicoNovo tipoValorPreco valorNovo valorNovo1Vez valorNovoRetorno :formPesquisa:dataTable"/>
+                                <p:commandButton value="# {msgs.fechar}" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"
+                                                 />  
+                            </h:panelGrid>
+                        </center>
+                    </h:form>
+                </p:dialog>-->
+
+                <p:dialog header="#{msgs.editar} #{msgs.categoriaDoServico}" closable="true"  showEffect="fade"
+                          widgetVar="dialogEditar" modal="true" closeOnEscape="false" width="40%">
+                    <h:form id="formEditar">
+                        <p:fieldset>
+                            <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                <p:outputLabel for="editarDescricaoPreco" value="#{msgs.descricao}*: "/>
+                                <p:inputText id="editarDescricaoPreco" 
+                                             value="#{admsCategoriaServicoBean.precoEditar.descricaoCategoriaServico}" style="width: 100%"
+                                             readonly="true" disabled="true"/>
+
+                                <p:outputLabel value="#{msgs.estado}: "/>
+                                <p:selectOneMenu id="estadoCategoriaServicoEditar" value="#{admsCategoriaServicoBean.precoEditar.estadoCategoriaServico}"                        
+                                                 style="width: 95%">
+                                    <f:selectItem itemLabel="Inativo" itemValue="#{false}"/>
+                                    <f:selectItem itemLabel="Ativo" itemValue="#{true}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="#{msgs.tipoAtivo}: "/>
+                                <p:selectOneMenu id="tipoValorPrecoEditar" value="#{admsCategoriaServicoBean.precoEditar.tipoUnico}"                        
+                                                 style="width: 95%">
+                                    <f:selectItem itemLabel="#{msgs.unico}" itemValue="#{true}"/>
+                                    <f:selectItem itemLabel="#{msgs.primeiraVezRetorno}" itemValue="#{false}"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <center>
+                            <h:panelGrid columns="2" cellspacing="2">
+                                <p:commandButton value="#{msgs.gravarEdicao}" actionListener="#{admsCategoriaServicoBean.editarPrecoPesquisar()}"
+                                                 icon="ui-icon-disk"
+                                                 update="editarDescricaoPreco estadoCategoriaServicoEditar tipoValorPrecoEditar :formPesquisa:dataTable"/>
+                            </h:panelGrid>
+                        </center>
+                    </h:form>
+                </p:dialog>
+
+
+                <!--<p:commandButton value="# {msgs.fechar}" onclick="PF('dialogValoresPreco').hide()" partialSubmit="true" process="@this"/>-->
+
+                <!--<p:commandButton value="# {msgs.fechar}" onclick="PF('dialogValoresPreco').hide()" partialSubmit="true" process="@this"/>-->
+
+                <!--<p:commandButton value="# {msgs.fechar}" style="width: 100%" onclick="PF('dialogValoresPreco').hide()" partialSubmit="true" process="@this"/>-->
+
+
+                <p:dialog header="#{msgs.preco} Único" closable="true" showEffect="fade"
+                          widgetVar="dialogValoresPrecoUnico" modal="true" width="50%">
+                    <h:form id="formPrecoValorUnico">
+                        <p:fieldset>
+                            <p:panelGrid columns="2" style="width: 80%" layout="grid" styleClass="ui-noborder">
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} Preço 1"/>
+                                <p:inputNumber id="novoValorPreco" minValue="#{0}"
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valor}" 
+                                               required="true" requiredMessage="Insira o Valor Do Preço 1"/>
+                                
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} Preço 2"/>
+                                <p:inputNumber id="novoValorPreco2" minValue="#{0}"
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valorPreco2}" 
+                                               required="true" requiredMessage="Insira o Valor Do Preço 2"/>
+                                
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} DP"/>
+                                <p:inputNumber id="novoValorPrecoDP" minValue="#{0}"
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valorPrecoDp}" 
+                                               required="true" requiredMessage="Insira o Valor Do Preço DP"/>
+                                
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} DP-FS"/>
+                                <p:inputNumber id="novoValorPrecoDPFS" minValue="#{0}"
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valorPrecoDpfs}" 
+                                               required="true" requiredMessage="Insira o Valor Do Preço DP-FS"/>
+
+                                <br/>
+                                <p:commandButton value="#{msgs.gravarNovoValorAtivo}" actionListener="#{admsCategoriaServicoBean.createValorPreco('unico')}"
+                                                 icon="ui-icon-disk" partialSubmit="true" process="@this novoValorPreco novoValorPreco2 novoValorPrecoDP novoValorPrecoDPFS" 
+                                                 update="novoValorPreco novoValorPreco2 novoValorPrecoDP novoValorPrecoDPFS dataTable :formPesquisa:dataTable" onclick="PF('dialogValoresPrecoUnico').hide()"/>
+                            </p:panelGrid>
+                        </p:fieldset>
+                        <center>
+                            <p:dataTable id="dataTable" var="valor" value="#{admsCategoriaServicoBean.findValoresPreco()}"
+                                         style="width: 100%" emptyMessage="Não Existem Serviços"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.valor} (1 / 2 / DP / DP-FS)">
+                                    <center>                                        
+                                        #{valor.valor} / #{valor.valorPreco2} / #{valor.valorPrecoDp} / #{valor.valorPrecoDpfs}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.estado}">
+                                    <center>                     
+                                        #{admsCategoriaServicoBean.getEstadoPreco(valor.estadoPreco)}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.opcoes}">
+                                    <center> 
+                                        <p:commandButton value="#{msgs.ativar}" rendered="#{!(valor.estadoPreco)}"
+                                                         partialSubmit="true" process="@this :formPesquisa:dataTable"
+                                                         update="dataTable :formPesquisa:dataTable" 
+                                                         actionListener="#{admsCategoriaServicoBean.editEstadoValorPreco(valor)}"/>
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+                        </center>
+                    </h:form>
+                </p:dialog>
+
+
+                <p:dialog header="#{msgs.preco} 1º Vez" closable="true" showEffect="fade"
+                          widgetVar="dialogValoresPrecoPrimeiraVez" modal="true" width="50%">
+                    <h:form id="formPrecoValorPrimeiraVez">
+                        <p:fieldset>
+                            <p:panelGrid columns="2" style="width: 80%" layout="grid" styleClass="ui-noborder">
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} Preço 1"/>
+                                <p:inputNumber id="novoValorPrecoPrimeiraVez" minValue="#{0}"
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valor}"
+                                               required="true" requiredMessage="Insira o Valor Do Preço 1"/>
+                                
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} Preço 2"/>
+                                <p:inputNumber id="novoValorPreco2PrimeiraVez" minValue="#{0}"
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valorPreco2}"
+                                               required="true" requiredMessage="Insira o Valor Do Preço 2"/>
+                                
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} DP"/>
+                                <p:inputNumber id="novoValorPrecoDPPrimeiraVez" minValue="#{0}"
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valorPrecoDp}"
+                                               required="true" requiredMessage="Insira o Valor Do Preço DP"/>
+                                
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} DP-FS"/>
+                                <p:inputNumber id="novoValorPrecoDPFSPrimeiraVez" minValue="#{0}"
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valorPrecoDpfs}"
+                                               required="true" requiredMessage="Insira o Valor Do Preço DP-FS"/>
+
+                                <br/>
+                                <p:commandButton value="#{msgs.gravarNovoValorAtivo}" actionListener="#{admsCategoriaServicoBean.createValorPreco('primeira vez')}"
+                                                 icon="ui-icon-disk" partialSubmit="true" process="@this novoValorPrecoPrimeiraVez novoValorPreco2PrimeiraVez novoValorPrecoDPPrimeiraVez novoValorPrecoDPFSPrimeiraVez" 
+                                                 update="novoValorPrecoPrimeiraVez novoValorPreco2PrimeiraVez novoValorPrecoDPPrimeiraVez novoValorPrecoDPFSPrimeiraVez dataTable :formPesquisa:dataTable" onclick="PF('dialogValoresPrecoPrimeiraVez').hide()"/>
+
+                            </p:panelGrid>
+                        </p:fieldset>
+                        <center>
+                            <p:dataTable id="dataTable" var="valor" value="#{admsCategoriaServicoBean.findValoresPreco()}"
+                                         style="width: 100%" emptyMessage="Não Existem Serviços"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.valor} (1 / 2 / DP / DP-FS)">
+                                    <center>                                        
+                                        #{valor.valor} / #{valor.valorPreco2} / #{valor.valorPrecoDp} / #{valor.valorPrecoDpfs}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.estado}">
+                                    <center>                     
+                                        #{admsCategoriaServicoBean.getEstadoPreco(valor.estadoPreco)}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.opcoes}">
+                                    <center> 
+                                        <p:commandButton value="#{msgs.ativar}" rendered="#{!(valor.estadoPreco)}"
+                                                         partialSubmit="true" process="@this :formPesquisa:dataTable"
+                                                         update="dataTable :formPesquisa:dataTable" 
+                                                         actionListener="#{admsCategoriaServicoBean.editEstadoValorPreco(valor)}"/>
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+                        </center>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog header="#{msgs.preco} Retorno" closable="true" showEffect="fade"
+                          widgetVar="dialogValoresPrecoRetorno" modal="true" width="50%">
+                    <h:form id="formPrecoValorRetorno">
+                        <p:fieldset>
+                            <p:panelGrid columns="2" style="width: 80%" layout="grid" styleClass="ui-noborder">
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} Preço 1"/>
+                                <p:inputNumber id="novoValorPrecoRetorno" minValue="#{0}" 
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valor}"
+                                               required="true" requiredMessage="Insira o valor do preco"/>
+                                
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} Preço 2"/>
+                                <p:inputNumber id="novoValorPreco2Retorno" minValue="#{0}" 
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valorPreco2}"
+                                               required="true" requiredMessage="Insira o valor do preco"/>
+                                
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} DP"/>
+                                <p:inputNumber id="novoValorPrecoDPRetorno" minValue="#{0}" 
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valorPrecoDp}"
+                                               required="true" requiredMessage="Insira o valor do preco"/>
+                                
+                                <p:outputLabel value="#{msgs.novo} #{msgs.valor} DP-FS"/>
+                                <p:inputNumber id="novoValorPrecoDPFSRetorno" minValue="#{0}" 
+                                               value="#{admsCategoriaServicoBean.valorPrecoNovo.valorPrecoDpfs}"
+                                               required="true" requiredMessage="Insira o valor do preco"/>
+
+                                <br/>
+                                <p:commandButton value="#{msgs.gravarNovoValorAtivo}" actionListener="#{admsCategoriaServicoBean.createValorPreco('retorno')}"
+                                                 icon="ui-icon-disk" partialSubmit="true" process="@this novoValorPrecoRetorno novoValorPreco2Retorno novoValorPrecoDPRetorno novoValorPrecoDPFSRetorno" 
+                                                 update="novoValorPrecoRetorno novoValorPreco2Retorno novoValorPrecoDPRetorno novoValorPrecoDPFSRetorno dataTable :formPesquisa:dataTable" onclick="PF('dialogValoresPrecoRetorno').hide()"/>
+
+
+                            </p:panelGrid>
+                        </p:fieldset>
+                        <center>
+                            <p:dataTable id="dataTable" var="valor" value="#{admsCategoriaServicoBean.findValoresPreco()}"
+                                         style="width: 100%" emptyMessage="Não Existem Serviços"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.valor} (1 / 2 / DP / DP-FS)">
+                                    <center>                                        
+                                        #{valor.valor} / #{valor.valorPreco2} / #{valor.valorPrecoDp} / #{valor.valorPrecoDpfs}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.estado}">
+                                    <center>                     
+                                        #{admsCategoriaServicoBean.getEstadoPreco(valor.estadoPreco)}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.opcoes}">
+                                    <center> 
+                                        <p:commandButton value="#{msgs.ativar}" rendered="#{!(valor.estadoPreco)}"
+                                                         partialSubmit="true" process="@this :formPesquisa:dataTable"
+                                                         update="dataTable :formPesquisa:dataTable" 
+                                                         actionListener="#{admsCategoriaServicoBean.editEstadoValorPreco(valor)}"/>
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+
+                        </center>
+                    </h:form>
+                </p:dialog>
+
+
+            </h:panelGrid>
+
+        </center>
+    </h:body>
+</html>
+

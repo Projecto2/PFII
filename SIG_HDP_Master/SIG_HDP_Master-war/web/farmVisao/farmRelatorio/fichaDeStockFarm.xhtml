@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Fichas de Stock</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Relatórios -> Ficha de Stock (Fichas de Stock no Local de Armazenamento)</h2>
+            <p:messages id="msg" autoUpdate="true" closable="true"/>
+            <p:growl autoUpdate="true"/>
+            <br/>
+
+            <h:form id="formulario">
+               <p:fieldset>
+                  <h:panelGrid columns="2" id="gridCamposPesquisa">
+                     <p:outputLabel value="Local de Armazenamento : "/>
+                     <p:selectOneMenu id="areaDestino" style="width: 89%" filter="true"
+                                      value="#{farmFichaDeStockNoLocalBean.local.pkIdLocalArmazenamento}"
+                                      valueChangeListener="#{farmFichaDeStockNoLocalBean.validarLocal}"
+                                      required="true" requiredMessage="Indique o Local de Armazenamento">
+                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                        <f:selectItems value="#{farmFichaDeStockNoLocalBean.locaisArmazenamento}"/>
+                        <f:ajax event="change" render="formulario formulario:botaoImprimir"/>
+                     </p:selectOneMenu> 
+
+                     <p:outputLabel value="Incluir dados entre : "/>
+                     <h:panelGrid columns="5">
+                        <p:calendar id="dataInicio" value="#{farmFichaDeStockNoLocalBean.dataInicio}" locale="pt" /> 
+                        <p:outputLabel value="e"/> 
+                        <p:calendar id="dataFim" value="#{farmFichaDeStockNoLocalBean.dataFim}" 
+                                    maxdate="#{farmFichaDeStockNoLocalBean.hoje}" locale="pt"  />
+                        <p:watermark for="dataInicio" value="Data Inicial"/>
+                        <p:watermark for="dataFim" value="Data Final"/>
+                     </h:panelGrid>
+                     <p></p>
+                     <center>
+                           <p:dialog  widgetVar="w_dlgLoading" header="A processar" modal="true" closable="false" resizable="false">
+                              <center>
+                                 <img src="../../resources/Imagens/loading.gif" style="margin: auto" width="128" height="128" alt="loading"/>
+                              </center>
+                              <br/>
+                              <p>Pode demorar alguns segundos. Por favor aguarde....</p>
+                           </p:dialog>
+                        </center>
+                     <p:commandButton value="Concluir" icon="ui-icon-check" ajax="true"
+                                      action="#{farmFichaDeStockNoLocalBean.pesquisarProdutosNoLocal()}" 
+                                      onstart="PF('w_dlgLoading').show()" oncomplete="PF('w_dlgLoading').hide()"
+                                      update="resultado" process="gridCamposPesquisa">
+                        <f:ajax event="click" render=":formulario:botaoImprimir"/>
+                     </p:commandButton>
+                  </h:panelGrid>
+               </p:fieldset>
+
+               <p:panel style="height: 50px; border: none">
+                  <h:panelGrid class="float-right">
+                     <p:commandButton value="Imprimir" icon="ui-icon-print" id="botaoImprimir" 
+                                      ajax="false"
+                                      actionListener="#{farmFichaDeStockNoLocalBean.imprimirRelatorio}" 
+                                      onclick="this.form.target = '_blank'">
+                     </p:commandButton>
+                  </h:panelGrid>
+               </p:panel>
+
+               <p:dataTable id="resultado" emptyMessage="Sem dados a apresentar. Aguardando Pesquisa..."
+                            paginatorPosition="bottom" paginator="true" var="produto"
+                            value="#{farmFichaDeStockNoLocalBean.listaProdutos}">
+
+                  <p:column>
+                     <h5>#{produto.descricao} #{produto.dosagem} #{produto.fkIdUnidadeMedida.abreviatura}</h5>
+                     <p:fieldset>
+                        <p:dataTable id="resultadoInterior" emptyMessage="Sem dados a apresentar. Aguardando Pesquisa..." var="item"
+                                     value="#{farmFichaDeStockNoLocalBean.getFichaStockDoProduto(produto)}">
+
+                           <p:column headerText="Data do Movimento">
+                              <center>
+                                 <h:outputText value="#{item.dataMovimento}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                 </h:outputText>
+                              </center>
+                           </p:column>
+                           <p:column headerText="Origem/Destino">
+                              <center>
+                                 <p:outputLabel value="#{item.origemOuDestino}"/>
+                              </center>
+                           </p:column>
+                           <p:column headerText="Nº de Lote">
+                              <center>
+                                 <p:outputLabel value="#{item.fkIdLoteProduto.numeroLote}"/>
+                              </center>
+                           </p:column>
+                           <p:column headerText="Data de Validade">
+                              <center>
+                                 <h:outputText value="#{item.fkIdLoteProduto.dataValidade}"
+                                               style="color: #{farmStockValidadeProdutosBean.getValidadeItemColor(item.fkIdLoteProduto)}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                 </h:outputText>
+                              </center>
+                           </p:column>
+                           <p:column headerText="Entradas">
+                              <center>
+                                 <p:outputLabel value="#{item.entradas}"/>
+                              </center>
+                           </p:column>
+                           <p:column headerText="Saídas">
+                              <center>
+                                 <p:outputLabel value="#{item.saidas}"/>
+                              </center>
+                           </p:column>
+                           <p:column headerText="Stock Existente">
+                              <center>
+                                 <p:outputLabel value="#{item.quantidadeRestante} "/>
+                              </center>
+                           </p:column>
+                           <p:column headerText="Responsável">
+                              <p:outputLabel value="#{item.fkIdFuncionario.fkIdPessoa.nome} #{item.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{item.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                           </p:column>
+                           <f:facet name="footer">
+                              <p:panelGrid columns="1" style="text-align: left">
+
+                                 <p:outputLabel value="Total de Entradas: #{farmFichaDeStockNoLocalBean.getTotalEntradasItem(produto)}"/>
+                                 <p:outputLabel value="Total de Saídas: #{farmFichaDeStockNoLocalBean.getTotalSaidasItem(produto)}"/>
+                                 <p:outputLabel style="color: #{farmFichaDeStockNoLocalBean.getQuantidadeItemColor(produto)}"
+                                                value="Quantidade Actual: #{farmFichaDeStockNoLocalBean.getQuantidadeTotalItem(produto)}"/>
+                                 <p:outputLabel value="Quantidade Mín. Permitida: #{farmStockGeralBean.getQuantidadeMinimaPermitida(produto, farmFichaDeStockNoLocalBean.local)}"/>
+                                 
+                              </p:panelGrid>
+                           </f:facet>
+
+                        </p:dataTable>
+                     </p:fieldset>
+                  </p:column>                  
+               </p:dataTable>
+            </h:form>
+         </ui:define>            
+      </ui:composition>
+   </h:body>
+</html>

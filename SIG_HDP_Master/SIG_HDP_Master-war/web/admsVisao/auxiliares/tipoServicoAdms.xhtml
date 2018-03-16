@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                
+                <h1> #{msgs.admissoes} -> #{msgs.tiposServico}</h1>
+                <!-- <p:messages id="msg" autoUpdate="true" closable="true"/> -->
+                <p:growl autoUpdate="true"/>
+                <br/>
+                <center>
+                    <h:panelGrid columns="1" width="70%">
+                        <h:form id="formPesquisa">
+                            #{detetorAtualizacaoPagina.checkAtualizacao("")}
+                            
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="3" style="width: 80%">
+                                   <!-- <p:outputLabel value="#{msgs.descricaoTipoServico}"/>
+                                    
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="tipoServicoText" style="width: 100%" 
+                                                     value="# {admsTipoServicoBean.tipoServicoPesquisa.descricaoTipoServico}">
+                                        </p:inputText>
+                                    </f:validateBean>
+
+                                    -->
+                                    <br/>
+                                    <h:panelGrid columns="2" width="100%" cellpadding="2">
+                                        <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{admsTipoServicoBean.pesquisar()}" 
+                                                         icon="ui-icon-search" ajax="true" partialSubmit="true" update="dataTable"/>
+                                        
+                                        <p:commandButton value="#{msgs.carregar}" style="width: 100%" partialSubmit="true" process="@this" update="@this" 
+                                                         onclick="PF('dialogNovo').show();"
+                                                         icon="ui-icon-refresh" actionListener="#{admsTipoServicoBean.carregar()}"/>
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            
+                            <p:dataTable id="dataTable" style="width: 100%" var="tipoServico" value="#{admsTipoServicoBean.getAdmsTipoServicoLista()}"
+                                         emptyMessage="Não Existem Tipos de Serviços"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="Descrição" filterBy="#{tipoServico.descricaoTipoServico}" filterMatchMode="contains">
+                                    <center>                                        
+                                        #{tipoServico.descricaoTipoServico}
+                                    </center>
+                                </p:column>
+                                <!--<p:column headerText="# {msgs.opcoes}">
+                                    <center>
+                                        <p:commandButton value="# {msgs.editar}" icon="ui-icon-pencil" onclick="PF('dialogEditar').show();"
+                                                         action="# {admsTipoServicoBean.setTipoServico(tipoServico)}"
+                                                         partialSubmit="true" process="@this" update=":formEditar:editarTServ"/>
+                                    </center>
+                                </p:column>-->
+                            </p:dataTable>
+                        </h:form>
+                    </h:panelGrid>
+                </center>
+
+                
+                
+                <!--<center>
+                    <p:dialog header="Novo Tipo De Serviço" closable="false" showEffect="fade"
+                              widgetVar="dialogNovo" modal="true" closeOnEscape="true" width="40%">
+                        <h:form id="formPesquisaTipoServico">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                    <p:outputLabel value="# {msgs.descricaoTipoServicoObrigatorio}"/>
+                                    <p:inputText id="editarTServico" style="width: 100%" value="# {admsTipoServicoBean.tipoServico.descricaoTipoServico}"
+                                                 required="true" requiredMessage="Indique o nome do tipo de serviço"/>
+                                    
+                                    <br/>
+                                    <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                        <p:commandButton value="# {msgs.gravar}" icon="ui-icon-disk" style="width: 100%" actionListener="# {admsTipoServicoBean.gravarTipoServicoPesquisar()}"
+                                                         process="@this editarTServico"
+                                                         update="editarTServico :formPesquisa:dataTable"/>
+                                        <p:commandButton value="# {msgs.fechar}" style="width: 100%" action="# {areaInternaBean.limpar()}" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"/>  
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center>
+                
+                <center>
+                    <p:dialog header="Editar Tipo De Serviço" closable="false" showEffect="fade"
+                              widgetVar="dialogEditar" modal="true" closeOnEscape="true" width="40%">
+                        <h:form id="formEditar">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                    <p:outputLabel value="# {msgs.descricaoTipoServicoObrigatorio}"/>
+                                    <p:inputText id="editarTServ" style="width: 100%" value="# {admsTipoServicoBean.tipoServico.descricaoTipoServico}"
+                                                 required="true" requiredMessage="Indique O Nome Do Tipo De Serviço"/>
+                                    <br/>
+                                    <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                        <p:commandButton value="# {msgs.gravarEdicao}" icon="ui-icon-disk" actionListener="# {admsTipoServicoBean.editarTipoServicoPesquisar()}"
+                                                         update=":formPesquisa:dataTable" style="width: 100%"/>
+                                        <p:commandButton value="Fechar" action="# {areaInternaBean.limpar()}" onclick="PF('dialogEditar').hide()" partialSubmit="true" process="@this"
+                                                         style="width: 100%"/>   
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center>-->
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,293 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Estagiários</title>
+          <h:outputScript name="JS/previewImagem.js"/>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Estagiários (Pesquisar)</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+                    <p:growl id="ms2" autoUpdate="true"/>
+
+                    <h:form id="formPesquisa">
+                         <br/>
+                         <center>
+                              <p:fieldset style="width: 97%">
+                                   <h:panelGrid columns="2" width="100%">
+                                        <f:validateBean disabled="true">
+                                             <h:panelGrid columns="2" cellpadding="3" id="gridPesquisarEstagiario">
+                                                  <h:panelGrid columns="2" cellpadding="3">
+                                                       <p:outputLabel value="Nome"/>
+                                                       <p:inputText value="#{rhEstagiarioPesquisarBean.estagiarioPesquisa.fkIdPessoa.nome}"/>
+                                                       <p:outputLabel value="Nome do Meio"/>
+                                                       <p:inputText value="#{rhEstagiarioPesquisarBean.estagiarioPesquisa.fkIdPessoa.nomeDoMeio}"/>
+                                                       <p:outputLabel value="Ultimo Nome"/>
+                                                       <p:inputText value="#{rhEstagiarioPesquisarBean.estagiarioPesquisa.fkIdPessoa.sobreNome}"/>
+                                                  </h:panelGrid>
+                                                  <h:panelGrid columns="2" cellpadding="3">
+                                                       <p:outputLabel value="Estado Estagiário"/>
+                                                       <h:selectOneMenu style="width: 200px; text-align: center" value="#{rhEstagiarioPesquisarBean.estagiarioPesquisa.fkIdEstadoEstagiario.pkIdEstadoEstagiario}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.estadoEstagiarioList}" var="estado"
+                                                                           itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoEstagiario}"/>
+                                                       </h:selectOneMenu>
+                                                       <p:outputLabel value="Nº Bilhete Identidade"/>
+                                                       <p:inputText value="#{rhEstagiarioPesquisarBean.estagiarioPesquisa.numeroBi}" style="width: 190px"/>
+                                                       <p:outputLabel value="Sexo"/>
+                                                       <h:selectOneMenu style="width: 200px; text-align: center" value="#{rhEstagiarioPesquisarBean.estagiarioPesquisa.fkIdPessoa.fkIdSexo.pkIdSexo}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.sexoList}" var="sexo"
+                                                                           itemLabel="#{sexo.descricao}" itemValue="#{sexo.pkIdSexo}"/>
+                                                       </h:selectOneMenu>
+
+                                                  </h:panelGrid>
+                                                  <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                                   action="#{rhEstagiarioPesquisarBean.pesquisarEstagiarios()}" 
+                                                                   process="gridPesquisarEstagiario" update="dataTable"/>
+                                                  <p:commandButton value="Limpar" action="#{rhEstagiarioPesquisarBean.limparPesquisa()}"
+                                                                   process="@this" style="width: 100%"/>
+                                             </h:panelGrid>
+                                        </f:validateBean>
+
+                                        <h:panelGrid style="text-align: center; float: right">
+                                             <p:commandButton style="width: 160px"  value="Novo Estagiário" icon="ui-icon-plus" process="@this"
+                                                              action="#{rhEstagiarioNovoBean.limpar()}" actionListener="#{rhPessoaBean.setPessoa(null)}"/>
+                                        </h:panelGrid>
+                                   </h:panelGrid>
+                              </p:fieldset>
+                              <p:dataTable id="dataTable" rows="10" paginator="true" paginatorPosition="bottom" style="width: 100%"
+                                           var="estagiario" value="#{rhEstagiarioPesquisarBean.estagiariosPesquisados}" emptyMessage="Nenhum registro de estagiário encontrado">
+                                   <p:column headerText="Nome Completo">
+                                        <p:outputLabel value="#{estagiario.fkIdPessoa.nome} #{estagiario.fkIdPessoa.nomeDoMeio} 
+                                                       #{estagiario.fkIdPessoa.sobreNome}"/>
+                                   </p:column>
+                                   <p:column headerText="Nº Bilhete Identidade">
+                                        #{estagiario.numeroBi}
+                                   </p:column>
+                                   <p:column headerText="Curso" filterBy="#{estagiario.fkIdEspecialidadeCurso.fkIdCurso.descricao}">
+                                        #{estagiario.fkIdEspecialidadeCurso.fkIdCurso.descricao}
+                                   </p:column>
+                                   <p:column headerText="Sexo">
+                                        #{estagiario.fkIdPessoa.fkIdSexo.descricao}
+                                   </p:column>
+                                   <p:column headerText="Estado">
+                                        #{estagiario.fkIdEstadoEstagiario.descricao}
+                                   </p:column>
+                                   <p:column headerText="-----------------------------">
+                                        <center>
+                                             <p:menuButton value="Opções">
+                                                  <p:menuitem value="Visualizar" action="#{rhEstagiarioPesquisarBean.setEstagiarioVisualizar(estagiario)}" 
+                                                              actionListener="#{rhPessoaBean.setPessoaVisualizar(estagiario.fkIdPessoa)}" icon="ui-icon-info"
+                                                              onclick="PF('dialogVisualizar').show()" process="@this" update=":formVisual:tabVisualizar"/>
+                                                  <p:menuitem value="Editar" icon="ui-icon-pencil" action="#{rhEstagiarioEditarBean.prepararEditar(estagiario)}" 
+                                                              actionListener="#{rhPessoaBean.setPessoa(estagiario.fkIdPessoa)}"/>
+                                                  <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                                              action="#{rhEstagiarioPesquisarBean.setEstagiarioVisualizar(estagiario)}"/>
+                                                  <p:separator/>
+                                                  <p:menuitem value="Alterar Estado" action="#{rhEstagiarioPesquisarBean.setEstagiarioVisualizar(estagiario)}"  icon="ui-icon-pencil"
+                                                              onclick="PF('dialogEstadoEstag').show()" process="@this" update=":formEstadoEstag:panelFoto :formEstadoEstag:gridEstadoCand"/>
+                                             </p:menuButton>
+                                        </center>
+                                   </p:column>
+                              </p:dataTable>
+
+                              <p:confirmDialog message="Tem certeza que pretende remover o estagiário selecionado ?"
+                                               header="Remover Estagiário" severity="alert" widgetVar="confirmDialogRemover">
+                                   <p:commandButton value="Sim" actionListener="#{rhEstagiarioPesquisarBean.remove(rhEstagiarioPesquisarBean.estagiarioVisualizar)}" process="@this"
+                                                    update="dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                                   <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                              </p:confirmDialog>
+
+                         </center>
+                    </h:form>
+                    <center>
+                         <p:dialog header="Visualizar Estagiário" closable="false" showEffect="fade" 
+                                   widgetVar="dialogVisualizar" modal="true" width="60%" height="490px"
+                                   resizable="false">
+                              <h:form id="formVisual">
+                                   <h:panelGrid width="100%">
+                                        <h:panelGrid class="float-right">
+                                             <p:commandButton value="Fechar" onclick="PF('dialogVisualizar').hide()"
+                                                              action="#{rhEstagiarioPesquisarBean.setEstagiarioVisualizar(null)}"
+                                                              actionListener="#{rhPessoaBean.setPessoaVisualizar(null)}"
+                                                              process="@this" style="width: 130px"/>
+                                        </h:panelGrid>
+
+                                        <p:tabView id="tabVisualizar" style="height: 420px">
+                                             <p:tab title="Identificação Pessoal">
+                                                  <ui:include src="./../rhPessoa/pessoaVisualizarTabViewRh.xhtml"/>
+                                             </p:tab>
+
+                                             <p:tab title="Identificação de Estagiário">
+                                                  <p:tabView>
+                                                       <p:tab title="Dados Iniciais">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Nº Bilhete de Identidade: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.numeroBi}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Estado do Estagiário: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdEstadoEstagiario.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Tipo de Estágio: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdTipoEstagio.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Profissão: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdProfissao.descricao}"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Dados Acadêmicos">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Nível Acadêmico: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdNivelAcademico.descricaoNivelAcademico}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Escola/Universidade: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdEscolaUniversidade.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Período de Aulas: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdPeriodoAulas.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Curso: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdEspecialidadeCurso.fkIdCurso.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Especialidade do Curso: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdEspecialidadeCurso.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Ano que Frequenta: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.anoQueFrequenta}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Ano de Conclusão (Previsão): "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.anoConclusaoPrevisao}"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Área de Trabalho">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Secção de Trabalho: "/>
+                                                                 <p:outputLabel value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdSeccaoTrabalho.fkIdDepartamento.descricao} -> 
+                                                                                #{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdSeccaoTrabalho.descricao}"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Outras Informações">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Cadastro: "/>
+                                                                 <h:inputText style="border: none; background: none" value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.dataCadastro}" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Admissão: "/>
+                                                                 <h:inputText style="border: none; background: none" value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.dataAdmissao}" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Início do Estágio: "/>
+                                                                 <h:inputText style="border: none; background: none" value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.dataInicioEstagio}" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Fim do Estágio: "/>
+                                                                 <h:inputText style="border: none; background: none" value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.dataFimEstagio}" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Observações: "/>
+                                                                 <h:inputTextarea style="width: 140px; height: 100px; border: none; overflow-y: scroll;" 
+                                                                                  value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.observacoes}" readonly="true"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Anexos">
+                                                            <center>
+                                                                 <p:accordionPanel multiple="false" id="accordPanelAnexos" style="width: 55%">
+                                                                      <p:tab title="Bilhete de Identidade">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdBi.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoEstagiario(rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdBi)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                      <p:tab title="Curriculum">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdCurriculum.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoEstagiario(rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdCurriculum)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                      <p:tab title="Documento Escolar">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdDocumentoEscolar.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoEstagiario(rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdDocumentoEscolar)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                 </p:accordionPanel>
+                                                            </center>
+                                                       </p:tab>
+                                                  </p:tabView>
+                                             </p:tab>
+                                        </p:tabView>
+                                   </h:panelGrid>
+                              </h:form>
+                         </p:dialog>
+
+                         <p:dialog widgetVar="dialogPrevisualizar" header="Previsualizar"
+                                   width="75%" height="510px" showEffect="fade" closable="true"
+                                   hideEffect="fade" modal="true" position="top">
+                              <h:form id="formPrevisualizar">
+                                   <div class="float-right">
+                                        <h:commandButton value="Fechar" type="button" onclick="PF('dialogPrevisualizar').hide()"/>
+                                   </div>
+                                   <center>
+                                        <p:panel id="painel" style="height: 490px">
+                                             <iframe src="#{rhFicheiroAnexadoBean.previsualizarAnexoEstagiario()}"
+                                                     width="100%" height="450px"/>
+                                        </p:panel>
+                                   </center>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+                    <center>
+                         <p:dialog header="Estado do Estagiário" closable="false" showEffect="fade" width="45%"
+                                   widgetVar="dialogEstadoEstag" modal="true" closeOnEscape="true">
+                              <h:form id="formEstadoEstag">
+                                   <center>
+                                        <p:panel id="panelFoto" style="width:310px; height:250px">
+                                             <center>
+                                                  <h:graphicImage width="240px" height="180px"
+                                                                  url="#{rhPessoaBean.pastaFoto}#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdPessoa.fkIdFoto.ficheiro}"/>
+                                                  <br/>
+                                                  <br/>
+                                                  <h:outputLabel value="Estagiário: #{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdPessoa.nome} #{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdPessoa.nomeDoMeio}
+                                                                 #{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdPessoa.sobreNome}"/>
+                                                  <br/>
+                                                  <h:outputLabel value="Nº Bilhete Identidade: #{rhEstagiarioPesquisarBean.estagiarioVisualizar.numeroBi}"/>
+                                             </center>
+                                        </p:panel>
+                                        <br/>
+
+                                        <h:panelGrid columns="2" cellpadding="5" id="gridEstadoCand">
+                                             <p:outputLabel value="Estado do Estagiário *"/>
+                                             <h:selectOneMenu id="comboEstadoCand" style="text-align: center; width: 100%" 
+                                                              value="#{rhEstagiarioPesquisarBean.estagiarioVisualizar.fkIdEstadoEstagiario.pkIdEstadoEstagiario}"
+                                                              required="true" requiredMessage="Indique o estado do estagiario">
+                                                  <f:selectItems value="#{itensAjaxBean.estadoEstagiarioList}" var="estCand" itemDisabled="#{estCand.descricao == 'Contratado'}"
+                                                                 itemLabel="#{estCand.descricao}" itemValue="#{estCand.pkIdEstadoEstagiario}"/>
+                                             </h:selectOneMenu>
+
+                                             <p:commandButton value="Guardar Alteração" action="#{rhEstagiarioPesquisarBean.alterarEstado()}" 
+                                                              process="@form" partialSubmit="true" style="width: 150px"
+                                                              onclick="PF('dialogEstadoEstag').hide()" update=":formPesquisa:dataTable"/>
+                                             <p:commandButton value="Fechar" onclick="PF('dialogEstadoEstag').hide()" style="width: 150px" process="@this" 
+                                                              actionListener="#{rhEstagiarioPesquisarBean.setEstagiarioVisualizar(null)}"/>
+                                        </h:panelGrid>
+                                   </center>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h2>Tipo de Doação</h2>
+
+        <center>
+
+            <br/>
+
+            <h:panelGrid columns="1">
+                <h:form prependId="false">
+                    <p:growl sticky="true" id="msg" autoUpdate="true"/>
+
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2">
+                            <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">
+
+                                <h:panelGrid columns="2" cellpadding="3">
+                                    <p:outputLabel value="Descrição: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="descricao" style="width: 100%" value="#{diagTipoDoacaoBean.diagTipoDoacaoPesquisar.descricaoTipoDoacao}"/>
+                                    </f:validateBean>
+
+                                    <br/>
+                                    <h:panelGrid columns="3" width="100%">
+                                        <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                         action="#{diagTipoDoacaoBean.pesquisarTipoDoacao()}" 
+                                                         partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                        <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagTipoDoacaoBean.limparPesquisa()}" 
+                                                         partialSubmit="true" process="@this" style="width: 100%"/>
+                                        <p:commandButton style="width: 100%" value="Actualizar Tipos" icon="ui-icon-refresh"  process="@this" id="adicionar" actionListener="#{diagTipoDoacaoExcelBean.carregarTipoDoacaoTabela()}" update="dataTable">
+                                            <p:tooltip id="toolTipAdicionar" for="adicionar" value="Actualizar Tipos"/>
+                                        </p:commandButton> 
+
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:dataTable id="dataTable" var="tipo" value="#{diagTipoDoacaoBean.itens}" rowKey="#{tipo.pkIdTipoDoacao}" selectionMode="single"
+                                 emptyMessage="Não Existem Tipos Cadastrados"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+                        <p:column headerText="Tipo de Doação">
+                            <center>                                        
+                                #{tipo.descricaoTipoDoacao}
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </h:form>
+            </h:panelGrid>
+        </center>
+
+    </ui:define>
+
+</ui:composition>

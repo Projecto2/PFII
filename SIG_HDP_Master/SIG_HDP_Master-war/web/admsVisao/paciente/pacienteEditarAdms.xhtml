@@ -1,0 +1,318 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>#{msgs.editar} #{msgs.paciente}</h1>
+                <p:messages id="ms" autoUpdate="true" closable="true"/>
+                <p:growl autoUpdate="true"/>
+
+                <h:form id="formEditarPessoa">
+                    <center>
+                        <br/>
+                        <h:panelGrid columns="1" width="70%">
+                            <div class="ui-fluid">
+                                <p:tabView id="tabPessoa" style="height: 500px">
+                                    <p:tab title="#{msgs.dadosPessoais}">
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                            <p:outputLabel for="nome" value="#{msgs.nome}: "/>
+                                            <p:inputText id="nome" style="width: 75%" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.nome}"
+                                                         required="true" requiredMessage="Indique o Primeiro Nome">
+                                                <f:validator validatorId="nome-validator"/>
+                                            </p:inputText>
+                                            
+                                            <p:outputLabel for="nomeMeio" value="#{msgs.nomeDoMeio}: "/>
+                                            <p:inputText id="nomeMeio" style="width: 75%" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.nomeDoMeio}">
+                                                <f:validator validatorId="nome-validator"/>
+                                            </p:inputText>
+                                            
+                                            <p:outputLabel for="sobreNome" value="#{msgs.sobreNome}: "/>
+                                            <p:inputText id="sobreNome" style="width: 75%" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.sobreNome}">
+                                                <f:validator validatorId="nome-validator"/>
+                                            </p:inputText>
+                                            
+                                            <p:outputLabel for="dataTableDociId" value="#{msgs.docIdentificacao}: "/>
+                                            <p:dataGrid id="dataTableDociId" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.getGrlDocumentoIdentificacaoList()}" 
+                                                        var="documentoIdentificacao" emptyMessage="SEM DOCUMENTOS" columns="1" style="width: 75%">
+                                                <h:panelGrid columns="2">
+                                                    <h:outputText value="#{documentoIdentificacao.fkTipoDocumentoIdentificacao.descricao}: "/>
+                                                    <h:outputText value="#{documentoIdentificacao.numeroDocumento}"/>
+                                                </h:panelGrid>
+                                            </p:dataGrid>
+                                            
+                                            <div/>
+                                            <p:commandButton style="width: 75%" id="addDocumento" immediate="true" icon="ui-icon-plus" 
+                                                onclick="PF('dialogDocumentoIdEditar').show()"/>
+
+                                            <p:outputLabel for="dataNascimento" value="#{msgs.dataNascimento}: "/>
+                                            <p:calendar id="dataNascimento" navigator="true" locale="pt"  value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.dataNascimento}"
+                                                        required="true" requiredMessage="Indique a Data de Nascimento">
+                                            </p:calendar>
+                                            <p:outputLabel for="sexo" value="#{msgs.sexo}: "/>
+                                            <p:selectOneMenu id="sexo" style="width: 73%" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdSexo.pkIdSexo}"
+                                                             required="true" requiredMessage="Indique o Sexo">
+                                                <f:selectItems value="#{itensAjaxBean.sexoList}" var="sex"
+                                                               itemLabel="#{sex.descricao}" itemValue="#{sex.pkIdSexo}"/>
+                                            </p:selectOneMenu>
+                                            
+                                            <p:outputLabel for="nacionalidade" value="#{msgs.nacionalidade}: "/>
+                                            <p:selectOneMenu id="nacionalidade" style="width: 73%" required="true"
+                                                             requiredMessage="Indique a Nacionalidade"
+                                                             value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdNacionalidade.pkIdPais}">
+                                                <f:selectItems value="#{itensAjaxBean.paisList}" var="nacion"
+                                                               itemLabel="#{nacion.nacionalidade}" itemValue="#{nacion.pkIdPais}"/>
+                                            </p:selectOneMenu>
+                                            
+                                            <p:outputLabel for="estadoCivil" value="#{msgs.estadoCivil}: "/>
+                                            <p:selectOneMenu id="estadoCivil" style="width: 73%" required="true" requiredMessage="Indique o Estado Civil"
+                                                             value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdEstadoCivil.pkIdEstadoCivil}">
+                                                <f:selectItems value="#{itensAjaxBean.estadoCivilList}" var="estado"
+                                                               itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoCivil}"/>
+                                            </p:selectOneMenu>
+                                        </p:panelGrid>
+                                        <!--<p:tooltip id="toolTipFade" for="documentos addDocumento" value="# {admsPacienteEditarBean.documentosDeIdentificacaoEditar()}" position="top"/>-->
+                                    </p:tab>
+
+                                    <p:tab title="#{msgs.filiacao}">
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                            <p:outputLabel for="nomePai" value="#{msgs.nomeCompletoPai}: "/>
+                                            <p:inputText id="nomePai" style="width: 75%" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.nomePai}"/>
+                                            
+                                            <p:outputLabel for="nomeMae" value="#{msgs.nomeCompletoMae}: "/>
+                                            <p:inputText id="nomeMae" style="width: 75%" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.nomeMae}"/>
+                                        </p:panelGrid>
+                                    </p:tab>
+
+                                    <p:tab title="#{msgs.contatos}">
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                            <p:outputLabel for="telefone1" value="#{msgs.telefone} 1:"/>
+                                            <p:inputText id="telefone1" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdContacto.telefone1}" style="width: 75%"/>
+                                            
+                                            <p:outputLabel for="telefone2" value="#{msgs.telefone} 2:"/>
+                                            <p:inputText id="telefone2" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdContacto.telefone2}" style="width: 75%"/>
+                                            
+                                            <p:outputLabel for="telefoneAlternativo" value="#{msgs.telefone} Alternativo:"/>
+                                            <p:inputText id="telefoneAlternativo" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdContacto.telefoneAlternativo}" style="width: 75%"/>
+                                            
+                                            <p:outputLabel for="email1" value="#{msgs.email} 1:"/>
+                                            <p:inputText id="email1" style="width: 75%" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdContacto.email1}">
+                                                <f:validator validatorId="email-validator"/>
+                                            </p:inputText>
+                                            
+                                            <p:outputLabel for="email2" value="#{msgs.email} 1:"/>
+                                            <p:inputText id="email2" style="width: 75%" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdContacto.email2}">
+                                                <f:validator validatorId="email-validator"/>
+                                            </p:inputText>
+                                        </p:panelGrid>
+                                    </p:tab>
+
+                                    <p:tab title="#{msgs.endereco}">
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                            <p:outputLabel for="comboPais" value="#{msgs.pais}: "/>
+                                            <p:selectOneMenu id="comboPais" style="width: 70%" value="#{itensAjaxBean.pais}" required="true" requiredMessage="Indique o País"
+                                                             valueChangeListener="#{itensAjaxBean.changePais}">
+                                                <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                               itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                                <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio comboDistrito comboComuna"/>
+                                            </p:selectOneMenu>
+                                            
+                                            <p:outputLabel for="comboProvincia" value="#{msgs.provincia}: "/>
+                                            <p:selectOneMenu id="comboProvincia" style="width: 70%" required="true" requiredMessage="Indique a Província" 
+                                                             value="#{itensAjaxBean.provincia}"
+                                                             valueChangeListener="#{itensAjaxBean.changeProvincia}">
+                                                <f:selectItems value="#{itensAjaxBean.provinciaList}" var="prov"
+                                                               itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                                                <f:ajax execute="@this" event="change" render="comboMunicipio comboDistrito comboComuna"/>
+                                            </p:selectOneMenu>
+                                            
+                                            <p:outputLabel for="comboMunicipio" value="#{msgs.municipio}: "/>
+                                            <p:selectOneMenu id="comboMunicipio" style="width: 70%" required="true" requiredMessage="Indique o Município"
+                                                             value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdEndereco.fkIdMunicipio.pkIdMunicipio}" 
+                                                             valueChangeListener="#{itensAjaxBean.changeMunicipio}">
+                                                <f:selectItems value="#{itensAjaxBean.municipioList}" var="mun"
+                                                               itemLabel="#{mun.nomeMunicipio}" itemValue="#{mun.pkIdMunicipio}"/>
+                                                <f:ajax execute="@this" event="change" render="comboDistrito comboComuna"/>
+                                            </p:selectOneMenu>
+                                            
+                                            <f:validateBean disabled="true">
+                                            <p:outputLabel for="comboDistrito" value="#{msgs.distrito}: "/>
+                                            <p:selectOneMenu id="comboDistrito" style="width: 70%"
+                                                             value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdEndereco.fkIdDistrito.pkIdDistrito}"
+                                                             disabled="#{itensAjaxBean.distritoList.size() == 0}">
+                                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                                <f:selectItems value="#{itensAjaxBean.distritoList}" var="dist"
+                                                               itemLabel="#{dist.descricao}" itemValue="#{dist.pkIdDistrito}"/>
+                                            </p:selectOneMenu>
+                                            
+                                            <p:outputLabel for="comboComuna" value="#{msgs.comuna}: "/>
+                                            <p:selectOneMenu id="comboComuna" style="width: 70%"
+                                                             value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdEndereco.fkIdComuna.pkIdComuna}"
+                                                             disabled="#{itensAjaxBean.comunaList.size() == 0}">
+                                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                                <f:selectItems value="#{itensAjaxBean.comunaList}" var="com"
+                                                               itemLabel="#{com.descricaoComuna}" itemValue="#{com.pkIdComuna}"/>
+                                            </p:selectOneMenu>
+                                            </f:validateBean>
+                                            
+                                            <p:outputLabel for="bairro" value="#{msgs.bairro}: "/>
+                                            <p:inputText id="bairro" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdEndereco.bairro}" style="width: 75%"/>
+                                            
+                                            <p:outputLabel for="rua" value="#{msgs.rua}: "/>
+                                            <p:inputText id="rua" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdEndereco.rua}" style="width: 75%"/>
+                                            
+                                            <p:outputLabel for="numeroCasa" value="#{msgs.numeroCasa}: "/>
+                                            <p:inputText id="numeroCasa" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdEndereco.numeroCasa}" style="width: 75%"/>
+                                            
+                                            <p:outputLabel for="codPostal" value="#{msgs.codigoPostal}: "/>
+                                            <p:inputText id="codPostal" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdEndereco.codigoPostal}" style="width: 75%"/>
+                                        </p:panelGrid>
+                                    </p:tab>
+                                    <p:tab title="#{msgs.outros}">
+                                        <h:panelGrid columns="2" width="100%" cellpadding="3">
+                                            <p:outputLabel for="grupoSanguineo" value="#{msgs.grupoSanguineo}: "/>
+                                            <p:selectOneMenu id="grupoSanguineo" style="width: 70%; text-align: center" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdGrupoSanguineo.pkIdGrupoSanguineo}">
+                                                <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                                <f:selectItems value="#{diagGrupoSanguineoBean.findAll()}" var="grupoSanguineo"
+                                                               itemLabel="#{grupoSanguineo.descricaoGrupoSanguineo}" itemValue="#{grupoSanguineo.pkIdGrupoSanguineo}"/>
+                                            </p:selectOneMenu>
+                                            
+                                        </h:panelGrid>
+                                    </p:tab>
+                                </p:tabView>
+
+                                <br/>
+                                <h:panelGrid columns="2" style="float: right">
+                                    <p:commandButton style="width: 220px" icon="ui-icon-disk" value="#{msgs.gravarEdicao}" action="#{admsPacienteEditarBean.edit()}"
+                                                     update=":formEditarPessoa:tabPessoa:nome :formEditarPessoa:tabPessoa:nomeMeio :formEditarPessoa:tabPessoa:sobreNome 
+                                                     :formEditarPessoa:tabPessoa:dataNascimento :formEditarPessoa:tabPessoa:sexo 
+                                                     :formEditarPessoa:tabPessoa:estadoCivil :formEditarPessoa:tabPessoa:nacionalidade :formEditarPessoa:tabPessoa:nomePai 
+                                                     :formEditarPessoa:tabPessoa:nomeMae :formEditarPessoa:tabPessoa:telefone1 :formEditarPessoa:tabPessoa:telefone2 :formEditarPessoa:tabPessoa:telefoneAlternativo
+                                                     :formEditarPessoa:tabPessoa:email1 :formEditarPessoa:tabPessoa:email2 :formEditarPessoa:tabPessoa:comboPais :formEditarPessoa:tabPessoa:comboProvincia
+                                                     :formEditarPessoa:tabPessoa:comboMunicipio :formEditarPessoa:tabPessoa:comboComuna :formEditarPessoa:tabPessoa:comboDistrito 
+                                                     :formEditarPessoa:tabPessoa:bairro :formEditarPessoa:tabPessoa:rua :formEditarPessoa:tabPessoa:numeroCasa 
+                                                     :formEditarPessoa:tabPessoa:codPostal :documentoId:tipoDocumento 
+                                                     :documentoId:numeroDocumento :documentoId:dataTable"/>
+
+                                    <p:commandButton style="width: 220px" process="@this" value="#{msgs.voltar}" icon="ui-icon-arrowreturnthick-1-w" actionListener="#{admsPacientePesquisarBean.pesquisaAtualizacao()}"  action="pacienteAdms.xhtml?faces-redirect=true"/>
+                                
+                                </h:panelGrid>
+                            </div>
+                                            
+                            <p:poll immediate="true" partialSubmit="true" process="@this :formEditarPessoa:tabPessoa:comboPais :formEditarPessoa:tabPessoa:comboProvincia :formEditarPessoa:tabPessoa:comboMunicipio :formEditarPessoa:tabPessoa:comboComuna :formEditarPessoa:tabPessoa:comboDistrito" 
+                                    listener="#{admsPacienteEditarBean.setPararAtualizacao(true)}" 
+                                    stop="#{admsPacienteEditarBean.isPararAtualizacao()}" 
+                                    update="@this :formEditarPessoa:tabPessoa:comboPais :formEditarPessoa:tabPessoa:comboProvincia :formEditarPessoa:tabPessoa:comboMunicipio :formEditarPessoa:tabPessoa:comboComuna :formEditarPessoa:tabPessoa:comboDistrito" 
+                                    interval="1"/>
+                            <p:poll immediate="true" partialSubmit="true" process="@this :formEditarPessoa:tabPessoa:comboPais :formEditarPessoa:tabPessoa:comboProvincia :formEditarPessoa:tabPessoa:comboMunicipio :formEditarPessoa:tabPessoa:comboComuna :formEditarPessoa:tabPessoa:comboDistrito" 
+                                    stop="#{admsPacienteEditarBean.isPararAtualizacao()}" 
+                                    update="@this :formEditarPessoa:tabPessoa:comboPais :formEditarPessoa:tabPessoa:comboProvincia :formEditarPessoa:tabPessoa:comboMunicipio :formEditarPessoa:tabPessoa:comboComuna :formEditarPessoa:tabPessoa:comboDistrito" 
+                                    interval="1"/>
+                        </h:panelGrid>
+                    </center>
+                </h:form>
+                
+            
+                <p:dialog widgetVar="dialogDocumentoIdEditar" header="#{msgs.docIdentificacao}"
+                          width="50%" height="400px" showEffect="fade" closable="true"
+                          hideEffect="fade" modal="true" position="center">
+                    <h:form id="documentoId">
+                        <p:fieldset>
+                            <h:panelGrid width="90%" columns="2" cellpadding="2">
+                                <p:outputLabel for="tipoDocumento" value="#{msgs.tipoDocIndetificacao}: *"/>
+                                <p:selectOneMenu id="tipoDocumento" style="width: 94%" value="#{admsPacienteEditarBean.tipoDocumento}">
+                                    <f:selectItems value="#{itensAjaxBean.tipoDocumentoIdentificacaoList}" var="tipo"
+                                                   itemLabel="#{tipo.descricao}" itemValue="#{tipo.pkTipoDocumentoIdentificacao}"/>
+                                </p:selectOneMenu>
+                                
+                                <p:outputLabel for="numeroDocumento" value="#{msgs.numeroDocIdentificacao}: *"/>
+                                <p:inputText id="numeroDocumento" style="width: 97%" value="#{admsPacienteEditarBean.numeroDocumento}">
+                                    <f:validator validatorId="numero-identificacao-validator"/>
+                                </p:inputText>
+                                
+                                <br/>
+                                <h:panelGrid width="100%" columns="2" cellpadding="2">
+                                    <p:commandButton style="width: 100%" icon="ui-icon-disk" id="edicao" 
+                                        disabled="#{!admsPacienteEditarBean.isEdicao()}" value="#{msgs.gravarEdicao}" 
+                                        actionListener="#{admsPacienteEditarBean.editarDocumento()}" partialSubmit="true" 
+                                        process="@this numeroDocumento tipoDocumento add" 
+                                        update="@this dataTable numeroDocumento tipoDocumento add :formEditarPessoa:tabPessoa:dataTableDociId"/>
+                                    <p:commandButton style="width: 100%" icon="ui-icon-plus" id="add" 
+                                                     disabled="#{admsPacienteEditarBean.isEdicao()}" value="#{msgs.adicionar}" 
+                                        actionListener="#{admsPacienteEditarBean.adicionarDocumentoDeIdentificacao()}" 
+                                        partialSubmit="true" process="@this numeroDocumento tipoDocumento" 
+                                        update="dataTable numeroDocumento :formEditarPessoa:tabPessoa:dataTableDociId"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                        <p:dataTable id="dataTable" value="#{admsPacienteEditarBean.pacienteEditar.fkIdPessoa.getGrlDocumentoIdentificacaoList()}" var="docId"
+                                     style="width: 100%" emptyMessage="Não Existem Documentos"
+                                     paginator="true" paginatorPosition="bottom" rows="4">
+                            <p:column headerText="#{msgs.tipoDocIndetificacao}">
+                                <center>                                        
+                                 #{docId.fkTipoDocumentoIdentificacao.descricao}
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.numeroDocIdentificacao}">
+                                <center>                                        
+                                 #{docId.numeroDocumento}
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.opcoes}">
+                                <center>                                        
+                                    <p:menuButton value="#{msgs.opcoes}">
+                                        <p:menuitem style="width: 70%" icon="ui-icon-trash" value="#{msgs.eliminar}" partialSubmit="true" 
+                                                     actionListener="#{admsPacienteEditarBean.removerDocumentoIdentificacao(docId)}" process="@this" update="dataTable :formEditarPessoa:tabPessoa:dataTableDociId"/>
+                                        <p:menuitem value="#{msgs.editar}" icon="ui-icon-pencil" partialSubmit="true"
+                                            process="@this :documentoId:edicao :documentoId:add" 
+                                            actionListener="#{admsPacienteEditarBean.definirPacienteEditar(docId)}" 
+                                            update=":documentoId:edicao :documentoId:add :documentoId:tipoDocumento :documentoId:numeroDocumento"/>
+                                    </p:menuButton>
+                                </center>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:dialog>
+                <br/>
+                #{msgs.mensagemObrigatoria}
+                <!--<p:commandButton style="width: 220px" value="# {msgs.gravarEdicao}" icon="ui-icon-disk" action="# {admsPacienteEditarBean.edit()}"
+                    update=":formEditarPessoa:tabPessoa:nome :formEditarPessoa:tabPessoa:nomeMeio :formEditarPessoa:tabPessoa:sobreNome 
+                    :formEditarPessoa:tabPessoa:sobreNome :formEditarPessoa:tabPessoa:sobreNome :formEditarPessoa:tabPessoa:sobreNome :formEditarPessoa:tabPessoa:sobreNome"/>-->
+
+                <!-- <p:outputLabel id="documentos" value="# {admsPacienteEditarBean.pacienteEditar.fkIdPessoa.grlDocumentoIdentificacaoList.size()}"/> actionListener="# {admsPacienteEditarBean.definirPacienteDocumentoId(admsPacienteEditarBean.pacienteEditar)}" -->
+                                            <!--<p:outputLabel value="# {msgs.docIdentificacao}: "/>
+                                            <p:panelGrid style="width: 75%" columns="3">
+                                                <p:outputLabel id="documentos" value="# {admsPacienteEditarBean.pacienteEditar.fkIdPessoa.grlDocumentoIdentificacaoList.size()}"/>
+                                                <p:commandButton style="width: 100%" id="addDocumento" immediate="true" icon="ui-icon-plus"
+                                                                 onclick="PF('dialogDocumentoIdEditar').show()"/>
+                    </p:panelGrid> -->
+                                            
+                    <!-- <p:outputLabel for="religiao" value="# {msgs.religiao}: "/>
+                    <p:selectOneMenu id="religiao" style="width: 70%; text-align: center" value="# {admsPacienteEditarBean.pacienteEditar.fkIdPessoa.fkIdReligiao.pkIdReligiao}">
+                        <f:selectItem itemValue="# {null}" itemLabel=""/>
+                        <f:selectItems value="# {itensAjaxBean.religiaoList}" var="rel"
+                                       itemLabel="# {rel.descricao}" itemValue="# {rel.pkIdReligiao}"/>
+                    </p:selectOneMenu>-->
+                                            
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

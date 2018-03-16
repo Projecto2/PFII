@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Horário Geral de Trabalho</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Horário Geral de Trabalho</h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:growl id="msg2" autoUpdate="true"/>
+                    <br/>
+                    <center>
+                         <h:panelGrid columns="1" width="85%">
+                              <h:form id="formularioPrincipal">
+                                   <p:fieldset id="fieldset" style="background: none; border: none">
+                                        <center>
+                                             <p:panel header="Tabela o Horário Geral de Trabalho">
+                                                  <p:panelGrid columns="2" style="width: 80%">
+                                                       <p:outputLabel style="font-weight: bold" value="Hora de Entrada: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.horaEntrada}" disabled="true">
+                                                            <f:convertDateTime pattern="HH:mm"/>
+                                                       </h:inputText>
+                                                       <p:outputLabel style="font-weight: bold" value="Hora de Intervalo: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.horaIntervalo}" disabled="true">
+                                                            <f:convertDateTime pattern="HH:mm"/>
+                                                       </h:inputText>
+                                                       <p:outputLabel style="font-weight: bold" value="Tempo de Intervalo(Minutos): "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.minutosIntervalo}" disabled="true"/>
+                                                       <p:outputLabel style="font-weight: bold" value="Hora de Saída: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.horaSaida}" disabled="true">
+                                                            <f:convertDateTime pattern="HH:mm"/>
+                                                       </h:inputText>
+                                                       <p:outputLabel style="font-weight: bold" value="Data da Última Alteração do Horário: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.dataDaUltimaAlteracao}" disabled="true">
+                                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                                       </h:inputText>
+                                                  </p:panelGrid>
+                                             </p:panel>
+                                             <br/>
+                                             <p:panel>
+                                                  <h:panelGrid columns="3" cellpadding="5">
+                                                       <p:commandButton style="width: 250px; height: 30px" icon="ui-icon-plus" onclick="PF('dialogHorarioGeralDeTrabalho').show();"
+                                                                        value="Definir Horário Geral de Trabalho" action="#{rhHorarioGeralDeTrabalhoBean.setHorarioGeralDeTrabalho(null)}" 
+                                                                        disabled="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.pkIdHorarioGeralDeTrabalho != null}"
+                                                                        update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                                       <p:commandButton style="width: 250px; height: 30px" icon="ui-icon-pencil" onclick="PF('dialogHorarioGeralDeTrabalho').show();"
+                                                                        value="Alterar Horário Geral de Trabalho" action="#{rhHorarioGeralDeTrabalhoBean.setHorarioGeralDeTrabalho(rhHorarioGeralDeTrabalhoBean.horarioDefinido)}"
+                                                                        disabled="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.pkIdHorarioGeralDeTrabalho == null}"
+                                                                        update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                                       <p:commandButton value="Remover Horário Geral de Trabalho" style="width: 250px; height: 30px" 
+                                                                        icon="ui-icon-trash" onclick="PF('confirmDialogRemover').show();"
+                                                                        action="#{rhHorarioGeralDeTrabalhoBean.setHorarioGeralDeTrabalhoRemover(rhHorarioGeralDeTrabalhoBean.horarioDefinido)}" 
+                                                                        disabled="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.pkIdHorarioGeralDeTrabalho == null}"/>
+                                                  </h:panelGrid>
+                                             </p:panel>
+                                        </center>
+                                   </p:fieldset>
+                                   <p:confirmDialog message="Tem certeza que pretende remover o horário geral de trabalho selecionado ?"
+                                                    header="Remover Horário Geral de Trabalho" severity="alert" widgetVar="confirmDialogRemover">
+                                        <p:commandButton value="Sim" actionListener="#{rhHorarioGeralDeTrabalhoBean.remove()}" process="@this"
+                                                         update="fieldset" oncomplete="PF('confirmDialogRemover').hide()"/>
+                                        <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                                   </p:confirmDialog>
+                              </h:form>
+                         </h:panelGrid>
+                    </center>
+                    
+                    <center>
+                         <p:dialog header="Horário Geral de Trabalho" closable="false" showEffect="fade" width="35%"
+                                   widgetVar="dialogHorarioGeralDeTrabalho" modal="true" closeOnEscape="true">
+                              <h:form id="formulario">
+                                   <p:fieldset>
+                                        <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                                             <p:outputLabel style="font-weight: bold" value="Hora de Entrada*:"/>
+                                             <p:calendar value="#{rhHorarioGeralDeTrabalhoBean.horarioGeralDeTrabalho.horaEntrada}" 
+                                                         size="20" timeOnly="true" pattern="HH:mm"
+                                                         required="true" requiredMessage="Indique a hora de entrada"/>
+                                             <p:outputLabel style="font-weight: bold" value="Hora de Intervalo: "/>
+                                             <p:calendar value="#{rhHorarioGeralDeTrabalhoBean.horarioGeralDeTrabalho.horaIntervalo}" 
+                                                         size="20" timeOnly="true" pattern="HH:mm"/>
+                                             <p:outputLabel style="font-weight: bold" value="Tempo de Intervalo(Minutos):"/>
+                                             <p:inputNumber value="#{rhHorarioGeralDeTrabalhoBean.horarioGeralDeTrabalho.minutosIntervalo}" decimalPlaces="0" maxValue="60" minValue="0"/>
+                                             <p:outputLabel style="font-weight: bold" value="Hora de Saída*:"/>
+                                             <p:calendar value="#{rhHorarioGeralDeTrabalhoBean.horarioGeralDeTrabalho.horaSaida}" 
+                                                         size="20" timeOnly="true" pattern="HH:mm"
+                                                         required="true" requiredMessage="Indique a hora de saída"/>
+                                        </h:panelGrid>
+
+                                        <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                                             <p:commandButton value="Guardar" action="#{rhHorarioGeralDeTrabalhoBean.create()}" style="width: 150px"
+                                                              rendered="#{rhHorarioGeralDeTrabalhoBean.horarioGeralDeTrabalho.pkIdHorarioGeralDeTrabalho == null}" process="@form" partialSubmit="true"
+                                                              onclick="PF('dialogHorarioGeralDeTrabalho').hide()" update=":formularioPrincipal:fieldset"/>
+                                             <p:commandButton value="Guardar Edição" action="#{rhHorarioGeralDeTrabalhoBean.edit()}" style="width: 150px"
+                                                              rendered="#{rhHorarioGeralDeTrabalhoBean.horarioGeralDeTrabalho.pkIdHorarioGeralDeTrabalho != null}"  process="@form" partialSubmit="true"
+                                                              onclick="PF('dialogHorarioGeralDeTrabalho').hide()" update=":formularioPrincipal:fieldset"/>
+                                             <p:commandButton value="Fechar" onclick="PF('dialogHorarioGeralDeTrabalho').hide()" style="width: 150px" process="@this" 
+                                                              actionListener="#{rhHorarioGeralDeTrabalhoBean.setHorarioGeralDeTrabalho(null)}"/>
+                                        </h:panelGrid>
+                                   </p:fieldset>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

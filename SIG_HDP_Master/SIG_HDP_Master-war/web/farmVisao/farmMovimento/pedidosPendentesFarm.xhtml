@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <body>
+
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Pedidos -> Pendentes</h2>
+            <h:form id="formSolicitacao">
+               <p:messages id="msg" autoUpdate="true" closable="true"/>
+               <p></p>
+               <p:fieldset>
+                  <p:fieldset>
+                     <h:panelGrid columns="2" id="gridCamposPesquisa" cellpadding="4">
+                        <f:validateBean disabled="true">
+                           <p:outputLabel value="Origem do Pedido"/>
+                           <p:selectOneMenu id="localOrigem" style="width: 100%" filter="true"
+                                            value="#{farmPedidoPesquisaBean.pedidoPendentePesquisa.fkLocalOrigemPedido.pkIdLocalArmazenamento}">
+                              <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                              <f:selectItems value="#{farmPedidoNovoBean.locaisArmazenamentoOrigemPedido}"/>
+                           </p:selectOneMenu>
+
+                           <p:outputLabel value="Destino do Pedido"/>
+                           <p:selectOneMenu id="localDestino" style="width: 100%" filter="true"
+                                            value="#{farmPedidoPesquisaBean.pedidoPendentePesquisa.fkLocalDestinoPedido.pkIdLocalArmazenamento}">
+                              <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                              <f:selectItems value="#{farmPedidoNovoBean.locaisArmazenamentoDestinoPedido}"/>
+                           </p:selectOneMenu>
+                           <p:outputLabel value="Datas entre"/>
+                           <h:panelGrid columns="5">
+                              <p:calendar id="datInicio" value="#{farmPedidoPesquisaBean.dataInicio}" /> 
+                              <p:outputLabel value="e"/> 
+                              <p:calendar id="dataFim" value="#{farmPedidoPesquisaBean.dataFim}" />
+                           </h:panelGrid>
+                           <p></p>
+                           <h:panelGrid columns="3">
+                              <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true"
+                                               action="#{farmPedidoPesquisaBean.pesquisarPedidosPendentes()}" update="resultado"
+                                               process="gridCamposPesquisa" />
+
+                           </h:panelGrid> 
+                        </f:validateBean>
+                     </h:panelGrid>
+                     <p></p>
+
+                  </p:fieldset>
+                  <p:dataTable style="width: 100%;" id="resultado" var="item" rows="6" rowsPerPageTemplate="6,12,16"
+                               value="#{farmPedidoPesquisaBean.listaPedidosPendentesPesquisados}" 
+                               emptyMessage="Sem pedidos pendentes de momento."
+                               paginator="true" paginatorPosition="bottom">
+
+                     <p:column headerText="Data" sortBy="#{item.dataHoraPedido}">
+                        <center>
+                           <h:outputText value="#{item.dataHoraPedido}">
+                              <f:convertDateTime pattern="dd-MM-yyyy - HH:mm" />
+                           </h:outputText>
+                        </center>
+                     </p:column>
+                     <p:column headerText="Origem">
+                        <center>
+                           <h:outputText value="#{item.fkLocalOrigemPedido.descricao}"/>
+                        </center>
+                     </p:column>
+                     <p:column headerText="Destino">
+                        <center>
+                           <h:outputText value="#{item.fkLocalDestinoPedido.descricao}"/>
+                        </center>                                
+                     </p:column>
+                     <p:column headerText="Responsável">
+                        <center>
+                           <h:outputText value="#{item.fkIdFuncionarioSolicitou.fkIdPessoa.nome} 
+                                         #{item.fkIdFuncionarioSolicitou.fkIdPessoa.nome}"/>
+                        </center>                                
+                     </p:column>
+
+                     <p:column headerText="------">
+                        <center>
+                           <p:menuButton value="Opções">
+                              <p:menuitem value="Ver itens" partialSubmit="true" process="@this" 
+                                          icon="ui-icon-zoomin"
+                                          action="#{farmPedidoPesquisaBean.irParaVisualizarItensPedido()}"
+                                          actionListener="#{farmVisualizarItensPedidoBean.setPedidoPesquisa(item)}">
+                              </p:menuitem>
+
+                              <p:menuitem value="Atender Pedido" partialSubmit="true" process="@this" 
+                                          icon="ui-icon-check"
+                                          actionListener="#{farmPedidoAtenderBean.setPedido(item)}"
+                                          action="#{farmRedireccionarBean.red_AtenderPedidos()}">
+                              </p:menuitem>
+
+                              <p:menuitem value="Cancelar Pedido" partialSubmit="true" process="@this" icon="ui-icon-close"
+                                          actionListener="#{farmPedidoPesquisaBean.setPedidoPendentePesquisa(item)}"
+                                          onclick="PF('dialogCancelar').show()">
+                              </p:menuitem>
+                           </p:menuButton>
+                        </center>
+
+                     </p:column>
+
+                  </p:dataTable>
+               </p:fieldset>
+            </h:form> 
+            <center>
+               <h:form id="formCancelar">
+                  <p:confirmDialog message="Deseja cancelar o pedido? "
+                                   header="Cancelar Pedido" severity="alert"
+                                   widgetVar="dialogCancelar">
+
+
+                     <center>
+                        <p:inputText id="motivo" required="true" requiredMessage="Por favor especifique o motivo."
+                                     value="#{farmPedidoPesquisaBean.pedidoPendentePesquisa.motivoCancelamento}"/>
+                        <p:watermark for="motivo" value="Motivo"/>
+
+                        <p></p><p></p>
+                        <p:commandButton value="Sim" actionListener="#{farmPedidoPesquisaBean.cancelar()}"
+                                         update=":formSolicitacao:resultado" process="motivo"
+                                         oncomplete="produtosListarFarm.xhtml?faces-redirect=true"/>
+
+                        <p:commandButton value="Não" onclick="PF('dialogCancelar').hide();" type="button" />
+
+                     </center>
+                  </p:confirmDialog>
+               </h:form>
+            </center>
+         </ui:define>
+      </ui:composition>
+
+   </body>
+</html>

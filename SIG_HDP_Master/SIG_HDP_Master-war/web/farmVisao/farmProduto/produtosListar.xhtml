@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Listagem de Produtos</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Listagem de Produtos</h2>
+            <p:messages id="msg" autoUpdate="true" closable="true"/>
+            <p:growl autoUpdate="true"/>
+            <p:fieldset>
+               <div class="ui-fluid">
+                  <center>
+                     <h:form id="formPrincipal">  
+                        <p:dialog  widgetVar="w_dlgLoading" header="A carregar dados do stock." modal="true" closable="false" resizable="false">
+                           <center>
+                              <img src="../../resources/Imagens/loading.gif" style="margin: auto" width="128" height="128" alt="loading"/>
+                           </center>
+                           <br/>
+                           <p>Pode demorar alguns minutos. Por favor aguarde....</p>
+                        </p:dialog>
+                        
+                        <p:panel style="height: 50px; border: none">
+                           <h:panelGrid class="float-right" rendered="#{farmProdutoExcelBean.naoExisteProdutos()}">
+                              <p:commandButton onstart="PF('w_dlgLoading').show()" oncomplete="PF('w_dlgLoading').hide()"
+                                               value="Efectuar Carregamento Inicial" icon="ui-icon-refresh"
+                                               action="/farmVisao/farmProduto/produtosListar.xhtml?faces-redirect=true"
+                                               actionListener="#{farmProdutoExcelBean.carregarProdutoTabela()}">
+                                 <f:ajax event="click" execute="@this" render=":formPrincipal resultado"/>
+                              </p:commandButton>
+                           </h:panelGrid>
+                        </p:panel>
+
+                        <p:panelGrid columns="1" id="gridCamposPesquisa" style="width: 100%; text-align: left" layout="grid">
+                           <p:panelGrid columns="4"  style="width: 100%; text-align: left" layout="grid">
+                              <p:outputLabel value="Descrição"/>
+                              <f:validateBean disabled="true">
+                                 <p:inputText value="#{farmProdutoListarBean.produtoPesquisa.descricao}" 
+                                              style="width: 94%"/>
+                              </f:validateBean>
+
+                              <p:outputLabel value="Nome Genérico"/>
+                              <f:validateBean disabled="true">
+                                 <p:inputText value="#{farmProdutoListarBean.produtoPesquisa.nomeGenerico}" 
+                                              style="width: 94%"/>
+                              </f:validateBean>
+
+                              <p:outputLabel value="Tipo de Produto"/>
+                              <f:validateBean disabled="true">
+                                 <p:selectOneMenu id="tipoProduto" style="width: 90%" 
+                                                  value="#{farmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto}">
+                                    <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmListasUteisBean.todosTiposDeProduto}"/>
+                                    <f:ajax execute="@this" event="change" render="gridCamposPesquisa"/>
+                                 </p:selectOneMenu>
+                              </f:validateBean>
+
+                              <p:outputLabel value="Forma Farmacêutica"/>
+                              <f:validateBean disabled="true">
+                                 <p:selectOneMenu id="formaFarmaceutica" style="width: 90%" filter="true"
+                                                  value="#{farmProdutoListarBean.produtoPesquisa.fkIdFormaFarmaceutica.pkIdFormaFarmaceutica}">
+                                    <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmListasUteisBean.todasFormasFarmaceuticas}"/>
+                                 </p:selectOneMenu>
+                              </f:validateBean>
+
+                              <p:outputLabel value="Via de Administração"/>         
+                              <f:validateBean disabled="true">
+                                 <p:selectOneMenu id="viaAdmin" style="width: 90%" filter="true"
+                                                  value="#{farmProdutoListarBean.produtoPesquisa.fkIdViaAdministracao.pkIdViaAdministracao}">
+                                    <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmListasUteisBean.todasViasAdmin}"/>
+                                 </p:selectOneMenu>
+                              </f:validateBean>
+                           </p:panelGrid>
+
+                           <p:separator/>
+                           <h:panelGrid columns="2" style="width: 100%; text-align: left" id="gridCategoria">
+                              <p:outputLabel value="Classe"/>         
+                              <f:validateBean disabled="true">
+                                 <p:selectOneMenu id="cat1" style="width: 90%" filter="true"
+                                                  disabled="#{(farmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                  value="#{farmProdutoListarBean.categoriaNivel1.pkIdCategoriaMedicamento}"
+                                                  valueChangeListener="#{farmProdutoListarBean.changeCategoriaNivel1}">
+                                    <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmProdutoListarBean.listaNivel1}" var="cat1"
+                                                   itemLabel="#{cat1.capitulo} - #{cat1.descricao}" itemValue="#{cat1.pkIdCategoriaMedicamento}"/>
+                                    <f:ajax execute="@this" event="change" render="gridCategoria"/>
+                                 </p:selectOneMenu>
+                              </f:validateBean>
+
+                              <p:outputLabel value="Subclasse"/>    
+                              <f:validateBean disabled="true">
+                                 <p:selectOneMenu id="cat2" style="width: 90%" filter="true"
+                                                  disabled="#{!(farmProdutoListarBean.listaNivel2.size() > 0) || (farmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                  value="#{farmProdutoListarBean.categoriaNivel2.pkIdCategoriaMedicamento}"
+                                                  valueChangeListener="#{farmProdutoListarBean.changeCategoriaNivel2}">
+                                    <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmProdutoListarBean.listaNivel2}" var="cat2"
+                                                   itemLabel="#{cat2.capitulo} - #{cat2.descricao}" itemValue="#{cat2.pkIdCategoriaMedicamento}"/>
+                                    <f:ajax execute="@this" event="change" render="cat3 cat4"/>
+                                 </p:selectOneMenu>
+                              </f:validateBean>
+
+                              <p:outputLabel value="Categoria"/>  
+                              <f:validateBean disabled="true">
+                                 <p:selectOneMenu id="cat3" style="width: 90%" filter="true"
+                                                  disabled="#{!(farmProdutoListarBean.listaNivel3.size() > 0) || (farmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                  value="#{farmProdutoListarBean.categoriaNivel3.pkIdCategoriaMedicamento}"
+                                                  valueChangeListener="#{farmProdutoListarBean.changeCategoriaNivel3}">
+                                    <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmProdutoListarBean.listaNivel3}" var="cat3"
+                                                   itemLabel="#{cat3.capitulo} - #{cat3.descricao}" itemValue="#{cat3.pkIdCategoriaMedicamento}"/>
+                                    <f:ajax execute="@this" event="change" render="cat4"/>
+                                 </p:selectOneMenu>
+                              </f:validateBean>
+
+                              <p:outputLabel value="SubCategoria"/>  
+                              <f:validateBean disabled="true">
+                                 <p:selectOneMenu id="cat4" style="width: 90%" filter="true"
+                                                  disabled="#{!(farmProdutoListarBean.listaNivel4.size() > 0) || (farmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                  value="#{farmProdutoListarBean.categoriaNivel4.pkIdCategoriaMedicamento}">
+                                    <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmProdutoListarBean.listaNivel4}" var="cat4"
+                                                   itemLabel="#{cat4.capitulo} - #{cat4.descricao}" itemValue="#{cat4.pkIdCategoriaMedicamento}"/>
+
+                                 </p:selectOneMenu>
+                              </f:validateBean>
+                           </h:panelGrid>
+
+
+                           <h:panelGrid columns="3">
+                              <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true"
+                                               action="#{farmProdutoListarBean.pesquisarProdutos()}" update="resultado"
+                                               process="gridCamposPesquisa" />
+
+                              <p:commandButton value="Novo" icon="ui-icon-plus"
+                                               process="@this" action="produtoNovoFarm.xhtml?faces-redirect=true"/>
+
+                           </h:panelGrid>                                                    
+                        </p:panelGrid>
+                        <p></p>
+                        <p:dataTable id="resultado" var="item" value="#{farmProdutoListarBean.produtosPesquisados}"
+                                     rows="12" paginator="true" paginatorPosition="bottom"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+                                     {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                                     {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16"
+                                     emptyMessage="Nenhum Produto encontrado de momento. Tente pesquisar.">
+
+                           <p:column headerText="Descrição" filterBy="#{item.descricao}">
+                              <p:outputLabel value="#{item.descricao} 
+                                             #{item.dosagem} 
+                                             #{item.fkIdUnidadeMedida.abreviatura}" />
+                           </p:column>                     
+
+                           <p:column headerText="Forma">
+                              <center>
+                                 <p:outputLabel value="#{item.fkIdFormaFarmaceutica.descricao}" />
+                              </center>
+                           </p:column>                      
+
+                           <p:column headerText="Via de Administrção">
+                              <center>
+                                 <p:outputLabel value="#{item.fkIdViaAdministracao.descricao}" />
+                              </center>
+                           </p:column>                 
+
+                           <p:column headerText="Tipo de Produto">
+                              <center>
+                                 <p:outputLabel value="#{item.fkIdTipoProduto.descricao}" />
+                              </center>
+                           </p:column>       
+
+                           <p:column headerText="Categoria de Medicamento">
+                              <center>
+                                 <p:outputLabel value="#{item.fkIdCategoriaMedicamento.capitulo} - #{item.fkIdCategoriaMedicamento.descricao}"
+                                                rendered="#{item.fkIdCategoriaMedicamento.pkIdCategoriaMedicamento != null}"/>
+                                 <p:outputLabel value="N/A" rendered="#{item.fkIdCategoriaMedicamento.pkIdCategoriaMedicamento == null}" />
+                              </center>
+                           </p:column>       
+
+                           <p:column headerText="------">
+                              <center>
+                                 <p:menuButton value="Opções">
+                                    <p:menuitem value="Editar" partialSubmit="true" process="@this" icon="ui-icon-pencil"
+                                                actionListener="#{farmProdutoNovoBean.setProdutoEditar(item)}"
+                                                onclick="PF('dialogEditarProduto').show()" update=":formEditarProduto:tabEditarProduto">
+                                    </p:menuitem>
+
+                                    <p:menuitem value="Eliminar" partialSubmit="true" process="@this" icon="ui-icon-trash"
+                                                action="#{farmProdutoNovoBean.setProduto(item)}"
+                                                actionListener="#{farmProdutoListarBean.setProdutoPesquisa(item)}"
+                                                onclick="PF('dialogEliminar').show()" update="resultado">
+                                    </p:menuitem>
+
+                                    <p:menuitem value="Ver Detalhes" partialSubmit="true" process="@this" icon="ui-icon-info"
+                                                actionListener="#{farmProdutoListarBean.setProdutoPesquisa(item)}"
+                                                onclick="PF('dialogVisualizarProduto').show()" update=":formVisualizarProduto:tabVisualizarProduto">
+                                    </p:menuitem>
+                                    <p:separator/>
+                                    <p:menuitem value="Lotes do Produto" partialSubmit="true" process="@this" 
+                                                icon="ui-icon-zoomin"
+                                                action="#{farmProdutoListarBean.irParaGestaoLotes()}"
+                                                actionListener="#{farmProdutoGerirLotesBean.setProduto(item)}">
+                                    </p:menuitem>
+                                 </p:menuButton>
+                              </center>
+                           </p:column>                         
+                        </p:dataTable>
+                     </h:form>
+                     <ui:include src="../farmTabelasAuxiliares/dialogsProdutoFarm.xhtml"/>  
+                  </center>
+               </div>               
+
+               <center>
+                  <h:form id="formEliminar">
+                     <p:confirmDialog message="Deseja eliminar o produto? Pode estar a ser utilizado... "
+                                      header="Eliminar Produto" severity="alert"
+                                      widgetVar="dialogEliminar">
+
+                        <p:commandButton value="Sim" actionListener="#{farmProdutoListarBean.eliminar()}"
+                                         update=":formPrincipal:resultado" 
+                                         oncomplete="PF('dialogEliminar').hide();"/>
+
+                        <p:commandButton value="Não" onclick="PF('dialogEliminar').hide();" type="button" />
+                     </p:confirmDialog>
+                  </h:form>
+               </center>
+
+            </p:fieldset>
+         </ui:define>
+      </ui:composition>
+   </h:body>
+</html>

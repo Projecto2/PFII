@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+
+        <p:dataTable  id="tabelaHistoricoPacientePrescricaoReconsulta" sortMode="multiple" var="itemPMHPR" rows="5" paginator="true" paginatorPosition="bottom"
+                      value="#{ambPrescricaoMedicaListarBean.pesquisaDeReceitaReconsulta(ambPrescricaoMedicaCriarBean.admsPacienteReconsulta.numeroPaciente)}" reflow="true" emptyMessage="Nenhum registo encontrado." 
+                      selectionMode="single" rowKey="#{itemPMHPR.pkIdPrescricaoMedicaProduto}">
+
+            <p:column headerText="Nº de Processo" sortBy="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" 
+                      filterBy="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains">
+                <h:outputText value="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+            </p:column> 
+
+            <p:column headerText="Nº de Subprocesso" sortBy="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}" 
+                      filterBy="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}" filterMatchMode="contains">
+                <h:outputText value="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+            </p:column> 
+
+            <p:column headerText="Paciente" sortBy="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                    #{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                    #{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                   " 
+                      filterBy="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                #{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                #{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                               " filterMatchMode="contains">
+                <h:outputText value="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                     #{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                     #{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                    "/>
+            </p:column>
+
+            <p:column headerText="Médico">
+                <h:outputText value="#{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdFuncionario.fkIdPessoa.nome}
+                                     #{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                     #{itemPMHPR.fkIdPrescricaoMedica.fkIdConsulta.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                    "/>
+            </p:column>
+
+            <p:column headerText="Medicamentos">
+                <h:outputText value="#{itemPMHPR.fkIdFarmProduto.descricao} #{itemPMHPR.fkIdFarmProduto.dosagem}
+                                     #{itemPMHPR.fkIdFarmProduto.fkIdUnidadeMedida.abreviatura} #{itemPMHPR.fkIdFarmProduto.fkIdFormaFarmaceutica.descricao}
+                                     #{itemPMHPR.fkIdFarmProduto.fkIdViaAdministracao.descricao}
+                                    "/>
+            </p:column>
+
+            <p:column headerText="Horário">
+                <h:outputText value="#{itemPMHPR.fkIdHoraMedicacao.descricao}"/>
+            </p:column>
+
+            <p:column headerText="Quantidade">
+                <h:outputText value="#{itemPMHPR.quantidade}"/>
+            </p:column>
+
+            <p:column headerText="Data">
+                <h:outputText value="#{itemPMHPR.fkIdPrescricaoMedica.dataHoraPrescricao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="------">
+                <center>
+                    <p:menuButton value="Opções">
+
+                        <p:separator/>
+                        <p:menuitem value="Mais Detalhes" icon="ui-icon-info" process="@this" partialSubmit="true"                                                            
+                                    actionListener="#{ambPrescricaoMedicaListarBean.seleccionarDetalhesAmbPrescricaoMedica(itemPMHPR.fkIdPrescricaoMedica)}"
+                                    ajax="true" update=":formListarReceita" 
+                                    onclick="PF('dialogListarReceita').show()" 
+                                    />
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Eliminar" icon="ui-icon-trash"
+                                    action="#{ambPrescricaoMedicaEliminarBean.setAmbPrescricaoMedicaEliminar(itemPMHPR.fkIdPrescricaoMedica)}" 
+                                    onclick="PF('confirmDialogPrescricaoReconsulta').show()"/>
+                        <p:separator/>
+
+                    </p:menuButton>
+                </center>
+            </p:column>
+
+        </p:dataTable>
+
+        <center>
+            <p:confirmDialog message="Tem certeza que pretende eliminar o item seleccionado?"
+                             header="Eliminar dados do Paciente" severity="alert" widgetVar="confirmDialogPrescricaoReconsulta">
+                <p:commandButton value="Sim" actionListener="#{ambPrescricaoMedicaEliminarBean.eliminarReceita(ambPrescricaoMedicaEliminarBean.getAmbPrescricaoMedicaEliminar())}" 
+                                 process="@this" update="tabelaHistoricoPacientePrescricaoReconsulta" oncomplete="PF('confirmDialogPrescricaoReconsulta').hide()"/>
+                <p:commandButton value="Não" onclick="PF('confirmDialogPrescricaoReconsulta').hide();" type="button" />
+            </p:confirmDialog>
+        </center>
+
+    </h:body>
+</html>
+

@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagExameImagiologiaBean.temMensagemPendente == true}">
+            <c:if test="${diagExameImagiologiaBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagExameImagiologiaBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagExameImagiologiaBean.tipoMensagemPendente == 'Erro'}">
+                #{diagExameImagiologiaBean.getMensagem()}
+            </c:if>
+        </c:if>
+
+        <h2>Imagiologia -> Gestão de Exames</h2>
+
+        <center>
+
+            <h:panelGrid columns="1">
+                <h:form prependId="false">
+                    <p:growl sticky="true" id="msg" autoUpdate="true"/>
+
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" width="100%">
+                            <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">                               
+                                <h:panelGrid columns="2" cellpadding="3">
+                                    <f:validateBean disabled="true">
+                                        <p:outputLabel value="Descrição: "/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="descricao" style="width: 100%" value="#{diagExameImagiologiaBean.diagExamePesquisar.descricaoExame}"/>
+                                        </f:validateBean>
+
+                                        <p:outputLabel value="Categoria: "/>
+                                        <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagExameImagiologiaBean.diagExamePesquisar.fkIdCategoriaExame.pkIdCategoria}">
+                                            <p:ajax event="change" process="@this" update="comboSubcategorias"
+                                                    listener="#{diagExameImagiologiaBean.carregarListaSubcategoriasPorCategoriaPesquisar()}" />
+                                            <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                            <f:selectItems value="#{diagExameImagiologiaBean.findAllCategoriaExamesImagiologia()}" var="categoria"
+                                                           itemLabel="#{categoria.descricaoCategoria}" itemValue="#{categoria.pkIdCategoria}"/>
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel value="Subcategoria: "/>
+                                        <p:selectOneMenu id="comboSubcategorias" style="width: 95%; text-align: center" value="#{diagExameImagiologiaBean.diagExamePesquisar.fkIdSubcategoriaExame.pkIdSubcategoriaExame}">
+                                            <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                            <f:selectItems value="#{diagExameImagiologiaBean.listaSubcategoriasPorCategoriaPesquisar}" var="subcategoria"
+                                                           itemLabel="#{subcategoria.descricaoSubcategoria}" itemValue="#{subcategoria.pkIdSubcategoriaExame}"/>
+                                        </p:selectOneMenu>
+
+                                    </f:validateBean>
+
+                                    <br/>
+                                    <h:panelGrid columns="3" width="100%">
+                                        <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                         action="#{diagExameImagiologiaBean.pesquisarExames()}" 
+                                                         partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                        <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagExameImagiologiaBean.limparPesquisa()}" 
+                                                         partialSubmit="true" process="@this" style="width: 100%"/>
+                                        <p:commandButton style="width: 100%" value="Actualizar Exames" icon="ui-icon-refresh"  process="@this" id="adicionar" actionListener="#{diagExameExcelBean.carregarExameTabela()}" update="dataTable">
+                                            <p:tooltip id="toolTipAdicionar" for="adicionar" value="Actualizar Exames"/>
+                                        </p:commandButton> 
+
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:dataTable id="dataTable" var="exame" value="#{diagExameImagiologiaBean.itens}"
+                                 rowKey="#{exame.pkIdExame}" selectionMode="single"
+                                 emptyMessage="Nenhum registo de exame encontrado"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+
+                        <p:column headerText="Descrição do Exame" filterBy="#{exame.descricaoExame}">
+                            <center>                                        
+                                #{exame.descricaoExame}
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Categoria do Exame" filterBy="#{exame.fkIdCategoriaExame.descricaoCategoria}">
+                            <center>                                        
+                                #{exame.fkIdCategoriaExame.descricaoCategoria}
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Subcategoria do Exame" filterBy="#{exame.fkIdSubcategoriaExame.descricaoSubcategoria}">
+                            <center>                                        
+                                #{exame.fkIdSubcategoriaExame.descricaoSubcategoria}
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:form>
+            </h:panelGrid>
+        </center>
+
+        <p:dialog header="Registar Exame" closable="false" showEffect="fade"
+                  widgetVar="dialogRegistarExame" modal="true" closeOnEscape="true">
+            <h:form id="formRegistarExame">
+
+                <p:fieldset>
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h3>Descrição do Exame * : </h3>
+                        <p:inputText id="novoExameDesc" value="#{diagExameImagiologiaBean.diagExame.descricaoExame}" maxlength="45" style="width: 100%"
+                                     required="true" requiredMessage="Indique a descrição do exame"/>
+
+                        <h3>Categoria do Exame * : </h3>
+                        <p:selectOneMenu style="width: 90%; text-align: center" value="#{diagExameImagiologiaBean.diagCategoriaExame.pkIdCategoria}" required="true"
+                                         requiredMessage="Indique a categoria do exame">
+                            <p:ajax event="change" process="@this" update="comboSubcategoriasCadastrar"
+                                    listener="#{diagExameImagiologiaBean.carregarListaSubcategoriasPorCategoriaRegistar()}" />
+                            <f:selectItems value="#{diagExameImagiologiaBean.findAllCategoriaExamesImagiologia()}" var="categoria" itemLabel="#{categoria.descricaoCategoria}" 
+                                           itemValue="#{categoria.pkIdCategoria}"/>
+                        </p:selectOneMenu>
+
+                        <h3>Subcategoria do Exame : </h3>
+                        <p:selectOneMenu id="comboSubcategoriasCadastrar" style="width: 90%; text-align: center" value="#{diagExameImagiologiaBean.diagSubcategoriaExame.pkIdSubcategoriaExame}">
+                            <f:selectItem itemLabel=""/>
+                            <f:selectItems value="#{diagExameImagiologiaBean.listaSubcategoriasPorCategoriaRegistar}" var="subcategoria" itemLabel="#{subcategoria.descricaoSubcategoria}" 
+                                           itemValue="#{subcategoria.pkIdSubcategoriaExame}"/>
+                        </p:selectOneMenu>
+
+                        <h:panelGrid columns="2">
+                            <h:outputText value=""/>
+                        </h:panelGrid>
+
+                    </h:panelGrid>
+                    <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                    <p:separator/>
+
+                    <h:panelGroup style=" float: right">
+                        <p:commandButton icon="ui-icon-disk" value="Registar" update="dataTable" action="#{diagExameImagiologiaBean.create()}"/> 
+                        <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagExameImagiologiaBean.limpar()}"/>
+                    </h:panelGroup>
+
+                </p:fieldset>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Editar Exame" closable="false" showEffect="fade"
+                  widgetVar="dialogEditar" modal="true" closeOnEscape="true">
+            <h:form id="formEditar">
+                <p:fieldset>
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <h3>Descrição do Exame * : </h3>
+                        <p:inputText id="editarExameDesc" style="width: 100%" value="#{diagExameImagiologiaBean.diagExameEditar.descricaoExame}" 
+                                     required="true" requiredMessage="Indique a descrição do exame"/>
+
+                        <h3>Categoria do Exame * : </h3>
+                        <p:selectOneMenu id="editarIdCategoria" style="width: 90%" value="#{diagExameImagiologiaBean.diagCategoriaExameEditar.pkIdCategoria}" required="true"
+                                         requiredMessage="Indique o categoria do exame">
+                            <p:ajax event="change" process="@this" update="comboSubcategoriasEditar"
+                                    listener="#{diagExameImagiologiaBean.carregarListaSubcategoriasPorCategoriaEditar()}" />
+                            <f:selectItems value="#{diagExameImagiologiaBean.findAllCategoriaExamesImagiologia()}" var="categoria" itemLabel="#{categoria.descricaoCategoria}" 
+                                           itemValue="#{categoria.pkIdCategoria}"/>
+                        </p:selectOneMenu>
+
+                        <h3>Subcategoria do Exame : </h3>
+                        <p:selectOneMenu id="comboSubcategoriasEditar" style="width: 90%" value="#{diagExameImagiologiaBean.diagSubcategoriaExameEditar.pkIdSubcategoriaExame}">
+                            <f:selectItem itemLabel="" itemValue="#{null}"/>
+                            <f:selectItems value="#{diagExameImagiologiaBean.listaSubcategoriasPorCategoriaEditar}" var="subcategoria" itemLabel="#{subcategoria.descricaoSubcategoria}" 
+                                           itemValue="#{subcategoria.pkIdSubcategoriaExame}"/>
+                        </p:selectOneMenu>
+
+                    </h:panelGrid>
+
+                    <br/>
+
+                    <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                    <p:separator/>
+
+                    <h:panelGroup style=" float: right">
+                        <p:commandButton value="Guardar Edição" action="#{diagExameImagiologiaBean.edit()}" icon="ui-icon-disk"
+                                         onclick="dialogEditar.hide()" update="dataTable"/>
+                        <p:commandButton value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" onclick="dialogEditar.hide()" partialSubmit="true" process="@this"
+                                         action="#{diagExameImagiologiaBean.limpar()}"/>
+                    </h:panelGroup>
+
+                </p:fieldset>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

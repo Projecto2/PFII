@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>#{msgs.admissoes} -> #{msgs.pacientes}</h1>
+                <!--<p:messages id="ms" autoUpdate="true" closable="true"/>-->
+                <p:growl autoUpdate="true"/>
+                <h:form id="procuraPaciente">
+                    <p:growl autoUpdate="true"/>
+                    #{detetorAtualizacaoPagina.checkAtualizacao("")}
+                    <br/>
+                    <p:fieldset>
+                        <div class="ui-fluid"> 
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <f:validateBean disabled="true">
+                                        <p:outputLabel value="#{msgs.processo}: "/>
+                                        <p:inputText id="numeroPaciente" value="#{admsPacientePesquisarBean.pacientePesquisa.numeroPaciente}"/>
+
+                                        <p:outputLabel value="#{msgs.primeiroNome}: *"/>
+                                        <p:inputText id="nomePaciente" value="#{admsPacientePesquisarBean.pacientePesquisa.fkIdPessoa.nome}"
+                                                     validator="tres-caracteres-validator"/>
+
+                                        <p:outputLabel value="#{msgs.nomeDoMeio}: "/>
+                                        <p:inputText id="nomeMeioPaciente" value="#{admsPacientePesquisarBean.pacientePesquisa.fkIdPessoa.nomeDoMeio}"/>
+
+                                        <p:outputLabel value="#{msgs.sobreNome}: "/>
+                                        <p:inputText id="sobreNomePaciente" value="#{admsPacientePesquisarBean.pacientePesquisa.fkIdPessoa.sobreNome}"/>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="#{msgs.tipoDocIndetificacao}: "/>
+                                    <p:selectOneMenu id="comboTipoDoc" value="#{admsPacientePesquisarBean.pacientePesquisa.fkIdPessoa.grlDocumentoIdentificacaoList.get(0).fkTipoDocumentoIdentificacao.pkTipoDocumentoIdentificacao}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{grlTipoDocumentoIdentificacaoBean.tipoDocumentoIdentificacao}" var="tipoDocumento" 
+                                                       itemLabel="#{tipoDocumento.descricao}" itemValue="#{tipoDocumento.pkTipoDocumentoIdentificacao}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="#{msgs.numeroDocIdentificacao}: "/>
+                                    <p:inputText id="numeroIdentificacao" value="#{admsPacientePesquisarBean.pacientePesquisa.fkIdPessoa.grlDocumentoIdentificacaoList.get(0).numeroDocumento}"/>
+
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <p:outputLabel value="#{msgs.telefone}: "/>
+                                    <p:inputText id="telefone" value="#{admsPacientePesquisarBean.pacientePesquisa.fkIdPessoa.fkIdContacto.telefone1}"/>
+
+                                    <p:outputLabel value="#{msgs.nacionalidade}: "/>
+                                    <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="comboNacio" value="#{admsPacientePesquisarBean.pacientePesquisa.fkIdPessoa.fkIdNacionalidade.pkIdPais}" filter="true" filterMatchMode="contains">
+                                        <f:selectItem itemValue="#{null}" itemLabel="" />
+                                        <f:selectItems value="#{admsPacientePesquisarBean.paises}" var="paisNacionalidade"
+                                                       itemLabel="#{paisNacionalidade.nacionalidade}" itemValue="#{paisNacionalidade.pkIdPais}" />
+                                    </p:selectOneMenu>
+                                    </f:validateBean>
+
+                                    <p:outputLabel for="intervaloDeDatas" value="#{msgs.nascimento}: "/>
+                                    <p:panelGrid id="intervaloDeDatas" columns="2">
+                                        <p:calendar id="dataInicial" locale="pt"
+                                                    navigator="true" maxdate="#{admsDefinicoesParaClassesComAgendamentoBean.getMomentoActual()}" 
+                                                    value="#{admsPacientePesquisarBean.dataNascimentoInicial}"/>
+
+                                        <p:calendar id="dataFinal" locale="pt" 
+                                                    navigator="true" maxdate="#{admsDefinicoesParaClassesComAgendamentoBean.getMomentoActual()}" 
+                                                    value="#{admsPacientePesquisarBean.dataNascimentoFinal}"/>
+                                    </p:panelGrid>
+
+                                    <p:outputLabel value="#{msgs.sexo}: "/>
+                                    <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="comboSexo" value="#{admsPacientePesquisarBean.pacientePesquisa.fkIdPessoa.fkIdSexo.pkIdSexo}">
+                                        <f:selectItem  itemValue="#{null}" itemLabel="" />
+                                        <f:selectItems value="#{grlSexoBean.findAll()}" var="sexo" itemLabel="#{sexo.descricao}" itemValue="#{sexo.pkIdSexo}"/>
+                                    </p:selectOneMenu>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="#{msgs.grupoSanguineo}: "/>
+                                    <p:selectOneMenu id="comboGrupoSanguineo" filter="true" filterMatchMode="contains" value="#{admsPacientePesquisarBean.pacientePesquisa.fkIdPessoa.fkIdGrupoSanguineo.pkIdGrupoSanguineo}">
+                                        <f:selectItem  itemValue="#{null}" itemLabel="" />
+                                        <f:selectItems value="#{diagGrupoSanguineoBean.findAll()}" var="grupo" itemLabel="#{grupo.descricaoGrupoSanguineo}" itemValue="#{grupo.pkIdGrupoSanguineo}"/>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+
+                            </p:panelGrid>
+
+                            <p:panelGrid columns="4" layout="grid" styleClass="ui-noborder">
+                                <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{admsPacientePesquisarBean.pesquisarPacientes()}" 
+                                                 icon="ui-icon-search" ajax="true" 
+                                                 partialSubmit="true" 
+                                                 process="@this numeroPaciente nomePaciente nomeMeioPaciente sobreNomePaciente comboTipoDoc numeroIdentificacao telefone dataInicial dataFinal comboNacio comboSexo comboGrupoSanguineo"
+                                                 update="numeroPaciente nomePaciente nomeMeioPaciente sobreNomePaciente comboTipoDoc numeroIdentificacao telefone dataInicial dataFinal comboNacio comboSexo comboGrupoSanguineo dataTablePacientes"/>
+                                <p:splitButton value="#{msgs.novo} #{msgs.paciente}" style="width: 98%" partialSubmit="true" process="@this" 
+                                               action="/admsVisao/paciente/pacienteNovoAdms.xhtml?faces-redirect=true" 
+                                               icon="ui-icon-plus">
+                                    <p:menuitem value="#{msgs.novo} #{msgs.paciente} (Pessoa Existente)" icon="ui-icon-plus" partialSubmit="true" process="@this" action="/admsVisao/pessoa/pessoaPesquisarGrl.xhtml?faces-redirect=true"/>
+                                </p:splitButton>
+                            </p:panelGrid>
+                        </div>
+                    </p:fieldset>
+                    
+                    <p:watermark for="dataInicial" value="#{msgs.aPartirDe}"/>
+                    <p:watermark for="dataFinal" value="#{msgs.ate}"/>
+                    <p:tooltip for="dataInicial" position="top" value="#{msgs.aPartirDe}"/>
+                    <p:tooltip for="dataFinal" position="top" value="#{msgs.ate}"/>
+
+                    <p:separator/>
+                    <center>
+                        <p:panel style="border: none; height: 50px">
+                            <h:panelGrid class="float-right" columns="2">
+                                <p:commandButton value="#{msgs.imprimir} #{msgs.resultados}" rendered="false" ajax="false" onclick="this.form.target='_blank'" actionListener="#{admsPacientePesquisarBean.exportPDF}"/>
+                                <p:commandButton value="#{msgs.limpar} #{msgs.resultados}"
+                                                 partialSubmit="true" process="@this" update="dataTablePacientes" 
+                                                 actionListener="#{admsPacientePesquisarBean.limparResultadosLista()}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                         <h:panelGrid width="100%">
+                            <p:dataTable id="dataTablePacientes" reflow="true" var="pacienteEncontrado" value="#{admsPacientePesquisarBean.getPacientes()}"
+                                         style="width: 100%" emptyMessage="Não Existem Pacientes" selection="#{admsPacientePesquisarBean.pacientesSelecionados}"
+                                         rowKey="#{pacienteEncontrado.pkIdPaciente}"
+                                         paginator="true" paginatorPosition="bottom" rows="10" selectionMode="single">
+                               <p:column filterBy="#{pacienteEncontrado.numeroPaciente}" headerText="#{msgs.processo}" sortBy="#{pacienteEncontrado.numeroPaciente}">
+                                    <center>                                   
+                                        <center>        
+                                            <p:commandLink style="color: #0088cc" value="#{pacienteEncontrado.numeroPaciente}" 
+                                                ajax="true" partialSubmit="true" process="@this" 
+                                                actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(pacienteEncontrado)}" 
+                                                update=":formPacienteVisualizar" 
+                                                onclick="PF('dialogMaisDetalhes').show();"/>
+                                        </center>
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pacienteEncontrado.fkIdPessoa.nome}" headerText="#{msgs.nome}">
+                                        <center>        
+                                            <p:commandLink style="color: #0088cc" value="#{pacienteEncontrado.fkIdPessoa.nome} #{pacienteEncontrado.fkIdPessoa.nomeDoMeio} #{pacienteEncontrado.fkIdPessoa.sobreNome}" 
+                                                ajax="true" partialSubmit="true" process="@this" 
+                                                actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(pacienteEncontrado)}" 
+                                                update=":formPacienteVisualizar" 
+                                                onclick="PF('dialogMaisDetalhes').show();"/>
+                                        </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.docIdentificacao}">
+                                    <center>                                        
+                                        #{admsPacientePesquisarBean.getDocumentoIdentificacao(pacienteEncontrado)}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.dataNascimento}">
+                                    <center>        
+                                        <h:outputText value="#{pacienteEncontrado.fkIdPessoa.dataNascimento}">
+                                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                        </h:outputText>
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pacienteEncontrado.fkIdPessoa.fkIdSexo.descricao}" headerText="#{msgs.sexo}">
+                                    <center>        
+                                        <h:outputText value="#{pacienteEncontrado.fkIdPessoa.fkIdSexo.descricao}"/>
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pacienteEncontrado.fkIdPessoa.fkIdNacionalidade.nomePais}" headerText="#{msgs.nacionalidade}">
+                                    <center>        
+                                        <h:outputText value="#{pacienteEncontrado.fkIdPessoa.fkIdNacionalidade.nomePais}"/>
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pacienteEncontrado.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo}" headerText="#{msgs.grupoSanguineo}">
+                                    <center>        
+                                        <h:outputText value="#{pacienteEncontrado.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo}"/>
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pacienteEncontrado.fkIdPessoa.fkIdContacto.telefone1} #{pacienteEncontrado.fkIdPessoa.fkIdContacto.telefone2} #{pacienteEncontrado.fkIdPessoa.fkIdContacto.telefoneAlternativo}" filterMatchMode="contains" headerText="#{msgs.telefone}">
+                                    <center>        
+                                        <h:outputText style="margin-right: 7px" value="#{pacienteEncontrado.fkIdPessoa.fkIdContacto.telefone1}"/><br/>
+                                        <h:outputText value="#{pacienteEncontrado.fkIdPessoa.fkIdContacto.telefone2}"/><br/>
+                                        <h:outputText value="#{pacienteEncontrado.fkIdPessoa.fkIdContacto.telefoneAlternativo}"/>
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.opcoes} #{msgs.paciente}">
+                                    <center>
+                                        <p:menuButton value="#{msgs.opcoes}">
+                                            <p:menuitem value="#{msgs.editar}" icon="ui-icon-pencil"
+                                                         actionListener="#{admsPacienteEditarBean.setPacienteEditar(pacienteEncontrado)}"
+                                                         action="/admsVisao/paciente/pacienteEditarAdms.xhtml?faces-redirect=true"
+                                                         process="@this" partialSubmit="true"/>
+                                        </p:menuButton>
+                                    </center>
+                                </p:column>
+                            </p:dataTable> 
+                             
+                        </h:panelGrid>
+                        
+                     <!-- <p:commandButton value="relatorio pacientes" ajax="false" type="submit" action="# {admsRelatorios.relatorioPacientes()}"/> -->
+                    </center>
+                </h:form>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+            </ui:define>
+<!--<span class="ui-icon ui-icon-call"/>-->
+<!-- <p:inputText id="nomePaciente" value="# {admsPacientePesquisarBean.nomeCompleto}"/>-->
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,117 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <!-- Definindo a cor da barra lateral-->
+    <h:form style="background-color: rgba(230,230,230,0.05); height: 620px">
+
+        <ui:include src="interNotificacoes/notify.xhtml"/>
+
+        <p:panelMenu style="width: 100%">
+
+            <p:submenu label="Pediatria Geral" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[2])}">
+
+                <p:menuitem value="Pedidos para o Internamento" action="#{interSolicitacoesInterBean.listarPedidosInternamento('Pediatria Geral')}" actionListener="#{interCidHipoteseDiagnosticoBean.init()}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[4])}"/>
+
+                <p:submenu label="Pacientes">
+                    <p:menuitem value="Internados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" actionListener="#{interObjetosSessaoBean.setServicoInter('Pediatria Geral')}"/>
+                    <p:menuitem value="Movimento Doentes" ajax="false" action="/faces/interVisao/interInternamento/internamentoListar/movimentoDoentesListarInter.xhtml?faces-redirect=true" actionListener="#{interObjetosSessaoBean.setServicoInter('Pediatria Geral')}"/>
+                    <p:menuitem value="Arquivados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarArquivadosInter.xhtml?faces-redirect=true" actionListener="#{interObjetosSessaoBean.setServicoInter('Pediatria Geral')}"/>
+                </p:submenu>
+
+                <p:menuitem value="Relatórios"  url="#" rendered="false"/>
+
+                <p:menuitem value="Imprimir Documentos"  url="#" rendered="false"/>
+
+                <p:submenu label="Farmácia" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[10])}">
+                        <p:menuitem value="Solicitações de Materiais" url="/faces/interVisao/interFarmacia/solicitacaoNovaInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[16])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Pediatria Geral')}"/>
+                        <p:menuitem value="Movimentos (Pedidos)" url="/faces/interVisao/interFarmacia/movimentosListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[17])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Pediatria Geral')}"/>
+                        <p:menuitem value="Stock" url="/faces/interVisao/interFarmacia/stockFarmaciaListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[18])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Pediatria Geral')}"/>
+                        <p:menuitem value="Registo de Utilização de Material" url="#"/>
+                        <p:menuitem value="Histórico de Utilização de Material" url="#"/>
+                </p:submenu>          
+
+            </p:submenu>
+
+            <p:submenu label="Medicina Adultos" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[1])}">
+
+                <p:menuitem value="Pedidos para o Internamento" action="#{interSolicitacoesInterBean.listarPedidosInternamento('Medicina')}" actionListener="#{interCidHipoteseDiagnosticoBean.init()}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[4])}"/>
+
+                <p:submenu label="Pacientes" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[6])}">
+                    <p:menuitem value="Internados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[11])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Medicina')}"/>
+                    <p:menuitem value="Movimento Doentes" ajax="false" action="/faces/interVisao/interInternamento/internamentoListar/movimentoDoentesListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[12])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Medicina')}"/>
+                    <p:menuitem value="Arquivados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarArquivadosInter.xhtml?faces-redirect=true" actionListener="#{interObjetosSessaoBean.setServicoInter('Medicina')}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[13])}"/>
+                </p:submenu>
+
+                <p:menuitem value="Relatórios"  url="#" rendered="false"/>
+
+                <p:menuitem value="Imprimir Documentos"  url="#" rendered="false"/>
+
+                <p:submenu label="Farmácia" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[10])}">
+                        <p:menuitem value="Solicitações de Materiais" url="/faces/interVisao/interFarmacia/solicitacaoNovaInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[16])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Medicina')}"/>
+                        <p:menuitem value="Movimentos (Pedidos)" url="/faces/interVisao/interFarmacia/movimentosListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[17])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Medicina')}"/>
+                        <p:menuitem value="Stock" url="/faces/interVisao/interFarmacia/stockFarmaciaListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[18])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Medicina')}"/>
+                        <p:menuitem value="Registo de Utilização de Material" url="#"/>
+                        <p:menuitem value="Histórico de Utilização de Material" url="#"/>
+                </p:submenu> 
+                
+
+            </p:submenu>
+
+            <p:submenu label="Tuberculose" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[1])}">
+
+                <p:menuitem value="CID Tabela Agrupamento : A15-A19 -> Tuberculose "  url="#" rendered="false"/>
+
+                <p:menuitem value="Relatórios"  url="#" rendered="false"/>
+
+                <p:menuitem value="Imprimir Documentos"  url="#" rendered="false"/>
+
+                <p:submenu label="Crianças">
+                    <p:menuitem value="Pedidos para o Internamento" action="#{interSolicitacoesInterBean.listarPedidosInternamento('Tuberculose Crianças')}" actionListener="#{interCidHipoteseDiagnosticoBean.init()}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[4])}"/>
+                    <p:submenu label="Pacientes" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[6])}">
+                        <p:menuitem value="Internados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[11])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Tuberculose Crianças')}"/>
+                        <p:menuitem value="Movimento Doentes" ajax="false" action="/faces/interVisao/interInternamento/internamentoListar/movimentoDoentesListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[12])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Tuberculose Crianças')}"/>
+                        <p:menuitem value="Arquivados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarArquivadosInter.xhtml?faces-redirect=true" actionListener="#{interObjetosSessaoBean.setServicoInter('Tuberculose Crianças')}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[13])}"/>
+                    </p:submenu>    
+                </p:submenu>
+
+                <p:submenu label="Adultos">
+                    <p:menuitem value="Pedidos para o Internamento" action="#{interSolicitacoesInterBean.listarPedidosInternamento('Tuberculose Adultos')}" actionListener="#{interCidHipoteseDiagnosticoBean.init()}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[4])}"/>
+                    <p:submenu label="Pacientes" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[6])}">
+                        <p:menuitem value="Internados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[11])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Tuberculose Adultos')}"/>
+                        <p:menuitem value="Movimento Doentes" ajax="false" action="/faces/interVisao/interInternamento/internamentoListar/movimentoDoentesListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[12])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Tuberculose Adultos')}"/>
+                        <p:menuitem value="Arquivados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarArquivadosInter.xhtml?faces-redirect=true" actionListener="#{interObjetosSessaoBean.setServicoInter('Tuberculose Adultos')}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[13])}"/>
+                    </p:submenu>  
+                </p:submenu>              
+
+            </p:submenu>
+
+            <p:submenu label="Centro Nutricional Terpêutico" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[3])}">
+
+                <p:menuitem value="Pedidos para o Internamento" action="#{interSolicitacoesInterBean.listarPedidosInternamento('Centro Nutricional Terapêutico – Criança Mal Nutrida')}" actionListener="#{interCidHipoteseDiagnosticoBean.init()}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[4])}"/>
+
+                <p:submenu label="Pacientes" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[5])}">
+                    <p:menuitem value="Internados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[11])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Centro Nutricional Terapêutico – Criança Mal Nutrida')}"/>
+                    <p:menuitem value="Movimento Doentes" ajax="false" action="/faces/interVisao/interInternamento/internamentoListar/movimentoDoentesListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[12])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Centro Nutricional Terapêutico – Criança Mal Nutrida')}"/>
+                    <p:menuitem value="Arquivados" action="/faces/interVisao/interInternamento/internamentoListar/registoInternamentoListarArquivadosInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[13])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Centro Nutricional Terapêutico – Criança Mal Nutrida')}"/>
+                </p:submenu>
+
+                <p:menuitem value="Relatórios"  url="#" rendered="false"/>
+
+                <p:menuitem value="Imprimir Documentos"  url="#" rendered="false"/>
+
+                <p:submenu label="Farmácia" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[10])}">
+                        <p:menuitem value="Solicitações de Materiais" url="/faces/interVisao/interFarmacia/solicitacaoNovaInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[16])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Centro Nutricional Terapêutico – Criança Mal Nutrida')}"/>
+                        <p:menuitem value="Movimentos (Pedidos)" url="/faces/interVisao/interFarmacia/movimentosListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[17])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Centro Nutricional Terapêutico – Criança Mal Nutrida')}"/>
+                        <p:menuitem value="Stock" url="/faces/interVisao/interFarmacia/stockFarmaciaListarInter.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeINTER[18])}" actionListener="#{interObjetosSessaoBean.setServicoInter('Centro Nutricional Terapêutico – Criança Mal Nutrida')}"/>
+                        <p:menuitem value="Registo de Utilização de Material" url="#"/>
+                        <p:menuitem value="Histórico de Utilização de Material" url="#"/>
+                </p:submenu>  
+                
+
+            </p:submenu>
+
+        </p:panelMenu>
+    </h:form>
+</ui:composition>

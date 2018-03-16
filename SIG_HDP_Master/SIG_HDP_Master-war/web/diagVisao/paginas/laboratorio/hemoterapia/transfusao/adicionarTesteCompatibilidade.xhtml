@@ -1,0 +1,331 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+
+    <ui:define name="center">
+
+        <c:if test="${diagAdicionarTesteCompatibilidadeBean.temMensagemPendente == true}">
+            <c:if test="${diagAdicionarTesteCompatibilidadeBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagAdicionarTesteCompatibilidadeBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagAdicionarTesteCompatibilidadeBean.tipoMensagemPendente == 'Erro'}">
+                #{diagAdicionarTesteCompatibilidadeBean.getMensagem()}
+            </c:if>
+
+        </c:if>
+
+        <h2>Adicionar Testes de Compatibilidade para o Paciente:
+            #{diagAdicionarTesteCompatibilidadeBean.admsPaciente.fkIdPessoa.nome} 
+            #{diagAdicionarTesteCompatibilidadeBean.admsPaciente.fkIdPessoa.nomeDoMeio}
+            #{diagAdicionarTesteCompatibilidadeBean.admsPaciente.fkIdPessoa.sobreNome}
+        </h2>
+
+        <center>
+            <br/>
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+            <h:form prependId="false" >
+                <br/>
+                <p:fieldset legend="Pesquisar Dadores">
+                    <h:panelGrid columns="2" width="100%">
+                        <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">
+
+                            <h:panelGrid columns="2" cellpadding="3">
+
+                                <p:outputLabel value="Código do Dador: "/>
+                                <f:validateBean disabled="true">
+                                    <p:inputText id="codDador" style="width: 100%" value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorPesquisar.codigoCandidatoDador}"/>
+                                </f:validateBean>
+
+                                <p:outputLabel value="Dador: "/>
+                                <h:panelGrid columns="4" width="100%" cellpadding="3">
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="nome" style="width: 100%" value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorPesquisar.fkIdPessoa.nome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="nome" value="Nome" />
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="sobreNome" style="width: 100%" value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorPesquisar.fkIdPessoa.sobreNome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="sobreNome" value="Sobrenome" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="Nacionalidade: "/>
+                                <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorPesquisar.fkIdPessoa.fkIdNacionalidade.pkIdPais}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                   itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Sexo: "/>
+                                <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorPesquisar.fkIdPessoa.fkIdSexo.pkIdSexo}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{itensAjaxBean.sexoList}" var="sexo"
+                                                   itemLabel="#{sexo.descricao}" itemValue="#{sexo.pkIdSexo}"/>
+                                </p:selectOneMenu>
+
+                                <br/>
+                                <h:panelGrid columns="3" width="100%">
+                                    <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                     action="#{diagAdicionarTesteCompatibilidadeBean.setPesquisar(true)}" 
+                                                     partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                    <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagAdicionarTesteCompatibilidadeBean.limparPesquisaCandidado()}" 
+                                                     partialSubmit="true" process="@this" style="width: 100%"/>
+
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable id="dataTable" rows="5" paginator="true" paginatorPosition="bottom" 
+                             var="candidato" value="#{diagAdicionarTesteCompatibilidadeBean.pesquisarCandidatos()}"
+                             emptyMessage="Nenhum registo de candidato encontrado">
+
+                    <p:column headerText="Código" filterBy="#{candidato.codigoCandidatoDador}">
+                        <center>
+                            #{candidato.codigoCandidatoDador}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nome Completo" filterBy="#{candidato.fkIdPessoa.nome}">
+                        <center>
+                            #{candidato.fkIdPessoa.nome} 
+                            #{candidato.fkIdPessoa.nomeDoMeio}
+                            #{candidato.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Documento de Identificação">
+                        <center>
+                            #{diagPessoaBean.getDocumentoIdentificacao(candidato.fkIdPessoa)}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nacionalidade" filterBy="#{candidato.fkIdPessoa.fkIdNacionalidade.nomePais}">
+                        <center>
+                            #{candidato.fkIdPessoa.fkIdNacionalidade.nomePais}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data Nasc">
+                        <center>
+                            <h:outputText value="#{candidato.fkIdPessoa.dataNascimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Sexo" filterBy="#{candidato.fkIdPessoa.fkIdSexo.descricao}">
+                        <center>
+                            #{candidato.fkIdPessoa.fkIdSexo.descricao}
+                        </center>
+                    </p:column>
+
+                    <p:column>
+                        <center>
+                            <p:menuButton value="Opções">
+                                <p:separator/>
+                                <p:menuitem value="Visualizar Dados" icon="ui-icon-info"
+                                            action="#{diagAdicionarTesteCompatibilidadeBean.setDiagCandidatoDadorVisualizar(candidato)}" onclick="PF('dialogVisualizar').show();"
+                                            process="@this" update=":formVisual:tabVisualizar"/>
+                                <p:separator/>
+                                <p:menuitem value="Adicionar Teste" icon="ui-icon-plus" action="#{diagAdicionarTesteCompatibilidadeBean.selecionarCandidatoAdicionarTeste(candidato)}" 
+                                            onclick="PF('dialogTesteCompatibilidade').show();" update=":formRegistarTeste :formRegistarTeste:resultadoCompatibilidade"/>
+                                <p:separator/>
+                            </p:menuButton>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+                <br/>
+                <center>
+                    <p:commandButton style=" font-size:medium" process="@this" value="Voltar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagAdicionarTesteCompatibilidadeBean.voltarParaVisualizacaoTestesCompatibilidade()}"/>
+                </center>
+            </h:form>
+        </center>
+
+        <p:dialog header="Registar Teste de Compatibilidade" closable="false" showEffect="fade"
+                  widgetVar="dialogTesteCompatibilidade" modal="true" closeOnEscape="true">
+            <h:form id="formRegistarTeste">
+                <p:fieldset>
+                    <h:panelGrid columns="2" cellpadding="7">
+                        <p:outputLabel value="Candidato a Dador : "/>
+                        #{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorAdicionarTeste.fkIdPessoa.nome} #{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorAdicionarTeste.fkIdPessoa.sobreNome}
+
+                        <p:outputLabel value="Teste Coombs * : "/>
+                        <p:inputText value="#{diagAdicionarTesteCompatibilidadeBean.diagTesteCompatibilidade.testeCoombs}" required="true" maxlength="45"
+                                     requiredMessage="Por favor introduza o resultado do teste de Coombs."/>
+
+                        <p:outputLabel value="Prova Soro Fisiologico * : "/>
+                        <p:inputText value="#{diagAdicionarTesteCompatibilidadeBean.diagTesteCompatibilidade.provaSoroFisiologico}" required="true" maxlength="45"
+                                     requiredMessage="Por favor introduza o resultado da prova do soro fisiologico."/>
+
+                        <p:outputLabel value="Resultado do Teste de Compatibilidade: "/>
+                        <p:outputLabel id="resultadoCompatibilidade" value="#{diagAdicionarTesteCompatibilidadeBean.stringResultadoCompatibilidade}"/>
+
+                    </h:panelGrid>
+
+                    <br/>
+
+                    <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                    <p:separator/>
+
+                    <h:panelGroup style=" float: right">
+                        <p:commandButton icon="ui-icon-disk" value="Registar Teste" action="#{diagAdicionarTesteCompatibilidadeBean.registarTesteCompatibilidade()}"/> 
+                        <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="adicionarTesteCompatibilidade.xhtml?faces-redirect=true"/>
+                    </h:panelGroup>
+
+                </p:fieldset>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Visualizar Dados do Candidato a Dador" closable="false" showEffect="fade" 
+                  widgetVar="dialogVisualizar" modal="true" width="50%" height="50%"
+                  resizable="false">
+            <h:form id="formVisual">
+                <h:panelGrid width="100%">
+                    <h:panelGrid columns="2" class="float-right">
+                        <p:commandButton value="Fechar" onclick="dialogVisualizar.hide()" 
+                                         action="#{diagAdicionarTesteCompatibilidadeBean.setDiagCandidatoDadorVisualizar(null)}" process="@this" style="width: 130px"/>
+                    </h:panelGrid>
+                    <p:tabView id="tabVisualizar" style="height: 500%">
+                        <p:tab title="Dados Pessoais">
+                            <h:panelGrid columns="2" cellpadding="4">
+                                <h3>Nome Completo: </h3>
+                                <h:panelGrid columns="1" cellpadding="4">
+                                    #{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.nome} 
+                                    #{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.nomeDoMeio}
+                                    #{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.sobreNome}
+                                </h:panelGrid>
+
+                                <h3>Data de Nascimento: </h3>
+                                <h:outputLabel style="border: none" value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.dataNascimento}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                </h:outputLabel>
+                                <h3>Sexo: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdSexo.descricao}"/>
+                                <h3>Nacionalidade: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdNacionalidade.nomePais}"/>
+                                <h3>Estado Civil: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEstadoCivil.descricao}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Filiação">
+                            <h:panelGrid columns="2" cellpadding="7">
+                                <h3>Nome do Pai: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.nomePai}"/>
+                                <h3>Nome da Mãe: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.nomeMae}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Contacto">
+                            <h:panelGrid columns="2" cellpadding="7">
+                                <h3>Telefone1: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdContacto.telefone1}"/>
+                                <h3>Telefone2: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdContacto.telefone2}"/>
+                                <h3>Email1: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdContacto.email1}"/>
+                                <h3>Email2: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdContacto.email2}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Endereço">
+                            <h:panelGrid columns="2" cellpadding="7">
+                                <h3>País: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}"/>
+                                <h3>Província: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.nomeProvincia}"/>
+                                <h3>Município: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.nomeMunicipio}"/>
+                                <h3>Distrito: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdDistrito.descricao}"/>
+                                <h3>Comuna: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdComuna.descricaoComuna}"/>
+                                <h3>Bairro: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.bairro}"/>
+                                <h3>Rua: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.rua}"/>
+                                <h3>Nº Casa: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.numeroCasa}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Outros Dados">
+                            <h:panelGrid columns="2" cellpadding="7">
+                                <h3>Religião: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdReligiao.descricao}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Tipagem">
+                            <h:panelGrid columns="2" cellpadding="7">
+
+                                <h3>Data: 
+                                    <h:outputText value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.dataTipagem}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>
+                                    </h:outputText>
+
+                                </h3>
+
+                                <h3>Anti-A: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.antiA}"/>
+
+                                <h3>Anti-B: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.antiB}"/>
+
+                                <h3>Anti-AB: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.antiAb}"/>
+
+                                <h3>Anti-D: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.antiD}"/>
+
+                                <h3>Du (D fraco): </h3>                   
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.du}"/>
+
+                                <h3>A1: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.a1}"/>
+
+                                <h3>B: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.b}"/>
+
+                                <h3>O: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.o}"/>
+
+                                <h3>Grupo Sanguíneo: </h3>
+                                <p:outputLabel value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.conclusao.descricaoGrupoSanguineo}"/>
+
+                                <h3>Realizado Por: </h3>
+                                <h:panelGroup>
+                                    <h:outputText value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.fkRealizadoPor.fkIdPessoa.nome}"/>
+                                    #{" "}
+                                    <h:outputText value="#{diagAdicionarTesteCompatibilidadeBean.diagTipagemDadorVisualizar.fkRealizadoPor.fkIdPessoa.sobreNome}"/>
+                                </h:panelGroup>
+
+                            </h:panelGrid>
+                        </p:tab>
+                    </p:tabView>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

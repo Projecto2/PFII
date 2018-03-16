@@ -1,0 +1,278 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <c:if test="${diagRequisicaoComponenteSanguineoBean.temMensagemPendente == true}">
+            <c:if test="${diagRequisicaoComponenteSanguineoBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagRequisicaoComponenteSanguineoBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagRequisicaoComponenteSanguineoBean.tipoMensagemPendente == 'Erro'}">
+                #{diagRequisicaoComponenteSanguineoBean.getMensagem()}
+            </c:if>
+
+        </c:if>
+
+        <h:form id="formSolicitacao">
+            <p:growl sticky="true" id="messagens" autoUpdate="true"/>
+            <p:growl autoUpdate="true"/>
+
+            <center>
+
+                <p:tabView style="width: 90%" id="tabView">
+
+                    <p:tab id="tabPaciente" title="Dados do Paciente">
+
+                        <h:panelGrid columns="2" rendered="false">
+
+                            <p:outputLabel value="Paciente:"/>
+                            <p:selectOneMenu style="width: 85%" value="#{diagRequisicaoComponenteSanguineoBean.interRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.pkIdPaciente}" 
+                                             required="true" requiredMessage="É necessário informar o paciente" >  
+                                <f:selectItem itemLabel="Selecione"/>
+                                <f:selectItems value="#{diagTipagemDoenteBean.listaPacientes}"
+                                               var="paciente"
+                                               itemLabel="#{paciente.fkIdPessoa.nome} #{paciente.fkIdPessoa.sobreNome} - #{paciente.numeroPaciente}" itemValue="#{paciente.pkIdPaciente}" />
+                            </p:selectOneMenu>
+
+                        </h:panelGrid>
+
+                        <center>
+
+                            <p:fieldset id="dadosPacienteFS">
+                                <h:panelGrid columns="2" cellpadding="15">
+
+                                    <p:outputLabel value="Peso * :"/>
+                                    <p:inputNumber value="#{diagRequisicaoComponenteSanguineoBean.diagRequisicaoComponenteSanguineo.peso}" style="width: 100%" minValue="0"
+                                                   symbol=" kg" symbolPosition="s" required="true" requiredMessage="Por favor introduza o peso."/>
+
+                                    <p:outputLabel value="Gravidez Anterior * :"/>
+                                    <p:selectOneRadio style="width: 85%" value="#{diagRequisicaoComponenteSanguineoBean.gravidezAnterior.pkIdRespostasQuestoesRequisicaoComponentes}" 
+                                                      required="true" requiredMessage="É necessário informar o campo gravidez anterior.">
+                                        <f:selectItems value="#{diagRequisicaoComponenteSanguineoBean.listaRespostasQuestoesRequisicaoComponenteses}"
+                                                       var="resposta"
+                                                       itemLabel="#{resposta.descricao}" itemValue="#{resposta.pkIdRespostasQuestoesRequisicaoComponentes}" />
+                                    </p:selectOneRadio>
+
+                                    <p:outputLabel value="Transfusão Anterior * :"/>
+                                    <p:selectOneRadio style="width: 85%" value="#{diagRequisicaoComponenteSanguineoBean.transfusaoAnterior.pkIdRespostasQuestoesRequisicaoComponentes}" 
+                                                      required="true" requiredMessage="É necessário informar o campo transfusão anterior.">
+                                        <f:selectItems value="#{diagRequisicaoComponenteSanguineoBean.listaRespostasQuestoesRequisicaoComponenteses}"
+                                                       var="resposta"
+                                                       itemLabel="#{resposta.descricao}" itemValue="#{resposta.pkIdRespostasQuestoesRequisicaoComponentes}" />
+                                    </p:selectOneRadio>
+
+                                    <p:outputLabel value="História Reacção Transfusional * :"/>
+                                    <p:selectOneRadio style="width: 85%" value="#{diagRequisicaoComponenteSanguineoBean.historiaReaccao.pkIdRespostasQuestoesRequisicaoComponentes}" 
+                                                      required="true" requiredMessage="É necessário informar o campo história reacção transfusional.">
+                                        <f:selectItems value="#{diagRequisicaoComponenteSanguineoBean.listaRespostasQuestoesRequisicaoComponenteses}"
+                                                       var="resposta"
+                                                       itemLabel="#{resposta.descricao}" itemValue="#{resposta.pkIdRespostasQuestoesRequisicaoComponentes}" />
+                                    </p:selectOneRadio>
+
+                                    <p:outputLabel value="Sintomatologia Hemorrágica * :"/>
+                                    <p:selectOneRadio style="width: 85%" value="#{diagRequisicaoComponenteSanguineoBean.sistomatologiaHemorragica.pkIdRespostasQuestoesRequisicaoComponentes}" 
+                                                      required="true" requiredMessage="É necessário informar o campo sintomatologia hemorrágica.">
+                                        <f:selectItems value="#{diagRequisicaoComponenteSanguineoBean.listaRespostasQuestoesRequisicaoComponenteses}"
+                                                       var="resposta"
+                                                       itemLabel="#{resposta.descricao}" itemValue="#{resposta.pkIdRespostasQuestoesRequisicaoComponentes}" />
+                                    </p:selectOneRadio>
+
+
+
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                            <p:fieldset legend="Hipótese de Diagnóstico Clínico (CID-10)" id="hipoteseDiagnosticoFS">
+
+                                <h:panelGrid columns="2"> 
+
+                                    <h:outputLabel value="Perfil Preferencial:" />
+                                    <h:outputLabel value="#{diagCidHipoteseDiagnosticoBean.perfilPreferencial}" />
+
+                                    <p:outputLabel value="Prioridade Preferencial das Doenças:"/>
+                                    <h:outputLabel value="#{diagCidHipoteseDiagnosticoBean.prioridadesPreferencial}" />
+
+                                    <p:outputLabel value="Capítulo da Doença:"/>
+
+                                    <p:selectOneMenu value="#{diagCidHipoteseDiagnosticoBean.pkIdCapitulo}"
+                                        id="capitulosDoencasSOM" filter="true">
+                                        <p:ajax
+                                            event="itemSelect"
+                                            update=":formSolicitacao:tabView:agrupamentosDoencasSOM"  
+                                            listener="#{diagCidHipoteseDiagnosticoBean.resetAmbiCidAgrupamentos()}"
+                                            />
+                                        <f:selectItem itemLabel="" noSelectionOption="true"/>
+                                        <f:selectItems 
+                                            value="#{diagCidHipoteseDiagnosticoBean.listaCapitulos}"
+                                            var="capitulosVar" itemLabel="#{capitulosVar.nome}" itemValue="#{capitulosVar.pkIdCapitulos}" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Agrupamento da Doença:"/>
+
+                                    <p:selectOneMenu value="#{diagCidHipoteseDiagnosticoBean.pkIdAgrupamento}"
+                                        id="agrupamentosDoencasSOM" filter="true">
+                                        <p:ajax
+                                            event="itemSelect"
+                                            update=":formSolicitacao:tabView:categoriasDoencasSOM" 
+                                            listener="#{diagCidHipoteseDiagnosticoBean.resetAmbiCidCategorias()}"
+                                            />
+                                        <f:selectItems value="#{diagCidHipoteseDiagnosticoBean.listaAgrupamentos}"
+                                            var="agrupamentoVar" itemLabel="#{agrupamentoVar.nome}" itemValue="#{agrupamentoVar.pkIdAgrupamentos}" />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Categoria da Doença:"/>                                            
+                                    <p:selectOneMenu 
+                                        id="categoriasDoencasSOM"
+                                        required="true" requiredMessage="É necessário informar a categoria do CID."
+                                        value="#{diagRequisicaoComponenteSanguineoBean.diagRequisicaoComponenteSanguineo.diagnosticoClinico}" filter="true">
+                                        <f:selectItems value="#{diagCidHipoteseDiagnosticoBean.listaCategorias}"
+                                            var="categoriaVar" itemLabel="#{categoriaVar.nome}" itemValue="#{categoriaVar.nome}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
+
+                            </p:fieldset>
+                        </center>
+
+                    </p:tab>
+
+                    <p:tab id="tabSolicitacao" title="Dados da Solicitação">
+
+                        <center>
+
+                            <p:fieldset id="fieldSetCaracaterTransfusao" legend="Carácter da Transfusão">
+                                <p:selectOneRadio style="width: 85%" value="#{diagRequisicaoComponenteSanguineoBean.diagCaracterTransfusao.pkIdCaracterTransfusao}"  
+                                                  required="true" requiredMessage="É necessário informar o campo carácter da transfusão.">
+
+                                    <p:ajax update="fieldSetCaracaterTransfusao" listener="#{diagRequisicaoComponenteSanguineoBean.apresentarDataProgramada()}"/>
+
+                                    <f:selectItems value="#{diagRequisicaoComponenteSanguineoBean.listaCaracterTransfusoes}"
+                                                   var="caracter" itemLabel="#{caracter.descricao}" itemValue="#{caracter.pkIdCaracterTransfusao}" />
+                                </p:selectOneRadio>
+
+                                <p:outputLabel id="labelDataProgramada" value="Data Programada: " rendered="#{diagRequisicaoComponenteSanguineoBean.renderDataProgramada}"/>
+                                <h:panelGroup style="width: 100%">
+                                    <p:calendar id="dataProgramada" locale="pt" rendered="#{diagRequisicaoComponenteSanguineoBean.renderDataProgramada}" size="15" value="#{diagRequisicaoComponenteSanguineoBean.diagRequisicaoComponenteSanguineo.dataProgramadaTransfusao}" navigator="true" pattern="dd-MM-yyyy"> 
+                                        <p:ajax event="dateSelect" />
+                                    </p:calendar>
+                                </h:panelGroup> 
+
+                            </p:fieldset>
+
+                            <h:panelGrid title="Tipo(s) de Componente(s) Requisitado(s)">
+                                <h:panelGrid id="painelEscolha" width="100%">
+                                    <p:fieldset legend="Selecione os tipos de componentes sanguíneos" id="fieldsetSeleccionar">
+                                        <fieldset style="border: 1px solid graytext">
+                                            <legend>Pesquisar</legend>
+                                            <h:panelGrid id="painelPesquisa" columns="5" width="100%">
+                                                <f:validateBean disabled="true">
+                                                    <p:inputText value="#{diagRequisicaoComponenteSanguineoBean.diagComponenteSanguineoPesquisa.descricaoComponenteSanguineo}" 
+                                                                 style="width: 85%" id="descricao"/>
+                                                    <p:watermark for="descricao" value="Faça uma pesquisa"/>
+                                                </f:validateBean>
+                                                <p:commandButton value="Pesquisar" icon="ui-icon-search" process="@this descricao"
+                                                                 action="#{diagRequisicaoComponenteSanguineoBean.pesquisarComponentesSanguineos()}" ajax="true"
+                                                                 partialSubmit="true" update="tabelaItensDisponiveis tabelaItensSeleccionados"/>
+                                            </h:panelGrid>
+                                        </fieldset>
+                                        <p:dataTable id="tabelaItensDisponiveis" var="item" rows="6" rowsPerPageTemplate="6,12,16"
+                                                     value="#{diagRequisicaoComponenteSanguineoBean.listaComponenteSanguineosPesquisados}" 
+                                                     emptyMessage="Sem Tipos de Componentes Disponíveis. Aguardando Pesquisa."
+                                                     paginator="true"  paginatorPosition="bottom">
+                                            <p:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="Descrição do Tipo de Componente" />
+                                                </f:facet>
+                                                <h:outputText value="#{item.descricaoComponenteSanguineo}" />
+                                            </p:column>
+
+                                            <p:column>
+                                                <center>
+                                                    <p:commandButton value="Adicionar" icon="ui-icon-transferthick-e-w" 
+                                                                     style="width: 95%; margin: auto" 
+                                                                     process="@this" ajax="true" update=":formSolicitacao:tabView:tabelaItensDisponiveis :formSolicitacao:tabView:tabelaItensSeleccionados"
+                                                                     actionListener="#{diagRequisicaoComponenteSanguineoBean.setDiagComponenteSanguineoAdicionarNaLista(item)}"
+                                                                     action="#{diagRequisicaoComponenteSanguineoBean.adicionarComponente()}">
+                                                        <f:ajax execute="@this" render=":formSolicitacao:tabView:tabelaItensSeleccionados"/>
+                                                    </p:commandButton>
+                                                </center>
+                                            </p:column>
+
+                                        </p:dataTable>                                          
+                                    </p:fieldset>
+                                    <p:separator/>
+                                    <p:fieldset legend="Tipos de Componentes Sanguíneos Seleccionados" id="fieldsetSeleccionado">
+                                        <p:dataTable id="tabelaItensSeleccionados" var="select" rows="6" rowsPerPageTemplate="6,12,16"
+                                                     value="#{diagRequisicaoComponenteSanguineoBean.listaComponentesSanguineosSelecionados}" 
+                                                     emptyMessage="Sem Tipos de Componentes Seleccionados. Aguardando Selecção."
+                                                     paginator="true"  paginatorPosition="bottom">
+                                            <p:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="Tipo de Componente" />
+                                                </f:facet>
+                                                <h:outputText value="#{select.fkIdComponente.descricaoComponenteSanguineo}" />
+                                            </p:column>
+
+                                            <p:column>
+                                                <f:facet name="header">
+                                                    <h:outputText value="Quantidade" />
+                                                </f:facet>
+
+                                                <center>
+                                                    <p:spinner value="#{select.quantidadeComponente}" min="1" suffix=" ml">
+                                                        <f:ajax event="change" execute="@this" render="tabelaItensSeleccionados"/>
+                                                    </p:spinner>
+                                                </center>
+
+                                            </p:column>
+                                            <p:column>
+                                                <center>
+                                                    <p:commandButton value="Remover" icon="ui-icon-transferthick-e-w" 
+                                                                     style="width: 95%; margin: auto" 
+                                                                     process="@this" ajax="true" update=":formSolicitacao:tabView:tabelaItensSeleccionados :formSolicitacao:tabView:tabelaItensDisponiveis"
+                                                                     actionListener="#{diagRequisicaoComponenteSanguineoBean.setDiagComponenteSanguineoAdicionarNaLista(select.fkIdComponente)}"
+                                                                     action="#{diagRequisicaoComponenteSanguineoBean.removerComponente()}">
+                                                        <f:ajax execute="@this" render=":formSolicitacao:tabView:tabelaItensDisponiveis"/>
+                                                    </p:commandButton>
+                                                </center>
+                                            </p:column>
+
+                                        </p:dataTable>
+                                    </p:fieldset>
+
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+                        </center>
+                    </p:tab>
+
+
+                </p:tabView>
+
+                <center>
+                    <h:panelGrid style="width: 70%" columns="1">
+
+                        <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                        <p:separator/>
+
+                        <h:panelGroup style=" float: right">
+                            <p:commandButton style=" font-size:medium" icon="ui-icon-disk" value="Registar Solicitação" action="#{diagRequisicaoComponenteSanguineoBean.create()}"/> 
+                            <p:commandButton style=" font-size:medium" process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w"/>
+                        </h:panelGroup>
+
+                    </h:panelGrid>
+                </center>
+
+            </center>
+
+        </h:form>
+
+        <br/>
+    </body>
+</html>

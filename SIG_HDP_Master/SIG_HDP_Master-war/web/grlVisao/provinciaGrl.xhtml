@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Províncias</title>
+   </h:head>
+
+   <h:body>
+      <p:messages id="msg" autoUpdate="true" closable="true"/>
+      <p:growl id="msg2" autoUpdate="true"/>
+      <br/>
+      <center>
+         #{detetorAtualizacaoPagina.checkAtualizacao("")}
+         <h:panelGrid width="75%">
+            <h:form id="formPesquisa">
+               <p:fieldset style="width: 97%">
+                  <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                     <f:validateBean disabled="true">
+                         <p:outputLabel for="comboPais" value="País: "/>
+                        <p:selectOneMenu id="comboPais" style="width: 96%; text-align: center" filter="true"
+                                         filterMatchMode="contains"
+                                         value="#{grlProvinciaBean.provinciaPesquisa.fkIdPais.pkIdPais}">
+                           <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                          itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                        </p:selectOneMenu>
+                         <p:outputLabel  for="nomeProvinciaPesquisar" value="Província: "/>
+                         <p:inputText id="nomeProvinciaPesquisar" style="width: 100%" value="#{grlProvinciaBean.provinciaPesquisa.nomeProvincia}"/>
+                     </f:validateBean>
+                     <br/>
+                     <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                        <p:commandButton value="Pesquisar" icon="ui-icon-search" style="width: 100%"
+                                         process="@form" update="dataTable"
+                                         action="#{grlProvinciaBean.pesquisarProvincias()}"/>
+
+                        <p:commandButton value="Carregar" icon="ui-icon-refresh" style="width: 100%" process="@this" 
+                                         action="provinciasListarGrl?faces-redirect=true" 
+                                         actionListener="#{grlProvinciaBean.carregar()}"/>
+                     </p:panelGrid>
+                  </p:panelGrid>
+               </p:fieldset>
+              
+               <p:dataTable id="dataTable" var="provincia" value="#{grlProvinciaBean.provinciasPesquisadasList}"
+                            emptyMessage="Nenhum registro de província encontrado"
+                            paginator="true" paginatorPosition="bottom" rows="10">
+                   <p:column headerText="País" filterBy="#{provincia.fkIdPais.nomePais}" filterMatchMode="contains">
+                     <center>
+                        #{provincia.fkIdPais.nomePais}
+                     </center>
+                  </p:column>
+                  <p:column headerText="Província" filterBy="#{provincia.nomeProvincia}" filterMatchMode="contains">
+                     <center>                                        
+                        #{provincia.nomeProvincia}
+                     </center>
+                  </p:column>
+                  <p:column headerText="--------------------" rendered="false">
+                     <center>
+                        <p:menuButton value="Opções">
+                           <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogProvincia').show();"
+                                       action="#{grlProvinciaBean.setProvincia(provincia)}" process="dataTable" 
+                                       partialSubmit="true" update=":formulario:gridCampos :formulario:gridBotoes"/>
+                           <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                       action="#{grlProvinciaBean.setProvinciaRemover(provincia)}"/>
+                        </p:menuButton>
+                     </center>
+                  </p:column>
+               </p:dataTable>
+               <p:confirmDialog message="Tem certeza que pretende remover a província selecionada ?"
+                                header="Remover Província" severity="alert" widgetVar="confirmDialogRemover">
+                  <p:commandButton value="Sim" actionListener="#{grlProvinciaBean.remove()}" process="@this"
+                                   update=":msg :msg2 dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                  <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+               </p:confirmDialog>
+            </h:form>
+         </h:panelGrid>
+      </center>
+
+      <center>
+         <p:dialog header="Província" closable="false" showEffect="fade" width="35%"
+                   widgetVar="dialogProvincia" modal="true" closeOnEscape="true">
+            <h:form id="formulario">
+               <p:fieldset>
+                  <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                     <p:outputLabel value="Pais "/>
+                     <h:selectOneMenu style="width: 250px; text-align: center" 
+                                      value="#{grlProvinciaBean.provincia.fkIdPais.pkIdPais}">
+                        <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                       itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                     </h:selectOneMenu>
+                     <p:outputLabel value="Província"/>
+                     <p:inputText value="#{grlProvinciaBean.provincia.nomeProvincia}" style="width: 235px" required="true" 
+                                  requiredMessage="Indique o nome da província"/>
+                  </h:panelGrid>
+
+                  <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                     <p:commandButton value="Guardar" action="#{grlProvinciaBean.create()}" style="width: 150px"
+                                      rendered="#{grlProvinciaBean.provincia.pkIdProvincia == null}" process="@form" partialSubmit="true"
+                                      onclick="PF('dialogProvincia').hide()" update=":formPesquisa:dataTable"/>
+                     <p:commandButton value="Guardar Edição" action="#{grlProvinciaBean.edit()}" style="width: 150px"
+                                      rendered="#{grlProvinciaBean.provincia.pkIdProvincia != null}"  process="@form" partialSubmit="true"
+                                      onclick="PF('dialogProvincia').hide()" update=":formPesquisa:dataTable"/>
+                     <p:commandButton value="Fechar" onclick="PF('dialogProvincia').hide()" style="width: 150px" process="@this" 
+                                      actionListener="#{grlProvinciaBean.setProvincia(null)}"/>
+                  </h:panelGrid>
+               </p:fieldset>
+            </h:form>
+         </p:dialog>
+      </center>
+      
+
+                        <!--<p:commandButton value="Nova província" icon="ui-icon-plus" process="@this" 
+                                         action="# {provinciaBean.setProvincia(null)}"
+                                         onclick="PF('dialogProvincia').show()" style="width: 160px"
+                                         update=":formulario:gridCampos :formulario:gridBotoes"/>-->
+   </h:body>
+</html>

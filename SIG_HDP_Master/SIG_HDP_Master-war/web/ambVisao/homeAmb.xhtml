@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns="http://www.w3.org/1999/xhtml"                
+      xmlns:p="http://primefaces.org/ui"
+      >
+
+    <body>
+
+        <ui:composition template="./../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./menuHorizontalAmb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./menuLateralAmb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>Ambulatório</h1>
+                <p:graphicImage  id="imgHome" url="/resources/Imagens/amb_home_02.jpg" 
+                                 width="100%" height="450px" alt="Image Description for" title="banner1.jpg"/>
+                <br/><br/><br/><br/><br/><br/>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

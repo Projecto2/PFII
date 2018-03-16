@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Formas Farmacêuticas</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Tabelas Auxiliares -> Formas Farmacêuticas</h2>
+            <p:growl id="msg" autoUpdate="true"/>
+            <h:form id="formPrincipal">
+               <p:panel style="height: 50px; border: none">
+                  <h:panelGrid class="float-right">
+                     <p:commandButton value="Actualizar" icon="ui-icon-refresh" id="botaoImprimir"
+                                      actionListener="#{farmFormaFarmaceuticaExcelBean.carregarFormaFarmaceuticaTabela()}">
+                     </p:commandButton>
+                  </h:panelGrid>
+               </p:panel>
+               
+               <p:fieldset>
+                  <p:dataTable id="resultado" paginator="true" paginatorPosition="bottom"
+                               emptyMessage="Nenhum registo encontrado. Aguardando Pesquisa." 
+                               rowsPerPageTemplate="5,19,20,50,70,100" var="item" rows="5"
+                               value="#{farmTabelasAuxiliaresListarBean.listaFormasFarmaceuticas}"
+                               style="width: 50%; margin: auto">
+                     <p:column headerText="Descrição" filterBy="#{item.descricao}" sortBy="#{item.descricao}">
+                        <p:outputLabel value="#{item.descricao}" />
+                     </p:column>
+                  </p:dataTable>
+               </p:fieldset>
+            </h:form>
+         </ui:define>            
+
+      </ui:composition>
+   </h:body>
+</html>

@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <c:if test="${diagRequisicaoComponenteSanguineoBean.temMensagemPendente == true}">
+                    <c:if test="${diagRequisicaoComponenteSanguineoBean.tipoMensagemPendente == 'Sucesso'}">
+                        #{diagRequisicaoComponenteSanguineoBean.getMensagem()}
+                    </c:if>
+
+                    <c:if test="${diagRequisicaoComponenteSanguineoBean.tipoMensagemPendente == 'Erro'}">
+                        #{diagRequisicaoComponenteSanguineoBean.getMensagem()}
+                    </c:if>
+
+                </c:if>
+
+                <center>
+                    <h2>#{interObjetosSessaoBean.menuTitulo} -> Laboratório -> Solicitações de Componentes Sanguíneos</h2>
+                    <p:panel>
+                        <h:form id="form">
+
+                            <div style="float: left">
+                                <p:commandButton value="Solicitar Compenente Sanguínio" icon="ui-icon-plus" actionListener="#{diagRequisicaoComponenteSanguineoBean.setInterRegistoInternamento(interRequisicaoComponenteSanguineoBean.registoInternamento)}" action="solicitarComponenteSanguineoNovoInter.xhtml?faces-redirect=true"/>
+                            </div>
+
+                            <p:button value="Voltar" styleClass="float-right" style="width: 130px;" outcome="/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+
+                            <center>
+                                <span style="font-size: 16pt">
+                                    <p:commandLink style="color: #0088cc" value="#{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                                   ajax="true" partialSubmit="true" process="@this" 
+                                                   actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                                   update=":formPacienteVisualizar" 
+                                                   onclick="PF('dialogMaisDetalhes').show();"/>
+                                    <br/>
+                                    #{msgs.subProcesso}: #{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                                    #{msgs.dataDaSolicitacao}: 
+                                    <p:outputLabel value="#{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+                                </span>
+                            </center>
+                            <p:messages id="messagens" autoUpdate="true" closable="true"/>
+
+                            <p:dataTable  id="datatable" rows="5" paginator="true" paginatorPosition="bottom" 
+                                          var="pedido" value="#{diagRequisicaoComponenteSanguineoBean.findAll()}"
+                                          emptyMessage="Nenhuma solicitação de componente sanguíneo encontrada">
+
+                                <p:column headerText="Codigo da Solicitação">
+                                    <center>
+                                        <h:outputText value="#{pedido.pkIdRequisicaoComponenteSanguineo}"/>
+                                    </center>
+                                </p:column>
+
+                                <p:column headerText="Médico" filterBy="#{pedido.fkIdMedico.fkIdPessoa.nome}">
+                                    <center>
+                                        #{pedido.fkIdMedico.fkIdPessoa.nome} 
+                                        #{pedido.fkIdMedico.fkIdPessoa.nomeDoMeio}
+                                        #{pedido.fkIdMedico.fkIdPessoa.sobreNome}
+                                    </center>
+                                </p:column>
+
+                                <p:column headerText="Data da Solicitação" >
+                                    <center>
+                                        <h:outputText value="#{pedido.data}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>		
+                                        </h:outputText>
+                                    </center>
+                                </p:column>
+
+                            </p:dataTable>
+                        </h:form>
+                    </p:panel>
+
+                </center>
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

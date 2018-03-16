@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Novo Registo de Férias</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Novo Registo de Férias</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+                    <p:growl id="ms2" autoUpdate="true"/>
+
+                    <h:form id="formulario">
+                         <br/>
+                         <center>
+                              <h:panelGrid width="650px" >
+                                   <p:panel id="panelFoto" style="height:280px">
+                                        <center>
+                                             <h:graphicImage width="240px" height="180px"
+                                                             url="#{rhPessoaBean.pastaFoto}#{rhFeriasNovasBean.ferias.fkIdFuncionario.fkIdPessoa.fkIdFoto.ficheiro}"/>
+                                             <br/>
+                                             <p:outputLabel value="Funcionário: #{rhFeriasNovasBean.ferias.fkIdFuncionario.fkIdPessoa.nome} 
+                                                            #{rhFeriasNovasBean.ferias.fkIdFuncionario.fkIdPessoa.nomeDoMeio} 
+                                                            #{rhFeriasNovasBean.ferias.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                             <br/>
+                                             <h:outputLabel value="Nº Cartão Identidade: #{rhFeriasNovasBean.ferias.fkIdFuncionario.numeroBi}"/>
+                                             <br/>
+                                             <br/>
+                                             <p:commandButton style="width: 200px" process="@this dataInicio" value="Pesquisar Funcionário" 
+                                                              action="#{rhFeriasNovasBean.limparPesquisaFuncionarios()}" icon="ui-icon-search"
+                                                              update=":formFuncionarioPesquisar:panelPesquisar" oncomplete="PF('dialogPesquisaFuncionario').show()"/>
+                                        </center>
+                                   </p:panel>
+
+                                   <p:panel id="panelCampos">
+                                        <h:panelGrid columns="2" cellpadding="5" width="100%">
+                                             <p:outputLabel value="Data de Início*:"/>
+                                             <p:calendar locale="pt" id="dataInicio" value="#{rhFeriasNovasBean.ferias.dataInicio}" size="42" navigator="true" 
+                                                         maxdate="#{rhFeriasNovasBean.ultimaDataDoProximoAno}" mindate="#{rhValidarBean.dataDeHoje}"
+                                                         required="true" requiredMessage="Indique a data de início !" pattern="dd-MM-yyyy">
+                                                  <p:ajax event="dateSelect" listener="#{rhFeriasNovasBean.changeDiasGozar}" process="@this diasGozar" update="diasDescontar dataFim "/>
+                                             </p:calendar>
+
+                                             <p:outputLabel value="Dias a Gozar*:"/>
+                                             <h:panelGrid columns="2" width="300px">
+                                                  <p:inputNumber id="diasGozar" value="#{rhFeriasNovasBean.ferias.diasGozar}" size="16" minValue="0" maxValue="30" 
+                                                                 required="true" requiredMessage="Indique o número de dias a gozar !" converterMessage="Número de dias à gozar inválido">
+                                                       <f:ajax event="blur" listener="#{rhFeriasNovasBean.changeDiasGozar}" execute="@this dataInicio" render="dataFim"/>
+                                                  </p:inputNumber>
+                                                  <p:commandButton value="Actualizar Data de Fim" action="#{rhFeriasNovasBean.changeDiasGozar(null)}" 
+                                                                   process="@this diasGozar" update="dataFim" style="width: 180px;"/>
+                                             </h:panelGrid>
+
+                                             <p:outputLabel value="Data de Fim:"/>
+                                             <p:inputText id="dataFim" value="#{rhFeriasNovasBean.ferias.dataTermino}" size="42" readonly="true">
+                                                  <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                             </p:inputText>
+
+                                             <p:outputLabel value="Dias a Descontar:"/>
+                                             <p:inputNumber id="diasDescontar" value="#{rhFeriasNovasBean.ferias.diasDescontar}" decimalPlaces="0" size="42" readonly="true">
+                                                  <p:tooltip for="diasDescontar" value="Dias a descontar consoante o número de faltas não justificadas no ano anterior"  position="left"/>
+                                             </p:inputNumber>
+                                             <p:outputLabel value="Observação:"/>
+                                             <p:inputTextarea value="#{rhFeriasNovasBean.ferias.observacao}" autoResize="false" style="width: 300px; height: 100px; overflow-y: scroll"/>
+                                        </h:panelGrid>
+                                   </p:panel>
+                                   <h:panelGrid columns="2" class="float-right">
+                                        <p:commandButton style="width: 170px" value="Guardar" action="#{rhFeriasNovasBean.create()}" update="panelFoto panelCampos"/>
+                                        <p:commandButton style="width: 170px" value="Sair" onclick="PF('confirmDialogSair').show();" type="button"/>
+                                   </h:panelGrid>
+                              </h:panelGrid>
+                         </center>
+
+                         <p:confirmDialog message="Tem certeza que pretende sair ? Todas alterações não guardadas serão perdidas"
+                                          header="Sair" severity="alert" widgetVar="confirmDialogSair">
+                              <p:commandButton value="Sim" action="#{rhFeriasNovasBean.sair()}" 
+                                               process="@this" oncomplete="PF('confirmDialogSair').hide()"/>
+                              <p:commandButton value="Não" onclick="PF('confirmDialogSair').hide();" type="button"/>
+                         </p:confirmDialog>
+
+                    </h:form>
+                    <center>
+                         <p:dialog header="Selecionar Funcionário" closable="true" showEffect="fade" width="75%" height="550px"
+                                   widgetVar="dialogPesquisaFuncionario" modal="true" closeOnEscape="true" position="top">
+                              <h:form id="formFuncionarioPesquisar">
+                                   <p:messages id="ms3" autoUpdate="true" closable="true"/>
+                                   <br/>
+                                   <center>
+                                        <p:panel id="panelPesquisar">
+                                             <h:panelGrid id="gridPesquisar" width="555px">
+                                                  <p:panel header="Os funcionários que já têm férias no ano #{rhFeriasNovasBean.anoInicioDeFerias()} não aparecerão nos resultados da pesquisa">
+                                                       <center>
+                                                            <f:validateBean disabled="true">
+                                                                 <h:panelGrid columns="2" cellpadding="3">
+                                                                      <p:outputLabel value="Estado Funcionário:"/>
+                                                                      <h:selectOneMenu value="#{rhFeriasNovasBean.funcionarioPesquisa.fkIdEstadoFuncionario.pkIdEstadoFuncionario}"
+                                                                                       style="width: 260px; text-align: center">
+                                                                           <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                                           <f:selectItems value="#{itensAjaxBean.estadoFuncionarioList}" var="estado" 
+                                                                                          itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoFuncionario}"
+                                                                                          itemDisabled="#{estado.descricao == 'Reformado' or estado.descricao == 'Demitido'}"/>
+                                                                      </h:selectOneMenu>
+                                                                      <p:outputLabel value="Nome:"/>
+                                                                      <f:validateBean disabled="true">
+                                                                           <p:inputText style="width: 250px" value="#{rhFeriasNovasBean.funcionarioPesquisa.fkIdPessoa.nome}"/>
+                                                                      </f:validateBean>
+                                                                      <p:outputLabel value="Nome do Meio:"/>
+                                                                      <p:inputText style="width: 250px" value="#{rhFeriasNovasBean.funcionarioPesquisa.fkIdPessoa.nomeDoMeio}"/>
+                                                                      <p:outputLabel value="Sobrenome:"/>
+                                                                      <p:inputText style="width: 250px" value="#{rhFeriasNovasBean.funcionarioPesquisa.fkIdPessoa.sobreNome}"/>
+                                                                      <p:outputLabel value="Nº Cartão Identidade:"/>
+                                                                      <f:validateBean disabled="true">
+                                                                           <p:inputNumber id="numeroCartao" size="34" value="#{rhFeriasNovasBean.funcionarioPesquisa.numeroCartao}" decimalPlaces="0" thousandSeparator="" minValue="0"/>
+                                                                      </f:validateBean>
+                                                                 </h:panelGrid>
+                                                            </f:validateBean>
+                                                       </center>
+                                                  </p:panel>
+                                                  <p:panel>
+                                                       <p:commandButton style="width: 170px" icon="ui-icon-search" value="Pesquisar" 
+                                                                        action="#{rhFeriasNovasBean.pesquisarFuncionarios()}" 
+                                                                        process="gridPesquisar" update="dataTable"/>
+                                                       <p:commandButton style="width: 170px" action="#{rhFeriasNovasBean.limparPesquisaFuncionarios()}"
+                                                                        process="@this" value="Limpar" update="panelPesquisar"/>
+                                                       <p:commandButton style="width: 170px" value="Fechar" type="button"
+                                                                        onclick="PF('dialogPesquisaFuncionario').hide()"/>
+                                                  </p:panel>
+                                             </h:panelGrid>
+                                             <p:dataTable id="dataTable" rows="3" paginator="true" paginatorPosition="bottom" style="width: 100%"
+                                                          var="funcionario" value="#{rhFeriasNovasBean.funcionariosPesquisados}" 
+                                                          emptyMessage="Nenhum registro de funcionário encontrado">
+                                                  <p:column headerText="Nome Completo">
+                                                       <p:outputLabel value="#{funcionario.fkIdPessoa.nome} 
+                                                                      #{funcionario.fkIdPessoa.nomeDoMeio} 
+                                                                      #{funcionario.fkIdPessoa.sobreNome}"/>
+                                                  </p:column>
+                                                  <p:column headerText="Nº Cartão Identidade">
+                                                       #{funcionario.numeroCartao}
+                                                  </p:column>
+                                                  <p:column headerText="Unidade Hospitalar">
+                                                       #{funcionario.fkIdCentroHospitalar.fkIdInstituicao.descricao}
+                                                  </p:column>
+                                                  <p:column headerText="Função/Cargo">
+                                                       #{funcionario.fkIdFuncao.descricao}
+                                                  </p:column>
+                                                  <p:column headerText="Estado">
+                                                       #{funcionario.fkIdEstadoFuncionario.descricao}
+                                                  </p:column>
+                                                  <p:column headerText="--------------">
+                                                       <p:commandButton disabled="#{funcionario.fkIdEstadoFuncionario.descricao == 'Reformado' or funcionario.fkIdEstadoFuncionario.descricao == 'Demitido'}"
+                                                                        value="Selecionar" process="@this" 
+                                                                        update=":formulario:panelFoto :formulario:panelCampos"
+                                                                        onclick="PF('dialogPesquisaFuncionario').hide()"
+                                                                        actionListener="#{rhFeriasNovasBean.selecionarFuncionario(funcionario)}"/>
+                                                  </p:column>
+                                             </p:dataTable>
+                                        </p:panel>
+                                   </center>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+
+               </ui:define>
+
+          </ui:composition>
+
+     </h:body>
+</html>

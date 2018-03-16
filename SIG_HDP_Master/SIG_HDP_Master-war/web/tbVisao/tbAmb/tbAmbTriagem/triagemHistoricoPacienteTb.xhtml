@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <p:dialog header="#{msn_tb.hPaciente}" widgetVar="dlgtriagemHistPacTb" resizable="false" draggable="false" responsive="true" 
+                  showEffect="explode" hideEffect="explode" width="55%">
+            <p:panelGrid id="detalhe" columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-2,ui-grid-col-10">                
+                <p:outputLabel for="pacienteH" value="#{msn_tb.lb_paciente}" />
+                <p:outputLabel id="pacienteH" value="#{tbTriagemBean.tbTriagem.fkConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                     #{tbTriagemBean.tbTriagem.fkConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                     #{tbTriagemBean.tbTriagem.fkConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                               " style="width: 90%"/>
+                
+                <p:outputLabel for="pesoH" value="#{msn_tb.peso}" />
+                <p:outputLabel id="pesoH" value="#{tbTriagemBean.tbTriagem.peso}" style="width: 90%"/>
+
+                <h:outputLabel for="alturaH" value="#{msn_tb.altura}"/>
+                <p:outputLabel id="alturaH" value="#{tbTriagemBean.tbTriagem.altura}" style="width: 90%"/>
+
+                <p:outputLabel for="temperaturaH" value="#{msn_tb.temperatura}" />
+                <p:outputLabel id="temperaturaH" value="#{tbTriagemBean.tbTriagem.temperatura}" style="width: 90%"/>
+
+                <h:outputLabel for="tensaoH" value="#{msn_tb.tensao}"/>
+                <p:outputLabel id="tensaoH" value="#{tbTriagemBean.tbTriagem.tensao}" style="width: 90%"/>
+
+                <h:outputLabel for="enfermeiroH" value="#{msn_tb.enfermeiro}"/>
+                <p:outputLabel id="enfermeiroH" value="#{tbTriagemBean.tbTriagem.fkEnfermeiro.fkIdPessoa.nome}
+                                                       #{tbTriagemBean.tbTriagem.fkEnfermeiro.fkIdPessoa.nomeDoMeio}
+                                                       #{tbTriagemBean.tbTriagem.fkEnfermeiro.fkIdPessoa.sobreNome}
+                               " style="width: 90%"/>
+
+                <h:outputLabel for="dataH" value="#{msn_tb.data_hora_triagem}"/>
+                <p:outputLabel id="dataH" value="#{tbTriagemBean.tbTriagem.dataHoraTriagem}" style="width: 90%">
+                    <f:convertDateTime pattern = "dd-mm-yyyy - hh:mm"  />
+                </p:outputLabel>
+
+                <p:outputLabel for="obsH" value="#{msn_tb.observacao}" />
+                <p:inputTextarea id="obsH" value="#{tbTriagemBean.tbTriagem.fkObservacao.descricao}" rows="10" cols="35" style="width: 95%" autoResize="false" disabled="true" scrollHeight="10"/>
+            </p:panelGrid>
+
+            <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank floatright" columnClasses="ui-grid-col-6">
+                <f:facet name="footer">
+                    <p:commandButton value="#{msn_tb.bt_fechar}" type="button" onclick="PF('dlgtriagemHistPacTb').hide()"/>
+                </f:facet> 
+            </p:panelGrid>
+        </p:dialog>
+    </body>
+</html>

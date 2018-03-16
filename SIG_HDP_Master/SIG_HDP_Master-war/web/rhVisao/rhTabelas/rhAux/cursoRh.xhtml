@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+     <h:head>
+          <title>Cursos</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Cursos</h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:growl id="msg2" autoUpdate="true"/>
+                    <br/>
+                    <center>
+                         <h:panelGrid columns="1" width="85%">
+                              <h:form id="formPesquisa">
+                                   <p:fieldset>
+                                        <br/>
+                                        <h:panelGrid cellpadding="5">
+                                             <p:commandButton style="width: 220px" icon="ui-icon-plus" onclick="PF('dialogCurso').show();"
+                                                              value="Novo Curso" action="#{rhCursoBean.setCurso(null)}" 
+                                                              update=":formCurso:fieldsetCurso :formCurso:painelEspecialidadesCurso"/>
+                                        </h:panelGrid>
+                                   </p:fieldset>
+                                   <p:dataTable id="dataTable" var="curso" value="#{rhCursoBean.findAll()}"
+                                                emptyMessage="Nenhum registro de curso encontrado"
+                                                paginator="true" paginatorPosition="bottom" rows="10">
+                                        <p:column headerText="Curso" sortBy="descDep" filterBy="#{curso.descricao}">
+                                             <center>
+                                                  #{curso.descricao}
+                                             </center>
+                                        </p:column>
+                                        <p:column headerText="Especialidades do Curso">
+                                             <center>
+                                                  <p:accordionPanel activeIndex="-1" multiple="false">
+                                                       <p:tab title="Ver">
+                                                            <p:dataTable id="dataTable" var="especialidCurso" emptyMessage="--------" paginatorAlwaysVisible="false"
+                                                                         value="#{curso.rhEspecialidadeCursoList}" paginator="true" rows="5">
+                                                                 <p:column>
+                                                                      <center>
+                                                                           <p:outputLabel value="#{especialidCurso.descricao}"/>
+                                                                      </center>
+                                                                 </p:column>
+                                                            </p:dataTable>
+                                                       </p:tab>
+                                                  </p:accordionPanel>
+                                             </center>
+                                        </p:column>
+                                        <p:column headerText="--------------------">
+                                             <center>
+                                                  <p:menuButton value="Opções">
+                                                       <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogCurso').show();"
+                                                                   action="#{rhCursoBean.setCurso(curso)}" process="dataTable" 
+                                                                   partialSubmit="true" update=":formCurso:fieldsetCurso :formCurso:painelEspecialidadesCurso"/>
+                                                       <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                                                   action="#{rhCursoBean.setCursoRemover(curso)}"/>
+                                                  </p:menuButton>
+                                             </center>
+                                        </p:column>
+                                   </p:dataTable>
+                                   <p:confirmDialog message="Tem certeza que pretende remover o curso selecionado ?"
+                                                    header="Remover Curso" severity="alert" widgetVar="confirmDialogRemover">
+                                        <p:commandButton value="Sim" actionListener="#{rhCursoBean.remove()}" process="@this"
+                                                         update="dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                                        <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                                   </p:confirmDialog>
+                              </h:form>
+                         </h:panelGrid>
+                    </center>
+
+                    <center>
+                         <p:dialog header="Curso" closable="false" showEffect="fade" width="650px"
+                                   widgetVar="dialogCurso" modal="true" closeOnEscape="true" position="top">
+                              <h:form id="formCurso">
+                                   <p:fieldset id="fieldsetCurso">
+                                        <h:panelGrid columns="3" cellpadding="5">
+                                             <p:outputLabel value="Nome do Curso*:"/>
+                                             <p:inputText value="#{rhCursoBean.curso.descricao}" id="curso" style="width: 190px"
+                                                          required="true" requiredMessage="Indique o nome do curso"/>
+                                        </h:panelGrid>
+
+                                        <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                                             <p:commandButton value="Guardar" action="#{rhCursoBean.create()}" style="width: 150px"
+                                                              rendered="#{rhCursoBean.curso.pkIdCurso == null}" process="curso @this" partialSubmit="true"
+                                                              onclick="PF('dialogCurso').hide()" update=":formPesquisa:dataTable"/>
+                                             <p:commandButton value="Guardar Edição" action="#{rhCursoBean.edit()}" style="width: 150px"
+                                                              rendered="#{rhCursoBean.curso.pkIdCurso != null}"  process="curso @this" partialSubmit="true"
+                                                              onclick="PF('dialogCurso').hide()" update=":formPesquisa:dataTable"/>
+                                             <p:commandButton value="Fechar" onclick="PF('dialogCurso').hide()" style="width: 150px" process="@this" 
+                                                              actionListener="#{rhCursoBean.setCurso(null)}"/>
+                                        </h:panelGrid>
+                                   </p:fieldset>
+                                   <p:panel header="Especialidades do Curso" id="painelEspecialidadesCurso">
+                                        <h:panelGrid columns="3" cellpadding="5" rendered="#{rhCursoBean.curso.pkIdCurso != null}">
+                                             <p:outputLabel value="Nome da Especialidade do Curso*:"/>
+                                             <p:inputText value="#{rhEspecialidadeCursoBean.especialidadeCurso.descricao}" 
+                                                          required="true" requiredMessage="Indique o nome da especialidade do curso"
+                                                          id="especialidadeCurso" style="width: 190px"/>
+                                             <p:commandButton value="Guardar" action="#{rhEspecialidadeCursoBean.createPorCurso(rhCursoBean.curso)}" 
+                                                              process="especialidadeCurso @this" partialSubmit="true"
+                                                              update=":formPesquisa:dataTable painelEspecialidadesCurso" style="width: 150px"/>
+                                        </h:panelGrid>
+                                        <p:dataTable id="dataTable" var="especialidadeCurso" emptyMessage="--------" paginator="true" rows="5"
+                                                     value="#{rhCursoBean.curso.rhEspecialidadeCursoList}" paginatorAlwaysVisible="false" >
+                                             <p:column>
+                                                  <center>
+                                                       <p:outputLabel value="#{especialidadeCurso.descricao}"/>
+                                                  </center>
+                                             </p:column>
+                                             <p:column headerText="--------------------">
+                                                  <center>
+                                                       <p:menuButton value="Opções">
+                                                            <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogEspecialidadeCurso').show();"
+                                                                        action="#{rhEspecialidadeCursoBean.setEspecialidadeCursoEditar(especialidadeCurso)}" 
+                                                                        process="dataTable" partialSubmit="true" update=":formEspecialidadeCurso:fieldset"/>
+                                                            <p:menuitem value="Remover" icon="ui-icon-trash" process="@this" update=":formPesquisa:dataTable dataTable"
+                                                                        action="#{rhEspecialidadeCursoBean.removeAndLoad(especialidadeCurso, rhCursoBean.curso)}"/>
+                                                       </p:menuButton>
+                                                  </center>
+                                             </p:column>
+                                        </p:dataTable>
+
+                                   </p:panel>
+                              </h:form>
+                         </p:dialog>
+
+                         <p:dialog header="Editar Especialidade de Curso" closable="true" showEffect="fade" width="500px"
+                                   widgetVar="dialogEspecialidadeCurso" modal="true" closeOnEscape="true">
+                              <h:form id="formEspecialidadeCurso">
+                                   <p:fieldset id="fieldset">
+                                        <h:panelGrid columns="2" cellpadding="5">
+                                             <p:outputLabel value="Nome da Especialidade do Curso*:"/>
+                                             <p:inputText value="#{rhEspecialidadeCursoBean.especialidadeCursoEditar.descricao}" style="width: 190px"
+                                                          required="true" requiredMessage="Indique o nome da especialidade do curso"/>
+                                        </h:panelGrid>
+
+                                        <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                                             <p:commandButton value="Guardar Edição" action="#{rhEspecialidadeCursoBean.edit()}" 
+                                                              style="width: 150px" partialSubmit="true" process="@form" 
+                                                              update=":formPesquisa:dataTable :formCurso:painelEspecialidadesCurso"
+                                                              onclick="PF('dialogEspecialidadeCurso').hide()"/>
+                                             <p:commandButton value="Fechar" onclick="PF('dialogEspecialidadeCurso').hide()" style="width: 150px" process="@this" 
+                                                              actionListener="#{rhEspecialidadeCursoBean.setEspecialidadeCursoEditar(null)}"/>
+                                        </h:panelGrid>
+                                   </p:fieldset>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

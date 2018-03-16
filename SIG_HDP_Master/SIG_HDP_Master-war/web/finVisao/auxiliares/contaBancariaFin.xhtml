@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <h1>#{msgs.financas} -> #{msgs.contaBancaria}</h1>
+        <p:messages id="msg" autoUpdate="true" closable="true"/>
+        <br/>
+        <center>
+            <h:panelGrid columns="1" width="70%">
+                <h:form id="formPesquisa">
+                    #{detetorAtualizacaoPagina.checkAtualizacao("")}
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3" style="width: 100%">
+
+                            <p:outputLabel value="#{msgs.banco}: "/>
+                            <p:selectOneMenu id="comboBancoPesquisa" value="#{finContaBancariaBean.finContaBancariaPesquisa.fkIdBanco.pkIdBanco}"                                                    
+                                             style="width: 96%">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{finBancoBean.findAll()}" var="banco" 
+                                               itemLabel="#{banco.nomeBanco}" itemValue="#{banco.pkIdBanco}"/>
+                            </p:selectOneMenu>
+
+                            <f:validateBean disabled="true">
+                                <p:outputLabel value="#{msgs.numeroDaConta}: "/>
+                                <p:inputText id="numeroContaPesquisa" style="width: 100%" value="#{finContaBancariaBean.finContaBancariaPesquisa.numeroConta}"/>
+                            </f:validateBean>
+
+                            <br/>
+                            <h:panelGrid columns="2" cellpadding="3" style="width: 100%">
+                                <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{finContaBancariaBean.pesquisar()}" 
+                                                 icon="ui-icon-search" ajax="true" partialSubmit="true" update="comboBancoPesquisa numeroContaPesquisa dataTable"/>
+                                <p:commandButton value="#{msgs.novo}" style="width: 100%" icon="ui-icon-plus" onclick="PF('dialogNovo').show();" partialSubmit="true" process="@this" update="@this"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+
+                    <p:dataTable id="dataTable" var="contaBancaria" value="#{finContaBancariaBean.getFinContaBancariaLista()}"
+                                 style="width: 100%" emptyMessage="Sem Contas Bancárias"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+                        <p:column headerText="#{msgs.banco}">
+                            <center>                                        
+                                #{contaBancaria.fkIdBanco.nomeBanco}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.numeroDaConta}">
+                            <center>                                        
+                                #{contaBancaria.numeroConta}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.opcoes}">
+                            <center>
+                                <p:commandButton value="#{msgs.editar}" icon="ui-icon-pencil" onclick="PF('dialogEditar').show();"
+                                                 action="#{finContaBancariaBean.setFinContaBancariaEditar(contaBancaria)}"
+                                                 process="@this" partialSubmit="true" update=":formEditar:editarBancoConta :formEditar:editarNumeroConta"/>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </h:panelGrid>
+        </center>
+
+        <center>
+            <p:dialog header="#{msgs.nova} #{msgs.contaBancaria}" closable="false" showEffect="fade"
+                      widgetVar="dialogNovo" modal="true" closeOnEscape="true"
+                      width="40%" height="180px">
+                <h:form id="formNovaConta">
+                    <p:growl autoUpdate="true"/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="4" width="100%">
+                            <p:outputLabel value="#{msgs.banco}*:"/>
+                            <p:selectOneMenu id="comboBanco" value="#{finContaBancariaBean.finContaBancaria.fkIdBanco.pkIdBanco}"                                                    
+                                             style="width: 96%" required="true" requiredMessage="Indique o Banco">
+                                <f:selectItems value="#{finBancoBean.findAll()}" var="banco" 
+                                               itemLabel="#{banco.nomeBanco}" itemValue="#{banco.pkIdBanco}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="#{msgs.numeroDaConta}*: "/>
+                            <p:inputText id="numeroConta" style="width: 100%" value="#{finContaBancariaBean.finContaBancaria.numeroConta}"
+                                         required="true" requiredMessage="Indique o Número da Conta Bancária"/>
+
+                            <br/>
+                            <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                <p:commandButton value="#{msgs.gravar}" icon="ui-icon-disk" style="width: 100%" action="#{finContaBancariaBean.create()}"
+                                                 partialSubmit="true" 
+                                                 process="@this comboBanco numeroConta"
+                                                 update=":formPesquisa:dataTable comboBanco numeroConta"/>
+                                <p:commandButton value="#{msgs.fechar}" icon="ui-icon-close" style="width: 100%" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"
+                                                 action="#{finContaBancariaBean.limpar()}"/>   
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+        </center>
+
+        <center>
+            <p:dialog header="#{msgs.editar} #{msgs.contaBancaria}" closable="false" showEffect="fade"
+                      widgetVar="dialogEditar" modal="true" closeOnEscape="true" width="40%" height="180px">
+                <h:form id="formEditar">
+                    <p:growl autoUpdate="true"/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="4" width="100%">
+                            <p:outputLabel value="#{msgs.banco}*: "/>
+                            <p:selectOneMenu id="editarBancoConta" value="#{finContaBancariaBean.finContaBancariaEditar.fkIdBanco.pkIdBanco}"                                                    
+                                             style="width: 96%" required="true" requiredMessage="Indique o Banco">
+                                <f:selectItems value="#{finBancoBean.findAll()}" var="banco" 
+                                               itemLabel="#{banco.nomeBanco}" itemValue="#{banco.pkIdBanco}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="#{msgs.numeroDaConta}*: "/>
+                            <p:inputText id="editarNumeroConta" style="width: 100%" value="#{finContaBancariaBean.finContaBancariaEditar.numeroConta}"
+                                         required="true" requiredMessage="Indique o Número da Conta Bancaria"/>
+
+                            <br/>
+                            <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                <p:commandButton value="#{msgs.gravarEdicao}" icon="ui-icon-disk" style="width: 100%" action="#{finContaBancariaBean.editarContaBancariaPesquisar()}"
+                                                 update=":formPesquisa:dataTable"/>
+                                <p:commandButton value="#{msgs.fechar}" icon="ui-icon-close" style="width: 100%" onclick="PF('dialogEditar').hide()" partialSubmit="true" process="@this"
+                                                 action="#{finContaBancariaBean.limpar()}"/>                                    
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+        </center>
+
+    </body>
+</html>

@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+     <h:head>
+          <title>Escolas/Universidades</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Escolas/Universidades</h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:growl id="msg2" autoUpdate="true"/>
+                    <br/>
+                    <center>
+                         <h:panelGrid columns="1" width="85%">
+                              <h:form id="formPesquisa">
+                                   <p:fieldset>
+                                        <br/>
+                                        <h:panelGrid columns="1" cellpadding="5">
+                                             <p:commandButton style="width: 220px" icon="ui-icon-plus" onclick="PF('dialogEscolaUniversidade').show();"
+                                                              value="Nova Escola/Universidade" action="#{rhEscolaUniversidadeBean.setEscolaUniversidade(null)}" 
+                                                              update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                        </h:panelGrid>
+                                   </p:fieldset>
+                                   <p:dataTable id="dataTable" var="escolaUniversidade" value="#{rhEscolaUniversidadeBean.findAll()}"
+                                                emptyMessage="Nenhum registro de escola/universidade encontrado"
+                                                paginator="true" paginatorPosition="bottom" rows="10">
+                                        <p:column headerText="Escola/Universidade" filterBy="#{escolaUniversidade.descricao}">
+                                             <center>
+                                                  #{escolaUniversidade.descricao}
+                                             </center>
+                                        </p:column>
+                                        <p:column headerText="--------------------">
+                                             <center>
+                                                  <p:menuButton value="Opções">
+
+                                                       <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogEscolaUniversidade').show();"
+                                                                   action="#{rhEscolaUniversidadeBean.setEscolaUniversidade(escolaUniversidade)}" process="dataTable" 
+                                                                   partialSubmit="true" update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                                       <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                                                   action="#{rhEscolaUniversidadeBean.setEscolaUniversidadeRemover(escolaUniversidade)}"/>
+                                                  </p:menuButton>
+                                             </center>
+                                        </p:column>
+                                   </p:dataTable>
+                                   <p:confirmDialog message="Tem certeza que pretende remover a escola/universidade selecionada ?"
+                                                    header="Remover Escola/Universidade" severity="alert" widgetVar="confirmDialogRemover">
+                                        <p:commandButton value="Sim" actionListener="#{rhEscolaUniversidadeBean.remove()}" process="@this"
+                                                         update=":msg :msg2 dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                                        <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                                   </p:confirmDialog>
+                              </h:form>
+                         </h:panelGrid>
+                    </center>
+
+                    <center>
+                         <p:dialog header="Escola/Universidade" closable="false" showEffect="fade" width="35%"
+                                   widgetVar="dialogEscolaUniversidade" modal="true" closeOnEscape="true">
+                              <h:form id="formulario">
+                                   <p:fieldset>
+                                        <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                                             <p:outputLabel value="Nome da Escola/Universidade* :"/>
+                                             <p:inputText value="#{rhEscolaUniversidadeBean.escolaUniversidade.descricao}" style="width: 190px"
+                                                          required="true" requiredMessage="Indique o nome da escola/universidade"/>
+                                        </h:panelGrid>
+
+                                        <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                                             <p:commandButton value="Guardar" action="#{rhEscolaUniversidadeBean.create()}" style="width: 150px"
+                                                              rendered="#{rhEscolaUniversidadeBean.escolaUniversidade.pkIdEscolaUniversidade == null}" process="@form" partialSubmit="true"
+                                                              onclick="PF('dialogEscolaUniversidade').hide()" update=":formPesquisa:dataTable"/>
+                                             <p:commandButton value="Guardar Edição" action="#{rhEscolaUniversidadeBean.edit()}" style="width: 150px"
+                                                              rendered="#{rhEscolaUniversidadeBean.escolaUniversidade.pkIdEscolaUniversidade != null}"  process="@form" partialSubmit="true"
+                                                              onclick="PF('dialogEscolaUniversidade').hide()" update=":formPesquisa:dataTable"/>
+                                             <p:commandButton value="Fechar" onclick="PF('dialogEscolaUniversidade').hide()" style="width: 150px" process="@this" 
+                                                              actionListener="#{rhEscolaUniversidadeBean.setEscolaUniversidade(null)}"/>
+                                        </h:panelGrid>
+                                   </p:fieldset>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

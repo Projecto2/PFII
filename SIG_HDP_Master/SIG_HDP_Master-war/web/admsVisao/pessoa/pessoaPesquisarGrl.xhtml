@@ -1,0 +1,288 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>#{msgs.admissoes} -> #{msgs.paciente} -> #{msgs.pessoa}</h1>
+                <p:messages id="ms" autoUpdate="true" closable="true"/>
+                <h:form id="procuraPessoa">
+                    <p:growl autoUpdate="true"/>
+                    <br/>
+                    <p:fieldset>
+                        <div class="ui-fluid"> 
+                        <p:panelGrid columns="1" layout="grid" styleClass="ui-noborder">
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <f:validateBean disabled="true">
+                                        <p:outputLabel value="#{msgs.numeroPessoa}: "/>
+                                        <p:inputText id="numeroPessoa" value="#{admsPessoaBean.pessoaPesquisa.pkIdPessoa}"/>
+
+                                        <p:outputLabel value="#{msgs.primeiroNome}: "/>
+                                        <p:inputText id="nomePessoa" value="#{admsPessoaBean.pessoaPesquisa.nome}"
+                                                     validator="tres-caracteres-validator"/>
+
+                                        <p:outputLabel value="#{msgs.nomeDoMeio}: "/>
+                                        <p:inputText id="nomeMeioPessoa" value="#{admsPessoaBean.pessoaPesquisa.nomeDoMeio}"/>
+
+                                        <p:outputLabel value="#{msgs.sobreNome}: "/>
+                                        <p:inputText id="sobreNomePessoa" value="#{admsPessoaBean.pessoaPesquisa.sobreNome}"/>
+                                    </f:validateBean>
+                                    <p:outputLabel value="#{msgs.tipoDocIndetificacao}: "/>
+                                    <p:selectOneMenu id="comboTipoDoc" value="#{admsPessoaBean.pessoaPesquisa.grlDocumentoIdentificacaoList.get(0).fkTipoDocumentoIdentificacao.pkTipoDocumentoIdentificacao}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{grlTipoDocumentoIdentificacaoBean.tipoDocumentoIdentificacao}" var="tipoDocumento" 
+                                                       itemLabel="#{tipoDocumento.descricao}" itemValue="#{tipoDocumento.pkTipoDocumentoIdentificacao}"/>
+                                    </p:selectOneMenu>
+                                    <f:validateBean disabled="true">
+                                        <p:outputLabel value="#{msgs.numeroDocIdentificacao}: "/>
+                                        <p:inputText id="numeroIdentificacao" value="#{admsPessoaBean.pessoaPesquisa.grlDocumentoIdentificacaoList.get(0).numeroDocumento}"/>
+                                    </f:validateBean>
+                                </p:panelGrid>
+                                
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <p:outputLabel value="#{msgs.telefone}: "/>
+                                    <p:inputText id="telefone" value="#{admsPessoaBean.pessoaPesquisa.fkIdContacto.telefone1}"/>
+                                    
+                                    <p:outputLabel value="#{msgs.nacionalidade}: "/>
+                                    <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="comboNacio" value="#{admsPessoaBean.pessoaPesquisa.fkIdNacionalidade.pkIdPais}"  filter="true" filterMatchMode="contains">
+                                        <f:selectItem itemValue="#{null}" itemLabel="" />
+                                        <f:selectItems value="#{grlPaisBean.findAll()}" var="paisNacionalidade"
+                                                       itemLabel="#{paisNacionalidade.nacionalidade}" itemValue="#{paisNacionalidade.pkIdPais}" />
+                                    </p:selectOneMenu>
+                                    </f:validateBean>
+                                    
+                                    <p:outputLabel for="intervaloDeDatas" value="#{msgs.nascimento}: "/>
+                                    <p:panelGrid id="intervaloDeDatas" columns="2" layout="grid" styleClass="ui-noborder">
+                                        <p:calendar id="dataInicial" locale="pt"
+                                                    navigator="true" maxdate="#{admsPessoaBean.getMomentoActual()}" 
+                                                    value="#{admsPessoaBean.dataNascimentoInicial}"/>
+
+                                        <p:calendar id="dataFinal" locale="pt" 
+                                                    navigator="true" maxdate="#{admsPessoaBean.getMomentoActual()}" 
+                                                    value="#{admsPessoaBean.dataNascimentoFinal}"/>
+                                    </p:panelGrid>
+
+                                    <p:outputLabel value="#{msgs.sexo}: "/>
+                                    <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="comboSexo" value="#{admsPessoaBean.pessoaPesquisa.fkIdSexo.pkIdSexo}" 
+                                                     >
+                                        <f:selectItem  itemValue="#{null}" itemLabel="" />
+                                        <f:selectItems value="#{grlSexoBean.findAll()}" var="sexo" itemLabel="#{sexo.descricao}" itemValue="#{sexo.pkIdSexo}"/>
+                                    </p:selectOneMenu>
+                                    </f:validateBean>
+                                    
+                                    <p:outputLabel value="#{msgs.grupoSanguineo}: "/>
+                                    <p:selectOneMenu id="comboGrupoSanguineo" value="#{admsPessoaBean.pessoaPesquisa.fkIdGrupoSanguineo.pkIdGrupoSanguineo}">
+                                        <f:selectItem  itemValue="#{null}" itemLabel="" />
+                                        <f:selectItems value="#{diagGrupoSanguineoBean.findAll()}" var="grupo" itemLabel="#{grupo.descricaoGrupoSanguineo}" itemValue="#{grupo.pkIdGrupoSanguineo}"/>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+                            </p:panelGrid>
+                            <p:panelGrid columns="4" layout="grid" styleClass="ui-noborder">
+                                <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{admsPessoaBean.pesquisarPessoasNaoPacientes()}" icon="ui-icon-search" ajax="true" partialSubmit="true" update="numeroPessoa nomePessoa nomeMeioPessoa sobreNomePessoa comboTipoDoc numeroIdentificacao comboNacio comboSexo dataTablePessoas"/>
+                                <p:commandButton value="#{msgs.novo} #{msgs.paciente}" style="width: 100%" icon="ui-icon-plus" ajax="false" actionListener="#{admsPacienteNovoBean.limpar()}" action="/admsVisao/paciente/pacienteNovoAdms.xhtml?faces-redirect=true"/>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                        </div>
+                    </p:fieldset>
+
+                    <p:separator/>
+                    <center>
+                        <h:panelGrid columns="1" cellpadding="3" width="100%">
+                            <p:dataTable id="dataTablePessoas" var="pessoaEncontrado" value="#{admsPessoaBean.getPessoass()}"
+                                         style="width: 100%" emptyMessage="Não Existem Pessoas"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.numeroPessoa}">
+                                    <center>                                        
+                                            #{pessoaEncontrado.pkIdPessoa}
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pessoaEncontrado.nome} #{pessoaEncontrado.nomeDoMeio} #{pessoaEncontrado.sobreNome}" filterMatchMode="contains" headerText="#{msgs.nome}">
+                                        <center>        
+                                            <p:commandLink style="color: #0088cc" value="#{pessoaEncontrado.nome} #{pessoaEncontrado.nomeDoMeio} #{pessoaEncontrado.sobreNome}" 
+                                                ajax="true" partialSubmit="true" process="@this" 
+                                                actionListener="#{admsPessoaBean.setPessoaVisualizar(pessoaEncontrado)}" 
+                                                update=":formMaisDetallhes" 
+                                                onclick="PF('dialogMaisDetalhes').show();"/>
+                                        </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.docIdentificacao}">
+                                    <center>                                        
+                                            #{admsPessoaBean.getDocumentoIdentificacao(pessoaEncontrado)}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.dataNascimento}">
+                                    <center>                                      
+                                        <h:outputText value="#{pessoaEncontrado.dataNascimento}">
+                                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                        </h:outputText>
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pessoaEncontrado.fkIdSexo.descricao}" headerText="#{msgs.sexo}">
+                                    <center>        
+                                        <h:outputText value="#{pessoaEncontrado.fkIdSexo.descricao}"/>
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pessoaEncontrado.fkIdNacionalidade.nomePais}" headerText="#{msgs.nacionalidade}">
+                                    <center>        
+                                        <h:outputText value="#{pessoaEncontrado.fkIdNacionalidade.nomePais}"/>
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pessoaEncontrado.fkIdGrupoSanguineo.descricaoGrupoSanguineo}" headerText="#{msgs.grupoSanguineo}">
+                                    <center>        
+                                        <h:outputText value="#{pessoaEncontrado.fkIdGrupoSanguineo.descricaoGrupoSanguineo}"/>
+                                    </center>
+                                </p:column>
+                                <p:column filterBy="#{pessoaEncontrado.fkIdContacto.telefone1} #{pessoaEncontrado.fkIdContacto.telefone2}" filterMatchMode="contains" headerText="#{msgs.telefone}">
+                                    <center>        
+                                        <h:outputText style="margin-right: 7px" value="#{pessoaEncontrado.fkIdContacto.telefone1}"/>
+                                        <h:outputText value="#{pessoaEncontrado.fkIdContacto.telefone2}"/>
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.cadastrarComoPaciente}">
+                                    <center>                                        
+                                        <p:commandButton value="#{msgs.cadastrar}" partialSubmit="this" process="@this" update="@this dataTablePessoas"
+                                                         actionListener="#{admsPacienteNovoBean.create(pessoaEncontrado)}" icon="ui-icon-disk" ajax="true"/>
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+
+                        </h:panelGrid>
+                    </center>
+                </h:form>
+                
+                
+                <center>
+                    <p:dialog header="#{msgs.maisDetalhes}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <h:form id="formMaisDetallhes">
+                            <p:tabView id="tabPessoa" style="height: 250px">
+                                       
+                                <p:tab title="#{msgs.dadosDaPessoa}">
+                                    <h:panelGrid columns="2">
+                                        <p:outputLabel value="#{msgs.numeroPessoa}: "/>
+                                        #{admsPessoaBean.getPessoaVisualizar().pkIdPessoa}
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="#{msgs.dadosPessoais}">
+                                        <h:panelGrid columns="2" width="100%">
+                                            <p:outputLabel value="#{msgs.nomeCompleto}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().nome} #{admsPessoaBean.getPessoaVisualizar().nomeDoMeio} #{admsPessoaBean.getPessoaVisualizar().sobreNome} 
+
+                                            <p:outputLabel value="#{msgs.dataNascimento}: "/>
+                                            <h:outputText value="#{admsPessoaBean.getPessoaVisualizar().dataNascimento}">
+                                                <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                            </h:outputText>
+                                            
+                                            <p:outputLabel value="#{msgs.nacionalidade}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdNacionalidade.nomePais}
+
+                                            <p:outputLabel value="#{msgs.sexo}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdSexo.descricao}
+
+                                            <p:outputLabel value="#{msgs.estadoCivil}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdEstadoCivil.descricao}
+                                        </h:panelGrid>
+                                </p:tab>
+
+
+                                <p:tab title="#{msgs.filiacao}">
+                                        <h:panelGrid columns="2" width="100%">
+                                            <p:outputLabel value="#{msgs.nomeCompletoPai}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().nomePai}
+
+                                            <p:outputLabel value="#{msgs.nomeCompletoMae}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().nomeMae}
+                                        </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="#{msgs.contatos}">      
+                                        <h:panelGrid columns="2" width="100%">
+                                            <p:outputLabel value="#{msgs.telefone} 1: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdContacto.telefone1}
+
+                                            <p:outputLabel value="#{msgs.telefone} 2: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdContacto.telefone2}
+
+                                            <p:outputLabel value="#{msgs.email} 1: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdContacto.email1}
+
+                                            <p:outputLabel value="#{msgs.email} 2: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdContacto.email2}
+                                        </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="#{msgs.endereco}"> 
+                                        <h:panelGrid columns="2" width="100%">
+                                            <p:outputLabel value="#{msgs.pais}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdEndereco.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}
+                                            
+                                            <p:outputLabel value="#{msgs.provincia}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdEndereco.fkIdMunicipio.fkIdProvincia.nomeProvincia}
+                                            
+                                            <p:outputLabel value="#{msgs.distrito}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdEndereco.fkIdDistrito.descricao}
+                                            
+                                            <p:outputLabel value="#{msgs.comuna}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdEndereco.fkIdComuna.descricaoComuna}
+
+                                            <p:outputLabel value="#{msgs.bairro}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdEndereco.bairro}
+
+                                            <p:outputLabel value="#{msgs.rua}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdEndereco.rua}
+
+                                            <p:outputLabel value="#{msgs.numeroCasa}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdEndereco.numeroCasa}
+                                        </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="#{msgs.outros}">
+                                        <h:panelGrid columns="2" width="100%">
+                                            <p:outputLabel value="#{msgs.grupoSanguineo}: "/>
+                                            #{admsPessoaBean.getPessoaVisualizar().fkIdGrupoSanguineo.descricaoGrupoSanguineo}
+                                        </h:panelGrid>
+                                </p:tab>
+
+                            </p:tabView>
+                            <br/>
+                            <p:commandButton value="#{msgs.fechar}" onclick="PF('dialogMaisDetalhes').hide()" partialSubmit="true" process="@this"
+                                             actionListener="#{admsPessoaBean.limpar()}"/> 
+
+                        </h:form>
+
+                    </p:dialog>
+                </center>
+                
+                <p:separator/>
+                <h:form id="voltar">
+                    <center>
+                        <p:commandButton value="#{msgs.voltar}" icon="ui-icon-arrowreturnthick-1-w" ajax="false" actionListener="#{admsPessoaBean.limparPesquisa()}"
+                                     action="/admsVisao/paciente/pacienteAdms.xhtml?faces-redirect=true" immediate="true"/> 
+                    </center>
+                </h:form>
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

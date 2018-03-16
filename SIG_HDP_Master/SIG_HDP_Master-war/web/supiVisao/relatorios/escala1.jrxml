@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="escala1" language="groovy" pageWidth="690" pageHeight="612" orientation="Landscape" columnWidth="650" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f1e84cee-1148-478a-b2cb-143c8824089f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="idFuncionario" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select idPeriodoTrabalhoEscala, descricaoSemana,horaDeEntrada,horaDeSaida, siglaHorario,idSemanaEscalado,dataEscala, idEscala,primeiroNome,ultimoNome,SU_Grupo.descricao,cargaHorariaSemanal ,cargaHorariaMensal,  grh_seccaoTrabalho.descricao AS descricaoSeccao
+from SU_PeriodoTrabalhoEscala, DiaSemana, horario, SU_SemanaEscalado, SU_Escala,SU_GrupoFuncionario, SU_Grupo, grh_funcionario, grh_pessoa,grh_seccaoTrabalho, grh_cargo
+where fk_idEscala = idEscala and idSemanaEscalado = fk_idSemanaEscalado
+and SU_GrupoFuncionario.fk_idGrupo = idGrupo and SU_Escala.fk_idGrupo = idGrupo
+and SU_GrupoFuncionario.fk_idFuncionario = idFuncionario
+and grh_funcionario.grh_pessoa_idPessoa = grh_pessoa.idPessoa
+and grh_cargo_idCargo = idCargo and grh_seccaoTrabalho_idSeccaoTrabalho = idSeccaoTrabalho
+and fk_idDiaSemana=idDiaSemana and fk_idHorario = idHorario
+and idFuncionario = $P{idFuncionario} order by idEscala;]]>
+	</queryString>
+	<field name="idPeriodoTrabalhoEscala" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descricaoSemana" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="horaDeEntrada" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="horaDeSaida" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="siglaHorario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="idSemanaEscalado" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dataEscala" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="idEscala" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="primeiroNome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ultimoNome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cargaHorariaSemanal" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="cargaHorariaMensal" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descricaoSeccao" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="91" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="8b5a57b8-bbf9-4172-ba7f-18a2715a238d" key="staticText-17" x="120" y="33" width="418" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="24" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[HOSPITAL DIVINA PROVIDÊNCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8836b206-9479-44dc-95e2-33ea1cd902bb" key="staticText-16" x="252" y="2" width="171" height="32"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA  MINISTÉRIO DA SAÚDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="fd71b6e0-e80f-410d-ba45-e8464f91e3ae" key="staticText-18" x="153" y="62" width="362" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AVENIDA PEDRO DE CASTRO VANDUNÉM "LOY" - K. KIAXE - LUANDA TEL-FAX (02) 470781 470507 EMAIL: hospdp@bonet.net]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="55" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="eed8eb7f-9dbe-4f33-b069-45def51f94cb" key="staticText-6" x="221" y="2" width="88" height="20" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Escala de]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="dbfdfcc1-0cdb-4ed3-bad8-3c0a4882b6bf" x="150" y="21" width="391" height="23" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{descricaoSeccao}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM-yy">
+				<reportElement uuid="2122eaf3-2e7b-48db-829c-23a1636fb67e" x="308" y="2" width="230" height="20" forecolor="#006699"/>
+				<textElement>
+					<font size="15" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dataEscala}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="48" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="44e0e7c7-8210-461b-bae4-659bc5c37ed9" x="276" y="1" width="42" height="20"/>
+				<textElement/>
+				<text><![CDATA[Equipa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0cd08e7e-169c-424d-9a6f-a6719b185d4f" x="3" y="1" width="79" height="20"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Funcionário:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="67f8ac11-1b78-441d-8860-704aaec4d86d" x="0" y="27" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Turno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="37ddab74-e9da-4c6c-9206-0b9e3087ca00" x="119" y="26" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Hora De Entrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="632d13ad-a9a4-49cc-a291-8a2d1208703c" x="240" y="27" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Hora De Saida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d02e11de-f749-43b7-a178-6fdb244016b8" x="366" y="27" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Dia da Semana]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="12a998f9-bad8-4f58-8f61-17bd887f4091" x="318" y="2" width="78" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="53eb2248-2e95-4010-bae2-e874919f8d67" x="75" y="1" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{primeiroNome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="31bbdce5-ef1c-4eb3-b92d-981b8e57d281" x="169" y="1" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ultimoNome}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="08701dc0-7deb-4dd6-ad1f-0cacc94ffa49" x="-40" y="47" width="700" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="5e3ad8aa-5b05-4f86-94dd-be5b86a6d8bd" x="490" y="27" width="48" height="20"/>
+				<textElement/>
+				<text><![CDATA[CHS]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="2d3ac07b-02a1-4b62-b02f-07808d31330f" x="437" y="2" width="43" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cargaHorariaMensal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="998534d6-9413-4b7a-9c80-14d5fcfb15a1" x="391" y="3" width="51" height="18"/>
+				<textElement/>
+				<text><![CDATA[CHM:]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField pattern="HH.mm">
+				<reportElement uuid="8d1e26b6-a139-4b35-9748-cbeee628252a" x="120" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{horaDeEntrada}]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH.mm">
+				<reportElement uuid="bcbeedd5-6162-40b2-9f76-9b94ea796894" x="242" y="1" width="98" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{horaDeSaida}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3bed00f9-a468-4dea-a209-85cd49aa8190" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{siglaHorario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="93c39cb9-b4cc-45d4-99c6-109eaef760d1" x="367" y="1" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{descricaoSemana}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c5bee0e7-1b9a-4fd3-babc-2d0579d57281" x="490" y="1" width="48" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{cargaHorariaSemanal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="37" splitType="Stretch">
+			<line>
+				<reportElement uuid="05c234f7-3be2-4a97-9938-15a25bc38875" x="7" y="31" width="284" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="49ab78d0-19aa-42be-a60c-eede83f98d4a" x="382" y="31" width="269" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="3cb04c00-a36a-4a1f-805d-a47c7e78f3db" x="79" y="0" width="155" height="20" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[O Chefe de Secção]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6d1f9750-8bfe-4196-b2f2-97f8ccf8cbf4" x="450" y="3" width="201" height="20" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[A Direcção de Enfermagem]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="2" splitType="Stretch"/>
+	</summary>
+</jasperReport>

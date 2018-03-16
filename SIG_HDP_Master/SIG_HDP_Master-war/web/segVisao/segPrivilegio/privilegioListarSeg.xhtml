@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+   <body>
+
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalSeg.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralSeg.xhtml"/>
+         </ui:define>
+            <h2>Segurança -> Privilégios</h2>
+
+         <ui:define name="center">
+            <h2>Segurança -> Privilégios</h2>
+            <p:messages id="msg" autoUpdate="true" closable="true"/>
+            <p:growl autoUpdate="true"/>
+            <p:fieldset>
+               <h:form id="formPrincipal">  
+                  <p:fieldset>
+                     <h:panelGrid columns="2" cellpadding="3" id="gridCamposPesquisa">
+
+                        <p:outputLabel value="Descrição"/>
+                        <f:validateBean disabled="true">
+                           <p:inputText value="#{segPrivilegioListarBean.privilegioPesquisa.descricao}"/>
+                        </f:validateBean>
+                        <p></p><p></p>
+                        <h:panelGrid columns="3">
+                           <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true"
+                                            action="#{segPrivilegioListarBean.pesquisarPrivilegios()}" update="resultado"
+                                            process="gridCamposPesquisa" />
+
+                           <p:commandButton value="Novo" icon="ui-icon-plus"
+                                            process="@this" update="resultado"
+                                            onclick="PF('dialogNovo').show()"/>
+
+                        </h:panelGrid>                                                      
+                     </h:panelGrid>
+                  </p:fieldset>
+                  <p:dataTable id="resultado" var="item" value="#{segPrivilegioListarBean.privilegiosPesquisados}"
+                               rows="12" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+                               {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                               {RowsPerPageDropdown}" rowsPerPageTemplate="12,16,20" 
+                               emptyMessage="Nenhuma Privilegio encontrada de momento. Aguardando pesquisa.">
+                     <f:facet name="header">
+                        Resultados Encontrados
+                     </f:facet>                   
+                     <p:column headerText="Descrição" sortBy="#{item.descricao}">
+                        <center>
+                           <p:outputLabel value="#{item.descricao}" />                         
+                        </center>
+                     </p:column>
+
+                     <p:column headerText="------">
+                        <center>
+                           <p:menuButton value="Opções">
+                              <p:menuitem value="Editar" partialSubmit="true"
+                                          onclick="PF('dialogEditar').show()" 
+                                          update=":formEditar:painelEditar" 
+                                          process="@this" icon="ui-icon-pencil"
+                                          actionListener="#{segPrivilegioListarBean.setPrivilegioEditar(item)}">
+                              </p:menuitem>
+                              <p:menuitem value="Eliminar" partialSubmit="true"
+                                          onclick="PF('dialogEliminar').show()" 
+                                          update=":formEditar:painelEditar" 
+                                          process="@this" icon="ui-icon-trash"
+                                          actionListener="#{segPrivilegioListarBean.setPrivilegioEditar(item)}">
+                              </p:menuitem>
+
+                           </p:menuButton>
+                        </center>
+                     </p:column>
+                  </p:dataTable>
+               </h:form>
+
+               <p:dialog header="Novo Privilegio" closable="false" showEffect="fade"
+                         widgetVar="dialogNovo" modal="true" closeOnEscape="true"
+                         width="35%" >
+                  <h:form id="formNovo">
+                     <center><h:panelGrid columns="2" cellpadding="3" id="gridCamposPesquisa">
+                           <p:outputLabel value="Descrição"/>
+                           <p:inputText required="true" requiredMessage="Por favor, descreva a Privilegio." 
+                                        value="#{segPrivilegioListarBean.privilegioEditar.descricao}"/>
+                        </h:panelGrid>
+                        <p:commandButton value="Guardar" process="@form" update=":formPrincipal:resultado"
+                                         icon="ui-icon-check" onclick="PF('dialogNovo').hide()"
+                                         action="#{segPrivilegioListarBean.criar()}" ajax="true"/>
+
+                        <p:commandButton value="Fechar" icon="ui-icon-close"
+                                         onclick="PF('dialogNovo').hide()"
+                                         action="#{segPrivilegioListarBean.setPrivilegioEditar(null)}"/>
+                     </center></h:form>
+               </p:dialog>
+
+               <p:dialog header="Editar Privilegio" closable="false" showEffect="fade"
+                         widgetVar="dialogEditar" modal="true" closeOnEscape="true"
+                         width="35%" >
+                  <h:form id="formEditar">
+                     <center><h:panelGrid columns="2" cellpadding="3" id="painelEditar">
+                           <p:outputLabel value="Descrição"/>
+                           <f:validateBean disabled="true">
+                              <p:inputText id="descricao" value="#{segPrivilegioListarBean.privilegioEditar.descricao}"/>
+                           </f:validateBean>
+                        </h:panelGrid>
+                        <p:commandButton value="Guardar" process="@form descricao"
+                                         update="formPrincipal:resultado"
+                                         icon="ui-icon-check" onclick="PF('dialogEditar').hide()"
+                                         action="#{segPrivilegioListarBean.editar()}"/>
+
+                        <p:commandButton value="Fechar" icon="ui-icon-close"
+                                         onclick="PF('dialogEditar').hide()"
+                                         action="#{segPrivilegioListarBean.setPrivilegioEditar(null)}"/>
+                     </center></h:form>
+               </p:dialog> 
+
+               <center>
+                  <h:form id="formEliminar">
+                     <p:confirmDialog message="Deseja eliminar o privilegio? Pode estar a ser utilizado... "
+                                      header="Eliminar Privilegio" severity="alert"
+                                      widgetVar="dialogEliminar">
+
+                        <p:commandButton value="Sim" actionListener="#{segPrivilegioListarBean.eliminar()}"
+                                         update=":formPrincipal:resultado" ajax="true"
+                                         oncomplete="PF('dialogEliminar').hide();"/>
+
+                        <p:commandButton value="Não" onclick="PF('dialogEliminar').hide();" type="button" />
+                     </p:confirmDialog>
+                  </h:form>
+               </center>
+            </p:fieldset>
+         </ui:define>
+      </ui:composition>
+   </body>
+</html>

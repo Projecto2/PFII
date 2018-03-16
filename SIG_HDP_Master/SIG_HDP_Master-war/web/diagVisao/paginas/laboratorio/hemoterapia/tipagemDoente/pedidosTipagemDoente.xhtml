@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagTipagemDoenteBean.temMensagemPendente == true}">
+            <c:if test="${diagTipagemDoenteBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagTipagemDoenteBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagTipagemDoenteBean.tipoMensagemPendente == 'Erro'}">
+                #{diagTipagemDoenteBean.getMensagem()}
+            </c:if>
+
+        </c:if>
+
+        <h2>Laboratório -> Hemoterápia -> Tipagem à Pacientes -> Solicitações</h2>
+
+        <center>
+
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+            <h:form prependId="false" >
+                <br/>
+                <p:poll listener="#{diagTipagemDoenteBean.getSolicitacoesTipagensDoentes()}" update="dataTable" interval="5"/>
+                <p:dataTable  id="dataTable" rows="12" paginator="true" paginatorPosition="bottom" rowKey="#{solicitacao.pkIdSolicitacaoTipagemDoente}" selectionMode="single"
+                              var="solicitacao" value="#{diagTipagemDoenteBean.getSolicitacoesTipagensDoentes()}"
+                              emptyMessage="Nenhuma solicitação de tipagem sanguínea encontrada.">
+
+                    <p:column headerText="Código da Solicitação">
+                        <center>
+                            <h:outputText value="#{solicitacao.pkIdSolicitacaoTipagemDoente}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nº do Processo">
+                        <center>
+                            <h:outputText value="#{solicitacao.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nº do Subprocesso">
+                        <center>
+                            <h:outputText value="#{solicitacao.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Paciente" filterBy="#{solicitacao.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}">
+                        <center>
+                            #{solicitacao.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                            #{solicitacao.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                            #{solicitacao.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Documento de Identificação">
+                        <center>
+                            #{diagPessoaBean.getDocumentoIdentificacao(solicitacao.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa)}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Médico" filterBy="#{solicitacao.fkIdFuncionario.fkIdPessoa.nome}">
+                        <center>
+                            #{solicitacao.fkIdFuncionario.fkIdPessoa.nome} 
+                            #{solicitacao.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                            #{solicitacao.fkIdFuncionario.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data da Solicitação" >
+                        <center>
+                            <h:outputText value="#{solicitacao.dataSolicitacao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>		
+                            </h:outputText>
+                        </center>
+                    </p:column>
+
+                    <p:column>
+                        <center>
+                            <p:menuButton value="Opções">
+                                <p:separator/>
+                                <p:menuitem value="Ficha do Paciente" icon="ui-icon-info"
+                                            action="#{diagTipagemDoenteBean.setDiagSolicitacaoTipagemDoenteVisualizar(solicitacao)}" onclick="PF('dialogVisualizar').show();"
+                                            process="@this" update=":formVisual"/>
+                                <p:separator/>
+                                <p:menuitem value="Realizar Tipagem" action="#{diagTipagemDoenteBean.selecionarSolicitacaoTipagemDoente(solicitacao)}" />
+                                <p:separator/>
+                            </p:menuButton>
+
+                        </center>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </center>
+
+        <p:dialog closable="false" showEffect="fade" widgetVar="dialogVisualizar" modal="true" resizable="false" width="40%">
+
+            <h:form id="formVisual">
+                <h:panelGrid columns="2" class="float-right">
+                    <p:commandButton value="Fechar" onclick="dialogVisualizar.hide()" 
+                                     action="#{diagTipagemDoenteBean.setDiagSolicitacaoTipagemDoenteVisualizar(null)}" process="@this" style="width: 130px"/>
+                </h:panelGrid>
+
+                <span style="font-size: 14px; font-weight: bold;">Nº do Processo: #{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}</span>
+                <br/>
+                <span style="font-size: 14px; font-weight: bold;">Nº do Subprocesso: #{diagTipagemDoenteBean.diagTipagemDoenteVisualizar.fkIdSolicitacaoTipagemDoente.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}</span>
+
+                <p/>
+                
+                <p:tabView id="tabVisualizar" style="height: 500%">
+                    <p:tab title="Dados Pessoais">
+                        <h:panelGrid columns="2" cellpadding="4">
+                            <h3>Nome Completo: </h3>
+                            <h:panelGroup>
+                                #{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                #{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                #{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                            </h:panelGroup>
+
+                            <h3>Data de Nascimento: </h3>
+                            <h:outputText style="border: none" value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.dataNascimento}">
+                                <f:convertDateTime pattern="dd-MM-yyyy"/>
+                            </h:outputText>
+                            <h3>Sexo: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdSexo.descricao}"/>
+                            <h3>Nacionalidade: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdNacionalidade.nomePais}"/>
+                            <h3>Estado Civil: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEstadoCivil.descricao}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Filiação">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <h3>Nome do Pai: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomePai}"/>
+                            <h3>Nome da Mãe: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeMae}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Contacto">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <h3>Telefone1: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.telefone1}"/>
+                            <h3>Telefone2: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.telefone2}"/>
+                            <h3>Email1: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.email1}"/>
+                            <h3>Email2: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.email2}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Endereço">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <h3>País: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}"/>
+                            <h3>Província: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.nomeProvincia}"/>
+                            <h3>Município: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.nomeMunicipio}"/>
+                            <h3>Distrito: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdDistrito.descricao}"/>
+                            <h3>Comuna: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.descricaoComuna}"/>
+                            <h3>Bairro: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.bairro}"/>
+                            <h3>Rua: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.rua}"/>
+                            <h3>Nº Casa: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.numeroCasa}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Outros Dados">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <h3>Religião: </h3>
+                            <p:outputLabel value="#{diagTipagemDoenteBean.diagSolicitacaoTipagemDoenteVisualizar.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdReligiao.descricao}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                </p:tabView>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAmb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAmb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <p:messages id="msg" autoUpdate="true" closable="true" showDetail="true"/>
+                <p:growl autoUpdate="true"/>
+
+                <h:form acceptcharset="ISO-8859-1" id="frm">
+                    <div class="ui-fluid">
+                        
+                        <h2>Consultas Externas -> Atendimento -> Receitas</h2>
+
+                        <p:tabView id="tvPrincipal">
+
+                            <p:tab title="Histórico Geral->Receitas">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="De:" for="data1"/>
+                                        <p:calendar id="data1" value="#{ambPrescricaoMedicaListarBean.dataInicio}" locale="pt"/>
+
+                                        <h:outputLabel value="Até:" for="data2"/>
+                                        <p:calendar id="data2" value="#{ambPrescricaoMedicaListarBean.dataFim}" locale="pt"/>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="data1" value="Insira a Data Inicial"/>
+                                    <p:tooltip for="data2" value="Insira a Data Final"/>                                    
+
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true" 
+                                                     actionListener="#{ambPrescricaoMedicaListarBean.pesquisarPrescricoes()}"
+                                                     update="tabelaHistoricoGeralPrescricao" style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="prescricaoMedicaHistoricoGeralAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>
+
+                            <p:tab title="Histórico de Receitas do Paciente -> Consultas">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Processo:" for="numeroProcesso"/>
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="numeroProcesso" value="#{ambPrescricaoMedicaCriarBean.admsPacienteConsulta.numeroPaciente}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="numeroProcesso" value="Insira o Nº de Processo"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoPacientePrescricaoConsulta" ajax="true"
+                                                     actionListener="#{ambPrescricaoMedicaListarBean.pesquisaDeReceitaConsulta(ambPrescricaoMedicaCriarBean.admsPacienteConsulta.numeroPaciente)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="prescricaoMedicaHistoricoPacienteConsultasAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>                            
+                            
+                            <p:tab title="Histórico de Receitas do Paciente -> Reconsultas">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Processo:" for="np"/>
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="np" value="#{ambPrescricaoMedicaCriarBean.admsPacienteReconsulta.numeroPaciente}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="np" value="Insira o Nº de Processo"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoPacientePrescricaoReconsulta" ajax="true"
+                                                     actionListener="#{ambPrescricaoMedicaListarBean.pesquisaDeReceitaReconsulta(ambPrescricaoMedicaCriarBean.admsPacienteReconsulta.numeroPaciente)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="prescricaoMedicaHistoricoPacienteReconsultasAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>                            
+                            
+                        </p:tabView>
+                        
+                    </div>
+                    
+                </h:form>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogListarReceita" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center" >
+                        <ui:include src="listarDetalhesReceitaAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>
+

@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form id="formEditarConsultorioAtendimento">
+            <p:messages id="ms3" autoUpdate="true" closable="true"/>
+            <p:growl id="ms4" autoUpdate="true"/>
+            <br/>
+            <center>
+                <p:panel id="panelEditarConsultorioAtendimento" styleClass="ui-noborder">
+                    <h:panelGrid id="gridEditarConsultorioAtendimento" styleClass="ui-noborder">
+                        <p:panel styleClass="ui-noborder">
+                            <center>
+                                <span style="font-size: 16pt">
+
+                                    <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                          #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                          #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                         "
+                                                   style="color: #0088cc"/>
+
+                                    <br/>
+                                    #{msgs.subProcesso}:
+                                    <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // " id="numeroSupProcesso"/>
+                                    <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+
+                                </span>
+                            </center>
+                            <center>
+                                <h:panelGrid columns="4" cellpadding="3" styleClass="ui-noborder">
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <p:outputLabel value="Funcionário:"/>
+                                        <p:outputLabel value="#{ambConsultorioAtendimentoCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.nome} 
+                                                              #{ambConsultorioAtendimentoCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.nomeDoMeio} 
+                                                              #{ambConsultorioAtendimentoCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.sobreNome}
+                                                             "/>
+
+                                        <h:outputLabel value="Médico: " for="medico"/>
+                                        <p:selectOneMenu id="medico" value="#{ambConsultorioAtendimentoListarBean.codigoMedico}" filter="true" filterMatchMode="contains">
+                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                            <f:selectItems value="#{ambConsultorioAtendimentoListarBean.listarMedicosEscalados()}" var="me" itemLabel="#{me.fkIdMedico.fkIdPessoa.nome}
+                                                                  #{me.fkIdMedico.fkIdPessoa.nomeDoMeio}
+                                                                  #{me.fkIdMedico.fkIdPessoa.sobreNome}
+
+                                                                 (#{ambConsultorioAtendimentoListarBean.dateToString(me.data)})
+
+                                                                 - (Consultório - #{me.fkIdConsultorio.nome} )
+
+                                                                 " 
+                                                           itemValue="#{me.pkIdMedicoEscala}"/>
+                                        </p:selectOneMenu>
+
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>
+
+                        <p:panel>
+                            <center>
+                                <p:commandButton icon="ui-icon-pencil" value="Editar" 
+                                                 action="#{ambConsultorioAtendimentoEditarBean.editarRegisto(ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux)}" 
+                                                 process="gridEditarConsultorioAtendimento" update="ms3 ms4 dataTableEditar">
+                                    <p:ajax update=":formEditarConsultorioAtendimento:panelEditarConsultorioAtendimento" listener="#{ambConsultorioAtendimentoListarBean.findAll()}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-close" actionListener="#{ambConsultorioAtendimentoCriarBean.fechar()}" 
+                                                 value="Fechar" type="button"
+                                                 onclick="PF('dialogEditarConsultorioAtendimento').hide()" >
+                                    <p:ajax update=":formEditarConsultorioAtendimento:panelEditarConsultorioAtendimento" listener="#{ambConsultorioAtendimentoListarBean.findAll()}"/>
+                                </p:commandButton>
+                            </center>
+                        </p:panel>
+
+                    </h:panelGrid>
+
+                    <p:dataTable  id="dataTableEditar" sortMode="multiple"  var="itemTabelaDialog" rows="5" paginator="true" paginatorPosition="bottom"
+                                  value="#{ambConsultorioAtendimentoListarBean.findAll()}" reflow="true" emptyMessage="Nenhum registo encontrado."
+                                  selection="single" rowKey="#{itemTabelaDialog.pkIdConsultorioAtendimento}">
+
+                        <p:column headerText="Nº de Processo" sortBy="#{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" 
+                                  filterBy="#{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains">
+                            <h:outputText value="#{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                        </p:column> 
+
+                        <p:column headerText="Nº de Subprocesso">
+                            <h:outputText value="#{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                        </p:column> 
+                        
+                        <p:column headerText="Paciente" sortBy="#{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                                #{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                                #{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                               "
+                                  filterBy="#{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                            #{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                            #{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                           " filterMatchMode="contains">
+                            <h:outputText value="#{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                 #{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                 #{itemTabelaDialog.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                "/>
+                        </p:column>
+
+                        <p:column headerText="Médico">
+                            <h:outputText value="#{itemTabelaDialog.fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.nome}
+                                                 #{itemTabelaDialog.fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.nome}
+                                                 #{itemTabelaDialog.fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.nome} 
+                                                "/>
+                        </p:column>
+
+                        <p:column headerText="Consultório">
+                            <center>
+                                <h:outputText value="#{itemTabelaDialog.fkIdMedicoHasEscala.fkIdConsultorio.nome}"/>
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Funcionário">
+                            <h:outputText value="#{itemTabelaDialog.fkIdFuncionario.fkIdPessoa.nome}
+                                                 #{itemTabelaDialog.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                 #{itemTabelaDialog.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                "/>
+                        </p:column>
+
+                        <p:column headerText="Data">
+                            <h:outputText value="#{itemTabelaDialog.dataHoraCadastro}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="------">
+                            <center>
+                                <p:commandButton value="Selecionar" process="@this"
+                                                 action="#{ambConsultorioAtendimentoListarBean.seleccionar(itemTabelaDialog)}" 
+                                                 update=":formEditarConsultorioAtendimento:panelEditarConsultorioAtendimento" 
+                                                 onclick="PF('dialogEditarConsultorioAtendimento').show()">
+                                </p:commandButton>
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+            </center>
+
+        </h:form>
+    </h:body>
+</html>
+

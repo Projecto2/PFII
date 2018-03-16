@@ -1,0 +1,230 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Renovação e Pesquisa de Contratos</title>
+          <h:outputScript name="JS/previewImagem.js"/>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Renovação e Pesquisa de Contratos</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+                    <p:growl id="ms2" autoUpdate="true"/>
+
+                    <h:form id="formPesquisa">
+                         <br/>
+                         <center>
+                              <p:panel id="panelPrincipal" style="background: none; border: none;">
+                                   <f:validateBean disabled="true">
+                                        <h:panelGrid columns="2" width="100%">
+                                             <p:panel id="painelPesquisa1" style="border: none; height: 180px" header="Por Dados Gerais">
+                                                  <h:panelGrid columns="2" cellpadding="3">
+                                                       <p:outputLabel value="Estado do Contrato"/>
+                                                       <h:selectOneMenu value="#{rhContratoRenovarPesquisarBean.contratoPesquisa.fkIdEstadoContrato.pkIdEstadoContrato}"
+                                                                        style="text-align: center; width: 222px" >
+                                                            <f:selectItem itemLabel="------ Selecione ------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.estadoContratoList}" var="estContr" 
+                                                                           itemLabel="#{estContr.descricao}" itemValue="#{estContr.pkIdEstadoContrato}"/>
+                                                       </h:selectOneMenu>
+                                                       <p:outputLabel value="Tipo de Contrato"/>
+                                                       <h:selectOneMenu value="#{rhContratoRenovarPesquisarBean.contratoPesquisa.fkIdTipoContrato.pkIdTipoContrato}"
+                                                                        style="text-align: center; width: 222px">
+                                                            <f:selectItem itemLabel="------ Selecione ------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.tipoContratoList}" var="tipoContr"
+                                                                           itemLabel="#{tipoContr.descricao}" itemValue="#{tipoContr.pkIdTipoContrato}"/>
+                                                       </h:selectOneMenu>
+
+                                                       <p:outputLabel value="Primeiro Nome"/>
+                                                       <f:validateBean disabled="true">
+                                                            <p:inputText style="width: 212px" value="#{rhContratoRenovarPesquisarBean.contratoPesquisa.fkIdFuncionario.fkIdPessoa.nome}"/>
+                                                       </f:validateBean>
+                                                       <p:outputLabel value="Último Nome"/>
+                                                       <p:inputText style="width: 212px" value="#{rhContratoRenovarPesquisarBean.contratoPesquisa.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                                  </h:panelGrid>
+                                             </p:panel>
+
+                                             <p:panel id="painelPesquisaDatas" style="border: none; height: 180px" header="Por Intervalo De Datas">
+                                                  <h:panelGrid columns="4" cellpadding="5">
+                                                       <p:outputLabel value="Data de Cadastro de:"/>
+                                                       <p:calendar locale="pt" value="#{rhContratoRenovarPesquisarBean.dataCadastroInf}" yearRange="c-500:c" navigator="true" pattern="dd-MM-yyyy"/>
+                                                       <p:outputLabel value="Até:"/>
+                                                       <p:calendar locale="pt" value="#{rhContratoRenovarPesquisarBean.dataCadastroSup}" yearRange="c-500:c" navigator="true" pattern="dd-MM-yyyy"/>
+
+                                                       <p:outputLabel value="Data de Início de"/>
+                                                       <p:calendar locale="pt" value="#{rhContratoRenovarPesquisarBean.dataInicioInf}" yearRange="c-500:c+50" navigator="true" pattern="dd-MM-yyyy"/>
+                                                       <p:outputLabel value="Até"/>
+                                                       <p:calendar locale="pt" value="#{rhContratoRenovarPesquisarBean.dataInicioSup}" yearRange="c-500:c+100" navigator="true" pattern="dd-MM-yyyy"/>
+
+                                                       <p:outputLabel value="Data de Término de"/>
+                                                       <p:calendar locale="pt" value="#{rhContratoRenovarPesquisarBean.dataTerminoInf}" yearRange="c-500:c+50" navigator="true" pattern="dd-MM-yyyy"/>
+                                                       <p:outputLabel value="Até"/>
+                                                       <p:calendar locale="pt" value="#{rhContratoRenovarPesquisarBean.dataTerminoSup}" yearRange="c-500:c+100" navigator="true" pattern="dd-MM-yyyy"/>
+                                                  </h:panelGrid>
+                                             </p:panel>
+                                        </h:panelGrid>
+                                   </f:validateBean>
+                                   <h:panelGrid columns="3" cellpadding="2">
+                                        <p:commandButton style="width: 250px;" value="Pesquisar Por Dados Gerais" 
+                                                         action="#{rhContratoRenovarPesquisarBean.pesquisarContratos()}" 
+                                                         process="@this painelPesquisa1" update="dataTable" icon="ui-icon-search"/>
+                                        <p:commandButton style="width: 250px;" value="Limpar Pesquisa" process="@this" 
+                                                         action="#{rhContratoRenovarPesquisarBean.limparPesquisa()}"/>
+                                        <p:commandButton style="width: 250px;" value="Pesquisar Por Intervalo de Datas" 
+                                                         icon="ui-icon-search" action="#{rhContratoRenovarPesquisarBean.pesquisarContratosPorIntervaloDeDatas()}" 
+                                                         process="@this painelPesquisaDatas" update="dataTable"/>
+                                   </h:panelGrid>
+
+                              </p:panel>
+
+                              <p:dataTable id="dataTable" rows="10" paginator="true" paginatorPosition="bottom" style="width: 100%"
+                                           var="contrato" value="#{rhContratoRenovarPesquisarBean.contratosPesquisadosList}" 
+                                           emptyMessage="Nenhum registro de contrato encontrado">
+                                   <p:column headerText="Data de Contrato">
+                                        <center>
+                                             <h:inputText style="border: none; background: none" readonly="true" value="#{contrato.dataCadastro}">
+                                                  <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                             </h:inputText>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Data de Início / Término">
+                                        <center>
+                                             <p:outputLabel value="Início:"/>
+                                             <h:inputText style="border: none; background: none; width: 70px" readonly="true" value="#{contrato.dataInicio}">
+                                                  <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                             </h:inputText>
+                                             <p:separator/>
+                                             <p:outputLabel value="Término:"/>
+                                             <h:inputText style="border: none; background: none; width: 70px" readonly="true" value="#{contrato.dataTermino}">
+                                                  <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                             </h:inputText>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Nome do Funcionário">
+                                        <center>
+                                             <p:outputLabel value="#{contrato.fkIdFuncionario.fkIdPessoa.nome} 
+                                                            #{contrato.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                            #{contrato.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Nº Cartão de Identidade">
+                                        <center>
+                                             <p:outputLabel value="#{contrato.fkIdFuncionario.numeroCartao}"/>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="-----------------------">
+                                        <center>
+                                             <p:commandButton value="Visualizar" process="@this" update=":formVisualizar:panelGridVisualizar" icon="ui-icon-info"
+                                                              onclick="PF('dialogVisualizar').show()" action="#{rhContratoRenovarPesquisarBean.setContratoVisualizar(contrato)}"/>
+                                        </center>
+                                   </p:column>
+                              </p:dataTable>
+                         </center>
+                    </h:form>
+                    <center>
+                         <p:dialog header="Visualizar Contrato"  showEffect="fade" resizable="false" closeOnEscape="true"
+                                   widgetVar="dialogVisualizar" modal="true" width="750px" height="400px">
+                              <h:form id="formVisualizar">
+                                   <h:panelGrid width="100%" id="panelGridVisualizar">
+                                        <h:panelGrid columns="4" id="gridBotoes" class="float-right" style="text-align: center">
+                                             <p:commandButton value="Renovar Contrato" process="@this" style="width: 160px"
+                                                              action="#{rhContratoRenovarBean.prepararRenovacaoContrato(rhContratoRenovarPesquisarBean.contratoVisualizar)}"
+                                                              disabled="#{rhContratoRenovarPesquisarBean.disabledRenovarContrato()}"/>
+                                             <p:commandButton value="Cancelar Contrato" process="@this" style="width: 160px" icon="ui-icon-close"
+                                                              update=":formPesquisa:panelPrincipal :formPesquisa:dataTable" onclick="PF('dialogVisualizar').hide()"
+                                                              action="#{rhContratoRenovarPesquisarBean.cancelarContrato()}"
+                                                              disabled="#{rhContratoRenovarPesquisarBean.disabledCancelarContrato()}"/>
+                                             <p:commandButton value="Anular Cancelamento" process="@this" style="width: 190px"
+                                                              update=":formPesquisa:panelPrincipal :formPesquisa:dataTable" onclick="PF('dialogVisualizar').hide()"
+                                                              action="#{rhContratoRenovarPesquisarBean.anularCancelamento()}"
+                                                              disabled="#{rhContratoRenovarPesquisarBean.disabledAnularCancelamento()}"/>
+                                             <p:commandButton value="Fechar" onclick="PF('dialogVisualizar').hide()" process="@this" style="width: 160px"
+                                                              action="#{rhContratoRenovarPesquisarBean.setContratoVisualizar(null)}"/>
+                                        </h:panelGrid>
+                                        <p:panel>
+                                             <h:panelGrid columns="2" cellpadding="6">
+                                                  <p:outputLabel style="font-size: 15px" value="Estado do Contrato:"/>
+                                                  <p:outputLabel value="#{rhContratoRenovarPesquisarBean.contratoVisualizar.fkIdEstadoContrato.descricao}"/>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Tipo de Contrato:"/>
+                                                  <p:outputLabel value="#{rhContratoRenovarPesquisarBean.contratoVisualizar.fkIdTipoContrato.descricao}"/>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Salário Base(AKZ):"/>
+                                                  <p:outputLabel value="#{rhContratoRenovarPesquisarBean.contratoVisualizar.salarioBase}"/>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Data de Contrato:"/>
+                                                  <h:inputText value="#{rhContratoRenovarPesquisarBean.contratoVisualizar.dataCadastro}"
+                                                               style="border: none; background: none" readonly="true">
+                                                       <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                  </h:inputText>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Data de Início:"/>
+                                                  <h:inputText value="#{rhContratoRenovarPesquisarBean.contratoVisualizar.dataInicio}"
+                                                               style="border: none; background: none" readonly="true">
+                                                       <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                  </h:inputText>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Data de Término:"/>
+                                                  <h:inputText value="#{rhContratoRenovarPesquisarBean.contratoVisualizar.dataTermino}"
+                                                               style="border: none; background: none" readonly="true">
+                                                       <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                  </h:inputText>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Duração em Meses:"
+                                                                 rendered="#{rhContratoRenovarPesquisarBean.contratoVisualizar.dataTermino != null}"/>
+                                                  <p:outputLabel value="#{rhContratoRenovarPesquisarBean.contratoVisualizar.duracaoMeses}" 
+                                                                 rendered="#{rhContratoRenovarPesquisarBean.contratoVisualizar.dataTermino != null}"/>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Forma de pagamento:"/>
+                                                  <p:outputLabel value="#{rhContratoRenovarPesquisarBean.contratoVisualizar.fkIdFormaPagamento.descricao}"/>
+
+                                                  <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" 
+                                                                 process="@this" value="Ver Contrato Anexado"
+                                                                 actionListener="#{rhFicheiroAnexadoBean.setAnexoContrato(rhContratoRenovarPesquisarBean.contratoVisualizar.fkIdAnexoContrato)}"
+                                                                 onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                             </h:panelGrid>
+                                        </p:panel>
+                                   </h:panelGrid>
+                              </h:form>
+                         </p:dialog>
+
+
+                         <p:dialog widgetVar="dialogPrevisualizar" header="Previsualizar"
+                                   width="75%" height="510px" showEffect="fade" closable="true"
+                                   hideEffect="fade" modal="true" position="top">
+                              <h:form id="formPrevisualizar">
+                                   <div class="float-right">
+                                        <h:commandButton value="Fechar" type="button" onclick="PF('dialogPrevisualizar').hide()"/>
+                                   </div>
+                                   <center>
+                                        <p:panel id="painel" style="height: 490px">
+                                             <iframe src="#{rhFicheiroAnexadoBean.previsualizarAnexoContrato()}"
+                                                     width="100%" height="450px"/>
+                                        </p:panel>
+                                   </center>
+                              </h:form>
+                         </p:dialog>
+
+                    </center>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

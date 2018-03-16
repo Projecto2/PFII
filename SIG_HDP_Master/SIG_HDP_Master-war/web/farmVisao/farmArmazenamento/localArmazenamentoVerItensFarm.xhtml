@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <body>
+
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia ->Locais de Armazenamento -> Ver Produtos</h2>
+            <h:form id="formPrincipal">
+               <p:messages id="msg" autoUpdate="true" closable="true"/>
+               <p></p>
+               <center><h2 style="width: 80%">Produtos no(a) #{farmVisualizarItensNoLocalBean.local.descricao} ( #{farmVisualizarItensNoLocalBean.local.abreviatura} )</h2></center>
+               <p></p>
+               <p:fieldset style="width: 90%; margin: auto">
+                  <p:inputText id="txt" value="#{farmVisualizarItensNoLocalBean.descricao}">
+                     <f:ajax event="keyup" execute="@this" render="resultado"/>
+                  </p:inputText>
+
+                  <p:watermark value="Pesquisar produto" for="txt"/>
+                  <p></p>
+                  <p:dataGrid id="resultado" var="item" value="#{farmVisualizarItensNoLocalBean.listaProdutos}" 
+                              paginator="true" paginatorTemplate="{CurrentPageReport} {FirstPageLink} 
+                              {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                              emptyMessage="Nenhum registo encontrado." columns="4" paginatorPosition="bottom" >
+
+                     <p:column >
+                        <p:panel id="painel" header="#{item.descricao} #{item.dosagem} #{item.fkIdUnidadeMedida.abreviatura}">
+                           <h:panelGrid columns="2">
+                              <h3>Forma: </h3><h:outputText value="#{item.fkIdFormaFarmaceutica.descricao}"/>                              
+                              <h3 style="color: #{farmVisualizarItensNoLocalBean.getQuantidadeItemColor(item)}">Quantidade:  </h3>
+                              <h:outputText value="#{farmVisualizarItensNoLocalBean.getQuantidadeItem(item)}"
+                                            style="color: #{farmVisualizarItensNoLocalBean.getQuantidadeItemColor(item)}"/>
+
+                              <p:menuButton value="Opções">
+                                 <p:menuitem value="Ver Lotes" partialSubmit="true" process="@this" icon="ui-icon-search"
+                                             actionListener="#{farmVisualizarItensNoLocalBean.setProdutoPesquisa(item)}"
+                                             onclick="PF('dialogVerLotes').show()" update=":formVerLotes:table">
+                                 </p:menuitem>
+                                 <p:menuitem value="Ver ficha de Stock" partialSubmit="true" process="@this" icon="ui-icon-info"
+                                             actionListener="#{farmVisualizarFichaStockBean.definirParametros(item,farmVisualizarItensNoLocalBean.local)}"
+                                             action="#{farmRedireccionarBean.red_VisualizarFichaDeStock()}">
+                                 </p:menuitem>
+
+                                 <p:menuitem value="Editar Posição" partialSubmit="true" process="@this" icon="ui-icon-pencil"
+                                             actionListener="#{farmVisualizarItensNoLocalBean.setProdutoPesquisa(item)}"
+                                             onclick="PF('dialogPosicao').show()" update=":formEditarPosicao">
+                                 </p:menuitem>
+
+                                 <p:menuitem value="Quant. Min. Permitida" partialSubmit="true" process="@this" icon="ui-icon-pencil"
+                                             actionListener="#{farmVisualizarItensNoLocalBean.setProdutoPesquisa(item)}"
+                                             onclick="PF('dialogQuant').show()" update=":formEditarQuant">
+                                 </p:menuitem>
+                              </p:menuButton>
+
+                           </h:panelGrid>
+                           <p style=" color: #008866" id="quantMinPermitida"> Quant. Min. permitida: <strong>#{farmVisualizarItensNoLocalBean.getQuantidadeMinimaPermitida(item)}</strong></p>
+                           <p><strong> Posição: #{farmPosicaoDoProdutoNoLocalBean.getPosicao(item, farmVisualizarItensNoLocalBean.local)}</strong></p>
+                        </p:panel>
+                     </p:column>
+                  </p:dataGrid>
+               </p:fieldset>
+               <p></p>
+               <p:commandButton value="Voltar" icon="ui-icon-seek-prev"
+                                process="@this" action="#{farmRedireccionarBean.red_LocalArmazenamentoListar()}"/>
+
+            </h:form> 
+
+            <p:dialog id="dialogVerLotes" header="Lotes de Produto" 
+                      widgetVar="dialogVerLotes" modal="true" width="300px" height="200px" hideEffect="fade">
+               <h:form id="formVerLotes"><p:dataTable id="table"  var="lote" value="#{farmVisualizarItensNoLocalBean.getLotesPorProduto()}">
+                     <p:column headerText="Nº de Lote">
+                        <p:outputLabel value="#{lote.fkIdLoteProduto.numeroLote}"/>
+                     </p:column>
+                     <p:column headerText="Validade">
+                        <h:outputText style="color: #{farmStockValidadeProdutosBean.getValidadeItemColor(lote.fkIdLoteProduto)}" value="#{lote.fkIdLoteProduto.dataValidade}">
+                           <f:convertDateTime pattern="dd-MM-yyyy"/>
+                        </h:outputText>
+                     </p:column>
+                     <p:column headerText="Quantidade">
+                        <p:outputLabel value="#{lote.quantidadeStock}"/>
+                     </p:column>
+                  </p:dataTable></h:form>
+            </p:dialog>
+
+            <p:dialog header="Definir quantidade mínima permitida." 
+                      widgetVar="dialogQuant" modal="true" width="400px" height="80px" hideEffect="fade">
+               <h:form id="formEditarQuant">
+                  <h:panelGrid columns="2" cellspacing="2" width="100%">
+                     <p:outputLabel value="Quantidade mínima permitida"/>
+                     <p:inputText id="qtd" type="number" requiredMessage="A quantidade não pode ser nula."
+                                  value="#{farmQuantidadeMinimaStockBean.qtdMinimaPermitida}" />
+                  </h:panelGrid>
+                  <h:panelGrid columns="2" cellpadding="2">
+                     <p:commandButton value="Guardar" icon="ui-icon-disk" ajax="true"
+                                      action="#{farmQuantidadeMinimaStockBean.editarQuantidadeMinimaPermitida()}" 
+                                      process="@this qtd" onclick="PF('dialogQuant').hide()" 
+                                      update=":formPrincipal"/>
+
+                     <p:commandButton value="Fechar" onclick="PF('dialogQuant').hide()"
+                                      type="reset" icon="ui-icon-close" process="@this"/> 
+                  </h:panelGrid>
+               </h:form>
+            </p:dialog>
+
+
+            <p:dialog header="Definir Posição" 
+                      widgetVar="dialogPosicao" modal="true" width="400px" height="80px" hideEffect="fade">
+               <h:form id="formEditarPosicao">
+                  <h:panelGrid columns="2" cellspacing="2" width="100%">
+                     <p:outputLabel value="Posição"></p:outputLabel>
+                     <p:inputText id="posicao" required="true" requiredMessage="A Posição não pode ser nula."
+                                  value="#{farmPosicaoDoProdutoNoLocalBean.posicao}" />
+                  </h:panelGrid>
+                  <h:panelGrid columns="2" cellpadding="2">
+                     <p:commandButton value="Guardar" action="#{farmPosicaoDoProdutoNoLocalBean.editarPosicao()}" 
+                                      process="@form"  update=":formPrincipal"
+                                      onclick="PF('dialogPosicao').hide()"  icon="ui-icon-disk"/>
+
+                     <p:commandButton value="Fechar" onclick="PF('dialogPosicao').hide()" 
+                                      type="reset" icon="ui-icon-close" process="@this"/> 
+                  </h:panelGrid>
+               </h:form>
+            </p:dialog>
+         </ui:define>
+      </ui:composition>
+
+   </body>
+</html>         

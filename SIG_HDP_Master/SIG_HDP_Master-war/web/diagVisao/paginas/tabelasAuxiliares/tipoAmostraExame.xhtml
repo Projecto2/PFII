@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../menuLateralDiag.xhtml"/>
+    </ui:define>
+    <ui:define name="center">
+
+        <c:if test="${diagTipoAmostraBean.temMensagemPendente == true}">
+            <c:if test="${diagTipoAmostraBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagTipoAmostraBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagTipoAmostraBean.tipoMensagemPendente == 'Erro'}">
+                #{diagTipoAmostraBean.getMensagem()}
+            </c:if>
+        </c:if>
+
+        <h2>Tipos de Amostra de Exames</h2>
+
+        <center>
+
+            <h:panelGrid columns="1">
+                <h:form prependId="false">
+                    <p:growl sticky="true" id="msg" autoUpdate="true"/>
+
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" width="100%">
+                            <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">
+
+                                <h:panelGrid columns="2" cellpadding="3">
+                                    <p:outputLabel value="Descrição: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="descricao" style="width: 100%" value="#{diagTipoAmostraBean.diagTipoAmostraPesquisar.descricaoTipoAmostra}"/>
+                                    </f:validateBean>
+
+                                    <br/>
+                                    <h:panelGrid columns="3" width="100%">
+                                        <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                         action="#{diagTipoAmostraBean.pesquisarTiposAmostra()}" 
+                                                         partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                        <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagTipoAmostraBean.limparPesquisa()}" 
+                                                         partialSubmit="true" process="@this" style="width: 100%"/>
+                                        <p:commandButton style="width: 100%" value="Actualizar Tipos de Amostra" icon="ui-icon-refresh"  process="@this" id="adicionar" actionListener="#{diagTipoAmostraExcelBean.carregarTipoAmostraTabela()}" update="dataTable">
+                                            <p:tooltip id="toolTipAdicionar" for="adicionar" value="Actualizar Tipos de Amostra"/>
+                                        </p:commandButton> 
+
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:dataTable id="dataTable" var="tipoAmostra" value="#{diagTipoAmostraBean.itens}"
+                                 rowKey="#{tipoAmostra.pkIdTipoAmostra}" selectionMode="single"
+                                 emptyMessage="Não Existem Tipos de Amostras Cadastrados"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+                        <p:column headerText="Tipo de Amostra">
+                            <center>                                        
+                                #{tipoAmostra.descricaoTipoAmostra}
+                            </center>
+                        </p:column>
+                        
+                    </p:dataTable>
+
+                </h:form>
+            </h:panelGrid>
+        </center>
+
+        <center>
+
+            <p:dialog header="Registar Tipo de Amostra" closable="false" showEffect="fade"
+                      widgetVar="dialogRegistarTipoAmostra" modal="true" closeOnEscape="true">
+                <h:form id="formRegistarTipoAmostra">
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3">
+                            <p:outputLabel value="Nome do Tipo de Amostra * : "/>
+                            <p:inputText id="novoTip" value="#{diagTipoAmostraBean.diagTipoAmostra.descricaoTipoAmostra}" 
+                                         required="true" requiredMessage="Indique o nome do tipo de amostra."/>
+
+                        </h:panelGrid>
+
+                        <br/>
+
+                        <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                        <p:separator/>
+
+                        <h:panelGroup style=" float: right">
+                            <p:commandButton icon="ui-icon-disk" value="Registar" action="#{diagTipoAmostraBean.create()}" update="novoTip dataTable"/>
+                            <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagTipoAmostraBean.limpar()}"/>
+                        </h:panelGroup>
+
+                    </p:fieldset>
+
+                </h:form>
+            </p:dialog>
+        </center>
+
+        <center>
+            <p:dialog header="Editar Tipo de Amostra de Exame" closable="false" showEffect="fade"
+                      widgetVar="dialogEditar" modal="true" closeOnEscape="true">
+                <h:form id="formEditar">
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3">
+                            <p:outputLabel value="Novo Nome do Tipo de Amostra"/>
+                            <p:inputText id="editarTip" style="width: 100%" value="#{diagTipoAmostraBean.diagTipoAmostra.descricaoTipoAmostra}"
+                                         required="true" requiredMessage="Indique o nome do tipoAmostra de exame."/>
+
+                            <p:outputLabel value=""/>
+
+                            <h:panelGrid style=" float: right; width: 100%" columns="2">
+                                <p:commandButton value="Guardar Edição" icon="ui-icon-disk" action="#{diagTipoAmostraBean.edit()}"
+                                                 onclick="dialogEditar.hide()" update=":dataTable"/>
+                                <p:commandButton value="Fechar" onclick="dialogEditar.hide()" partialSubmit="true" process="@this"
+                                                 icon="ui-icon-arrowreturnthick-1-w" action="#{diagTipoAmostraBean.limpar()}"/>                                    
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+        </center>
+    </ui:define>
+
+</ui:composition>

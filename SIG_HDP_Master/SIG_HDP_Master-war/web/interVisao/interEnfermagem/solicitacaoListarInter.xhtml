@@ -1,0 +1,548 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>#{interObjetosSessaoBean.menuTitulo} -> Enfermagem -> Listagem de Pedidos de Internamento</h2>
+                <br/>
+                <p:outputLabel value=" * Com cama reservada" style=" color: green;"/>
+                <h:form id="formDados" >
+                    <p:panel id="resultado" style="border: 0px;">
+                        <p:dataTable  id="datatable" var="solicit"  scrollWidth="31%"  value="#{interSolicitacoesInterBean.findAllSolicitacoesAgendadasInter()}" 
+                                      emptyMessage="Nenhum pedido de internamento encontrado" selectionMode="single" 
+                                      rowKey="#{solicit.pkIdAgendamento}" paginator="true" paginatorPosition="bottom" rows="10" >
+
+                            <p:column headerText="#{msgs.subProcesso}" width="75">
+                                <center>    
+                                    #{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Nº de Processo" filterBy="#{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains" width="100">
+                                <h:outputText value="#{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                            </p:column>
+
+                            <p:column headerText="Nome Completo" filterBy="#{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" filterMatchMode="contains" width="100">
+                                <h:outputText value="#{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" style="color: #{interCamaReservadaNovoBean.findCamaReservada(solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.pkIdPaciente)}"/>
+                            </p:column>
+
+                            <p:column headerText="Funcionário Solicitante">
+                                <h:outputText value="#{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdFuncionarioSolicitante.fkIdPessoa.nome} #{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdFuncionarioSolicitante.fkIdPessoa.nomeDoMeio} #{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdFuncionarioSolicitante.fkIdPessoa.sobreNome}" />
+                            </p:column>
+
+                            <p:column headerText="Área Solicitante">
+                                <h:outputText value="#{solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdFuncionarioSolicitante.fkIdSeccaoTrabalho.descricao}" />
+                            </p:column>
+
+                            <p:column headerText="Estado" filterBy="#{solicit.fkIdServicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}" filterMatchMode="contains" sortBy="#{solicit.fkIdServicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}" width="100">
+                                <h:outputText value="#{solicit.fkIdServicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}" />
+                            </p:column>
+
+                            <p:column headerText="Data / Hora Solicitação" sortBy="#{solicit.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <h:outputText value="#{solicit.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                </h:outputText>
+                            </p:column> 
+
+                            <p:column headerText="Observações">
+                                <h:outputText value="#{solicit.fkIdServicoSolicitado.fkIdSolicitacao.observacao}" />
+                            </p:column>                            
+
+                            <p:column headerText="------">
+                                <center>
+                                    <p:menuButton value="Opções">
+                                        <p:separator/>
+                                        <p:menuitem value="Registar Internamento" icon="ui-icon-plus" action="#{interSolicitacoesInterBean.setServicoSolicitado(solicit.fkIdServicoSolicitado)}" onclick="PF('addInternamento').show();" update=":formAdd:tab:doenca :formAdd:tab:info :formAdd:tab:dataPrevista :formAdd:pac :formAdd:numeroSupProcesso :formAdd:dataSolicitacao :formAdd:tab:cama :formAdd:botao :camas:datatable"/>
+                                        <p:separator/>
+                                        <p:menuitem value="Reservar Cama" icon="ui-icon-plus" action="#{interCamaListarBean.pesquisarCamaLivre()}" actionListener="#{interSolicitacoesInterBean.setServicoSolicitado(solicit.fkIdServicoSolicitado)}" onclick="PF('reservarCamasInternamento').show();" update=":reservarCamas:pacienteCama :reservarCamas:numeroSupProcesso :reservarCamas:dataSolicitacao :reservarCamas:cboEnfermaria :reservarCamas:datatable"/>
+                                        <p:separator/>
+                                        <p:menuitem value="Cancelar Pedido" icon="ui-icon-close" action="#{interSolicitacoesInterBean.setServicoSolicitado(solicit.fkIdServicoSolicitado)}" actionListener="#{interSolicitacoesInterBean.setAgendamento(solicit)}" onclick="PF('cancelarPedido').show();" update=":formCancelar:pac :formCancelar:numeroSupProcesso :formCancelar:dataSolicitacao" />
+                                        <p:separator rendered="false"/>
+                                        <p:menuitem value="Não Apareceu" icon="ui-icon-close" action="#{interSolicitacoesInterBean.naoAparceu(solicit)}" update="datatable" rendered="false"/>
+                                        <p:separator/>
+                                        <p:menuitem value="Ficha do Paciente" icon="ui-icon-search" ajax="true" partialSubmit="true" process="@this" 
+                                                    actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(solicit.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" update=":formPacienteVisualizar" onclick="PF('dialogMaisDetalhes').show();"/>
+                                        <p:separator/>
+                                        <p:menuitem value="História Clínica e Exames" icon="ui-icon-print" process="@this" onclick="PF('digVisualizar').show();" rendered="false"/>
+                                        <p:separator rendered="false"/>                                        
+                                    </p:menuButton>  
+                                </center>    
+                            </p:column>                             
+
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+
+                <!--FORMULÁRIO PARA VISUALIZAR HISTORICO DO PACIENTE-->
+                <h:form id="formVisuali">
+                    <p:dialog header="HISTÓRIA CLÍNICA E EXAMES"  id="digVisualizar" widgetVar="digVisualizar" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" >
+                        <h:panelGrid columns="6" cellpadding="5">
+                            <p:outputLabel value="De "/>
+                            <p:calendar navigator="true" size="30"/>
+                            <p:outputLabel value="a "/>
+                            <p:calendar navigator="true" size="30"/>
+                            <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#" ajax="true"/>
+                            <p:commandButton value="Fechar" onclick="PF('digVisualizar').hide()"
+                                             action="#{interSolicitacoesInterBean.limparPesquisa()}" process="@this" style="width: 130px"/>             
+
+                        </h:panelGrid> 
+                        <p:tabView  style="width: 825px; height: 490px" >
+
+                            <p:tab title="PACIENTE">
+                                <p:fieldset legend="DADOS DO PACIENTE" >
+                                    <h:panelGrid columns="1" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <p:outputLabel value="Nº de Processo"/>
+                                        <p:outputLabel value="Nome"/>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>  
+                            <p:tab title="INTERNAMENTO">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab> 
+
+                            <p:tab title="ADMISSÕES">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                            <p:tab title="AMBULATÓRIO">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                            <p:tab title="EMERGÊNICAS">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                            <p:tab title="DIAGNÓSTICOS">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                            <p:tab title="FARMÁCIA">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                        </p:tabView>
+
+                        <p:separator/>
+
+                    </p:dialog>
+
+                </h:form>
+
+                <!--FORMULARIO PARA REGISTAR INTERNAMENTO-->
+                <h:form id="formAdd">
+                    <p:dialog id="addInternamento" widgetVar="addInternamento" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="1050" height="600">
+
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Enfermagem -> Registar Internamento</h2>
+                        <br/>
+                        <p:growl id="ms" autoUpdate="true" />
+                        <h:panelGroup>
+                            <center>
+                                <span style="font-size: 16pt" id="pacienteNovo">
+                                    <p:commandLink style="color: #0088cc" id="pac" value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}: #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                                   ajax="true" partialSubmit="true" process="@this" 
+                                                   actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                                   update=":formPacienteVisualizar" 
+                                                   onclick="PF('dialogMaisDetalhes').show();"/>
+                                    <br/>
+                                    #{msgs.subProcesso}:
+                                    <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //" id="numeroSupProcesso"/>
+                                    #{msgs.dataDaSolicitacao}: 
+                                    <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+                                </span>
+                            </center>
+                            <br/>
+                            <p:separator /> 
+                            <p:tabView id="tab">
+                                <p:tab title="Internamento">
+                                    <h:panelGrid columns="4" cellpadding="3">
+
+                                        <p:outputLabel value="Nº de Inscrição" style="width: 95%"/>
+                                        <p:inputText value="#{interRegistoInternamentoBean.numeroInscricaoInternamento(interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente, interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.pkIdPaciente)}" readonly="true" style="width: 96%"/>
+
+                                        <p:outputLabel value="Nº de Vezes Internado"/>
+                                        <p:inputText value="#{interRegistoInternamentoBean.numeroVezesInternado(interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente, interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.pkIdPaciente)}" readonly="true" style="width: 51%"/>
+
+                                        <p:outputLabel value="Cama * "/>
+                                        <h:panelGrid columns="2" cellpadding="0" cellspacing="0">
+                                            <p:inputText value="#{interRegistoInternamentoBean.registo.fkIdCamaInternamento.descricaoCamaInternamento}" readonly="true" style="width: 85%" id="cama"/> 
+                                            <p:commandButton value="Escolher Cama" id="ver" icon="ui-icon-search" action="#{interCamaListarBean.pesquisarCamaLivre()}" onclick="PF('verCamasInternamento').show();" update=":camas:pacienteCama :camas:numeroSupProcesso :camas:dataSolicitacao :camas:cboEnfermaria :camas:datatable"/>
+                                        </h:panelGrid> 
+                                        <p:outputLabel value="Doença Principal"/>
+                                        <h:panelGrid columns="3" cellpadding="0" cellspacing="0">
+                                            <p:inputText value="#{interRegistoInternamentoBean.doencaPrincipal}" readonly="true" style="width: 94%" id="doenca"/> 
+                                            <p:tooltip for="doenca" value="#{interRegistoInternamentoBean.doencaPrincipal}" id="infoDoenca"/>
+                                            <p:commandButton value="Selecionar Doença" id="verDoenca" icon="ui-icon-search" onclick="PF('selecionarDoenca').show();" update=":doencas:pacienteDoenca :doencas:numeroSupProcesso :doencas:dataSolicitacao :doencas:formularioId:hipoteseDiagnosticoFS" actionListener="#{interCidHipoteseDiagnosticoBean.init()}"/>
+                                        </h:panelGrid>   
+
+                                        <p:outputLabel value="Data Prevista Alta"/>
+                                        <p:calendar value="#{interRegistoInternamentoBean.registo.dataPrevistaAlta}"
+                                                    size="18" id="dataPrevista"
+                                                    converterMessage="Data no formato inválido. utilize dd/MM/yyyy HH:mm:ss"
+                                                    pattern="dd/MM/yyyy HH:mm:ss">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                        </p:calendar>
+
+                                        <p:outputLabel value="Observações"/>
+                                        <p:inputTextarea value="#{interRegistoInternamentoBean.registo.informacaoAdicional}" id="info" rows="5" cols="26" style="width: 97%"/>
+
+                                    </h:panelGrid>
+                                </p:tab>
+                                <p:tab title="Doenças Coexistentes">
+                                    <br/>
+                                    <ui:include src="./../interInternamento/internamentoCadastrar/hipoteseDiagnosticoInter.xhtml"/>
+                                </p:tab>
+                            </p:tabView>
+
+                            <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+                            <p:separator />
+                            <p:separator />
+                        </h:panelGroup>                        
+
+                        <p:separator/>
+                        <center>
+                            <h:panelGrid columns="2" id="botao">
+                                <p:commandButton value="Salvar" action="#{interRegistoInternamentoBean.salvar(interSolicitacoesInterBean.servicoSolicitado.pkIdServicoSolicitado, interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente, interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.pkIdPaciente)}" 
+                                                 update="botao tab:formularioId:hipoteseDiagnosticoFS" style="width: 130px" disabled="#{interRegistoInternamentoBean.gravou}"/>
+                                <p:commandButton value="Fechar" onclick="PF('addInternamento').hide()"
+                                                 action="#{interRegistoInternamentoBean.limparCampos()}" process="@this" style="width: 130px" update=":formDados"/>             
+                            </h:panelGrid>
+                        </center>                 
+                    </p:dialog>
+
+                </h:form>
+
+                <h:form id="camas" >
+                    <p:dialog id="verCamasInternamento" widgetVar="verCamasInternamento" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="900" height="500">
+
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Seleccionar Cama</h2>
+                        <br/>
+                        <center>
+                            <span style="font-size: 16pt" >
+                                <p:commandLink style="color: #0088cc" id="pacienteCama" value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}: #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                               ajax="true" partialSubmit="true" process="@this" 
+                                               actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                               update=":formPacienteVisualizar" 
+                                               onclick="PF('dialogMaisDetalhes').show();"/>
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //" id="numeroSupProcesso"/>
+                                #{msgs.dataDaSolicitacao}: 
+                                <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                            </span>
+                        </center>
+                        <br/>
+                        <p:separator />
+                        <p:fieldset>
+                            <h:panelGrid columns="2" cellpadding="0">
+
+                                <p:outputLabel value="Enfermaria"/>
+                                <p:selectOneMenu style="width: 80%" value="#{interCamaListarBean.enfermaria}" id="cboEnfermaria">
+                                    <f:selectItems value="#{interEnfermariaListarBean.findBySexo()}" 
+                                                   var="enf"
+                                                   itemLabel="#{enf.descricao}"
+                                                   itemValue="#{enf.pkIdEnfermaria}" 
+                                                   />
+                                    <p:ajax event="change" update="cboQuarto" />
+                                </p:selectOneMenu>
+                                <p:outputLabel value="Sala"/>
+                                <p:selectOneMenu style="width: 80%;" value="#{interCamaListarBean.fk_id_sala}" id="cboQuarto" filter="true">
+                                    <f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{interSalaListarBean.listarTodosDaEnfermaria(interCamaListarBean.enfermaria)}" 
+                                                   var="q"
+                                                   itemLabel="#{q.nomeSala}"
+                                                   itemValue="#{q.pkIdSalaInternamento}" 
+                                                   />
+                                </p:selectOneMenu>   
+
+                                <p:outputLabel value="Cama"/>
+                                <p:inputText value="#{interCamaListarBean.nomeCama}" style="width: 87%"/>
+
+                                <p></p><p></p>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interCamaListarBean.pesquisarCamaLivre()}" update="resultado" ajax="true"/>
+                                    <p:commandButton value="Fechar" onclick="PF('verCamasInternamento').hide()"/>                 
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:separator />
+
+                        <p:panel id="resultado" style="border: 0px;">
+                            <p:dataTable  id="datatable" var="cam" scrollWidth="31%"  value="#{interCamaListarBean.listaCamas}" 
+                                          emptyMessage="Nenhum registo de cama encontrado" selectionMode="single" selection="#{interCamaListarBean.cama}"
+                                          rowKey="#{cam.pkIdCamaInternamento}" paginator="true" paginatorPosition="bottom" rows="10">
+
+                                <p:column headerText="Descrição">
+                                    <h:outputText value="#{cam.descricaoCamaInternamento}"/>
+                                </p:column>
+
+                                <p:column headerText="Código">
+                                    <h:outputText value="#{cam.codigoCamaInternamento}"/>
+                                </p:column>
+
+                                <p:column headerText="Enfermaria">
+                                    <h:outputText value="#{cam.fkIdSalaInternamento.fkIdEnfermaria.descricao}"/>
+                                </p:column>
+
+                                <p:column headerText="Sala">
+                                    <h:outputText value="#{cam.fkIdSalaInternamento.nomeSala}"/>
+                                </p:column>
+
+                                <p:column headerText="Estado">
+                                    <h:outputText value="#{cam.fkIdEstadoCama.descricao}"/>
+                                </p:column>                                
+
+                                <p:column headerText="------" width="105">
+                                    <p:commandButton value="Seleccionar" icon="ui-icon-check" action="#{interRegistoInternamentoBean.registo.fkIdCamaInternamento.setDescricaoCamaInternamento(cam.descricaoCamaInternamento)}" update=":formAdd:tab:cama" onclick="PF('verCamasInternamento').hide()"/>         
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </p:panel>
+                    </p:dialog>    
+                </h:form>
+
+                <h:form id="reservarCamas" >
+                    <p:dialog id="reservarCamasInternamento" widgetVar="reservarCamasInternamento" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="900" height="500">
+
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Reservar Cama</h2>
+                        <br/>
+                        <center>
+                            <span style="font-size: 16pt" >
+                                <p:commandLink style="color: #0088cc" id="pacienteCama" value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}: #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                               ajax="true" partialSubmit="true" process="@this" 
+                                               actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                               update=":formPacienteVisualizar" 
+                                               onclick="PF('dialogMaisDetalhes').show();"/>
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //" id="numeroSupProcesso"/>
+                                #{msgs.dataDaSolicitacao}: 
+                                <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                            </span>
+                        </center>
+                        <br/>
+                        <p:separator />
+                        <p:fieldset>
+                            <h:panelGrid columns="2" cellpadding="0">
+
+                                <p:outputLabel value="Enfermaria"/>
+                                <p:selectOneMenu style="width: 80%" value="#{interCamaListarBean.enfermaria}" id="cboEnfermaria">
+                                    <f:selectItems value="#{interEnfermariaListarBean.findBySexo()}" 
+                                                   var="enf"
+                                                   itemLabel="#{enf.descricao}"
+                                                   itemValue="#{enf.pkIdEnfermaria}" 
+                                                   />
+                                    <p:ajax event="change" update="cboQuarto" />
+                                </p:selectOneMenu>
+                                <p:outputLabel value="Sala"/>
+                                <p:selectOneMenu style="width: 80%;" value="#{interCamaListarBean.fk_id_sala}" id="cboQuarto" filter="true">
+                                    <f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{interSalaListarBean.listarTodosDaEnfermaria(interCamaListarBean.enfermaria)}" 
+                                                   var="q"
+                                                   itemLabel="#{q.nomeSala}"
+                                                   itemValue="#{q.pkIdSalaInternamento}" 
+                                                   />
+                                </p:selectOneMenu>   
+
+                                <p:outputLabel value="Cama"/>
+                                <p:inputText value="#{interCamaListarBean.nomeCama}" style="width: 87%"/>
+
+                                <p></p><p></p>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interCamaListarBean.pesquisarCamaLivre()}" update="resultado" ajax="true"/>
+                                    <p:commandButton value="Fechar" onclick="PF('reservarCamasInternamento').hide()"/>                 
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:separator />
+
+                        <p:panel id="resultado" style="border: 0px;">
+                            <p:dataTable  id="datatable" var="cam"  scrollWidth="31%"  value="#{interCamaListarBean.listaCamas}" 
+                                          emptyMessage="Nenhum registo de cama encontrado" selectionMode="single" selection="#{interCamaListarBean.cama}"
+                                          rowKey="#{cam.pkIdCamaInternamento}" paginator="true" rows="10">
+
+                                <p:column headerText="Descrição">
+                                    <h:outputText value="#{cam.descricaoCamaInternamento}"/>
+                                </p:column>
+
+                                <p:column headerText="Código">
+                                    <h:outputText value="#{cam.codigoCamaInternamento}"/>
+                                </p:column>
+
+                                <p:column headerText="Enfermaria">
+                                    <h:outputText value="#{cam.fkIdSalaInternamento.fkIdEnfermaria.descricao}"/>
+                                </p:column>
+
+                                <p:column headerText="Sala">
+                                    <h:outputText value="#{cam.fkIdSalaInternamento.nomeSala}"/>
+                                </p:column>
+
+                                <p:column headerText="Estado">
+                                    <h:outputText value="#{cam.fkIdEstadoCama.descricao}"/>
+                                </p:column>                                
+
+                                <p:column headerText="------" width="105">
+                                    <p:commandButton value="Reservar" icon="ui-icon-check" action="#{interCamaReservadaNovoBean.reservarCama(cam.pkIdCamaInternamento)}" update=":formDados:resultado" onclick="PF('reservarCamasInternamento').hide()"/>         
+                                </p:column>    
+                            </p:dataTable>
+
+                        </p:panel>
+                    </p:dialog>    
+                </h:form>
+
+                <h:form id="doencas" >
+                    <p:dialog id="selecionarDoenca" widgetVar="selecionarDoenca" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="1000" height="420">
+
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Enfermagem -> Registar Internamento -> Seleccionar Doença Principal</h2>
+                        <br/>
+                        <center>
+                            <span style="font-size: 16pt">
+                                <p:commandLink style="color: #0088cc"  id="pacienteDoenca" value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}: #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                               ajax="true" partialSubmit="true" process="@this" 
+                                               actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                               update=":formPacienteVisualizar" 
+                                               onclick="PF('dialogMaisDetalhes').show();"/>
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //" id="numeroSupProcesso"/>
+                                #{msgs.dataDaSolicitacao}: 
+                                <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                            </span>
+                        </center>
+                        <ui:include src="./../interInternamento/internamentoCadastrar/hipoteseDiagnosticoDoencaPrincipalInter.xhtml"/>
+
+                        <center>
+                            <h:panelGrid style=" font-family: cursive;" columns="2">
+                                <p:commandButton style=" border-radius:10%;font-weight:700;width: 100%" value="Salvar" update=":formAdd:tab:doenca :formAdd:tab:infoDoenca formularioId:hipoteseDiagnosticoFS" onclick="PF('selecionarDoenca').hide()"/> 
+                                <p:commandButton value="Fechar" onclick="PF('selecionarDoenca').hide()" style="width: 100%"/>             
+                            </h:panelGrid>
+                        </center> 
+                    </p:dialog>    
+                </h:form>
+
+                <h:form id="formCancelar" >
+                    <p:dialog id="cancelarPedido" widgetVar="cancelarPedido" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade">
+
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Enfermagem -> Cancelar Pedido de Internamento</h2>
+                        <br/>
+                        <center>
+                            <span style="font-size: 16pt">
+                                <p:commandLink style="color: #0088cc"  id="pac" value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}: #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                               ajax="true" partialSubmit="true" process="@this" 
+                                               actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                               update=":formPacienteVisualizar" 
+                                               onclick="PF('dialogMaisDetalhes').show();"/>
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //" id="numeroSupProcesso"/>
+                                #{msgs.dataDaSolicitacao}: 
+                                <p:outputLabel value="#{interSolicitacoesInterBean.servicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                            </span>
+                        </center>
+                        <br/>
+                        <p:outputLabel value="Observações * "/>
+                        <br/>
+                        <p:inputTextarea value="#{interSolicitacoesInterBean.servicoSolicitado.observacao}" rows="5" cols="50" required="true" requiredMessage="O cambo observações é obrigatório!"/>
+                        <br/>
+                        <br/>
+                        <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+                        <p:separator />
+                        <p:separator />
+                        <center>
+                            <h:panelGrid style=" font-family: cursive;" columns="2">
+                                <p:commandButton style=" border-radius:10%;font-weight:700;width: 100%" value="Cancelar" action="#{interSolicitacoesInterBean.cancelarPedido}" update=":formDados" onclick="PF('cancelarPedido').hide()" /> 
+                                <p:commandButton value="Fechar" onclick="PF('cancelarPedido').hide()" style="width: 100%"/>             
+                            </h:panelGrid>
+                        </center> 
+                    </p:dialog>    
+                </h:form>
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

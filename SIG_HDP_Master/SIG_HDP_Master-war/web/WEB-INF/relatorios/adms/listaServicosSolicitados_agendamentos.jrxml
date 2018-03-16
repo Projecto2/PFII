@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="listaServicosSolicitados_agendamentos" pageWidth="802" pageHeight="555" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="35a4d179-a574-40d0-b048-5b2dbefbb154">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fk_id_servico_solicitado" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT
+     adms_agendamento."data_agendada" AS adms_agendamento_data_agendada,
+     adms_agendamento."hora_agendada" AS adms_agendamento_hora_agendada,
+     adms_estado_agendamento."descricao_estado_agendamento" AS adms_estado_agendamento_descricao_estado_agendamento
+FROM
+     "public"."adms_estado_agendamento" adms_estado_agendamento INNER JOIN "public"."adms_agendamento" adms_agendamento ON adms_estado_agendamento."pk_id_estado_agendamento" = adms_agendamento."fk_id_estado_agendamento"
+     INNER JOIN "public"."adms_servico_solicitado" adms_servico_solicitado ON adms_agendamento."fk_id_servico_solicitado" = adms_servico_solicitado."pk_id_servico_solicitado"
+WHERE adms_agendamento."fk_id_servico_solicitado" = $P{fk_id_servico_solicitado}]]>
+	</queryString>
+	<field name="adms_agendamento_data_agendada" class="java.sql.Date"/>
+	<field name="adms_agendamento_hora_agendada" class="java.sql.Time"/>
+	<field name="adms_estado_agendamento_descricao_estado_agendamento" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="200" height="20" uuid="4b6322a0-eb8f-4680-84b6-f798149b4fea"/>
+				<text><![CDATA[adms_agendamento_data_agendada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="0" width="200" height="20" uuid="1d7bf34b-24cd-4ddd-bbd3-2879478f351c"/>
+				<text><![CDATA[adms_agendamento_hora_agendada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="400" y="0" width="200" height="20" uuid="a902679e-ccef-4fe6-82a1-ebb686160cb8"/>
+				<text><![CDATA[adms_estado_agendamento_descricao_estado_agendamento]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="200" height="20" uuid="54d8ccbb-0cb3-492a-8f8b-aaf73e1490e4"/>
+				<textFieldExpression><![CDATA[$F{adms_agendamento_data_agendada}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="200" y="0" width="200" height="20" uuid="6da4e297-0192-4173-90f1-4690e193ded0"/>
+				<textFieldExpression><![CDATA[$F{adms_agendamento_hora_agendada}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="400" y="0" width="200" height="20" uuid="5db9efac-b489-4e9a-a589-af71bc34d255"/>
+				<textFieldExpression><![CDATA[$F{adms_estado_agendamento_descricao_estado_agendamento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="1" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

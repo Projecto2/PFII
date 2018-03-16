@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Dispensa -> Fecho do Turno</h2>
+            <h:form id="formPrincipal">
+               <p:growl autoUpdate="true"/>
+               <p:fieldset style="border: none">
+                  <br/>
+                  <center><h2 style="width: 97%">Não foi feito o Fecho do último turno. Deve fazê-lo antes de continuar.</h2></center>
+
+                  <p:messages id="msg" autoUpdate="true" closable="true"/>
+                  <p:panelGrid columns="2" style="width: 100%; border: none">
+                     <h:panelGrid columns="4">
+                        
+                        <p:commandButton style="width: 155px; height: 45px; color: #0052A4;" update=":formPrincipal"
+                                         value="CONCLUIR FECHO DO TURNO" icon="ui-icon-check"  
+                                         disabled="#{farmTurnoDispensaBean.turnoFechado(farmTurnoDispensaBean.turnoAnterior)}"
+                                         action="#{farmTurnoDispensaBean.fecharTurno(farmTurnoDispensaBean.turnoAnterior)}">
+                           <f:ajax event="click" execute="@this" render=":formPrincipal"/>
+                        </p:commandButton>
+
+                        <p:commandButton style="width: 155px; height: 45px; color: #0052A4;"
+                                         disabled="#{!farmTurnoDispensaBean.turnoFechado(farmTurnoDispensaBean.turnoAnterior)}"
+                                         value="IMPRIMIR RELATÓRIO" icon="ui-icon-print" ajax="false"
+                                         action="#{farmTurnoDispensaBean.imprimirRelatorio(farmTurnoDispensaBean.turnoAnterior)}"/>                      
+                        
+                        <p:commandButton style="width: 155px; height: 45px; color: #0052A4;"
+                                         icon="ui-icon-plus" value="ABRIR NOVO TURNO"
+                                         partialSubmit="true" process="@this"
+                                         disabled="#{!farmTurnoDispensaBean.turnoFechado(farmTurnoDispensaBean.turnoAnterior)}"
+                                         action="dispensaAbrirTurnoFarm.xhtml?faces-redirect=true"/>
+                     </h:panelGrid>
+                     
+                     <h:panelGrid class="float-right">
+                        <p style="color: #002142;font-size: 14px">
+                           Último Turno: 
+                           <strong >#{farmTurnoDispensaBean.turnoAnterior.fkIdTurno.descricao}
+                           </strong>
+                        </p>
+                     </h:panelGrid>
+                  </p:panelGrid>
+                  <br/>
+                  <center>
+                     <p:separator/>
+                     <p style="font-size: 15px; color: #008866"><strong>Estatísticas geradas</strong></p>
+                     <h:panelGrid columns="2" width="50%">
+                        <p style="font-size: 14px"><strong>Local de Atendimento: </strong></p>
+                        <h:outputText style="font-size: 14px; color: #008866" 
+                                      value="#{farmTurnoDispensaBean.turnoAnterior.fkIdLocalDeAtendimento.descricao}"/>
+
+                        <p style="font-size: 14px"><strong>Data-Hora da Abertura: </strong></p>
+                        <h:outputText style="font-size: 14px; color: #008866" 
+                                      value="#{farmTurnoDispensaBean.turnoAnterior.dataAbertura}">
+                           <f:convertDateTime pattern="dd-MM-yyyy - HH:mm" />
+                        </h:outputText>
+
+                        <p style="font-size: 14px"><strong>Data-Hora do Fecho:</strong></p>
+                        <h:outputText style="font-size: 14px; color: #008866" 
+                                      value="#{farmDispensaNovaBean.dataHoje}">
+                           <f:convertDateTime pattern="dd-MM-yyyy - HH:mm" />
+                        </h:outputText>
+                        
+                        <p style="font-size: 14px"><strong>Itens Dispensados: </strong></p>
+                        <h:outputText style="font-size: 14px; color: #008866" 
+                                      value="#{farmTurnoDispensaBean.itensDispensadosNoTurnoAnterior.size()} Item(s)"/>
+                     </h:panelGrid>
+                  </center>
+               </p:fieldset>
+            </h:form>
+         </ui:define>
+      </ui:composition>
+
+   </body>
+</html>

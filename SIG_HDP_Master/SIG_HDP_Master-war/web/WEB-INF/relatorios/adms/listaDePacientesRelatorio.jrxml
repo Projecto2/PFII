@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorioTeste" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d2dbc5f0-ffb7-4b7f-8bd9-39f6d35bc421">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="69"/>
+	<parameter name="exemplo" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/gemix/NetBeansProjects/SIG_HDP_Master/SIG_HDP_Master/SIG_HDP_Master-war/web/WEB-INF/relatorios/adms/"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="numeroPaciente" class="java.lang.String"/>
+	<field name="fkIdPessoa.nome" class="java.lang.String"/>
+	<field name="fkIdPessoa.nomeDoMeio" class="java.lang.String"/>
+	<field name="fkIdPessoa.sobreNome" class="java.lang.String"/>
+	<field name="fkIdPessoa.dataNascimento" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdSexo.descricao" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdNacionalidade.nomePais" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdContacto.telefone1" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdContacto.telefone2" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdContacto.email1" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdContacto.email2" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdEndereco.codigoPostal" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdEndereco.numeroCasa" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdEndereco.bairro" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdEndereco.fkIdComuna.descricaoComuna" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.nomeMunicipio" class="java.lang.String"/>
+	<field name="fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais" class="java.lang.String"/>
+	<field name="fkIdPessoa.grlDocumentoIdentificacaoList" class="java.util.List"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="131" splitType="Stretch">
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="10" y="13" width="95" height="61" uuid="91d95549-1053-4688-a759-a496a0075feb"/>
+				<imageExpression><![CDATA["LogotipoDivina.jpg"]]></imageExpression>
+			</image>
+			<image vAlign="Middle">
+				<reportElement x="721" y="11" width="71" height="63" uuid="c8dbfcfa-c413-445a-8a6e-b23f66eda8ff"/>
+				<imageExpression><![CDATA["insigniaAngola.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="190" y="11" width="422" height="25" forecolor="#0000FF" uuid="2181f466-d7b2-4c4b-bf85-2f1a04035f23"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="15"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="190" y="34" width="422" height="20" forecolor="#0000FF" uuid="c034395d-e8f0-4c47-8af6-d1b5d287e5c6"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<text><![CDATA[GABINETE PROVINCIAL DE  LUANDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="190" y="54" width="422" height="30" forecolor="#0000FF" uuid="c57e9042-4ebf-498d-960d-ad1a6c285f9b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Abyssinica SIL" size="18" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="90" width="782" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="f7d94b0b-892e-4cc3-a7e3-8ea4282b26c9"/>
+				<box>
+					<pen lineWidth="0.5" lineColor="#11111A"/>
+					<topPen lineWidth="0.5" lineColor="#11111A"/>
+					<leftPen lineWidth="0.5" lineColor="#11111A"/>
+					<bottomPen lineWidth="0.5" lineColor="#11111A"/>
+					<rightPen lineWidth="0.5" lineColor="#11111A"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Controlo do Golf - K. Kiaxi - LUANDA Tel-Fax(02) 470781 - 470507 E-mail:hospdp@ebonet.net]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="305" y="0" width="168" height="20" uuid="65c97a5c-189f-434f-a7f6-d0c771336a79"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lista De Pacientes]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="28" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="6" width="53" height="20" forecolor="#0000FF" backcolor="#FFFFFF" uuid="1ea9e77b-1045-455d-aaa2-54464f169772"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[PROCESSO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="54" y="6" width="136" height="20" forecolor="#0000FF" uuid="7c310572-4c15-420e-9d42-3fb1c7f1f552"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NOME COMPLETO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="192" y="6" width="83" height="20" forecolor="#0000FF" uuid="0adaceb9-0ffd-4fca-8b39-455a004aaf8a"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DATA DE NASCIMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="277" y="6" width="79" height="20" forecolor="#0000FF" uuid="2b1ed41b-0d29-43bc-9ff6-ef4b15e1a38c"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NACIONALIDADE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="358" y="6" width="106" height="20" forecolor="#0000FF" uuid="31209c63-b271-4d30-80e7-32d68b423066"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DOCs. IDENTIFICAÇÃO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="466" y="6" width="52" height="20" forecolor="#0000FF" uuid="1f2c802a-8beb-4243-a6d1-8290e61ac981"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SEXO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="520" y="6" width="131" height="20" forecolor="#0000FF" uuid="42677cd4-77b8-4232-8c25-af8d1820b008"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONTATOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="662" y="6" width="119" height="20" forecolor="#0000FF" uuid="c1469bd5-bd5a-4962-a8ef-c9f37dfdc10c"/>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENDEREÇO]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="92" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="2" width="53" height="20" uuid="fd3b8d4f-c6b3-42d4-b915-975286074c86"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numeroPaciente}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="192" y="3" width="83" height="20" uuid="06034632-9d87-4e16-a684-93ed81bba8df"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.dataNascimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="520" y="3" width="131" height="20" uuid="22d1ab02-0209-4bd8-aa49-14f618c954e6"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdContacto.telefone1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="54" y="2" width="66" height="20" uuid="f8761fc1-b3e0-4da7-a0f7-0e8ba0230284"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="466" y="2" width="52" height="20" uuid="5bb9ea9f-dfd4-4701-b516-1e26034aa2ee"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdSexo.descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="277" y="2" width="79" height="20" uuid="396c0e45-1bfb-4d9e-a926-7101b5d63508"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdNacionalidade.nomePais}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="2" width="70" height="20" uuid="56f1e56f-4811-401f-b466-83a8d028ac0d"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.sobreNome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="520" y="23" width="131" height="20" uuid="18f1155e-5605-419e-b61c-28ca45f24ffd"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdContacto.telefone2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="520" y="43" width="131" height="20" uuid="f209222e-d2b2-4127-88b6-3c0488d76e2c"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdContacto.email1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="520" y="63" width="131" height="20" uuid="828134c3-ea06-4d8d-9ef9-022957a77930"/>
+				<textElement textAlignment="Center">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdContacto.email2}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="87" width="802" height="1" forecolor="#C0C0C0" uuid="08f97c5b-b853-4713-85be-b4e9796823c0"/>
+			</line>
+			<textField>
+				<reportElement x="662" y="3" width="59" height="20" uuid="b7e51fd4-1499-4d9b-9315-dbc365b778e4"/>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdEndereco.codigoPostal}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="702" y="22" width="19" height="0" uuid="772fa075-9f38-40df-8394-98394979bcdb"/>
+				<text><![CDATA[,]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="721" y="3" width="60" height="20" uuid="b27b4d1c-8424-4497-ad63-6816d02c01fc"/>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdEndereco.numeroCasa}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="662" y="23" width="59" height="20" uuid="09da30ff-0649-41e7-944e-e84cb91351f2"/>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdEndereco.bairro}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="721" y="23" width="60" height="20" uuid="9213cdc6-cf81-47de-859c-41f51e9e4467"/>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdEndereco.fkIdComuna.descricaoComuna}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="662" y="43" width="59" height="20" uuid="c86d8b79-2b5d-44dd-8fa6-574a39cc7d67"/>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.nomeMunicipio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="721" y="43" width="60" height="20" uuid="59444823-e916-4278-9e20-1942f643549e"/>
+				<textFieldExpression><![CDATA[$F{fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="54" y="3" width="1" height="80" forecolor="#C0C0C0" uuid="f8feecf0-cb9e-4492-9fc6-179182f3256c"/>
+			</line>
+			<line>
+				<reportElement x="189" y="2" width="1" height="81" forecolor="#C0C0C0" uuid="3e233b6d-e80d-4336-914c-152af9996893"/>
+			</line>
+			<line>
+				<reportElement x="274" y="4" width="1" height="79" forecolor="#C0C0C0" uuid="9c8b1767-eadb-42bb-ab4b-cd6625302aea"/>
+			</line>
+			<line>
+				<reportElement x="355" y="4" width="1" height="79" forecolor="#C0C0C0" uuid="5c9e7432-0745-45ac-b96b-5501a1b73534"/>
+			</line>
+			<line>
+				<reportElement x="463" y="2" width="1" height="81" forecolor="#C0C0C0" uuid="a37cd849-a341-49e6-9510-f31c29c4a610"/>
+			</line>
+			<line>
+				<reportElement x="517" y="2" width="1" height="81" forecolor="#C0C0C0" uuid="5c8cf35c-5269-4ca3-abc0-c2422efc1dc1"/>
+			</line>
+			<line>
+				<reportElement x="651" y="2" width="1" height="81" forecolor="#C0C0C0" uuid="2f67e504-7be0-4193-818c-eaaa809ad656"/>
+			</line>
+			<subreport>
+				<reportElement x="358" y="4" width="105" height="79" uuid="f8841dbb-2797-4b74-b5e4-3f31b44db543"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{fkIdPessoa.grlDocumentoIdentificacaoList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "listaDePacientesRelatorio_documentos.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="24" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="40" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="18" width="781" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="6bc9d0a5-4277-41b8-9b5f-026cc780be28"/>
+				<box>
+					<pen lineWidth="0.5" lineColor="#050509"/>
+					<topPen lineWidth="0.5" lineColor="#050509"/>
+					<leftPen lineWidth="0.5" lineColor="#050509"/>
+					<bottomPen lineWidth="0.5" lineColor="#050509"/>
+					<rightPen lineWidth="0.5" lineColor="#050509"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="306" y="18" width="100" height="20" uuid="395f4811-5ce1-4bff-8575-8b3c7f629c5d"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="677" y="18" width="114" height="20" uuid="fea5899f-3a6a-4638-86f0-cae9176228b3"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

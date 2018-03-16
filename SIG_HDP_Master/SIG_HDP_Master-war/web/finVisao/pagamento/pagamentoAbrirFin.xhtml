@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form id="formPagamentoServicoSolicitado">
+            <br/>
+            <center>
+                <h1>
+                    #{msgs.dataPagamento}:
+                    <h:outputText id="dataPagamento" value="#{finPagamentoEncargoDevidoAbrirBean.pagamento.dataPagamento}">
+                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                    </h:outputText>
+                </h1>
+                <h2> 
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    <h:outputText id="recepcionista" value="#{msgs.registadoPor}: #{finPagamentoEncargoDevidoAbrirBean.pagamento.fkIdRecepcionista.codigoFuncionario} 
+                    #{finPagamentoEncargoDevidoAbrirBean.pagamento.fkIdRecepcionista.fkIdPessoa.nome} 
+                    #{finPagamentoEncargoDevidoAbrirBean.pagamento.fkIdRecepcionista.fkIdPessoa.sobreNome}"/> 
+                </h2>
+            </center>
+            
+                <fieldset cellpadding="3" width="80%">
+                    <h:panelGrid columns="2" width="70%">
+
+                        <p:outputLabel value="#{msgs.formaDePagamento}: "/>
+                        <h:outputText id="formaPagamento" value="#{finPagamentoEncargoDevidoAbrirBean.pagamento.fkIdFormaPagamento.descricaoFormaPagamento}"/>
+
+                        <br/>
+                        <h:outputText id="formaPagamentoDesc" value="#{finPagamentoEncargoDevidoAbrirBean.getFormaQueFoiPago(finPagamentoEncargoDevidoAbrirBean.pagamento)}"/>
+                        
+                        <p:outputLabel value="#{msgs.valorPago}: "/>
+                        <h:outputText id="valorPago" value="#{finPagamentoEncargoDevidoAbrirBean.pagamento.valorPago}"/>
+
+                    </h:panelGrid>
+                </fieldset>
+
+            <center>
+                <p:dataTable id="dataTablePagamentoSolicitacao" var="pagamentoServicoSolicitado" value="#{finPagamentoEncargoDevidoAbrirBean.pagamento.finPagamentoEncargoDevidoList}"
+                             style="width: 100%" emptyMessage="Sem Pagamentos"
+                             paginator="true" paginatorPosition="bottom" rows="5">
+                    <p:column headerText="#{msgs.subProcesso}">
+                        <center>   
+                            #{pagamentoServicoSolicitado.fkIdEncargoDevido.fkIdSubprocesso.numeroSubprocesso}
+                        </center>
+                    </p:column>
+                    <p:column headerText="Encargo">
+                        <center>     
+                            #{pagamentoServicoSolicitado.fkIdEncargoDevido.descricaoEncargoDevido}
+                        </center>
+                    </p:column>
+                    <p:column headerText="#{msgs.data} de Criação do Encargo">
+                        <center>   
+                            <h:outputText value="#{pagamentoServicoSolicitado.fkIdEncargoDevido.data}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </h:outputText>
+                        </center>
+                    </p:column>
+                    <p:column headerText="#{msgs.valor}">
+                        <center>   
+                            #{pagamentoServicoSolicitado.fkIdEncargoDevido.valor}
+                        </center>
+                    </p:column>
+                    <p:column headerText="#{msgs.tipo}">
+                        <center>     
+                            #{finPagamentoEncargoDevidoAbrirBean.getTipoPagamentoBySubprocesso(pagamentoServicoSolicitado.fkIdEncargoDevido.fkIdSubprocesso)}
+                        </center>
+                    </p:column>
+                </p:dataTable>
+                <br/>
+                
+                <p:commandButton id="cancelar" style="margin: 5px;" 
+                                 value="#{msgs.cancelar} #{msgs.pagamento}" actionListener="#{finPagamentoEncargoDevidoAbrirBean.cancelarPagamento()}" onclick="PF('dialogPagamento').hide();" 
+                                 partialSubmit="true" process="@this" update=":formProcuraPagamentos:dataTable"/>
+                
+                
+            </center>
+        </h:form>
+                    <!--<p:column headerText="# {msgs.opcoes}">
+                        <center> 
+                            <p:commandButton id="cancelar" style="margin: 5px;" 
+                                value="# {msgs.cancelar}" partialSubmit="true" actionListener="# {finPagamentoServicoSolicitadoAbrirBean.cancelarPagamentoDoPedido(pagamentoServicoSolicitado)}"
+                                process="@this" update="dataTablePagamentoSolicitacao :formPagamentoServicoSolicitado:valorPago :formProcuraPagamentos:dataTable" 
+                                disabled="# {pagamentoServicoSolicitado.fkIdEstadoPagamento.descricaoEstadoPagamento != 'Ativo'}"
+                                >
+                            </p:commandButton>
+                        </center>
+                    </p:column>-->
+    </h:body>
+</html>
+

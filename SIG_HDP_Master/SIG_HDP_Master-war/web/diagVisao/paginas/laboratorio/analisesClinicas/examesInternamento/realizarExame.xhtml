@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h2>Laboratório -> Análises Clínicas -> Exames de Urgência/Emergência -> Realizar Exame</h2>
+
+        <p:growl sticky="true" id="messagens"/>
+
+        <br/>
+
+        <h:form id="formRealizarExame"> 
+
+            <br/>
+
+            <center>
+
+                <p:fieldset id="fieldset" style="width: 50%">
+                    <h:panelGrid columns="2" cellpadding="5">
+
+                        <h:outputLabel value="Nº de Processo: "/>
+                        <h:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+
+                        <h:outputLabel value="Nome do Paciente: "/>
+                        <h:panelGroup>
+                            #{diagExameRealizadoBean.admsServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                            #{diagExameRealizadoBean.admsServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                            #{diagExameRealizadoBean.admsServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                        </h:panelGroup>
+
+                        <h:outputLabel value="Exame: "/>
+                        <h:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitado.fkIdServico.nomeServico}" />
+
+                        <h:outputLabel value="Classificação do Exame: "/>
+                        <h:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}" />
+
+                        <h:outputLabel value="Técnico Colecta * : "/>
+                        <p:selectOneMenu style="width: 95%" value="#{diagExameRealizadoBean.rhFuncionarioColecta.pkIdFuncionario}" 
+                                         required="true" requiredMessage="É necessário informar o técnico que efectuou a colecta.">
+
+                            <f:selectItem itemLabel=""/>
+                            <f:selectItems value="#{diagExameRealizadoBean.findAllFuncionariosLaboratorioUrgencia()}" 
+                                           var="tecnicoColecta"
+                                           itemLabel="#{tecnicoColecta.fkIdPessoa.nome}  #{tecnicoColecta.fkIdPessoa.sobreNome}" itemValue="#{tecnicoColecta.pkIdFuncionario}" />
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="Tipo de Amostra * : "/>
+                        <p:selectOneMenu style="width: 95%" value="#{diagExameRealizadoBean.diagTipoAmostra.pkIdTipoAmostra}" 
+                                         required="true" requiredMessage="É necessário informar o tipo de amostra.">
+
+                            <f:selectItem itemLabel=""/>
+                            <f:selectItems value="#{diagExameRealizadoBean.findAllTiposAmostra()}" 
+                                           var="tipoAmostra"
+                                           itemLabel="#{tipoAmostra.descricaoTipoAmostra}" itemValue="#{tipoAmostra.pkIdTipoAmostra}" />
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="Resultado * : "/>
+
+                        <c:if test="${diagExameRealizadoBean.diagExame.fkIdTipoResultado.descricaoTipoResultadoExame == 'Numerico'}">
+                            <h:panelGroup>
+                                <p:spinner min="0" suffix=" #{diagExameRealizadoBean.diagExame.fkIdUnidadeMedida.abreviatura}"
+                                           value="#{diagExameRealizadoBean.diagExameRealizado.resultados}"
+                                           required="true" requiredMessage="É necessário informar o resultado obtido no exame."/>
+
+                                <c:if test="${diagExameRealizadoBean.diagExame.valorReferenciaMinimo.toString().length() == 0}">
+                                    <c:if test="${diagExameRealizadoBean.diagExame.valorReferenciaMaximo.toString().length() == 0}">
+                                        <p:outputLabel rendered="false" style="margin-left: 10px"
+                                                       value="Valor de Referência: [#{diagExameRealizadoBean.diagExame.valorReferenciaMinimo} #{diagExameRealizadoBean.diagExame.fkIdUnidadeMedida.abreviatura} - #{diagExameRealizadoBean.diagExame.valorReferenciaMaximo} #{diagExameRealizadoBean.diagExame.fkIdUnidadeMedida.abreviatura} ]"/>
+                                    </c:if>
+                                </c:if>
+
+                                <c:if test="${diagExameRealizadoBean.diagExame.valorReferenciaMinimo.toString().length() == 0}">
+                                    <c:if test="${diagExameRealizadoBean.diagExame.valorReferenciaMaximo.toString().length() != 0}">
+                                        <p:outputLabel rendered="false" style="margin-left: 10px"
+                                                       value="Valor de Referência: [ > #{diagExameRealizadoBean.diagExame.valorReferenciaMaximo} #{diagExameRealizadoBean.diagExame.fkIdUnidadeMedida.abreviatura} ]"/>
+                                    </c:if>
+                                </c:if>
+
+                                <c:if test="${diagExameRealizadoBean.diagExame.valorReferenciaMinimo.toString().length() != 0}">
+                                    <c:if test="${diagExameRealizadoBean.diagExame.valorReferenciaMaximo.toString().length() != 0}">
+                                        <p:outputLabel rendered="false" style="margin-left: 10px"
+                                                       value="Valor de Referência: [ > #{diagExameRealizadoBean.diagExame.valorReferenciaMaximo} #{diagExameRealizadoBean.diagExame.fkIdUnidadeMedida.abreviatura} ]"/>
+                                    </c:if>
+                                </c:if>
+                            </h:panelGroup>
+                        </c:if>
+
+                        <c:if test="${diagExameRealizadoBean.diagExame.fkIdTipoResultado.descricaoTipoResultadoExame == 'Texto'}">
+                            <p:inputTextarea cols="40" rows="4" value="#{diagExameRealizadoBean.diagExameRealizado.resultados}" maxlength="255" 
+                                             required="true" requiredMessage="É necessário informar o resultado obtido no exame."/>
+                        </c:if>
+
+                        <h:outputLabel value="Observações: "/>
+                        <p:inputTextarea style="width: 100%" cols="40" rows="4" value="#{diagExameRealizadoBean.diagExameRealizado.observacoes}" maxlength="255"/>
+
+                    </h:panelGrid>
+
+                    <br/>
+
+                    <h:outputLabel value="Campos de preenchimento obrigatório (*)" style="float: left; font-size: small;"/>
+
+                    <p:separator/>
+
+                    <h:panelGroup style=" float: right">
+                        <p:commandButton ajax="false"
+                                         value="Guardar" icon="ui-icon-disk"
+                                         action="#{diagExameRealizadoBean.create()}"/> 
+                        <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" 
+                                         action="#{diagExameRealizadoBean.limpar()}"/>
+
+                    </h:panelGroup>
+
+                </p:fieldset>
+
+            </center>
+
+        </h:form>
+
+        <br/>
+
+    </ui:define>
+
+</ui:composition>

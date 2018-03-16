@@ -1,0 +1,252 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagCandidatoDadorBean.temMensagemPendente == true}">
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Erro'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+        </c:if>
+
+        <h2>Laboratório -> Hemoterápia -> Banco de Sangue</h2>
+
+        <center>
+
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+            <h:form prependId="false" >
+                <br/>
+
+                <p:fieldset style="width: 97%;">
+                    <h:panelGrid columns="2" width="100%">
+                        <h:panelGrid columns="2" cellpadding="5" id="gridCamposPesquisa">
+
+                            <h:panelGrid columns="2" cellpadding="3">
+                                <f:validateBean disabled="true">
+
+                                    <h:outputLabel value="Nº de Registos: "/>
+                                    <p:spinner id="numRegistos" value="#{diagBolsaSangueBean.numeroRegistos}" 
+                                               min="1" required="true" requiredMessage="É necessário informar o número de registos a retornar."/>
+
+                                    <p:outputLabel value="Código da Bolsa: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="codBolsa" style="width: 100%" value="#{diagBolsaSangueBean.diagBolsaSanguePesquisar.codigoColheita}" />
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="Quantidade (ml): "/>
+                                    <f:validateBean disabled="true">
+                                        <p:inputNumber style="width: 100%" value="#{diagBolsaSangueBean.diagBolsaSanguePesquisar.quantidadeColhida}" minValue="0" symbol=" ml" symbolPosition="s"/>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="Cadastrada entre: "/>
+                                    <h:panelGrid columns="3" width="100%">
+
+                                        <p:calendar id="dataInicioCadastro" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}" value="#{diagBolsaSangueBean.dataInicioCadastro}" locale="pt"/> 
+                                        <p:outputLabel value="e" style="margin-right: 5px"/> 
+                                        <p:calendar id="dataFimCadastro" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}" value="#{diagBolsaSangueBean.dataFimCadastro}" locale="pt"/>
+                                    </h:panelGrid>
+
+                                    <p:outputLabel value="Data de expiração entre: "/>
+                                    <h:panelGrid columns="3" width="100%">
+
+                                        <p:calendar id="dataInicioExpiracao" value="#{diagBolsaSangueBean.dataInicioExpiracao}" locale="pt"/> 
+                                        <p:outputLabel value="e" style="margin-right: 5px"/> 
+                                        <p:calendar id="dataFimExpiracao" value="#{diagBolsaSangueBean.dataFimExpiracao}" locale="pt"/>
+                                    </h:panelGrid>
+
+                                    <p:outputLabel value="Dador: "/>
+                                    <h:panelGrid columns="4" width="100%" cellpadding="5">
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="nome" style="width: 110%; margin-left: -5px" value="#{diagBolsaSangueBean.diagBolsaSanguePesquisar.fkIdCandidatoDador.fkIdPessoa.nome}" />
+                                        </f:validateBean>
+                                        <p:watermark for="nome" value="Nome" />
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="sobreNome" style="width: 110%" value="#{diagBolsaSangueBean.diagBolsaSanguePesquisar.fkIdCandidatoDador.fkIdPessoa.sobreNome}" />
+                                        </f:validateBean>
+                                        <p:watermark for="sobreNome" value="Sobrenome" />
+                                    </h:panelGrid>
+
+                                    <p:outputLabel value="Nacionalidade: "/>
+                                    <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagBolsaSangueBean.diagBolsaSanguePesquisar.fkIdCandidatoDador.fkIdPessoa.fkIdNacionalidade.pkIdPais}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{diagCandidatoDadorBean.listaPais}" var="pais"
+                                                       itemLabel="#{pais.nacionalidade}" itemValue="#{pais.pkIdPais}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Sexo: "/>
+                                    <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagBolsaSangueBean.diagBolsaSanguePesquisar.fkIdCandidatoDador.fkIdPessoa.fkIdSexo.pkIdSexo}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{itensAjaxBean.sexoList}" var="sexo"
+                                                       itemLabel="#{sexo.descricao}" itemValue="#{sexo.pkIdSexo}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Grupo Sanguíneo: "/>
+                                    <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagBolsaSangueBean.diagGrupoSanguineoPesquisar.pkIdGrupoSanguineo}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{diagGrupoSanguineoBean.findAll()}" var="grupo"
+                                                       itemLabel="#{grupo.descricaoGrupoSanguineo}" itemValue="#{grupo.pkIdGrupoSanguineo}"/>
+                                    </p:selectOneMenu>
+
+                                </f:validateBean>
+
+                                <br/>
+                                <h:panelGrid columns="3" width="100%">
+                                    <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                     action="#{diagBolsaSangueBean.pesquisarBolsasDeSangue()}" 
+                                                     partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                    <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagBolsaSangueBean.limparPesquisa()}" 
+                                                     partialSubmit="true" process="@this" style="width: 100%"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable id="dataTable" rows="5" paginator="true" paginatorPosition="bottom" rowKey="#{bolsa.pkIdBolsaSangue}" selectionMode="single"
+                             var="bolsa" value="#{diagBolsaSangueBean.itens}"
+                             emptyMessage="Nenhum registo de bolsa de sangue encontrado.">
+
+                    <p:column headerText="Cód. Bolsa" filterBy="#{bolsa.codigoColheita}">
+                        <center>
+                            #{bolsa.codigoColheita}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Dador" filterBy="#{bolsa.fkIdCandidatoDador.fkIdPessoa.nome}">
+                        <center>
+                            #{bolsa.fkIdCandidatoDador.fkIdPessoa.nome} 
+                            #{bolsa.fkIdCandidatoDador.fkIdPessoa.nomeDoMeio}
+                            #{bolsa.fkIdCandidatoDador.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Grupo Sanguíneo" filterBy="#{bolsa.fkIdCandidatoDador.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo}">
+                        <center>
+                            #{bolsa.fkIdCandidatoDador.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Quantidade (ml)">
+                        <center>
+                            #{bolsa.quantidadeColhida}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data de Cadastro">
+                        <center>
+                            <h:outputText value="#{bolsa.dataCadastro}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data de Expiração" rendered="#{bolsa.dataExpiracao.after(diagResultadosExameRealizadoBean.momentoActual) == true}">
+                        <center>
+                            <h:outputText value="#{bolsa.dataExpiracao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>                            
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data de Expiração" rendered="#{bolsa.dataExpiracao.compareTo(diagResultadosExameRealizadoBean.momentoActual) == 0}">
+                        <center>
+
+                            <h:outputText value="#{bolsa.dataExpiracao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText><span style="color: red"> (Expirada) </span>                          
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data de Expiração" rendered="#{bolsa.dataExpiracao.before(diagResultadosExameRealizadoBean.momentoActual) == true}">
+                        <center>                           
+                            <h:outputText value="#{bolsa.dataExpiracao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText><span style="color: red"> (Expirada) </span>
+                        </center>
+                    </p:column>
+
+                    <p:column>
+                        <center>
+                            <p:commandButton value="Visualizar" action="#{diagBolsaSangueBean.selecionarBolsaSangueVisualizar(bolsa)}" 
+                                             onclick="PF('dialogVisualizar').show();" icon="ui-icon-info"
+                                             process="@this" update=":formVisual"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+        </center>
+
+        <p:dialog header="Visualizar Dados da Bolsa de Sangue" closable="false" showEffect="fade" 
+                  widgetVar="dialogVisualizar" modal="true" width="30%" height="50%"
+                  resizable="false" style="font-size: 14px;">
+            <h:form id="formVisual">
+                <h:panelGrid columns="2" class="float-right">
+                    <p:commandButton value="Fechar" onclick="dialogVisualizar.hide()" 
+                                     action="#{diagBolsaSangueBean.selecionarBolsaSangueVisualizar(null)}" process="@this" style="width: 100px"/>
+                </h:panelGrid>
+
+                <p:fieldset style="width: 95%">
+
+                    <h:panelGrid columns="2" cellpadding="4">
+
+                        <h3>Código da Bolsa: </h3>
+                        <p:outputLabel value="#{diagBolsaSangueBean.diagBolsaSangueVisualizar.codigoColheita}"/>
+
+                        <h3>Código do Dador: </h3>
+                        <p:outputLabel value="#{diagBolsaSangueBean.diagBolsaSangueVisualizar.fkIdCandidatoDador.codigoCandidatoDador}"/>
+
+                        <h3>Dador: </h3>
+                        <h:panelGroup>
+                            #{diagBolsaSangueBean.diagBolsaSangueVisualizar.fkIdCandidatoDador.fkIdPessoa.nome} 
+                            #{diagBolsaSangueBean.diagBolsaSangueVisualizar.fkIdCandidatoDador.fkIdPessoa.nomeDoMeio}
+                            #{diagBolsaSangueBean.diagBolsaSangueVisualizar.fkIdCandidatoDador.fkIdPessoa.sobreNome}
+                        </h:panelGroup>
+
+                        <h3>Grupo Sanguíneo: </h3>
+                        <p:outputLabel value="#{diagBolsaSangueBean.diagTipagemDadorVisualizar.conclusao.descricaoGrupoSanguineo}"/>
+
+                        <h3>Quantidade: </h3>
+                        <p:outputLabel value="#{diagBolsaSangueBean.diagBolsaSangueVisualizar.quantidadeColhida} ml"/>
+
+                        <h3>Data de Cadastro: </h3>
+                        <h:outputLabel style="border: none" value="#{diagBolsaSangueBean.diagBolsaSangueVisualizar.dataCadastro}">
+                            <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>
+                        </h:outputLabel>
+
+                        <h3>Data de Expiração: </h3>
+                        <h:outputLabel style="border: none" value="#{diagBolsaSangueBean.diagBolsaSangueVisualizar.dataExpiracao}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputLabel>
+
+                    </h:panelGrid>
+
+                </p:fieldset>
+
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+</ui:composition>

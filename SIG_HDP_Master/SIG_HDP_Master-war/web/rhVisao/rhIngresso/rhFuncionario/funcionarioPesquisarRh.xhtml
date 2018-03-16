@@ -1,0 +1,301 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Funcionários</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Funcionários (Pesquisar)</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+                    <p:growl id="ms2" autoUpdate="true"/>
+
+                    <h:form prependId="false" >
+                         <br/>
+                         <center>
+                              <p:fieldset style="width: 97%; height: 220px">
+                                   <h:panelGrid columns="2" width="100%" id="gridPesquisarFuncionario">
+                                        <f:validateBean disabled="true">
+                                             <h:panelGrid columns="2" cellpadding="3">
+                                                  <h:panelGrid columns="2" cellpadding="3">
+                                                       <p:outputLabel value="Nome:"/>
+                                                       <p:inputText value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdPessoa.nome}"/>
+                                                       <p:outputLabel value="Nome do Meio:"/>
+                                                       <p:inputText value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdPessoa.nomeDoMeio}"/>
+                                                       <p:outputLabel value="Sobrenome:"/>
+                                                       <p:inputText value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdPessoa.sobreNome}"/>
+                                                       <p:outputLabel value="Nº Cartão Identidade:"/>
+                                                       <p:inputNumber value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.numeroCartao}" decimalPlaces="0" thousandSeparator="" minValue="0"/>
+                                                  </h:panelGrid>
+                                                  <h:panelGrid columns="2" cellpadding="3">
+                                                       <p:outputLabel value="Estado Funcionário:"/>
+                                                       <h:selectOneMenu style="width: 300px; text-align: center" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdEstadoFuncionario.pkIdEstadoFuncionario}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.estadoFuncionarioList}" var="estado"
+                                                                           itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoFuncionario}"/>
+                                                       </h:selectOneMenu>
+
+                                                       <p:outputLabel value="Tipo Funcionário:"/>
+                                                       <h:selectOneMenu style="width: 300px; text-align: center" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdTipoFuncionario.pkIdTipoFuncionario}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.tipoFuncionarioList}" var="tipo"
+                                                                           itemLabel="#{tipo.descricao}" itemValue="#{tipo.pkIdTipoFuncionario}"/>
+                                                       </h:selectOneMenu>
+
+                                                       <p:outputLabel value="Departamento:"/>
+                                                       <h:selectOneMenu style="width: 300px; text-align: center" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdSeccaoTrabalho.fkIdDepartamento.pkIdDepartamento}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.departamentoList}" var="dep"
+                                                                           itemLabel="#{dep.descricao}" itemValue="#{dep.pkIdDepartamento}"/>
+                                                       </h:selectOneMenu>
+
+                                                       <p:outputLabel value="Profissão:"/>
+                                                       <h:selectOneMenu style="width: 300px; text-align: center" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdProfissao.pkIdProfissao}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.profissaoList}" var="profi"
+                                                                           itemLabel="#{profi.descricao}" itemValue="#{profi.pkIdProfissao}"/>
+                                                       </h:selectOneMenu>
+
+                                                       <p:outputLabel value="Categoria:"/>
+                                                       <p:selectOneMenu style="width: 275px; text-align: center" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdCategoria.pkIdCategoriaProfissional}" 
+                                                                        filter="true" filterMatchMode="contains" autoWidth="false">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.categoriaProfissionalList}" var="categ"
+                                                                           itemLabel="#{categ.descricao}" itemValue="#{categ.pkIdCategoriaProfissional}"/>
+                                                       </p:selectOneMenu>
+                                                  </h:panelGrid>
+                                                  <p:commandButton style="width: 100%" icon="ui-icon-search" value="Pesquisar" 
+                                                                   action="#{rhFuncionarioPesquisarBean.pesquisarFuncionarios()}" 
+                                                                   process="gridPesquisarFuncionario" update="dataTable"/>
+                                                  <p:commandButton value="Limpar" action="#{rhFuncionarioPesquisarBean.limparPesquisa()}"
+                                                                   process="@this" style="width: 100%"/>
+                                             </h:panelGrid>
+                                        </f:validateBean>
+
+                                        <h:panelGrid style="text-align: center; float: right">
+                                             <p:commandButton style="width: 160px" value="Novo Funcionário" icon="ui-icon-plus" process="@this"
+                                                              action="#{rhFuncionarioNovoBean.limpar()}" actionListener="#{rhPessoaBean.setPessoa(null)}"/>
+                                        </h:panelGrid>
+                                   </h:panelGrid>
+                              </p:fieldset>
+                              <p:commandButton style="width: 100%" value="Imprimir Lista de Funcionários" ajax="false" actionListener="#{rhFuncionarioPesquisarBean.imprimirListaDeFuncionariosPDF}"/>
+                              <br/>
+                              <br/>
+                              <p:dataTable id="dataTable" rows="10" paginator="true" paginatorPosition="bottom" 
+                                           var="funcionario" value="#{rhFuncionarioPesquisarBean.funcionariosPesquisadosList}" emptyMessage="Nenhum registro de funcionário encontrado">
+                                   <p:column headerText="Nome Completo">
+                                        <p:outputLabel value="#{funcionario.fkIdPessoa.nome} #{funcionario.fkIdPessoa.nomeDoMeio} #{funcionario.fkIdPessoa.sobreNome}"/>
+                                   </p:column>
+                                   <p:column headerText="Nº Cartão Identidade">
+                                        #{funcionario.numeroCartao}
+                                   </p:column>
+                                   <p:column headerText="Unidade Hospitalar">
+                                        #{funcionario.fkIdCentroHospitalar.fkIdInstituicao.descricao}
+                                   </p:column>
+                                   <p:column headerText="Profissão">
+                                        #{funcionario.fkIdProfissao.descricao}
+                                   </p:column>
+                                   <p:column headerText="Categoria">
+                                        #{funcionario.fkIdCategoria.descricao}
+                                   </p:column>
+                                   <p:column headerText="Estado">
+                                        #{funcionario.fkIdEstadoFuncionario.descricao}
+                                   </p:column>
+                                   <p:column headerText="-----------------------------">
+                                        <center>
+                                             <p:menuButton value="Opções">
+                                                  <p:menuitem value="Visualizar" action="#{rhFuncionarioPesquisarBean.setFuncionarioVisualizar(funcionario)}"
+                                                              actionListener="#{rhPessoaBean.setPessoaVisualizar(funcionario.fkIdPessoa)}" icon="ui-icon-info"
+                                                              onclick="PF('dialogVisualizar').show()" process="@this" update=":formVisual:tabVisualizar"/>
+                                                  <p:menuitem value="Editar" icon="ui-icon-pencil" action="#{rhFuncionarioEditarBean.prepararEditar(funcionario)}" 
+                                                              actionListener="#{rhPessoaBean.setPessoa(funcionario.fkIdPessoa)}"/>
+                                                  <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash"
+                                                              action="#{rhFuncionarioPesquisarBean.setFuncionarioVisualizar(funcionario)}"/>
+                                                  <p:separator/>
+                                                  <p:menuitem value="Avaliar Desempenho" icon="ui-icon-pencil" action="#{rhAvaliacaoDeDesempenhoNovaBean.urlDaPaginaRedirecionarComNovaAvaliacao(funcionario)}"/>
+                                                  <p:menuitem value="Marcar Férias" icon="ui-icon-pencil" action="#{rhFeriasNovasBean.urlDaPaginaRedirecionar()}" 
+                                                              actionListener="#{rhFeriasNovasBean.selecionarFuncionario(funcionario)}"/>
+                                             </p:menuButton>
+                                        </center>
+                                   </p:column>
+                              </p:dataTable>
+
+                              <p:confirmDialog message="Tem certeza que pretende remover o funcionário selecionado ?"
+                                               header="Remover Funcionário" severity="alert" widgetVar="confirmDialogRemover">
+                                   <p:commandButton value="Sim" actionListener="#{rhFuncionarioPesquisarBean.remove(rhFuncionarioPesquisarBean.funcionarioVisualizar)}" 
+                                                    process="@this" update="dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                                   <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                              </p:confirmDialog>
+
+                         </center>
+                    </h:form>
+                    <center>
+                         <p:dialog header="Visualizar Funcionário" closable="false" showEffect="fade" 
+                                   widgetVar="dialogVisualizar" modal="true" width="60%" height="500px"
+                                   resizable="false">
+                              <h:form id="formVisual">
+                                   <h:panelGrid width="100%">
+                                        <h:panelGrid columns="2" class="float-right">
+                                             <p:commandButton value="Gerir Dependentes" style="width: 180px" process="@this"
+                                                              action="#{rhDependenteBean.preparar(rhFuncionarioPesquisarBean.funcionarioVisualizar)}"/>
+
+                                             <p:commandButton value="Fechar" onclick="PF('dialogVisualizar').hide()"
+                                                              action="#{rhFuncionarioPesquisarBean.setFuncionarioVisualizar(null)}" 
+                                                              actionListener="#{rhPessoaBean.setPessoaVisualizar(null)}"
+                                                              process="@this" style="width: 130px"/>
+                                        </h:panelGrid>
+
+                                        <p:tabView id="tabVisualizar" style="height: 430px">
+                                             <p:tab title="Generalidades de Pessoa">
+                                                  <ui:include src="./../rhPessoa/pessoaVisualizarTabViewRh.xhtml"/>
+                                             </p:tab>
+
+                                             <p:tab title="Generalidades de Funcionário">
+                                                  <p:tabView>
+                                                       <p:tab title="Dados Iniciais">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Cadastro: "/>
+                                                                 <h:inputText value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.dataCadastro}" 
+                                                                              style="border: none; background: none" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Admissão: "/>
+                                                                 <h:inputText value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.dataAdmissao}" 
+                                                                              style="border: none; background: none" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Demissão: "/>
+                                                                 <h:inputText value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.dataDemissao}"
+                                                                              style="border: none; background: none" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Reforma: "/>
+                                                                 <h:inputText value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.dataReforma}"
+                                                                              style="border: none; background: none" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Estado do Funcionário: "/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdEstadoFuncionario.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Tipo de Funcionário: "/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdTipoFuncionario.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Tipo de Horário de Trabalho: "/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdTipoDeHorarioTrabalho.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Guia de Transferência: " rendered="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdAnexoGuiaTransferencia.ficheiro != null}"/>
+                                                                 <h:panelGrid columns="2" cellpadding="5" rendered="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdAnexoGuiaTransferencia.ficheiro != null}">
+                                                                      <p:outputLabel value="Nº #{rhFuncionarioPesquisarBean.funcionarioVisualizar.numeroGuiaTransferencia}"/>
+                                                                      <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" process="@this" value="Previsualizar"
+                                                                                     rendered="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdAnexoGuiaTransferencia.ficheiro != null}"
+                                                                                     actionListener="#{rhFicheiroAnexadoBean.setAnexoFuncionario(rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdAnexoGuiaTransferencia)}"
+                                                                                     onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                 </h:panelGrid>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Dados de Identificação">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Nº Cartão de Identidade: "/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.numeroCartao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Nº Bilhete de Identidade: "/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.numeroBi}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Nº Segurança Social: "/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.numeroSegurancaSocial}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Nº Contribuinte: "/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.numeroContribuinte}"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Profissão e Especialidades">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Profissão:"/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdProfissao.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Especialidades:"/>
+                                                                 <p:panelGrid columns="2">
+                                                                      <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdEspecialidade1.descricao}"/>
+                                                                      <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdEspecialidade2.descricao}"/>
+                                                                 </p:panelGrid>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Categoria e Remuneração">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Categoria Profissional:"/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdCategoria.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Salário do Funcionário (AKZ):"/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.rhSalarioFuncionarioList.get(0).salario}"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Área de Trabalho">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Unidade Hospitalar:"/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdCentroHospitalar.fkIdInstituicao.descricao}"/>
+                                                                 <p:outputLabel rendered="#{rhFuncionarioPesquisarBean.renderCentDepartSeccaoFuncionarioVisual()}"
+                                                                                style="font-size: 15px" value="Departamento:"/> 
+                                                                 <p:outputLabel rendered="#{rhFuncionarioPesquisarBean.renderCentDepartSeccaoFuncionarioVisual()}"
+                                                                                value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdSeccaoTrabalho.fkIdDepartamento.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Secção de Trabalho:"/>
+                                                                 <p:outputLabel rendered="#{rhFuncionarioPesquisarBean.renderCentDepartSeccaoFuncionarioVisual()}"
+                                                                                value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdSeccaoTrabalho.descricao}"/>
+                                                                 <p:outputLabel rendered="#{! rhFuncionarioPesquisarBean.renderCentDepartSeccaoFuncionarioVisual()}"
+                                                                                value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdSeccaoTrabalho.fkIdDepartamento.descricao} -> 
+                                                                                #{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdSeccaoTrabalho.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Função/Cargo:"/>
+                                                                 <p:outputLabel value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.fkIdFuncao.descricao}"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Subsídios">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:dataTable var="subsidioFunc" value="#{rhFuncionarioPesquisarBean.funcionarioVisualizar.rhFuncionarioHasRhSubsidioList}" 
+                                                                              paginator="true" rows="6" paginatorAlwaysVisible="false" paginatorPosition="top" emptyMessage="Nenhum subsídio encontrado">
+                                                                      <p:column>
+                                                                           <p:outputLabel value="#{subsidioFunc.fkIdSubsidio.descricaoSubsidio}"/>
+                                                                      </p:column>
+                                                                      <p:column>
+                                                                           <p:outputLabel value="#{subsidioFunc.fkIdSubsidio.valor}%"/>
+                                                                      </p:column>
+                                                                 </p:dataTable>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                  </p:tabView>
+                                             </p:tab>
+                                        </p:tabView>
+                                   </h:panelGrid>
+                              </h:form>
+                         </p:dialog>
+
+
+                         <p:dialog widgetVar="dialogPrevisualizar" header="Previsualizar"
+                                   width="75%" height="510px" showEffect="fade" closable="true"
+                                   hideEffect="fade" modal="true" position="top">
+                              <h:form id="formPrevisualizar">
+                                   <div class="float-right">
+                                        <h:commandButton value="Fechar" type="button" onclick="PF('dialogPrevisualizar').hide()"/>
+                                   </div>
+                                   <center>
+                                        <p:panel id="painel" style="height: 490px">
+                                             <iframe src="#{rhFicheiroAnexadoBean.previsualizarAnexoFuncionario()}"
+                                                     width="100%" height="450px"/>
+                                        </p:panel>
+                                   </center>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

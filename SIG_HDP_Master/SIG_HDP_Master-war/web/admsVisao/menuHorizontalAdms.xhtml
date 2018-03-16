@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+         <li class="ic-home">
+              <h:link outcome="/admsVisao/homeAdms.xhtml">
+                   <span>#{msgs.paginaInicial}</span>
+              </h:link>
+         </li>
+         <li class="ic-grid-tables">
+             <a href="javascript:"><span>#{msgs.tabelasAuxAdmissoesMenu}</span></a>
+            <ul>
+                <!-- <li><h:link value="# {msgs.grupoServicosMenu}" outcome="/faces/admsVisao/auxiliares/grupoServicoAdms"/></li> -->
+                <li><h:link value="#{msgs.grupoServicosMenu}" outcome="/admsVisao/auxiliares/grupoServicoAdms"/></li>
+                <li><h:link value="#{msgs.tiposServicosMenu}" outcome="/admsVisao/auxiliares/tipoServicoAdms"/></li>
+                <li><h:link value="#{msgs.areaMenu}" outcome="/admsVisao/gerais/areaInternaAdms"/></li>
+                <li><h:link value="#{msgs.servicosMenu}" outcome="/admsVisao/auxiliares/servicoAdms"/></li>
+                <li><h:link value="#{msgs.tiposSolicitacaoMenu}" outcome="/admsVisao/auxiliares/tipoSolicitacaoServicoAdms"/></li>
+            </ul>
+        </li>
+        
+        <!--<li class="ic-grid-tables">
+            <a href="javascript:"><span># {msgs.tabelasAuxFinancasMenu}</span></a>
+            <ul>
+                <li><h:link value="# {msgs.gestaoBancosMenu}" outcome="/admsVisao/financas/bancoFin"/></li>
+                <li><h:link value="# {msgs.gestaoDeContasMenu}" outcome="/admsVisao/financas/contaBancariaAdms"/></li>
+                <li><h:link value="# {msgs.formasPagamentoMenu}" outcome="/admsVisao/financas/formaPagamentoAdms"/></li>
+                <li><h:link value="# {msgs.tipoPagamento}" outcome="/admsVisao/financas/tipoPagamentoAdms"/></li>
+            </ul>
+        </li>-->
+        
+        <!--<li class="ic-grid-tables">
+            <a href="javascript:"><span>Localização</span></a>
+            <ul>
+                <li><h:link value="País" outcome="/admsVisao/gerais/paisAdms"/></li>
+                <li><h:link value="Provincia" outcome="/admsVisao/gerais/provinciaAdms"/></li>
+                <li><h:link value="Municipio" outcome="/admsVisao/gerais/municipioAdms"/></li>
+                <li><h:link value="Distrito" outcome="/admsVisao/gerais/distritoAdms"/></li>
+                <li><h:link value="Comuna" outcome="/admsVisao/gerais/comunaAdms"/></li>
+            </ul>
+        </li>-->
+        
+        <!--<li class="ic-grid-tables">
+            <a href="javascript:"><span>Instituições</span></a>
+            <ul>
+               <li><h:link value="Instituições" outcome="/admsVisao/gerais/instituicaoAdms"/></li>
+               <li><h:link value="Centro Hospitalar" outcome="/admsVisao/gerais/centroHospitalarAdms"/></li>
+            </ul>
+        </li>-->
+       
+        <!--<li class="ic-grid-tables">
+            <a href="javascript:"><span>Convénios</span></a>
+            <ul>
+                <li><h:link value="# {msgs.convenioMenu}" outcome="/admsVisao/gerais/convenioAdms"/></li>
+                <li><h:link value="# {msgs.projetoConvenio}" outcome="/admsVisao/gerais/projetoConvenioAdms"/></li>
+            </ul>
+        </li>-->
+        
+        <!--<li class="ic-grid-tables">
+            <a href="javascript:"><span>Outras Tabelas</span></a>
+            <ul>
+                <li><h:link value="Religião" outcome="/admsVisao/gerais/religiaoAdms"/></li>
+            </ul>
+        </li>-->
+        
+        <li class="ic-grid-tables">
+            <a href="javascript:"><span>Configurações Dias de Atendimento Médico</span></a>
+            <ul>
+                <li><h:link value="Configurações" outcome="/admsVisao/horariosAtendimentoMedicos/configuracaoHorarioAtendimentoMedico"/></li>
+            </ul>
+        </li>
+    </h:body>
+</html>
+

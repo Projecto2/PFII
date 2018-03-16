@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagExameRealizadoBean.temMensagemPendente == true}">
+            <c:if test="${diagExameRealizadoBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagExameRealizadoBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagExameRealizadoBean.tipoMensagemPendente == 'Erro'}">
+                #{diagExameRealizadoBean.getMensagem()}
+            </c:if>
+        </c:if>
+
+        <h2>Laboratório -> Análises Clínicas -> Exames de Rotina -> Solicitações de Exame</h2>
+
+        <center>
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+            <h:form prependId="false" >
+                <br/>
+                <p:poll listener="#{diagSolicitacaoExameLaboratorioBean.getSolicitacoesExame()}" update="dataTable" interval="5"/>
+                <p:dataTable id="dataTable" rows="12" paginator="true" paginatorPosition="bottom" 
+                             rowKey="#{pedido.pkIdAgendamento}" selectionMode="single"
+                             var="pedido" value="#{diagSolicitacaoExameLaboratorioBean.getSolicitacoesExame()}"
+                             emptyMessage="Nenhuma solicitação de exame de rotina encontrada.">
+
+                    <p:column headerText="Código da Solicitação">
+                        <center>
+                            <h:outputText value="#{pedido.fkIdServicoSolicitado.pkIdServicoSolicitado}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nº do Processo">
+                        <center>
+                            <h:outputText value="#{pedido.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nº do Subprocesso">
+                        <center>
+                            <h:outputText value="#{pedido.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                        </center>
+                    </p:column>
+                    
+                    <p:column headerText="Paciente" filterBy="#{pedido.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}">
+                        <center>
+                            #{pedido.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                            #{pedido.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                            #{pedido.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+
+                    <p:column headerText="Data da Solicitação" >
+                        <center>
+                            <h:outputText value="#{pedido.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>		
+                            </h:outputText>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Exame" filterBy="#{pedido.fkIdServicoSolicitado.fkIdServico.nomeServico}">
+                        <center>
+                            <h:outputText value="#{pedido.fkIdServicoSolicitado.fkIdServico.nomeServico}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Classificação" filterBy="#{pedido.fkIdServicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}">
+                        <center>
+                            <h:outputText value="#{pedido.fkIdServicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Estado do Pagamento" filterBy="#{pedido.fkIdServicoSolicitado.fkIdEstadoPagamento.descricaoEstadoPagamento}">
+                        <center>
+                            <h:outputText value="#{pedido.fkIdServicoSolicitado.fkIdEstadoPagamento.descricaoEstadoPagamento}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column>
+                        <center>
+                            <p:menuButton value="Opções">
+                                <p:separator/>
+                                <p:menuitem value="Ficha do Paciente" action="#{diagExameRealizadoBean.setAdmsServicoSolicitadoVisualizar(pedido.fkIdServicoSolicitado)}" 
+                                            onclick="PF('dialogVisualizar').show();" process="@this" update=":formVisual" icon="ui-icon-info"/>
+                                <p:separator/>
+                                <p:menuitem value="Realizar Exame" action="#{diagExameRealizadoBean.selecionarExameRealizar(pedido.fkIdServicoSolicitado)}" />
+                                <p:separator/>
+                            </p:menuButton>
+                        </center>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </center>
+
+        <p:dialog closable="false" showEffect="fade" widgetVar="dialogVisualizar" modal="true" width="40%" resizable="false">
+            <h:form id="formVisual">
+                <h:panelGrid columns="2" class="float-right">
+                    <p:commandButton value="Fechar" onclick="dialogVisualizar.hide()" 
+                                     action="#{diagExameRealizadoBean.setAdmsServicoSolicitadoVisualizar(null)}" process="@this" style="width: 100px"/>
+                </h:panelGrid>
+
+                <p style="font-size: large; font-weight: bold; text-decoration: underline">Nº do Processo: #{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.numeroPaciente}</p>
+
+                <p:tabView id="tabVisualizar" style="height: 500%">
+                    <p:tab title="Dados Pessoais">
+                        <h:panelGrid columns="2" cellpadding="4">
+                            <h3>Nome Completo: </h3>
+                            <h:panelGroup>
+                                #{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome } 
+                                #{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                #{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                            </h:panelGroup>
+
+                            <h3>Data de Nascimento: </h3>
+                            <h:outputText style="border: none" value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.dataNascimento}">
+                                <f:convertDateTime pattern="dd-MM-yyyy"/>
+                            </h:outputText>
+                            <h3>Sexo: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdSexo.descricao}"/>
+                            <h3>Nacionalidade: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdNacionalidade.nomePais}"/>
+                            <h3>Estado Civil: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEstadoCivil.descricao}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Filiação">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <h3>Nome do Pai: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomePai}"/>
+                            <h3>Nome da Mãe: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeMae}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Contacto">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <h3>Telefone1: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.telefone1}"/>
+                            <h3>Telefone2: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.telefone2}"/>
+                            <h3>Email1: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.email1}"/>
+                            <h3>Email2: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.email2}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Endereço">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <h3>País: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}"/>
+                            <h3>Província: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.nomeProvincia}"/>
+                            <h3>Município: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.nomeMunicipio}"/>
+                            <h3>Distrito: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdDistrito.descricao}"/>
+                            <h3>Comuna: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.descricaoComuna}"/>
+                            <h3>Bairro: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.bairro}"/>
+                            <h3>Rua: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.rua}"/>
+                            <h3>Nº Casa: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.numeroCasa}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Outros Dados">
+                        <h:panelGrid columns="2" cellpadding="7">
+                            <h3>Religião: </h3>
+                            <p:outputLabel value="#{diagExameRealizadoBean.admsServicoSolicitadoVisualizar.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdReligiao.descricao}"/>
+                        </h:panelGrid>
+                    </p:tab>
+                </p:tabView>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

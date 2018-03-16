@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Categorias de Medicamento</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+          #{farmConsultaCategoriaMedicamentoBean.pesquisarCategorias()}
+         
+         <ui:define name="center">
+            <h2>Farmácia -> Tabelas Auxiliares -> Categorias de Medicamento</h2>
+            <h:form id="formPrincipal">
+               <p:panel style="height: 50px; border: none">
+                  <h:panelGrid class="float-right">
+                     <p:commandButton value="Actualizar" icon="ui-icon-refresh" id="botaoImprimir"
+                                      actionListener="#{farmCategoriaDeMedicamentoExcelBean.carregarCategoriaDeMedicamentoTabela()}">
+                     </p:commandButton>
+                  </h:panelGrid>
+               </p:panel>
+
+               <center><h2 style="width: 90%">CLASSIFICAÇÃO NACIONAL DE MEDICAMENTOS</h2></center>
+               <p></p>
+               <p:tree selectionMode="single" style="width: 100%"
+                       value="#{farmConsultaCategoriaMedicamentoBean.raiz}" var="categoria">                  
+                  <p:treeNode>
+                     <p:commandButton value="#{categoria.capitulo} - #{categoria.descricao}"/> 
+                  </p:treeNode>
+               </p:tree>
+            </h:form>
+         </ui:define>
+
+      </ui:composition>
+   </h:body>
+</html>

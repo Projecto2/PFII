@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="movimentoDoentes" language="groovy" pageWidth="700" pageHeight="595" orientation="Landscape" columnWidth="660" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2a0cbc74-90c4-49b6-8c67-ce8b75ed2b1b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="48"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<parameter name="servico" class="java.lang.String"/>
+	<parameter name="data1" class="java.util.Date"/>
+	<parameter name="TotEntrada" class="java.lang.Integer"/>
+	<parameter name="TotAlta" class="java.lang.Integer"/>
+	<parameter name="TotFalecidos" class="java.lang.Integer"/>
+	<parameter name="TotTransferidos" class="java.lang.Integer"/>
+	<parameter name="TotAbandonados" class="java.lang.Integer"/>
+	<parameter name="TotFinal" class="java.lang.Integer"/>
+	<parameter name="data2" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="numeroCama" class="java.lang.String"/>
+	<field name="numeroInternamento" class="java.lang.String"/>
+	<field name="nomePaciente" class="java.lang.String"/>
+	<field name="tipoMovimento" class="java.lang.String"/>
+	<field name="cont" class="java.lang.Integer"/>
+	<title>
+		<band height="131" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="40" y="87" width="600" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="8a6eee59-dfdb-4059-9f64-435952a98cd1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Controlo do Golf - K. Kiaxi - LUANDA Tel-Fax(02) 470781 - 470507 E-mail:hospdp@ebonet.net]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="121" y="40" width="422" height="20" forecolor="#0000FF" uuid="636b1c55-274f-4d7e-80a0-759024e5b7c5"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<text><![CDATA[GABINETE PROVINCIAL DE  LUANDA]]></text>
+			</staticText>
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="80" y="16" width="95" height="61" uuid="2835eac5-f353-4df8-8dca-aa0e4dba0507"/>
+				<imageExpression><![CDATA["LogotipoDivina.jpg"]]></imageExpression>
+			</image>
+			<rectangle>
+				<reportElement mode="Transparent" x="40" y="87" width="600" height="16" uuid="ba17a4e6-bc92-45f5-b282-cfbe2add7a34"/>
+			</rectangle>
+			<image vAlign="Middle">
+				<reportElement x="523" y="13" width="71" height="63" uuid="1864c259-0233-4c29-965e-abf518bc0470"/>
+				<imageExpression><![CDATA["insigniaAngola.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="121" y="57" width="422" height="30" forecolor="#0000FF" uuid="5405f568-c7ef-4d0e-bfad-566834e1ed76"/>
+				<textElement textAlignment="Center">
+					<font fontName="Abyssinica SIL" size="18" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="121" y="14" width="422" height="25" forecolor="#0000FF" uuid="50ad2a7b-0aee-4135-aea3-d3d06830b387"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="15"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="52">
+			<staticText>
+				<reportElement x="143" y="30" width="206" height="20" uuid="8ca69781-d2ae-4e54-86c7-4e153b8dbb93"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[MOVIMENTO DOENTES]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="214" y="10" width="275" height="20" uuid="fa687531-f06e-49a6-9203-6155f5ae6c03"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{servico}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="349" y="30" width="25" height="20" uuid="818cbfc2-541f-4245-a5ef-beffbe738a61"/>
+				<textElement>
+					<font fontName="DejaVu Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DE]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="376" y="30" width="82" height="20" uuid="f3adb9c0-8aec-4210-a37b-fe550f81016f"/>
+				<textElement>
+					<font fontName="DejaVu Serif" size="14" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{data1}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="458" y="30" width="14" height="20" uuid="9665b2a7-9cda-4718-841d-b51db79fe360"/>
+				<textElement>
+					<font fontName="DejaVu Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[A]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="472" y="30" width="82" height="20" uuid="c47a7dff-059d-4acc-9ab6-12bb45c84380"/>
+				<textElement>
+					<font fontName="DejaVu Serif" size="14" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{data2}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="39" y="0" width="104" height="20" uuid="ab5e9179-9375-4df8-88cb-26fd1e16a14f"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+					<topPen lineWidth="0.25" lineStyle="Solid"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Nº. Cama]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="142" y="0" width="100" height="20" uuid="2d5ce838-e884-4408-9905-21aa3e8d4f61"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Nº. Internemento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="489" y="0" width="171" height="20" uuid="fff99af8-7206-4b3d-b07b-20120c66c007"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Tipo de Movimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="243" y="0" width="246" height="20" uuid="8375d980-61e3-435e-8cb7-0e0cb8f0055f"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Paciente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="39" height="20" uuid="7eb6ac14-78e7-4b43-8e00-4e840042e646"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="242" y="0" width="247" height="20" uuid="33484ae4-25e2-4d43-a3bc-0b09fa316c9b"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$F{nomePaciente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="39" y="0" width="103" height="20" uuid="f0ffb51c-90f4-4533-8edb-3994ddf16b41"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$F{numeroCama}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="142" y="0" width="100" height="20" uuid="1da3e36f-9346-485d-8e77-0cdbbc57d4f1"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$F{numeroInternamento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="39" height="20" uuid="a8ff4ca6-c562-4dd3-b5bb-7bcd914860dc"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$F{cont}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="489" y="0" width="171" height="20" uuid="d57f763a-818c-4d25-917b-d5afd02305f5"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<pen lineWidth="0.25" lineStyle="Solid"/>
+					<topPen lineWidth="0.25" lineStyle="Solid"/>
+					<leftPen lineWidth="0.25" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
+					<rightPen lineWidth="0.25" lineStyle="Solid"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$F{tipoMovimento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="119" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="129" height="20" uuid="4635b290-339b-48f4-b7ee-fcff8c27cf17"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Total Entradas: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="20" width="129" height="20" uuid="bfbcb34a-a62a-44aa-bf59-197cb4eb6230"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Total Alta: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="129" height="20" uuid="29520ec0-d86c-4c8b-b47c-64d97a46b89b"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Total Falecidos: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="129" height="20" uuid="8200008b-3c2d-40de-8b0b-4e10bb57d9cb"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Total Transferidos: ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="129" height="20" uuid="9fc23e5e-ab83-4c83-8636-02b794c85ec3"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Total Abandonos:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="99" width="129" height="20" uuid="6b0b14b6-32d0-4513-8d3d-8434a8e2df9c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   Total Final:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="129" y="0" width="531" height="20" uuid="af9e8391-3058-4ef0-b270-b0d3fbee952b"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$P{TotEntrada}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="20" width="531" height="20" uuid="36774c9f-ebd9-4a64-b0ad-4919fcc3ecd7"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$P{TotAlta}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="40" width="531" height="20" uuid="879836a3-a5db-4b82-97a3-9c0b79e297b9"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$P{TotFalecidos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="60" width="531" height="20" uuid="4d699c84-23dd-43d4-8e23-4d74682b25a2"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$P{TotTransferidos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="79" width="531" height="20" uuid="fbfb373c-6116-4b05-bb46-7ce808ef788c"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$P{TotAbandonados}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="99" width="531" height="20" uuid="97995375-c94a-42ba-8672-8034ade59c6e"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$P{TotFinal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="40" y="12" width="600" height="16" uuid="9cc2dc57-0cda-4979-96b0-400aabb690f2"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Opaque" x="40" y="14" width="600" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="9a49ca93-0935-4c37-9de9-5378720c5593"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="526" y="28" width="114" height="20" uuid="1b31529c-e238-4e74-a309-422b865ac09f"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="540" y="12" width="100" height="20" uuid="1f8f57c3-c19b-4558-863e-9e880b501cc3"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

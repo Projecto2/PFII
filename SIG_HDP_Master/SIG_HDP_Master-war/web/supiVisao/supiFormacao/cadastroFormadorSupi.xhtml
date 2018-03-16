@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h:form acceptcharset="ISO-8859-1">                              
+                    <p:panel header="Gestão de Formação">  
+                        <p:messages id="messagens" closable="true"/>   
+                        
+                        
+
+                        <p:fieldset legend="Registo de Formador" id="seleccaoPessoal">
+                            <h:panelGrid columns="2" cellpadding="7" style="font-family: cursive,sans-serif;font-size:14px; color: black;">
+
+                                 <h:outputLabel value="Nome Completo:" />
+                            <p:inputText id="nomeCompleto" 
+                                         value="#{supiFormadorBean.formador1.nome}" rendered="true"
+                                         requiredMessage="Preencha o Nome"/>
+
+                                <p:outputLabel value="Data de Nascimento: "/> 
+                                <p:calendar value="#{supiFormadorBean.formador1.dataNascimento}"
+                                            required="true" requiredMessage="Preencha a Data da Nascimento"
+                                            pattern="dd/MM/yyy" locale="pt" navigator="true">
+                                </p:calendar>
+                                
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:outputLabel value="nome da Empresa:"/>
+
+                        <br></br>
+                        <p:commandButton ajax="false" value="Guardar"
+                                         action="#{supiFormadorBean.salvar()}" icon="ui-icon-disk" style="margin-left:400px;"/>
+                        <p:commandButton ajax ="false" action="#{supiFormadorBean.limpar()}" value="Limpar"/>
+                        <p:commandButton ajax ="false" action="listarFormador" value="Voltar"/>
+                    </p:panel>   
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

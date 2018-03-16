@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+     <h:body>
+          <center>
+               <h:panelGrid columns="1" width="85%">
+                    <h:form id="formPesquisa">
+                         <p:dataTable id="dataTable" var="criterioDeAvaliacao" value="#{rhCriterioDeAvaliacaoListarBean.criterioDeAvaliacaoList}"
+                                      emptyMessage="Nenhum registro de critério de avaliação encontrado"
+                                      paginator="true" paginatorPosition="bottom">
+                              <p:column headerText="Critério de Avaliação" filterBy="#{criterioDeAvaliacao.descricao}">
+                                   <center>
+                                        <p:outputLabel value="#{criterioDeAvaliacao.pkIdCriterioDeAvaliacao}. #{criterioDeAvaliacao.descricao}"/>
+                                   </center>
+                              </p:column>
+                              <p:column headerText="Classificações do Critério de Avaliação">
+                                   <center>
+                                        <p:accordionPanel activeIndex="-1">
+                                             <p:tab title="Ver">
+                                                  <p:dataTable id="dataTable" var="classificacaoDoCriterio" emptyMessage="--------"
+                                                               value="#{criterioDeAvaliacao.rhClassificacaoDoCriterioList}"
+                                                               paginator="false" rows="4">
+                                                       <p:column headerText="Descrição da Classificação">
+                                                            <center>
+                                                                 <p:outputLabel value="#{classificacaoDoCriterio.descricao}"/>
+                                                            </center>
+                                                       </p:column>
+                                                       <p:column headerText="Valor da Classificação">
+                                                            <center>
+                                                                 <p:outputLabel value="#{classificacaoDoCriterio.classificacao}"/>
+                                                            </center>
+                                                       </p:column>
+                                                  </p:dataTable>
+                                             </p:tab>
+                                        </p:accordionPanel>
+                                   </center>
+                              </p:column>
+                         </p:dataTable>
+                    </h:form>
+               </h:panelGrid>
+          </center>
+     </h:body>
+</html>

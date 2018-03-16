@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:body>
+
+        <center>
+            <p:dialog header="Sobre o Ambulatório" closable="true" showEffect="fade" responsive="true" position="center"
+                      widgetVar="dialogSobre" modal="true" closeOnEscape="true" dynamic="true" resizable="false">
+                <h:form id="formSobre">
+                    <br/>
+                    <center>
+
+                        <p:panel id="painelSobre" styleClass="ui-noborder" style="margin-top: -15px">
+                            <p:graphicImage  id="imgHome" url="./../../resources/Imagens/amb_home_02.jpg" 
+                                             alt="Image Description for" title="banner1.jpg" 
+                                             styleClass="ui-noborder"/>
+                            <br/>
+                            <p:inputTextarea readonly="true" value="O Ambulatório é a parte do Hospital que lida com as Consultas dos Pacientes.
+                                                                    Consultas estas que podem ser de Primeira Vez ou Retorno." cols="41" style="margin-top: 5px"/>
+                        </p:panel>
+                        <p:commandButton value="Fechar" type="button" icon="ui-icon-close" onclick="PF('dialogSobre').hide()" style="margin-top: 7px; width: 337px"/>
+                        
+                    </center>
+                </h:form>
+            </p:dialog>
+        </center>
+
+    </h:body>
+</html>

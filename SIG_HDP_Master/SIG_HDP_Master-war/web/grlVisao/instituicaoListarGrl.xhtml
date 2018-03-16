@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <body>
+      <p:messages id="msg" autoUpdate="true" closable="true"/>
+      <p:growl id="msg2" autoUpdate="true"/>
+      <p:fieldset>
+         <center>
+            <h:panelGrid width="90%">
+               <h:form id="formPesquisa">
+                  <p:fieldset style="width: 97%">
+                     <h:panelGrid columns="2" cellpadding="5">
+                        <p:outputLabel value="Nome da Instituição"/>
+                        <f:validateBean disabled="true">
+                           <p:inputText style="width: 305px" value="#{grlInstituicaoBean.instituicaoPesquisa.descricao}"/>
+                        </f:validateBean>
+                        <p:outputLabel value="Sigla"/>
+                        <f:validateBean disabled="true">
+                           <p:inputText style="width: 305px" value="#{grlInstituicaoBean.instituicaoPesquisa.codigoInstituicao}"/>
+                        </f:validateBean>
+                        <br/>
+                        <h:panelGrid columns="2">
+                           <p:commandButton value="Pesquisar" icon="ui-icon-search" style="width: 150px"
+                                            process="@form" update="dataTable"
+                                            action="#{grlInstituicaoBean.pesquisarinstituicoes()}"/>
+                           <p:commandButton value="Nova Instituição" icon="ui-icon-plus" process="@this" 
+                                            action="#{grlInstituicaoBean.setInstituicao(null)}"
+                                            onclick="PF('dialogInstituicao').show()" style="width: 160px"
+                                            update=":formulario:painel :formulario:painel"/>
+                        </h:panelGrid>
+                     </h:panelGrid>
+                  </p:fieldset>
+                  <p:dataTable id="dataTable" var="instituicao" value="#{grlInstituicaoBean.instituicoesPesquisadasList}"
+                               emptyMessage="Nenhum registr encontrado. Aguardando pesquisa."
+                               paginator="true" paginatorPosition="bottom" rows="10">
+                     <p:column headerText="Instituição">
+                        <center>                                        
+                           #{instituicao.descricao}
+                        </center>
+                     </p:column>
+                     <p:column headerText="País">
+                        <center>
+                           #{instituicao.fkIdEndereco.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}
+                        </center>
+                     </p:column>
+                     <p:column headerText="Província">
+                        <center>
+                           #{instituicao.fkIdEndereco.fkIdMunicipio.fkIdProvincia.nomeProvincia}
+                        </center>
+                     </p:column>
+                     <p:column headerText="Município">
+                        <center>
+                           #{instituicao.fkIdEndereco.fkIdMunicipio.nomeMunicipio}
+                        </center>
+                     </p:column>
+                     <p:column headerText="Comuna">
+                        <center>
+                           #{instituicao.fkIdEndereco.fkIdComuna.descricaoComuna}
+                        </center>
+                     </p:column>
+                     <p:column headerText="Distrito">
+                        <center>
+                           #{instituicao.fkIdEndereco.fkIdDistrito.descricao}
+                        </center>
+                     </p:column>
+                     <p:column headerText="--------------------">
+                        <center>
+                           <p:menuButton value="Opções">
+
+                              <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogInstituicao').show();"
+                                          action="#{grlInstituicaoBean.setInstituicao(instituicao)}" process="dataTable" 
+                                          partialSubmit="true" update=":formulario:painel"/>
+                              <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                          action="#{grlInstituicaoBean.setInstituicaoRemover(instituicao)}"/>
+                           </p:menuButton>
+                        </center>
+                     </p:column>
+                  </p:dataTable>
+                  <p:confirmDialog message="Tem certeza que pretende remover o centro hospitalar selecionado ?"
+                                   header="Remover Instituição" severity="alert" widgetVar="confirmDialogRemover">
+                     <p:commandButton value="Sim" actionListener="#{grlInstituicaoBean.remove()}" process="@this"
+                                      update=":msg :msg2 dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                     <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                  </p:confirmDialog>
+               </h:form>
+            </h:panelGrid>
+         </center>
+
+         <center>
+            <p:dialog header="Instituição" closable="false" showEffect="fade" width="45%" height="440px"
+                      widgetVar="dialogInstituicao" modal="true" closeOnEscape="true">
+               <h:form id="formulario">
+                  <p:panel id="painel">
+                     <p:tabView>
+                        <p:tab title="Dados Iniciais">
+                           <h:panelGrid columns="2" width="100%" cellpadding="3">
+                              <p:outputLabel value="Descrição"/>
+                              <p:inputText style="width: 70%" value="#{grlInstituicaoBean.instituicao.descricao}"/>
+                              <p:outputLabel value="Sigla"/>
+                              <p:inputText style="width: 70%" value="#{grlInstituicaoBean.instituicao.codigoInstituicao}"/>
+                           </h:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Contacto">
+                           <h:panelGrid columns="2" cellpadding="2" width="100%">
+                              <p:outputLabel value="Telefone1 *"/>
+                              <p:inputText style="width: 70%" value="#{grlInstituicaoBean.instituicao.fkIdContacto.telefone1}"
+                                           required="true" requiredMessage="Indique o telefone1"/>
+                              <p:outputLabel value="Telefone2"/>
+                              <p:inputText style="width: 70%" value="#{grlInstituicaoBean.instituicao.fkIdContacto.telefone2}"/>
+                              <p:outputLabel value="Email1"/>
+                              <p:inputText style="width: 70%" value="#{grlInstituicaoBean.instituicao.fkIdContacto.email1}"/>
+                              <p:outputLabel value="Email2"/>
+                              <p:inputText style="width: 70%" value="#{grlInstituicaoBean.instituicao.fkIdContacto.email2}"/>
+                           </h:panelGrid>
+                        </p:tab>
+
+                        <p:tab title="Endereço">
+                           <h:panelGrid columns="2" width="100%" cellpadding="5">
+                               <f:validateBean disabled="true">
+                              <p:outputLabel value="País *"/>
+                              <h:selectOneMenu id="comboPais" style="width: 73%; text-align: center" value="#{itensAjaxBean.pais}"
+                                               valueChangeListener="#{itensAjaxBean.changePais}">
+                                 <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                 <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio comboComuna comboDistrito"/>
+                              </h:selectOneMenu>
+                              <p:outputLabel value="Provícia *"/>
+                              <h:selectOneMenu id="comboProvincia" style="width: 73%; text-align: center" 
+                                               value="#{itensAjaxBean.provincia}"
+                                               valueChangeListener="#{itensAjaxBean.changeProvincia}">
+                                 <f:selectItems value="#{itensAjaxBean.provinciaList}" var="prov"
+                                                itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                                 <f:ajax execute="@this" event="change" render="comboMunicipio comboComuna comboDistrito"/>
+                              </h:selectOneMenu>
+                              <p:outputLabel value="Município *"/>
+                              <h:selectOneMenu id="comboMunicipio" style="width: 73%; text-align: center" 
+                                               required="true" requiredMessage="Indique o município"
+                                               value="#{grlInstituicaoBean.instituicao.fkIdEndereco.fkIdMunicipio.pkIdMunicipio}" 
+                                               valueChangeListener="#{itensAjaxBean.changeMunicipio}">
+                                 <f:selectItems value="#{itensAjaxBean.municipioList}" var="mun"
+                                                itemLabel="#{mun.nomeMunicipio}" itemValue="#{mun.pkIdMunicipio}"/>
+                                 <f:ajax execute="@this" event="change" render="comboComuna comboDistrito"/>
+                              </h:selectOneMenu>
+                              <p:outputLabel value="Comuna "/>
+                              <h:selectOneMenu id="comboComuna" style="width: 73%; text-align: center" 
+                                               value="#{grlInstituicaoBean.instituicao.fkIdEndereco.fkIdComuna.pkIdComuna}">
+                                 <f:selectItem itemLabel="----- Selecione -----" itemValue="#{null}"/>
+                                 <f:selectItems value="#{itensAjaxBean.comunaList}" var="com"
+                                                itemLabel="#{com.descricaoComuna}" itemValue="#{com.pkIdComuna}"/>
+                              </h:selectOneMenu>
+                              <p:outputLabel value="Distrito "/>
+                              <h:selectOneMenu id="comboDistrito" style="width: 73%; text-align: center" 
+                                               value="#{grlInstituicaoBean.instituicao.fkIdEndereco.fkIdDistrito.pkIdDistrito}">
+                                 <f:selectItem itemLabel="----- Selecione -----" itemValue="#{null}"/>
+                                 <f:selectItems value="#{itensAjaxBean.distritoList}" var="dist"
+                                                itemLabel="#{dist.descricao}" itemValue="#{dist.pkIdDistrito}"/>
+                              </h:selectOneMenu>
+                              <p:outputLabel value="Bairro *"/>
+                              <p:inputText value="#{grlInstituicaoBean.instituicao.fkIdEndereco.bairro}" style="width: 70%"
+                                           required="true" requiredMessage="Indique o bairro"/>
+                              <p:outputLabel value="Rua"/>
+                              <p:inputText value="#{grlInstituicaoBean.instituicao.fkIdEndereco.rua}" style="width: 70%"/>
+                              <p:outputLabel value="Nº Casa"/>
+                              <p:inputText value="#{grlInstituicaoBean.instituicao.fkIdEndereco.numeroCasa}" style="width: 70%"/>
+                              <p:outputLabel value="Código Postal"/>
+                              <p:inputText value="#{grlInstituicaoBean.instituicao.fkIdEndereco.codigoPostal}" style="width: 70%"/>
+                              </f:validateBean>
+                           </h:panelGrid>
+                        </p:tab>
+                     </p:tabView>
+
+                     <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                        <p:commandButton value="Guardar" action="#{grlInstituicaoBean.create()}" style="width: 150px"
+                                         rendered="#{grlInstituicaoBean.instituicao.pkIdInstituicao == null}" process="@form" partialSubmit="true"
+                                         onclick="PF('dialogInstituicao').hide()" update=":formPesquisa:dataTable"/>
+                        <p:commandButton value="Guardar Edição" action="#{grlInstituicaoBean.edit()}" style="width: 150px"
+                                         rendered="#{grlInstituicaoBean.instituicao.pkIdInstituicao != null}"  process="@form" partialSubmit="true"
+                                         onclick="PF('dialogInstituicao').hide()" update=":formPesquisa:dataTable"/>
+                        <p:commandButton value="Fechar" onclick="PF('dialogInstituicao').hide()" style="width: 150px" process="@this" 
+                                         actionListener="#{grlInstituicaoBean.setInstituicao(null)}"/>
+                     </h:panelGrid>
+                  </p:panel>
+               </h:form>
+            </p:dialog>
+         </center>
+      </p:fieldset>
+   </body>
+</html>

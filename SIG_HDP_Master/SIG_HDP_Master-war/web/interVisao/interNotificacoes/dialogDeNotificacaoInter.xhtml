@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <!-- DIALOG PARA VISUALIZACAO DAS NOTIFICACOES -->
+        <p:dialog header="Notificações" showEffect="fade" closable="true" modal="true" width="60%"
+                  widgetVar="dialogVerNotificacoes" closeOnEscape="true" resizable="false" height="430px">
+            <h:form> 
+                <p:fieldset>
+                    <h:panelGrid columns="9" style="width:100%" cellspacing="5" class="float-right">
+                        <p:commandLink style="color: red; font-size: 13px" 
+                                       value="Pedidos de Internamento" 
+                                       action="#{interNotificacaoBean.findAll()}" actionListener="#{interNotificacaoBean.setFkIdTipoNotificacao(1)}" update="ntPanel"/>
+
+                        <p:outputLabel value="|"/>
+
+                        <p:commandLink style="color: green; font-size: 13px"
+                                       value="Parâmetros Vitais" 
+                                       action="#{interNotificacaoBean.findAll()}" actionListener="#{interNotificacaoBean.setFkIdTipoNotificacao(2)}" update="ntPanel"/>
+
+                        <p:outputLabel value="|"/>
+
+                        <p:commandLink style="color: black; font-size: 13px"
+                                       value="Medicações" 
+                                       action="#{interNotificacaoBean.findAll()}" actionListener="#{interNotificacaoBean.setFkIdTipoNotificacao(3)}" update="ntPanel"/>
+
+                        <p:outputLabel value="|" rendered="false"/>
+
+                        <p:commandLink rendered="false" style="color: blue; font-size: 13px"
+                                       value="Exames Solicitados" 
+                                       action="#{interNotificacaoBean.findAll()}" actionListener="#{interNotificacaoBean.setFkIdTipoNotificacao(4)}" update="ntPanel"/>
+
+                        <p:outputLabel value="|" rendered="false"/>
+
+                        <p:commandLink rendered="false" style="color: orange; font-size: 13px"
+                                       value="Medicamentos Solicitados" 
+                                       action="#{interNotificacaoBean.findAll()}" actionListener="#{interNotificacaoBean.setFkIdTipoNotificacao(5)}" update="ntPanel"/>
+
+                    </h:panelGrid>
+                </p:fieldset>
+                <p></p>
+                <br/>
+                <h:panelGrid style="width:100%; height: 300px; background-color: white" id="ntPanel">
+                    <p:dataScroller value="#{interNotificacaoBean.listaNotificacoes}" 
+                                    var="notificacao" chunkSize="5">
+
+                        <f:facet name="loader">
+                            <p:commandButton type="button" value="Ver Todas" 
+                                             icon="ui-icon-circle-triangle-s"/>
+                        </f:facet>
+
+                        <p:separator style=" width: 725px"/>
+                        <h:panelGrid style="width:100%" columnClasses="logo,detail">
+                            <p:outputPanel style="background-color: white; width:100%">
+                                <h:panelGrid cellpadding="5">
+                                    <p style="text-align: justify; font-size: 13px ">
+                                        <strong style="color: #{interNotificacaoBean.getColorTitle(notificacao)}">
+                                            #{notificacao.fkIdPaciente.fkIdPessoa.nome} #{notificacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{notificacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                        </strong>
+                                    </p>
+                                    <p:outputLabel value="#{notificacao.assunto} " style=" color: black"/>
+                                    <h:outputText value="#{notificacao.dataDeNotificacao}" 
+                                                  style="color: #0098d0; font-size: x-small">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+                                    </h:outputText>
+                                </h:panelGrid>
+
+                            </p:outputPanel>
+                        </h:panelGrid>
+                        <p:separator/>
+                    </p:dataScroller>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+    </body>
+</html>

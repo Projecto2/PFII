@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h2>Laboratório -> Hemoterápia -> Candidatos à Dadores de Sangue -> Pessoas Cadastradas</h2>
+
+        <center>
+
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+            <h:form prependId="false" >
+                <br/>
+
+                <br/>
+                <p:fieldset style="width: 97%;">
+                    <h:panelGrid columns="2" width="100%">
+                        <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">
+
+                            <h:panelGrid columns="2" cellpadding="3">
+                                <f:validateBean disabled="true">
+                                    <h:outputLabel value="Nº de Registos: "/>
+                                    <p:spinner id="numRegistos" value="#{diagPessoaBean.numeroRegistos}" 
+                                               min="1" required="true" requiredMessage="É necessário informar o número de registos a retornar."/>
+
+                                    <p:outputLabel value="Nome: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="nome" style="width: 100%" value="#{diagPessoaBean.grlPessoaPesquisa.nome}"/>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="Nome do Meio: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="nomeDoMeio" style="width: 100%" value="#{diagPessoaBean.grlPessoaPesquisa.nomeDoMeio}"/>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="Sobrenome: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="sobreNome" style="width: 100%" value="#{diagPessoaBean.grlPessoaPesquisa.sobreNome}"/>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="Nacionalidade: "/>
+                                    <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagPessoaBean.grlPessoaPesquisa.fkIdNacionalidade.pkIdPais}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{diagCandidatoDadorBean.listaPais}" var="pais"
+                                                       itemLabel="#{pais.nacionalidade}" itemValue="#{pais.pkIdPais}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Sexo: "/>
+                                    <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagPessoaBean.grlPessoaPesquisa.fkIdSexo.pkIdSexo}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{itensAjaxBean.sexoList}" var="sexo"
+                                                       itemLabel="#{sexo.descricao}" itemValue="#{sexo.pkIdSexo}"/>
+                                    </p:selectOneMenu>
+
+                                </f:validateBean>
+
+                                <br/>
+                                <h:panelGrid columns="3" width="100%">
+                                    <p:commandButton style="width: 100%" value="Pesquisar" 
+                                                     icon="ui-icon-search"
+                                                     action="#{diagPessoaBean.pesquisarPessoas()}" 
+                                                     partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                    <p:commandButton value="Novo Candidato" icon="ui-icon-plus" action="#{diagCandidatoDadorBean.redirecionarRegistarCandidatosDadosPessoais()}" 
+                                                     partialSubmit="true" process="@this" style="width: 100%"/>
+                                    <p:commandButton process="@this" value="Voltar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagCandidatoDadorBean.limparPesquisa()}"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable id="dataTable" rows="5" paginator="true" paginatorPosition="bottom" rowKey="#{pes.pkIdPessoa}" selectionMode="single"
+                             var="pes" value="#{diagPessoaBean.itens}"
+                             emptyMessage="Nenhum registo de pessoa encontrado.">
+
+                    <p:column headerText="Nome Completo" filterBy="#{pes.nome}">
+                        <center>
+                            #{pes.nome} 
+                            #{pes.nomeDoMeio}
+                            #{pes.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Documento de Identificação">
+                        <center>
+                            #{diagPessoaBean.getDocumentoIdentificacao(pes)}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nacionalidade" filterBy="#{pes.fkIdNacionalidade.nomePais}">
+                        <center>
+                            #{pes.fkIdNacionalidade.nomePais}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data Nasc">
+                        <center>
+                            <h:outputText value="#{pes.dataNascimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Sexo" filterBy="#{pes.fkIdSexo.descricao}">
+                        <center>
+                            #{pes.fkIdSexo.descricao}
+                        </center>
+                    </p:column>
+
+                    <p:column>
+                        <center>
+                            <p:commandButton value="Visualizar" action="#{diagPessoaBean.setGrlPessoaVisualizar(pes)}" onclick="PF('dialogVisualizar').show();"
+                                             process="@this" update=":formVisual:tabVisualizar" icon="ui-icon-info"/>
+                        </center>
+                    </p:column>
+
+                    <p:column>
+                        <center>
+                            <p:commandButton icon="ui-icon-plus" value="Candidato à Dador" action="#{diagCandidatoDadorBean.selecionarPessoaCandidatoNovo(pes)}"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+        </center>
+
+        <center>
+            <p:dialog header="Visualizar Dados Pessoais" closable="false" showEffect="fade" 
+                      widgetVar="dialogVisualizar" modal="true" width="50%" height="50%"
+                      resizable="false">
+                <h:form id="formVisual">
+                    <h:panelGrid width="100%">
+                        <h:panelGrid columns="2" class="float-right">
+                            <p:commandButton value="Fechar" onclick="dialogEditar.hide()" 
+                                             action="#{diagPessoaBean.setGrlPessoaVisualizar(null)}" process="@this" style="width: 130px"/>
+                        </h:panelGrid>
+                        <p:tabView id="tabVisualizar" style="height: 500%">
+                            <p:tab title="Dados Pessoais">
+                                <h:panelGrid columns="2" cellpadding="4">
+                                    <h3>Nome Completo: </h3>
+                                    <h:panelGrid columns="1" cellpadding="4">
+                                        #{diagPessoaBean.grlPessoaVisualizar.nome} 
+                                        #{diagPessoaBean.grlPessoaVisualizar.nomeDoMeio}
+                                        #{diagPessoaBean.grlPessoaVisualizar.sobreNome}
+                                    </h:panelGrid>
+                                    <h3>Data de Nascimento: </h3>
+                                    <h:outputText style="border: none" value="#{diagPessoaBean.grlPessoaVisualizar.dataNascimento}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                    </h:outputText>
+                                    <h3>Sexo: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdSexo.descricao}"/>
+                                    <h3>Nacionalidade: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdNacionalidade.nomePais}"/>
+                                    <h3>Estado Civil: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdEstadoCivil.descricao}"/>
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab title="Filiação">
+                                <h:panelGrid columns="2" cellpadding="7">
+                                    <h3>Nome do Pai: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.nomePai}"/>
+                                    <h3>Nome da Mãe: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.nomeMae}"/>
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab title="Contacto">
+                                <h:panelGrid columns="2" cellpadding="7">
+                                    <h3>Telefone1: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdContacto.telefone1}"/>
+                                    <h3>Telefone2: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdContacto.telefone2}"/>
+                                    <h3>Email1: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdContacto.email1}"/>
+                                    <h3>Email2: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdContacto.email2}"/>
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab title="Endereço">
+                                <h:panelGrid columns="2" cellpadding="7">
+                                    <h3>País: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}"/>
+                                    <h3>Província: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.nomeProvincia}"/>
+                                    <h3>Município: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdEndereco.fkIdComuna.fkIdMunicipio.nomeMunicipio}"/>
+                                    <h3>Distrito: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdEndereco.fkIdDistrito.descricao}"/>
+                                    <h3>Comuna: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdEndereco.fkIdComuna.descricaoComuna}"/>
+                                    <h3>Bairro: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdEndereco.bairro}"/>
+                                    <h3>Rua: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdEndereco.rua}"/>
+                                    <h3>Nº Casa: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdEndereco.numeroCasa}"/>
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab title="Outros">
+                                <h:panelGrid columns="2" cellpadding="7">
+                                    <h3>Religião: </h3>
+                                    <p:outputLabel value="#{diagPessoaBean.grlPessoaVisualizar.fkIdReligiao.descricao}"/>
+                                </h:panelGrid>
+                            </p:tab>
+                        </p:tabView>
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </center>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+    </ui:define>
+</ui:composition>

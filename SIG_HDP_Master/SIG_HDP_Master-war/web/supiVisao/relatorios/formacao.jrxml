@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="formacao" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="60dfe5ac-ba9d-4007-8d6c-ec2ff93dbf15">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[SELECT
+     su_formador.`idFormador` AS su_formador_idFormador,
+     su_formador.`nomeCompleto` AS su_formador_nomeCompleto,
+     su_formador.`dataDeNascimento` AS su_formador_dataDeNascimento,
+     su_formador.`dataDeCadastro` AS su_formador_dataDeCadastro,
+     su_formador.`fk_idAreaDeFormacao` AS su_formador_fk_idAreaDeFormacao,
+     su_formador.`fk_idOpcao` AS su_formador_fk_idOpcao,
+     su_formacaoTemporaria.`idFormacaoTemporaria` AS su_formacaoTemporaria_idFormacaoTemporaria,
+     su_formacaoTemporaria.`descricaoFormacao` AS su_formacaoTemporaria_descricaoFormacao,
+     su_formacaoTemporaria.`dataInicio` AS su_formacaoTemporaria_dataInicio,
+     su_formacaoTemporaria.`dataTermino` AS su_formacaoTemporaria_dataTermino,
+     su_formacaoTemporaria.`duracao` AS su_formacaoTemporaria_duracao,
+     su_formacaoTemporaria.`dataDeCadastro` AS su_formacaoTemporaria_dataDeCadastro,
+     su_formacaoTemporaria.`fk_formador` AS su_formacaoTemporaria_fk_formador,
+     su_formacaoTemporaria.`local` AS su_formacaoTemporaria_local,
+     su_formacaoTemporaria.`tema` AS su_formacaoTemporaria_tema,
+     su_opcao.`idOpcao` AS su_opcao_idOpcao,
+     su_opcao.`descricaoOpcao` AS su_opcao_descricaoOpcao
+FROM
+     `su_formador` su_formador INNER JOIN `su_formacaoTemporaria` su_formacaoTemporaria ON su_formador.`idFormador` = su_formacaoTemporaria.`fk_formador`
+     INNER JOIN `su_opcao` su_opcao ON su_formador.`fk_idOpcao` = su_opcao.`idOpcao`]]>
+	</queryString>
+	<field name="su_formador_idFormador" class="java.lang.Integer"/>
+	<field name="su_formador_nomeCompleto" class="java.lang.String"/>
+	<field name="su_formador_dataDeNascimento" class="java.sql.Date"/>
+	<field name="su_formador_dataDeCadastro" class="java.sql.Date"/>
+	<field name="su_formador_fk_idAreaDeFormacao" class="java.lang.Integer"/>
+	<field name="su_formador_fk_idOpcao" class="java.lang.Integer"/>
+	<field name="su_formacaoTemporaria_idFormacaoTemporaria" class="java.lang.Integer"/>
+	<field name="su_formacaoTemporaria_descricaoFormacao" class="java.lang.String"/>
+	<field name="su_formacaoTemporaria_dataInicio" class="java.sql.Timestamp"/>
+	<field name="su_formacaoTemporaria_dataTermino" class="java.sql.Timestamp"/>
+	<field name="su_formacaoTemporaria_duracao" class="java.lang.Integer"/>
+	<field name="su_formacaoTemporaria_dataDeCadastro" class="java.sql.Date"/>
+	<field name="su_formacaoTemporaria_fk_formador" class="java.lang.Integer"/>
+	<field name="su_formacaoTemporaria_local" class="java.lang.Integer"/>
+	<field name="su_formacaoTemporaria_tema" class="java.lang.String"/>
+	<field name="su_opcao_idOpcao" class="java.lang.Integer"/>
+	<field name="su_opcao_descricaoOpcao" class="java.lang.String"/>
+	<group name="Group1">
+		<groupHeader>
+			<band height="33">
+				<staticText>
+					<reportElement uuid="8b4a7052-5964-4796-9faa-d28d8ee053bc" mode="Opaque" x="0" y="0" width="100" height="32" forecolor="#666666" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[G1Label]]></text>
+				</staticText>
+				<textField>
+					<reportElement uuid="7b004568-0785-40e0-bfc9-19717052c832" mode="Opaque" x="100" y="0" width="455" height="32" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="24" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["G1Field"]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="62409ca8-2dbd-4378-9668-6404010bdeb8" x="-20" y="32" width="595" height="1" forecolor="#666666"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="Group2">
+		<groupHeader>
+			<band height="32">
+				<textField>
+					<reportElement uuid="a3252005-7f09-435f-80bc-bed4d678f8ac" x="100" y="0" width="455" height="32" forecolor="#006699"/>
+					<textElement>
+						<font size="22" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["G2Field"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="16e0f545-2165-4fde-bca1-b5d3acf5c831" x="0" y="0" width="100" height="20" forecolor="#666666"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[G2Label]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="Group3">
+		<groupHeader>
+			<band height="32">
+				<textField>
+					<reportElement uuid="fee7e3b7-379a-476f-9385-2d477160ead0" x="100" y="0" width="455" height="32" forecolor="#006699"/>
+					<textElement>
+						<font size="20" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["G3Field"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="56a82842-b232-4eed-8f00-6a3583054e32" x="0" y="0" width="100" height="20" forecolor="#666666"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[G3Label]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="Group4">
+		<groupHeader>
+			<band height="32">
+				<textField>
+					<reportElement uuid="4a931550-57b1-4d00-9de6-b2405e0e0fe7" x="100" y="0" width="455" height="32" forecolor="#006699"/>
+					<textElement>
+						<font size="16" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["G4Field"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="19f70955-193a-4b48-a6d1-3f062f68ecbb" x="0" y="0" width="100" height="20" forecolor="#666666"/>
+					<textElement>
+						<font size="12"/>
+					</textElement>
+					<text><![CDATA[G4Label]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="89">
+			<staticText>
+				<reportElement uuid="7ec776bd-0bf6-40c4-bacf-236f4fd8470a" key="staticText-16" x="201" y="0" width="171" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA  MINISTERIO DA SAÚDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3e9ad0ea-c497-4eda-9704-1fffc7c16ae7" key="staticText-17" x="78" y="33" width="418" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="24" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[HOSPITAL DIVINA PROVIDÊNCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="887ff8e4-8757-4d9a-8205-8684bdc98a6e" key="staticText-18" x="118" y="61" width="362" height="28"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[AVENIDA PEDRO DE CASTRO VANDUNÉM "LOY" - K. KIAXE - LUANDA TEL-FAX (02) 470781 470507 EMAIL: hospdp@bonet.net]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="24">
+			<staticText>
+				<reportElement uuid="8688d129-cdf3-4881-b44c-4eb386000611" key="staticText-6" x="99" y="-1" width="397" height="25" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lista de Formações de Enfermeiros]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<staticText>
+				<reportElement uuid="f3b1ad0f-627c-4918-aa8e-3b51ce68f8bc" mode="Opaque" x="0" y="0" width="183" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DetailLabel]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="50a646a9-823d-45ce-a374-7bf4e307b5e9" x="-20" y="20" width="595" height="1" forecolor="#666666"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="21bc4f2f-7d60-4d8d-a962-dab0bf924bd3" x="0" y="0" width="183" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["DetailField"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="65ba307e-c2a7-4ca2-9c1d-588a90179614" positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement uuid="cd7c0193-443e-4d94-bf8b-498f4b5f5ab1" mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="a569b72e-8de1-4aab-9f36-415f070e1f98" mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="3ec696ad-6b96-40b4-9ff9-19a7f6ce38a0" x="0" y="4" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

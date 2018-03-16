@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form id="formPrincipal" acceptcharset="ISO-8859-1">
+
+                    <h2>Superintendência-> Estágios -> Criação De Turmas</h2>
+                    <p:growl id="msg" autoUpdate="true"/>
+                    <p:fieldset>
+
+                        <h:panelGrid columns="4" cellpadding="7">
+
+                            <h:outputLabel value="Nome da Turma:"/>
+                            <p:inputText value="#{supiCriarTurmaBean.supiCriacaoTurma.codigoTurma}" />
+
+                            <p:outputLabel value="Secção de Trabalho: "/>
+                            <f:validateBean disabled="true">
+                                <h:selectOneMenu id="comboTurma" style="width: 200px" value="#{supiCriarTurmaBean.supiCriacaoTurma.fkIdSeccaoTrabalho.pkIdSeccaoTrabalho}"
+                                                 required="true" requiredMessage="Seleccione a secção de trabalho">
+                                    <f:selectItems value="#{supiCriarTurmaBean.findallSeccao()}" var="item" itemLabel="#{item.descricao}" itemValue="#{item.pkIdSeccaoTrabalho}" />
+                                    <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+
+                                </h:selectOneMenu>
+                            </f:validateBean>
+
+                            <p:outputLabel value="Estágiarios: "/>
+                            <p:selectCheckboxMenu id="consultaAdulto" style="width: 200px" label="Selecione" value="#{supiCriarTurmaBean.listaDeEstagiarios}" filter="true" filterMatchMode="startsWith">
+                                <f:selectItems value="#{supiCriarTurmaBean.findall()}" 
+                                               var="item"
+                                               itemLabel="#{item.fkIdPessoa.nome} #{item.fkIdPessoa.sobreNome}" itemValue="#{item.pkIdEstagiario}" />
+                            </p:selectCheckboxMenu>
+
+                            <p:outputLabel value="Responsável: "/>
+                            <f:validateBean disabled="true">
+                                <h:selectOneMenu id="comboResponsa" style="width: 200px" value="#{supiCriarTurmaBean.supiCriacaoTurma.fkIdFuncionario.pkIdFuncionario}"
+                                                 required="true" requiredMessage="Seleccione o Reaponsável">
+                                    <f:selectItems value="#{supiCriarTurmaBean.findallFuncionario()}" var="item" itemLabel="#{item.fkIdPessoa.nome}" itemValue="#{item.pkIdFuncionario}" />
+                                    <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+
+                                </h:selectOneMenu>
+                            </f:validateBean>
+
+                            <p:commandButton value="Guardar" actionListener="#{supiCriarTurmaBean.salvaTurma()}" icon="ui-icon-disk"/>
+
+
+
+
+
+
+                        </h:panelGrid>
+
+
+
+                    </p:fieldset>
+                    <p:dataTable id="tabela" var="turma" sortMode="multiple" paginator="true" rows="4"
+                                 value="#{supiCriarTurmaBean.findallTurma()}" 
+                                 selectionMode="single" rowKey="#{turma.pkIdCriacaoTurma}">
+
+                        <p:column headerText="Nome da Turma" >
+                            <h:outputText value="#{turma.codigoTurma}"/>
+
+                        </p:column>
+
+                        <p:column headerText="Secção de Trabalho">
+                            <h:outputText value="#{turma.fkIdSeccaoTrabalho.descricao}"/>
+                        </p:column>
+
+                        <p:column headerText="Responsável">
+                            <h:outputText value="#{turma.fkIdFuncionario.fkIdPessoa.nome} #{turma.fkIdFuncionario.fkIdPessoa.sobreNome}">
+
+                            </h:outputText>
+                        </p:column>
+
+
+                        <p:column headerText="-------">
+                            <center>
+                                <p:menuButton value="Opções">
+                                    <p:menuitem value="Ver Estagiários" partialSubmit="true" process="@this" update=":formVisualizar:fieldset" onclick="PF('visualizar').show()"
+                                                action="#{supiCriarTurmaBean.verEstagiariosTurma(turma.pkIdCriacaoTurma)}" icon="ui-icon-info"/>
+                                    <p:menuitem value="Eliminar" partialSubmit="true" process="@this" icon="ui-icon-trash"/>
+                                    <p:menuitem ajax="false" value="Actualizar" icon="ui-icon-refresh"/>
+
+                                </p:menuButton>
+                            </center>
+                        </p:column>
+
+
+                    </p:dataTable>
+                </h:form>
+
+              <p:dialog id="visualizar" widgetVar="visualizar" closable="true" width="50%">
+
+                    <h:form id="formVisualizar" prependId="true">
+
+                        <p:fieldset id="fieldset">
+
+                            <p:dataTable id="tabela" var="avalia" sortMode="multiple" paginator="true" rows="3" value="#{supiCriarTurmaBean.listaSupiTurmaEstagiario}" 
+                                         selectionMode="single" rowKey="#{avalia.pkIdTurmaEstagiario}">
+
+                                <p:column headerText="Estagiarios">
+                                    <h:outputText value="#{avalia.fkIdEstagiario.fkIdPessoa.nome} #{avalia.fkIdEstagiario.fkIdPessoa.nomeDoMeio} #{avalia.fkIdEstagiario.fkIdPessoa.sobreNome}"/>
+                                </p:column>
+
+                                <p:column headerText="Secção de Trabalho">
+                                    <h:outputText value="#{avalia.fkIdEstagiario.fkIdSeccaoTrabalho.descricao}">
+
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Instituição">
+                                    <h:outputText value="#{avalia.fkIdEstagiario.fkIdEscolaUniversidade.descricao}">
+
+                                    </h:outputText>
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </p:fieldset>
+
+
+
+                    </h:form>
+
+
+                </p:dialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

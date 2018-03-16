@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form id="formListarTransferir">
+            <div class="ui-fluid">
+                <br/>
+
+                <center>
+                    <span style="font-size: 16pt">
+
+                        <p:outputLabel value="#{ambTransferenciaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                              #{ambTransferenciaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                              #{ambTransferenciaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                             "
+                                       style="color: #0088cc"/>
+
+                        <br/>
+                        #{msgs.subProcesso}:
+                        <p:outputLabel value="#{ambTransferenciaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                        <p:outputLabel value="#{ambTransferenciaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                        </p:outputLabel>
+                        <br/>
+                        <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                        <p:outputLabel value="#{ambTransferenciaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                    </span>
+                </center>
+
+                <p:fieldset style="height: 385px">
+
+                    <h:panelGrid id="gridTransferencia" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                        <p:outputLabel value="Data:"/>
+                        <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambTransferenciaListarBean.ambTransferenciaAux.dataTransferencia)}"/>
+
+                        <p:outputLabel value="Funcionário:"/>
+                        <p:outputLabel value="#{ambTransferenciaListarBean.ambTransferenciaAux.fkIdFuncionario.fkIdPessoa.nome}
+                                       #{ambTransferenciaListarBean.ambTransferenciaAux.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                       #{ambTransferenciaListarBean.ambTransferenciaAux.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                       "/>
+
+                        <p:outputLabel value="Instituição de Destino"/>
+                        <p:outputLabel value="#{ambTransferenciaListarBean.ambTransferenciaAux.fkIdInstituicao.descricao}"/>
+
+                    </h:panelGrid>
+
+                </p:fieldset>
+
+                <br/>
+                <center>
+                    <p:commandButton value="#{msgs.fechar}" icon="ui-icon-close" onclick="PF('dialogListarTransferencia').hide()" partialSubmit="true" process="@this" style="margin-bottom: 15px;" styleClass="ui-noborder"/>
+                </center>
+            </div>
+        </h:form>
+    </h:body>
+</html>

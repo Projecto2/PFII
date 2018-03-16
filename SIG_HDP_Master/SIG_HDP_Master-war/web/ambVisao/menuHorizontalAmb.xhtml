@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <li class="ic-home">
+            <h:link outcome="/ambVisao/homeAmb.xhtml">
+                <span>Página Inicial</span>
+            </h:link>
+        </li>
+        <li class="ic-notifications">
+            <li class="ic-grid-tables"><a href="javascript:"><span>Encaminhamentos</span></a>            
+                <ul>
+                    <li><h:link style="width: 175px" value="Encaminhamentos para Consultórios" outcome="/ambVisao/ambEncaminhamentos/consultorioAtendimentoCriarAmb"/></li>
+                    <li><h:link style="width: 175px" value="Transferências" outcome="/ambVisao/ambTransferencia/transferenciaCriarAmb"/></li>
+                </ul>
+            </li>
+        </li>
+        <li class="ic-charts">
+            <h:link><span>Estatística</span></h:link>
+            <ul>
+                <li><h:link style="width: 85px" value="Estatística" outcome="/ambVisao/ambEstatistica/estatisticaAmb.xhtml"/></li>
+            </ul>
+        </li>
+        <li class="ic-notifications" id="notificacao">
+            <a href="javascript:" >
+                <span>
+                    Notificações 
+                    <strong 
+                        style="color: #{ambNotificacoesListarBean.notificacoes()}">
+                        (
+                        #{
+                             ambTriagemListarBean.findSolicitacoes().size()
+                            +ambConsultaListarBean.pesquisarPacientesEncaminhadosConsulta().size()
+                            +ambConsultaListarBean.pesquisarPacientesEncaminhadosReconsulta().size()
+                            +ambDiagnosticoListarBean.findConsultasExame().size()
+                         }
+                        )
+                    </strong>
+                </span>
+            </a>
+        </li>
+        <li class="ic-info">
+            <li class="ic-grid-tables"><a href="javascript:"><span>Configurações</span></a>
+                <ul>
+                    <li><h:link style="width: 108px" value="Pré-configurar Valores" outcome="/ambVisao/ambConfiguracoes/configuracoesCeAmb.xhtml"/></li>
+                </ul>
+            </li>
+        </li>
+        <li class="ic-help">
+            <li class="ic-grid-tables"><a href="javascript:"><span>Ajuda</span></a>            
+                <ul>
+                    <li><h:link style="width: 134px" value="Manual do Utilizador" outcome="/ambVisao/ambAjuda/paginas/manualAmb"/></li>
+                    <li><a href="javascript:" onclick="PF('dialogSobre').show()">Sobre</a></li>
+                </ul>
+            </li>
+        </li>
+        <ui:include src="./ambAjuda/paginas/sobreAmb.xhtml"/>
+
+    </h:body>
+</html>

@@ -1,0 +1,271 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Novo Estagiário</title>
+          <h:outputScript name="JS/previewImagem.js"/>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Novo Estagiário</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+
+                    <h:form id="formularioPrincipal">
+                         <br/>
+                         <p:tabView id="tabPrincipal" style="height: 470px">
+                              <p:tab title="Generalidades de Pessoa">
+                                   <ui:include src="./../rhPessoa/pessoaNovaTabViewRh.xhtml"/>
+                              </p:tab>
+
+                              <p:tab title="Generalidades de Estagiário">
+                                   <center>
+                                        <h:panelGrid columns="1" width="65%">
+                                             <p:tabView id="tabEstagiario">
+                                                  <p:tab title="Dados Iniciais">
+                                                       <h:panelGrid columns="2" width="100%" cellpadding="5" id="gridTipoEstagiario">
+                                                            <p:outputLabel value="Nº Bilhete de Identidade*:"/>
+                                                            <p:inputText value="#{rhEstagiarioNovoBean.estagiario.numeroBi}" style="width: 290px;"
+                                                                         required="true" requiredMessage="Indique o número do bilhete de identidade"/>
+
+                                                            <p:outputLabel value="Estado do Estagiário*:"/>
+                                                            <h:selectOneMenu id="comboEstadoEstagiario" style="text-align: center; width: 300px" 
+                                                                             value="#{rhEstagiarioNovoBean.estagiario.fkIdEstadoEstagiario.pkIdEstadoEstagiario}"
+                                                                             valueChangeListener="#{rhEstagiarioNovoBean.changeEstadoEstagiario}"
+                                                                             required="true" requiredMessage="Indique o estado do estagiario">
+                                                                 <f:selectItems value="#{itensAjaxBean.estadoEstagiarioList}" var="estado"
+                                                                                itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoEstagiario}"/>
+                                                                 <f:ajax execute="@this" render="dataAdmissao dataInicio dataTermino" event="change"/>
+                                                            </h:selectOneMenu>
+                                                            <p:outputLabel value="Tipo de Estágio*:"/>
+                                                            <h:selectOneMenu style="width: 300px; text-align: center" required="true" requiredMessage="Indique o tipo de estágio"
+                                                                             value="#{rhEstagiarioNovoBean.estagiario.fkIdTipoEstagio.pkIdTipoEstagio}">
+                                                                 <f:selectItems value="#{itensAjaxBean.tipoEstagioList}" var="tipEst"
+                                                                                itemLabel="#{tipEst.descricao}" itemValue="#{tipEst.pkIdTipoEstagio}"/>
+                                                            </h:selectOneMenu>
+                                                            <p:outputLabel value="Profissão*:"/>
+                                                            <h:selectOneMenu style="text-align: center; width: 300px" 
+                                                                             value="#{rhEstagiarioNovoBean.estagiario.fkIdProfissao.pkIdProfissao}">
+                                                                 <f:selectItems value="#{itensAjaxBean.profissaoList}" var="prof"
+                                                                                itemLabel="#{prof.descricao}" itemValue="#{prof.pkIdProfissao}"/>
+                                                            </h:selectOneMenu>
+                                                       </h:panelGrid>
+                                                  </p:tab>
+                                                  <p:tab title="Dados Acadêmicos">
+                                                       <h:panelGrid columns="2" cellpadding="7" width="100%">
+                                                            <p:outputLabel value="Nível Acadêmico*:"/>
+                                                            <h:selectOneMenu style="text-align: center; width: 300px" required="true" 
+                                                                             requiredMessage="Indique o nivel acadêmico"
+                                                                             value="#{rhEstagiarioNovoBean.estagiario.fkIdNivelAcademico.pkIdNivelAcademico}">
+                                                                 <f:selectItems value="#{itensAjaxBean.nivelAcademicoList}" var="niv"
+                                                                                itemLabel="#{niv.descricaoNivelAcademico}" itemValue="#{niv.pkIdNivelAcademico}"/>
+                                                            </h:selectOneMenu>
+                                                            <p:outputLabel value="Escola/Universidade:"/>
+                                                            <h:selectOneMenu style="width: 300px; text-align: center"
+                                                                             value="#{rhEstagiarioNovoBean.estagiario.fkIdEscolaUniversidade.pkIdEscolaUniversidade}">
+                                                                 <f:selectItem itemLabel="------ Selecione ------" itemValue="#{null}"/>
+                                                                 <f:selectItems value="#{itensAjaxBean.instituicaoRhList}" var="inst"
+                                                                                itemLabel="#{inst.descricao}" itemValue="#{inst.pkIdEscolaUniversidade}"/>
+                                                            </h:selectOneMenu>
+                                                            <p:outputLabel value="Período de Aulas:"/>
+                                                            <f:validateBean disabled="true">
+                                                                 <h:selectOneMenu style="text-align: center; width: 300px" 
+                                                                                  value="#{rhEstagiarioNovoBean.estagiario.fkIdPeriodoAulas.pkIdPeriodoAulas}">
+                                                                      <f:selectItem itemLabel="------ Selecione ------" itemValue="#{null}"/>
+                                                                      <f:selectItems value="#{itensAjaxBean.periodoAulasList}" var="perAul"
+                                                                                     itemLabel="#{perAul.descricao}" itemValue="#{perAul.pkIdPeriodoAulas}"/>
+                                                                 </h:selectOneMenu>
+                                                            </f:validateBean>
+                                                            <p:outputLabel value="Curso:"/>
+                                                            <h:selectOneMenu style="text-align: center; width: 300px" value="#{itensAjaxBean.curso}" 
+                                                                             valueChangeListener="#{itensAjaxBean.changeCurso}">
+                                                                 <f:selectItem itemLabel="------ Selecione ------" itemValue="#{null}"/>
+                                                                 <f:selectItems value="#{itensAjaxBean.cursoList}" var="curs"
+                                                                                itemLabel="#{curs.descricao}" itemValue="#{curs.pkIdCurso}"/>
+                                                                 <f:ajax execute="@this" event="change" render="comboEspecialidadeCurso"/>
+                                                            </h:selectOneMenu>
+                                                            <p:outputLabel value="Especialidade do Curso:"/>
+                                                            <h:selectOneMenu id="comboEspecialidadeCurso" style="text-align: center; width: 300px" 
+                                                                             value="#{rhEstagiarioNovoBean.estagiario.fkIdEspecialidadeCurso.pkIdEspecialidadeCurso}">
+                                                                 <f:selectItem itemLabel="------ Selecione ------" itemValue="#{null}"/>
+                                                                 <f:selectItems value="#{itensAjaxBean.especialidadeCursoList}" var="espCurs"
+                                                                                itemLabel="#{espCurs.descricao}" itemValue="#{espCurs.pkIdEspecialidadeCurso}"/>
+                                                            </h:selectOneMenu>
+                                                            <p:outputLabel value="Ano que Frequenta:"/>
+                                                            <p:inputNumber value="#{rhEstagiarioNovoBean.estagiario.anoQueFrequenta}"
+                                                                           minValue="0" maxValue="13" size="40"/>
+                                                            <p:outputLabel value="Ano de Conclusão(Previsão):"/>
+                                                            <p:inputNumber value="#{rhEstagiarioNovoBean.estagiario.anoConclusaoPrevisao}" size="40" maxValue="#{rhValidarBean.anoActualMais10()}"
+                                                                           minValue="0" thousandSeparator="" decimalPlaces="0" converterMessage="Ano inválido"/>
+                                                       </h:panelGrid>
+                                                  </p:tab>
+                                                  <p:tab title="Área de Trabalho">
+                                                       <h:panelGrid columns="2" cellpadding="5">
+                                                            <p:outputLabel value="Secção de Trabalho*:"/>
+                                                            <h:selectOneMenu id="comboSeccaoTodas" style="width: 360px; text-align: center"
+                                                                             value="#{rhEstagiarioNovoBean.estagiario.fkIdSeccaoTrabalho.pkIdSeccaoTrabalho}"
+                                                                             required="true" requiredMessage="Indique a secção de trabalho">
+                                                                 <f:selectItems value="#{rhSeccaoTrabalhoBean.findAllPorOrdemDeDepartamento()}" var="sec"
+                                                                                itemLabel="#{sec.fkIdDepartamento.descricao} -> #{sec.descricao}" itemValue="#{sec.pkIdSeccaoTrabalho}"/>
+                                                            </h:selectOneMenu>                         
+                                                       </h:panelGrid>
+                                                  </p:tab>
+                                                  <p:tab title="Outras Informações">
+                                                       <h:panelGrid columns="2" width="100%" cellpadding="5" id="gridOutrasInformacoes">
+                                                            <p:outputLabel value="Data de Admissão:"/>
+                                                            <p:calendar locale="pt" id="dataAdmissao" size="39" value="#{rhEstagiarioNovoBean.estagiario.dataAdmissao}" yearRange= "c-100:c+100"
+                                                                        maxdate="#{rhValidarBean.dataDeHoje}" disabled="#{rhEstagiarioNovoBean.disabledDatas()}"
+                                                                        required="true" requiredMessage="Indique a data de admissão" pattern="dd-MM-yyyy"/>
+                                                            <p:outputLabel value="Data de Início:"/>
+                                                            <p:calendar locale="pt" size="39" id="dataInicio" value="#{rhEstagiarioNovoBean.estagiario.dataInicioEstagio}" yearRange= "c-100:c+100"       
+                                                                        disabled="#{rhEstagiarioNovoBean.disabledDatas()}" pattern="dd-MM-yyyy"
+                                                                        required="true" requiredMessage="Indique a data de início"/>
+
+                                                            <p:outputLabel value="Data de Término:"/>
+                                                            <p:calendar locale="pt" size="39" id="dataTermino" value="#{rhEstagiarioNovoBean.estagiario.dataFimEstagio}" yearRange= "c-100:c+100"
+                                                                        disabled="#{rhEstagiarioNovoBean.disabledDatas()}" pattern="dd-MM-yyyy"
+                                                                        required="true" requiredMessage="Indique a data de término"/>
+                                                            <p:outputLabel value="Observações:"/>
+                                                            <p:inputTextarea value="#{rhEstagiarioNovoBean.estagiario.observacoes}" autoResize="false" 
+                                                                             style="width: 280px; height: 100px; overflow-y: scroll"/>
+                                                       </h:panelGrid>
+                                                  </p:tab>
+                                                  <p:tab title="Anexos">
+                                                       <center>
+                                                            <p:commandButton style="width: 170px" value="Activar Anexos" action="#{rhEstagiarioNovoBean.activarAnexos()}" process="@form" update="accordPanelAnexos"/>
+                                                            <br/>
+                                                            <p:accordionPanel multiple="false" id="accordPanelAnexos" style="width: 75%">
+                                                                 <p:tab title="Bilhete de Identidade" rendered="#{rhEstagiarioNovoBean.anexosFlag}">
+                                                                      <p:panel>
+                                                                           <h:panelGrid columns="7" cellpadding="12" id="gridBI">
+                                                                                <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                               onclick="PF('dialogAnexo').show()" process="@this" action="#{rhEstagiarioNovoBean.setTipoAnexo('BI')}"/>
+                                                                                <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                               update="gridBI" rendered="#{rhEstagiarioNovoBean.estagiario.fkIdBi.ficheiro != null}"
+                                                                                               action="#{rhEstagiarioNovoBean.removerAnexo(rhEstagiarioNovoBean.estagiario.fkIdBi, true)}"/>
+                                                                                <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                               rendered="#{rhEstagiarioNovoBean.estagiario.fkIdBi.ficheiro != null}" process="@this" 
+                                                                                               actionListener="#{rhFicheiroAnexadoBean.setAnexoEstagiario(rhEstagiarioNovoBean.estagiario.fkIdBi)}" 
+                                                                                               onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                           </h:panelGrid>
+                                                                      </p:panel>
+                                                                 </p:tab>
+
+                                                                 <p:tab title="Curriculum Vitae" rendered="#{rhEstagiarioNovoBean.anexosFlag}">
+                                                                      <p:panel>
+                                                                           <h:panelGrid columns="7" cellpadding="12" id="gridCurriculum">
+                                                                                <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                               onclick="PF('dialogAnexo').show()" process="@this" action="#{rhEstagiarioNovoBean.setTipoAnexo('CURRICULUM')}"/>
+                                                                                <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                               update="gridCurriculum" rendered="#{rhEstagiarioNovoBean.estagiario.fkIdCurriculum.ficheiro != null}"
+                                                                                               action="#{rhEstagiarioNovoBean.removerAnexo(rhEstagiarioNovoBean.estagiario.fkIdCurriculum, true)}"/>
+                                                                                <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                               rendered="#{rhEstagiarioNovoBean.estagiario.fkIdCurriculum.ficheiro != null}" process="@this" 
+                                                                                               actionListener="#{rhFicheiroAnexadoBean.setAnexoEstagiario(rhEstagiarioNovoBean.estagiario.fkIdCurriculum)}" 
+                                                                                               onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                           </h:panelGrid>
+                                                                      </p:panel>
+                                                                 </p:tab>
+                                                                 <p:tab title="Documento Escolar" rendered="#{rhEstagiarioNovoBean.anexosFlag}">
+                                                                      <p:panel>
+                                                                           <h:panelGrid columns="7" cellpadding="12" id="gridDocEscolar">
+                                                                                <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                               onclick="PF('dialogAnexo').show()" process="@this" action="#{rhEstagiarioNovoBean.setTipoAnexo('DOC_ESCOLAR')}"/>
+                                                                                <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                               update="gridDocEscolar" rendered="#{rhEstagiarioNovoBean.estagiario.fkIdDocumentoEscolar.ficheiro != null}"
+                                                                                               action="#{rhEstagiarioNovoBean.removerAnexo(rhEstagiarioNovoBean.estagiario.fkIdDocumentoEscolar, true)}"/>
+                                                                                <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                               rendered="#{rhEstagiarioNovoBean.estagiario.fkIdDocumentoEscolar.ficheiro != null}" process="@this" 
+                                                                                               actionListener="#{rhFicheiroAnexadoBean.setAnexoEstagiario(rhEstagiarioNovoBean.estagiario.fkIdDocumentoEscolar)}" 
+                                                                                               onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                           </h:panelGrid>
+                                                                      </p:panel>
+                                                                 </p:tab>
+                                                            </p:accordionPanel>
+                                                       </center>
+                                                  </p:tab>
+                                             </p:tabView>
+                                        </h:panelGrid>
+                                   </center>
+                              </p:tab>
+                         </p:tabView>
+                         <h:panelGrid columns="3" cellpadding="5" class="float-right">
+                              <p:outputLabel value="Todos os campos com asterisco (*) são obrigatórios" style="font-size: small"/>
+                              <p:commandButton style="width: 170px" value="Guardar Estagiário" action="#{rhEstagiarioNovoBean.create()}" update="tabPrincipal"/>
+                              <p:commandButton style="width: 170px" value="Sair" onclick="PF('confirmDialogSair').show();" type="button"/>
+                         </h:panelGrid>
+
+                         <p:confirmDialog message="Tem certeza que pretende sair ? Todas alterações não guardadas serão perdidas"
+                                          header="Sair" severity="alert" widgetVar="confirmDialogSair">
+                              <p:commandButton value="Sim" action="#{rhEstagiarioNovoBean.sair()}" 
+                                               process="@this" oncomplete="PF('confirmDialogSair').hide()"/>
+                              <p:commandButton value="Não" onclick="PF('confirmDialogSair').hide();" type="button"/>
+                         </p:confirmDialog>
+                    </h:form>
+
+                    <ui:include src="./../rhPessoa/pessoaDialogsFotoDocumentoRh.xhtml"/>
+
+                    <p:dialog widgetVar="dialogPrevisualizar" header="Previsualizar"
+                              width="75%" height="510px" showEffect="fade" closable="true"
+                              hideEffect="fade" modal="true" position="top">
+                         <h:form id="formPrevisualizar">
+                              <div class="float-right">
+                                   <h:commandButton value="Fechar" type="button" onclick="PF('dialogPrevisualizar').hide()"/>
+                              </div>
+                              <center>
+                                   <p:panel id="painel" style="height: 490px">
+                                        <iframe src="#{rhFicheiroAnexadoBean.previsualizarAnexoEstagiario()}"
+                                                width="100%" height="450px"/>
+                                   </p:panel>
+                              </center>
+                         </h:form>
+                    </p:dialog>
+
+                    <p:dialog widgetVar="dialogAnexo" header="Carregamento de Ficheiros"
+                              width="45%" height="210px" showEffect="fade" closable="true"
+                              hideEffect="fade" modal="true" position="top">
+                         <h:form enctype="multipart/form-data" prependId="false" id="formAnexo">
+                              <p:growl autoUpdate="true"/>
+                              <div class="float-right">
+                                   <h:commandButton value="Carregar" onclick="PF('dialogAnexo').hide()" action="#{rhEstagiarioNovoBean.uploadAnexo()}">
+                                        <f:ajax execute="@form" render="@form :formularioPrincipal:tabPrincipal:tabEstagiario:accordPanelAnexos"/>
+                                   </h:commandButton>
+                                   <h:commandButton value="Fechar" type="button" onclick="PF('dialogAnexo').hide()"/>
+                              </div>
+                              <center>
+                                   <br/>
+                                   <h:panelGrid columns="1" width="90%">
+                                        <p:tabView id="tabUploadAnexo">
+                                             <p:tab title="Escolher no Dispositivo">
+                                                  <h:inputFile id="inputAnexo" value="#{rhEstagiarioNovoBean.anexoCarregado}" 
+                                                               validator="#{rhValidarBean.validarAnexo}"/>
+                                             </p:tab>
+                                        </p:tabView>
+                                   </h:panelGrid>
+                              </center>
+                         </h:form>
+                    </p:dialog>
+
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

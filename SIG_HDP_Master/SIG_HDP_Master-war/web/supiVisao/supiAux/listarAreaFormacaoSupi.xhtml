@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h2>SuperIntendência -> Area de Formação</h2>
+                <p:messages id="msg" autoUpdate="true" closable="true"/>
+                <p:growl id="msg2" autoUpdate="true"/>
+                <br/>
+                <center>
+                    <h:panelGrid columns="1" width="85%">
+                        <h:form id="formPesquisa">
+                            <p:fieldset>
+                                <br/>
+                                <h:panelGrid columns="1" cellpadding="5">
+                                    <p:commandButton style="width: 220px" icon="ui-icon-plus" onclick="PF('dialogTurno').show();"
+                                                     value="Nova Secção" action="#{supiAreaFormacaoSupi.setSupiAreaFormacao(null)}" 
+                                                     update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:dataTable id="dataTable" var="area" value="#{supiAreaFormacaoSupi.findall()}"
+                                         emptyMessage="Nenhum registro de Area de Formação encontrado"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="Area de Formação" sortBy="#{area.descricao}" filterBy="#{area.descricao}">
+                                    <center>
+                                        #{area.descricao}
+                                    </center>
+                                </p:column>
+                                
+                                <p:column headerText="--------------------">
+                                    <center>
+                                        <p:menuButton value="Opções">
+
+                                            <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogTurno').show();"
+                                                        action="#{supiAreaFormacaoSupi.setSupiAreaFormacao(supiAreaFormacao)}" process="dataTable" 
+                                                        partialSubmit="true" update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                            <p:menuitem value="Remover"  icon="ui-icon-trash" action="#{supiAreaFormacaoSupi.eliminar(supiAreaFormacaoSupi.supiAreaFormacao.pkIdAreaFormacao)}"/>
+                                        </p:menuButton>
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+
+                        </h:form>
+                    </h:panelGrid>
+                </center>
+
+                <center>
+                    <p:dialog header="Area de Formação" closable="false" showEffect="fade" width="35%"
+                              widgetVar="dialogTurno" modal="true" closeOnEscape="true">
+                        <h:form id="formulario">
+                            <p:fieldset>
+                                <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                                    <p:outputLabel value="Descrição"/>
+                                    <p:inputText value="#{supiAreaFormacaoSupi.supiAreaFormacao.descricao}" style="width: 190px"
+                                                 required="true" requiredMessage="Indique a descrição da Area de Formação"/>
+                                   
+                                </h:panelGrid>
+
+                                <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                                    <p:commandButton value="Guardar" action="#{supiAreaFormacaoSupi.create()}" style="width: 150px"
+                                                     rendered="#{supiAreaFormacaoSupi.supiAreaFormacao.pkIdAreaFormacao == null}" process="@form" partialSubmit="true"
+                                                     onclick="PF('dialogTurno').hide()" update=":formPesquisa:dataTable"/>
+                                    <p:commandButton value="Guardar Edição" action="#{supiAreaFormacaoSupi.edit()}" style="width: 150px"
+                                                     rendered="#{supiAreaFormacaoSupi.supiAreaFormacao.pkIdAreaFormacao != null}"  process="@form" partialSubmit="true"
+                                                     onclick="PF('dialogTurno').hide()" update=":formPesquisa:dataTable" />
+                                    <p:commandButton value="Fechar" onclick="PF('dialogTurno').hide()" style="width: 150px" process="@this" 
+                                                     actionListener="#{supiAreaFormacaoSupi.setSupiAreaFormacao(null)}"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

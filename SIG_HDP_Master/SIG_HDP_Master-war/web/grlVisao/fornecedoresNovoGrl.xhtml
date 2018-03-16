@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <body>
+      <p:messages id="msg" autoUpdate="true" closable="true"/>
+      <p:fieldset>
+         <h:form id="formPrincipal">  
+            <h:panelGrid columns="2" id="gridCampos" width="80%" style="margin: auto" >
+               <h:panelGrid  style="width: 100%">
+                  <p:tabView id="tabVisualizar">
+                     <p:tab title="Descrição">
+                        <h:panelGrid columns="2" width="100%">
+                           <p:outputLabel value="Nº de Contribuinte *"/>
+                           <p:inputText value="#{grlFornecedorNovoBean.fornecedor.numeroContribuinte}"
+                                        required="true" requiredMessage="Insira o número de contribuinte"/>
+
+                           <p:outputLabel value="Abreviatura *"/>
+                           <f:validateBean disabled="true">
+                              <p:inputText value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.codigoInstituicao}"
+                                           required="true" requiredMessage="Insira o código"/>
+                           </f:validateBean>
+
+                           <p:outputLabel value="Descrição * "/>
+                           <f:validateBean disabled="true">
+                              <p:inputText value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.descricao}"
+                                           required="true" requiredMessage="Insira descrição"/>
+                           </f:validateBean>
+
+                        </h:panelGrid>
+                     </p:tab>
+                     <p:tab title="Contacto">
+                        <h:panelGrid columns="2" cellpadding="2" width="100%">
+                           <p:outputLabel value="Telefone1 *"/>
+                           <p:inputText value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdContacto.telefone1}"  style="width: 70%"
+                                        required="true" requiredMessage="Indique pelo menos um contacto."/>
+                           <p:outputLabel value="Telefone2"/>
+                           <p:inputText value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdContacto.telefone2}"  style="width: 70%"/>
+                           <p:outputLabel value="Email1"/>
+                           <p:inputText style="width: 70%" value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdContacto.email1}"/>
+                           <p:outputLabel value="Email2"/>
+                           <p:inputText style="width: 70%" value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdContacto.email2}"/>
+                        </h:panelGrid>
+                     </p:tab>
+                     <p:tab title="Endereço">
+                        <h:panelGrid columns="2" width="100%" cellpadding="5">
+                           <p:outputLabel value="País *"/>
+                           <h:selectOneMenu id="comboPais" style="width: 73%; text-align: center" value="#{itensAjaxBean.pais}"
+                                            valueChangeListener="#{itensAjaxBean.changePais}">
+                              <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                             itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                              <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio comboComuna comboDistrito"/>
+                           </h:selectOneMenu>
+                           <p:outputLabel value="Província *"/>
+                           <h:selectOneMenu id="comboProvincia" style="width: 73%; text-align: center" 
+                                            value="#{itensAjaxBean.provincia}"
+                                            valueChangeListener="#{itensAjaxBean.changeProvincia}">
+                              <f:selectItems value="#{itensAjaxBean.provinciaList}" var="prov"
+                                             itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                              <f:ajax execute="@this" event="change" render="comboMunicipio comboComuna comboDistrito"/>
+                           </h:selectOneMenu>
+                           <p:outputLabel value="Município *"/>
+                           <h:selectOneMenu id="comboMunicipio" style="width: 73%; text-align: center" 
+                                            required="true" requiredMessage="Indique o município"
+                                            value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdEndereco.fkIdMunicipio.pkIdMunicipio}" 
+                                            valueChangeListener="#{itensAjaxBean.changeMunicipio}">
+                              <f:selectItems value="#{itensAjaxBean.municipioList}" var="mun"
+                                             itemLabel="#{mun.nomeMunicipio}" itemValue="#{mun.pkIdMunicipio}"/>
+                              <f:ajax execute="@this" event="change" render="comboComuna comboDistrito"/>
+                           </h:selectOneMenu>
+                           <f:validateBean disabled="true">
+                              <p:outputLabel value="Comuna"/>
+                              <h:selectOneMenu id="comboComuna" style="width: 73%; text-align: center"
+                                               value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdEndereco.fkIdComuna.pkIdComuna}">
+                                 <f:selectItem itemLabel="----- Selecione -----" itemValue="#{null}"/>
+                                 <f:selectItems value="#{itensAjaxBean.comunaList}" var="com"
+                                                itemLabel="#{com.descricaoComuna}" itemValue="#{com.pkIdComuna}"/>
+                              </h:selectOneMenu>
+                           </f:validateBean>
+                           <f:validateBean disabled="true"> 
+                              <p:outputLabel value="Distrito"/>
+                              <f:validateBean disabled="true">
+                                 <h:selectOneMenu id="comboDistrito" style="width: 73%; text-align: center" 
+                                                  value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdEndereco.fkIdDistrito.pkIdDistrito}">
+                                    <f:selectItem itemLabel="----- Selecione -----" itemValue="#{null}"/>
+                                    <f:selectItems value="#{itensAjaxBean.distritoList}" var="dist"
+                                                   itemLabel="#{dist.descricao}" itemValue="#{dist.pkIdDistrito}"/>
+                                 </h:selectOneMenu>
+                              </f:validateBean>
+                           </f:validateBean>
+                           <p:outputLabel value="Bairro *"/>
+                           <p:inputText value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdEndereco.bairro}" style="width: 70%"
+                                        required="true" requiredMessage="Indique o bairro"/>
+                           <p:outputLabel value="Rua"/>
+                           <p:inputText value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdEndereco.rua}" style="width: 70%"/>
+                           <p:outputLabel value="Nº Casa"/>
+                           <p:inputText value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdEndereco.numeroCasa}" style="width: 70%"/>
+                           <p:outputLabel value="Código Postal"/>
+                           <p:inputText value="#{grlFornecedorNovoBean.fornecedor.fkIdInstituicao.fkIdEndereco.codigoPostal}" style="width: 70%"/>
+                        </h:panelGrid>
+                     </p:tab>
+                  </p:tabView>
+
+               </h:panelGrid>
+            </h:panelGrid>
+            <p></p>
+            <center>
+               <p:commandButton value="Guardar" icon="ui-icon-disk" ajax="true"
+                                action="#{grlFornecedorNovoBean.criar()}"
+                                update="gridCampos" process="@form gridCampos"/>
+            </center>
+
+         </h:form>
+      </p:fieldset>
+   </body>
+</html>

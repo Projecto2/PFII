@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>SuperIntendência-> Escalas -> Atribuir Enfermarias</h1>
+
+                <p:messages autoUpdate="true" closable="true"/>
+                <p:growl id="msgs" autoUpdate="true"/>
+
+                <h:form acceptcharset="ISO-8859-1" id="form">
+
+                    <p:fieldset legend="Atribuição de Enfermarias">
+
+                        <h:panelGrid columns="2" id="panelPrincipal">
+
+
+
+                            <h:outputLabel value="Mês da escala: " for="mesEscala"/>
+                            <p:selectOneMenu id="mesEscala" style="width:310px" value="#{supiSupervisorHasEscalaEnfermariaBean.idEscala}" >
+                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                <f:selectItems value="#{supiSupervisorHasEscalaEnfermariaBean.findallEscalas()}" var="escala" itemLabel="#{escala.mes} #{escala.ano}" itemValue="#{escala.pkIdEscala}"/> 
+
+                                <f:ajax execute="@this" render="diaDoMes tabela" event="change" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Dia do mês: " for="diaDoMes"/>
+                            <p:selectOneMenu id="diaDoMes" style="width:310px" value="#{supiSupervisorHasEscalaEnfermariaBean.diaDoMes}">
+                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                <f:selectItems value="#{supiSupervisorHasEscalaEnfermariaBean.diasDoMesSeleccionado()}"/> 
+                                <f:ajax execute="@this" render="tabela" event="change" />
+
+                            </p:selectOneMenu>
+                           
+
+                        </h:panelGrid>
+
+                        <p:panelGrid columns="3">
+                            <p:commandButton ajax="false" value="Adicionar" icon="ui-icon-check" 
+                                             actionListener="#{supiSupervisorHasEscalaEnfermariaBean.atribuirEnfermaria()}"/>
+                            <p:commandButton value="Cancelar" type="reset"/>
+                        </p:panelGrid>
+
+                    </p:fieldset>
+
+
+                    <p:dataTable id="tabela" sortMode="multiple"  var="item" rows="8" paginator="true" paginatorPosition="bottom"
+                                 value="#{supiSupervisorHasEscalaEnfermariaBean.supervisorEscaladosList()}" 
+                                 reflow="true" style="width: 100%" emptyMessage="Nenhum registo encontrado.">
+                        <f:facet name="header">Enfermeiros Escalados para as Enfermarias</f:facet>
+
+                        <p:column headerText="Enfermeiros">
+                            <h:outputText value="#{item.fkIdFuncionario.fkIdPessoa.nome}
+                                          #{item.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                          #{item.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                          "/>
+                        </p:column> 
+
+                        <p:column headerText="Data da Escala">
+                            <center>
+                                <h:outputText value="#{item.data}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                </h:outputText>
+                            </center>
+                        </p:column>
+                        
+                          <p:column headerText="Secção">
+                              <h:outputText value="#{item.fkIdEscala.fkIdSeccao.descricao}"/>
+                        </p:column> 
+
+
+                        <p:column headerText="Enfermaria">
+                            <h:outputText  value="#{item.fkIdEnfermaria.descricao}"/>
+                        </p:column>
+
+                        
+
+                        <p:column headerText="------" >
+                            <center>
+                                <p:menuButton value="Opções">
+                                    <p:separator/>
+                                    <p:menuitem value="Atribuir Enfermaria" icon="ui-icon-pencil" process="@this" partialSubmit="true"
+                                                actionListener="#{supiSupervisorHasEscalaEnfermariaBean.seleccionarDados(item)}" 
+                                                update=":formEditarConsultoriosAtribuidos:panelEditarConsultoriosAtribuidos" 
+                                                onclick="PF('dialogEditarConsultoriosAtribuidos').show()" >
+                                    </p:menuitem>
+                                    <p:separator/>
+                                </p:menuButton>
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </h:form>
+
+                <center>
+                    <p:dialog header="Editar Dados" closable="true" showEffect="fade" width="75%" height="530px"
+                              widgetVar="dialogEditarConsultoriosAtribuidos" modal="true" closeOnEscape="true" position="top">
+                        <h:form id="formEditarConsultoriosAtribuidos">
+                            <p:messages id="ms3" autoUpdate="true" closable="true"/>
+                            <p:growl id="ms4" autoUpdate="true"/>
+                            <br/>
+                            <center>
+                                <p:panel id="panelEditarConsultoriosAtribuidos">
+                                    <h:panelGrid id="gridEditarConsultoriosAtribuidos" width="555px">
+                                        <p:panel>
+                                            <center>
+
+                                                <h:panelGrid columns="6" cellpadding="3">
+
+                                                    <h:panelGrid columns="2">
+
+                                                        <p:outputLabel value="Data: "/> 
+                                                        <p:calendar value="#{supiSupervisorHasEscalaEnfermariaBean.supiSupervisorHasEscala.data}"
+                                                                    required="false" requiredMessage="Preencha a Data da atribuição"
+                                                                    pattern="dd/MM/yyy" locale="pt" navigator="true" readonly="true">
+                                                        </p:calendar>
+
+                                                        <p:outputLabel value="Turno *"/>
+                                                        <p:inputText id="turno" style="width: 190px" required="true" readonly="true" requiredMessage="Indique o turno" 
+                                                                     value="#{supiSupervisorHasEscalaEnfermariaBean.supiSupervisorHasEscala.fkIdTurno.descricao}" converterMessage="Turno inválido"/>
+
+
+
+                                                        <h:outputLabel value="Enfermaria: " for="codigoEnfermaria"/>
+                                                        <p:selectOneMenu id="codigoEnfermaria" style="width:310px" value="#{supiSupervisorHasEscalaEnfermariaBean.supiSupervisorHasEscala.fkIdEnfermaria.pkIdEnfermaria}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{supiSupervisorHasEscalaEnfermariaBean.listarEnfermarias()}" var="enfermaria" itemLabel="#{enfermaria.descricao}" itemValue="#{enfermaria.pkIdEnfermaria}"/> 
+                                                        </p:selectOneMenu>
+
+                                                    </h:panelGrid>
+
+                                                </h:panelGrid>
+
+                                            </center>
+                                        </p:panel>
+
+                                        <p:panel>
+                                            <center>
+                                                <p:commandButton style="width: 170px" icon="ui-icon-pencil" value="Editar" 
+                                                                 action="#{supiSupervisorHasEscalaEnfermariaBean.atribuirEnfermaria()}" 
+                                                                 process="gridEditarConsultoriosAtribuidos" update=":form:tabela">
+                                                </p:commandButton>
+                                                <p:commandButton style="width: 170px" icon="ui-icon-close" actionListener="#{supiSupervisorHasEscalaEnfermariaBean.fechar()}" 
+                                                                 value="Fechar" type="button" onclick="PF('dialogEditarConsultoriosAtribuidos').hide()" >
+                                                </p:commandButton>
+                                            </center>
+                                        </p:panel>
+
+                                    </h:panelGrid>
+
+
+                                </p:panel>
+                            </center>
+
+                        </h:form>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+
+</html>
+
+
+

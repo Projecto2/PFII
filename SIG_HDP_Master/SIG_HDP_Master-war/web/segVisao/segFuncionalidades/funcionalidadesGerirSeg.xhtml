@@ -1,0 +1,178 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSeg.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSeg.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h:form id="formularioId">
+
+                    <p:growl autoUpdate="true"/>
+                    
+                    <div class="ui-fluid">
+
+                        <p:fieldset id="funcionalidadesFS" legend="Gerir as Funcionalidades do Sistema">
+
+                            <p:panelGrid 
+                                columns="2" 
+                                columnClasses="ui-grid-col-4,ui-grid-col-8" 
+                                layout="grid" 
+                                styleClass="ui-panelgrid-blank"
+                                >
+
+                                <h:outputLabel value="Seleccione o nó para inserção da funcionalidade:" />
+                                <p:tree 
+                                    selectionMode="single"
+                                    dynamic="true" 
+                                    value="#{segFuncionalidadeGerirBean.seqTreeFuncionalidades.root}" 
+                                    var="node" 
+                                    orientation="horizontal"
+                                    >
+                                    <p:ajax 
+                                        event="select" 
+                                        update=":formularioId:funcionalidadesFS"
+                                        listener="#{segFuncionalidadeGerirBean.seqTreeFuncionalidades.onNodeSelect}" 
+                                        />
+                                    <p:ajax event="expand" listener="#{segFuncionalidadeGerirBean.seqTreeFuncionalidades.onNodeExpand}" />
+                                    <p:ajax event="collapse" listener="#{segFuncionalidadeGerirBean.seqTreeFuncionalidades.onNodeCollapse}" />
+                                    <p:ajax event="unselect" listener="#{segFuncionalidadeGerirBean.seqTreeFuncionalidades.onNodeUnSelect}"/>
+                                    <p:treeNode>
+                                        <h:outputText value="#{node}"/>
+                                    </p:treeNode>
+                                </p:tree>
+
+                            </p:panelGrid>
+
+                            <p:panelGrid 
+                                id="funcionalidadesMenuPG" 
+                                columns="3"
+                                columnClasses="ui-grid-col-3" 
+                                layout="grid" 
+                                styleClass="ui-panelgrid-blank" 
+                                rendered="#{segFuncionalidadeGerirBean.funcionalidadesMenuRedered}" 
+                                >
+                                <p:commandButton 
+                                    value="Nova Funcionalidade" 
+                                    action="#{segFuncionalidadeGerirBean.criarNovaFuncionalidade()}" 
+                                    update=":formularioId:funcionalidadesFS" 
+                                    process="@this"
+                                    />
+
+                                <p:commandButton 
+                                    value="Editar Funcionalidade"
+                                    update=":formularioId:funcionalidadesFS" 
+                                    />
+
+                                <p:commandButton 
+                                    value="Eliminar Funcionalidade"
+                                    update=":formularioId:funcionalidadesFS"
+                                    oncomplete="PF('w_funcionalidadesMenuId').hide()"
+                                    />
+
+                            </p:panelGrid>
+
+                            <p:fieldset 
+                                id="funcionalidadeNovaFS" 
+                                legend="Nova Funcionalidade" 
+                                rendered="#{segFuncionalidadeGerirBean.funcionalidadesNovaRedered}" 
+                                >
+
+                                <p:panelGrid 
+                                    id="funcionalidadesNovaPG" 
+                                    columns="2"
+                                    columnClasses="ui-grid-col-3" 
+                                    layout="grid" 
+                                    styleClass="ui-panelgrid-blank"
+                                    >
+
+                                    <p:outputLabel value="Nó Pai:"/>
+                                    <p:outputLabel
+                                        value="#{segFuncionalidadeGerirBean.seqTreeFuncionalidades.selectedNodeName}" 
+                                        />
+
+                                    <p:outputLabel value="Nome da Funcionalidade:"/>
+                                    <p:inputText 
+                                        id="nomeFuncionalidadeId" 
+                                        placeholder="Nome da Funcionalidade" 
+                                        value="#{segFuncionalidadeGerirBean.segFuncionalidadeNome}"
+                                    >
+                                    <p:ajax 
+                                        update=":formularioId:funcionalidadesFS"
+                                        listener="#{segFuncionalidadeGerirBean.installFuncionalidadeNome()}"
+                                        />
+
+                                    </p:inputText> 
+
+                                    <p:outputLabel value="Tipo de Funcionalidade:"/>
+                                    <p:selectOneMenu 
+                                        id="tipoFuncionalidadeSOM"  
+                                        value="#{segFuncionalidadeGerirBean.segFuncionalidade.fkIdTipoFuncionalidade.pkIdTipoFuncionalidade}"
+                                        >
+
+                                        <f:selectItem 
+                                            itemLabel="Selecione o Tipo de Funcionalidade" 
+                                            itemValue="#{null}"
+                                            />
+                                        <p:ajax 
+                                            listener="#{segFuncionalidadeGerirBean.installTipoFuncionalidade()}" 
+                                            />
+                                        <f:selectItems 
+                                            value="#{segTipoFuncionalidadeBean.findAllOrderByNome()}"
+                                            var="segTipoFuncionalidadeVar" 
+                                            itemLabel="#{segTipoFuncionalidadeVar.nome}"
+                                            itemValue="#{segTipoFuncionalidadeVar.pkIdTipoFuncionalidade}" 
+                                            />
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Padrao do URL da Funcionalidade"/>
+                                    <p:inputText 
+                                        id="padraoURLId" 
+                                        placeholder="Padrao do URL da Funcionalidade" 
+                                        value="#{segFuncionalidadeGerirBean.segFuncionalidadeUrlPadrao}"
+                                        >
+                                    <p:ajax 
+                                        update=":formularioId:funcionalidadesFS"
+                                        listener="#{segFuncionalidadeGerirBean.installFuncionalidadeUrlPadrao()}"
+                                        />
+
+                                    </p:inputText> 
+
+                                    <p:commandButton 
+                                        id="gravarBtId" 
+                                        value="Gravar"  
+                                        process="@this"
+                                        update=":formularioId:funcionalidadesFS"
+                                        actionListener="#{segFuncionalidadeGerirBean.gravarNovaFuncionalidade()}"
+                                        />
+
+                                </p:panelGrid>
+
+                            </p:fieldset>
+
+                        </p:fieldset>
+
+                    </div>
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

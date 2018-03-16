@@ -1,0 +1,238 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <h:head><title>Locais de Armazenamento</title></h:head>
+   <body>
+
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia ->Locais de Armazenamento</h2>
+            <h:form id="formPrincipal">
+               <p:messages id="msg" autoUpdate="true" closable="true"/>
+               <p:growl autoUpdate="true"/>
+               <p></p>
+               <p:fieldset>
+                  <p:fieldset>
+                     <p:dialog  widgetVar="w_dlgLoading" header="A carregar dados do stock." modal="true" closable="false" resizable="false">
+                        <center>
+                           <img src="../../resources/Imagens/loading.gif" style="margin: auto" width="128" height="128" alt="loading"/>
+                        </center>
+                        <br/>
+                        <p>Pode demorar alguns minutos. Por favor aguarde....</p>
+                     </p:dialog>
+                     
+                     <p:panel style="height: 50px; border: none">
+                        <h:panelGrid class="float-right">
+                           <p:commandButton rendered="#{farmCarregamentoInicialStockBean.naoExisteStock()}"
+                                            onstart="PF('w_dlgLoading').show()" oncomplete="PF('w_dlgLoading').hide()" 
+                                            value="Efectuar Balanço Inicial do Stock" icon="ui-icon-refresh"
+                                            action="/farmVisao/farmArmazenamento/localArmazenamentoListarFarm.xhtml?faces-redirect=true"
+                                            actionListener="#{farmCarregamentoInicialStockBean.carregarSockInicialTabela()}">
+                              <f:ajax event="click" execute="@this" render=":formPrincipal resultado"/>
+                           </p:commandButton>
+                           
+                           <p:commandButton value="Balanço Inicial do Stock" icon="ui-icon-refresh" rendered="false"
+                                            action="/farmVisao/farmArmazenamento/formularioStockInicialFarm.xhtml?faces-redirect=true">
+                           </p:commandButton>
+                        </h:panelGrid>
+                     </p:panel>
+
+                     <h:panelGrid columns="2" id="gridCamposPesquisa" cellpadding="4">
+                        <p:outputLabel value="Tipo de Local"/>
+                        <f:validateBean disabled="true">
+                           <p:selectOneMenu id="tipoLocal" style="width: 90%" filter="true"
+                                            value="#{farmLocalArmazenamentoListarBean.local.fkIdTipoLocalArmazenamento.pkIdTipoLocalArmazenamento}">
+                              <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                              <f:selectItems value="#{farmListasUteisBean.todosTiposLocalArmazenamento}"/>
+                           </p:selectOneMenu>
+                        </f:validateBean>
+
+                        <p:outputLabel value="Descrição"/>                         
+                        <p:inputText style="width: 98%" id="descricao"
+                                     value="#{farmLocalArmazenamentoListarBean.local.descricao}"/>
+                        <p></p>
+                        <h:panelGrid columns="3">
+                           <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true"
+                                            action="#{farmLocalArmazenamentoListarBean.pesquisarLocais()}" update="resultado"
+                                            process="gridCamposPesquisa" />
+
+                           <p:commandButton value="Novo" icon="ui-icon-plus" ajax="true"
+                                            style="width: 100px"
+                                            process="@this" onclick="PF('dialogNovo').show()"/>
+                        </h:panelGrid> 
+                     </h:panelGrid>
+                     <p></p>
+                  </p:fieldset>
+                  <p:dataTable style="width: 100%;" id="resultado" var="item" rows="8" rowsPerPageTemplate="8,12,16,24"
+                               value="#{farmLocalArmazenamentoListarBean.locaisPesquisados}" 
+                               emptyMessage="Sem locais de armazenamento a apresentar de momento. Aguardando pesquisa."
+                               paginator="true" paginatorPosition="bottom">
+
+                     <p:column headerText="Tipo de Local" sortBy="#{item.fkIdTipoLocalArmazenamento.descricao}">
+                        <center>
+                           <h:outputText value="#{item.fkIdTipoLocalArmazenamento.descricao}"/>
+                        </center>                                
+                     </p:column>
+
+                     <p:column headerText="Abreviatura" sortBy="#{item.abreviatura}">
+                        <center>
+                           <h:outputText value="#{item.abreviatura}"/>
+                        </center>                                
+                     </p:column>
+
+                     <p:column headerText="Descrição" sortBy="#{item.descricao}">
+                        <center>
+                           <h:outputText value="#{item.descricao}"/>
+                        </center>                                
+                     </p:column>
+
+                     <p:column headerText="Instituição" sortBy="#{item.fkIdInstituicao.descricao}"> 
+                        <center>
+                           <h:outputText value="#{item.fkIdInstituicao.descricao}"/>
+                        </center>                                
+                     </p:column>
+
+                     <p:column headerText="------">
+                        <center>
+                           <p:menuButton value="Opções">
+                              <p:menuitem value="Editar" partialSubmit="true" process="@this" 
+                                          icon="ui-icon-pencil" update=":formEditar:painelEditar"
+                                          actionListener="#{farmLocalArmazenamentoListarBean.setLocalEditar(item)}"
+                                          onclick="PF('dialogEditar').show()">
+                              </p:menuitem>
+                              <p:separator/>
+                              <p:menuitem value="Eliminar" partialSubmit="true" process="@this" 
+                                          icon="ui-icon-trash"
+                                          actionListener="#{farmLocalArmazenamentoListarBean.setLocalEditar(item)}"
+                                          onclick="PF('dialogEliminar').show()">
+                              </p:menuitem>
+                              <p:menuitem value="Ver Produtos" partialSubmit="true" process="@this"
+                                          icon="ui-icon-info" rendered="#{farmLocalArmazenamentoListarBean.renderizarMenuItemVerProdutos(item)}"
+                                          action="#{farmRedireccionarBean.red_VisualizarItensNoLocal()}"
+                                          actionListener="#{farmVisualizarItensNoLocalBean.setLocal(item)}">
+                              </p:menuitem>
+                           </p:menuButton>
+                        </center>
+                     </p:column>
+                  </p:dataTable>
+               </p:fieldset>
+            </h:form>
+
+            <p:dialog id="dialogNovo" widgetVar="dialogNovo" width="50%"
+                      showEffect="fade" height="250px" modal="true"
+                      closable="false" header="Novo Local de Armazenamento" >
+               <h:form id="FormNovo">
+                  <center>
+                     <h:panelGrid columns="2" width="100%">
+                        <p:outputLabel value="Tipo de Local * "/>
+                        <p:selectOneMenu id="tipolocalNovo" style="width: 86%" filter="true"
+                                         value="#{farmLocalArmazenamentoListarBean.localNovo.fkIdTipoLocalArmazenamento.pkIdTipoLocalArmazenamento}">
+                           <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                           <f:selectItems value="#{farmListasUteisBean.todosTiposLocalArmazenamento}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Abreviatura * "/>
+                        <p:inputText id="abrev" value="#{farmLocalArmazenamentoListarBean.localNovo.abreviatura}"
+                                     style="width: 90%"/>
+
+                        <p:outputLabel value="Descrição * "/>
+                        <p:inputText id="descricaoNova" value="#{farmLocalArmazenamentoListarBean.localNovo.descricao}"
+                                     style="width: 90%"/>
+
+                        <p:outputLabel value="Instituição * "/>
+                        <p:selectOneMenu id="comboInstituicao" style="width: 86%" filter="true"
+                                         value="#{farmLocalArmazenamentoListarBean.localNovo.fkIdInstituicao.pkIdInstituicao}">
+                           <f:selectItems value="#{itensAjaxBean.instituicaoList}" var="com"
+                                          itemLabel="#{com.descricao}" itemValue="#{com.pkIdInstituicao}"/>
+                        </p:selectOneMenu>
+                     </h:panelGrid>
+                  </center>
+                  <h:panelGrid columns="2">
+                     <p:commandButton value="Guardar" icon="ui-icon-disk" 
+                                      process="@form tipolocalNovo comboInstituicao abrev descricaoNova" 
+                                      update=":formPrincipal:resultado"
+                                      action="#{farmLocalArmazenamentoListarBean.criar()}"
+                                      onclick="PF('dialogNovo').hide()"/>
+
+                     <p:commandButton value="Fechar" icon="ui-icon-close"
+                                      onclick="PF('dialogNovo').hide()"
+                                      actionListener="#{farmLocalArmazenamentoListarBean.setLocalNovo(null)}"/>
+
+                  </h:panelGrid>
+               </h:form>
+            </p:dialog>
+
+            <p:dialog id="dialogEditar" header="Editar local de Armazenamento" closable="false"
+                      widgetVar="dialogEditar" modal="true" width="50%" hideEffect="fade">
+               <h:form id="formEditar">
+                  <center>
+                     <h:panelGrid id="painelEditar" width="80%" columns="2">
+                        <p style="font-size: 14px;"><strong>Tipo de Local</strong>
+
+                           <p:selectOneMenu id="localEditar" style="width: 70%" filter="true"
+                                            value="#{farmLocalArmazenamentoListarBean.localEditar.fkIdTipoLocalArmazenamento.pkIdTipoLocalArmazenamento}">
+                              <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                              <f:selectItems value="#{farmListasUteisBean.todosTiposLocalArmazenamento}"/>
+                           </p:selectOneMenu>
+                        </p>
+                        <p style="font-size: 14px;"><strong>Abreviatura</strong>
+                           <p:inputText id="abrevEditar" value="#{farmLocalArmazenamentoListarBean.localEditar.abreviatura}"
+                                        style="width: 75%"/>
+                        </p>
+                        <p style="font-size: 14px;"><strong>Descrição</strong>
+                           <p:inputText id="descricaoEditar" value="#{farmLocalArmazenamentoListarBean.localEditar.descricao}"
+                                        style="width: 75%"/>
+                        </p>
+                        <p style="font-size: 14px;"><strong>Instituição</strong>
+
+                           <p:selectOneMenu id="instiuicaoEditar" filter="true" style="width: 70%"
+                                            value="#{farmLocalArmazenamentoListarBean.localEditar.fkIdInstituicao.pkIdInstituicao}">
+                              <f:selectItems value="#{itensAjaxBean.instituicaoList}" var="com"
+                                             itemLabel="#{com.descricao}" itemValue="#{com.pkIdInstituicao}"/>
+                           </p:selectOneMenu>
+                        </p>
+                     </h:panelGrid>
+                  </center>
+                  <p:commandButton value="Guardar" action="#{farmLocalArmazenamentoListarBean.editar()}" 
+                                   process="@this localEditar abrevEditar instiuicaoEditar descricaoEditar"  icon="ui-icon-disk"
+                                   onclick="PF('dialogEditar').hide()" ajax="true" update=":formPrincipal:resultado"/>
+
+                  <p:commandButton value="Fechar" process="@this" ajax="true"
+                                   onclick="PF('dialogEditar').hide()" 
+                                   partialSubmit="true" icon="ui-icon-close"/> 
+               </h:form>
+            </p:dialog>
+
+            <center>
+               <h:form id="formEliminar">
+                  <p:confirmDialog message="Deseja eliminar o local? Pode estar a ser utilizado... "
+                                   header="Eliminar Local de Armazenamento" severity="alert"
+                                   widgetVar="dialogEliminar">
+
+                     <p:commandButton value="Sim" actionListener="#{farmLocalArmazenamentoListarBean.eliminar()}"
+                                      update=":formPrincipal:resultado" ajax="true"
+                                      oncomplete="PF('dialogEliminar').hide();"/>
+
+                     <p:commandButton value="Não" onclick="PF('dialogEliminar').hide();" type="button" />
+                  </p:confirmDialog>
+               </h:form>
+            </center>
+         </ui:define>
+
+      </ui:composition>
+
+   </body>
+</html>

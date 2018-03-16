@@ -1,0 +1,551 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAmb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAmb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <p:messages id="msg" autoUpdate="true" closable="true" showDetail="true"/>
+                <p:growl autoUpdate="true"/>
+
+                <h:form acceptcharset="ISO-8859-1" id="frm">
+                    <div class="ui-fluid">
+                        <h2>Consultas Externas -> Atendimento -> Consultas -> Reconsultas</h2>
+                        <p:tabView id="ptvPrincipal" styleClass="ui-noborder">
+
+                            <p:tab title="Consulta">
+                                <p:tabView id="ptvSecundario" styleClass="ui-noborder">
+
+                                    <p:tab id="pessoaisTriagem" title="Pessoais/Triagem">
+
+                                        <p:panel header="Detalhes Pessoais e de Triagem" styleClass="ui-noborder">
+
+                                            <center>
+
+                                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                                   <h:panelGrid columns="3" styleClass="ui-noborder">
+
+                                                        <p:poll listener="#{ambConsultaListarBean.pesquisarPacientesEncaminhadosReconsulta()}" update="pacientes" interval="5"/>
+                                                        <p:outputLabel for="pacientes" value="Pacientes:" />
+                                                        <p:selectOneListbox id="pacientes" style="width: 310px; height: 225px; margin-left: 157px" value="#{ambConsultaListarBean.codigoEncaminhamento}" filter="true" filterMatchMode="contains">
+                                                            <f:selectItems value="#{ambConsultaListarBean.pesquisarPacientesEncaminhadosReconsulta()}" var="pacientes" itemLabel="#{pacientes.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                                                  #{pacientes.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                                                  #{pacientes.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                                                 (#{pacientes.fkIdTriagem.fkIdEstado.descricao})
+                                                                                 (#{ambTriagemListarBean.dateToString(pacientes.fkIdTriagem.dataHoraTriagem)})" itemValue="#{pacientes.pkIdConsultorioAtendimento}"  />
+                                                            <p:ajax update="dadosVitaisPessoais" listener="#{ambConsultaListarBean.retornaEncaminhamentos()}" />
+                                                        </p:selectOneListbox><!-- dadosVitaisPessoais, gravida -->
+                                                            
+                                                    </h:panelGrid>
+
+                                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                                        <h:outputLabel value="Data:" for="data"/>
+                                                        <h:outputLabel id="data" style="margin-left: 35px;" value="#{ambConsultaListarBean.dataSistema()}"/>
+
+                                                        <p:outputLabel/>
+                                                        #{ambCeConfiguracoesBean.init()}
+
+                                                        <h:outputLabel value="Grávida: " for="gravida"/>
+                                                        <p:selectOneMenu  disabled="false" id="gravida" style="margin-left: 35px" value="#{ambConsultaListarBean.codigoConfirmacao}" filter="true" filterMatchMode="contains">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{ambConsultaListarBean.listarConfirmacoes()}" var="listaConfirmacao" itemLabel="#{listaConfirmacao.descricao}" itemValue="#{listaConfirmacao.pkIdConfirmacao}"/> 
+                                                        </p:selectOneMenu>
+                                                        
+                                                        <h:outputLabel value="#{msgs.centroHospitalar} #{msgs.proveniencia}: *" for="centroHospitalar"/>
+                                                        <p:selectOneMenu  id="centroHospitalar" style="margin-left: 35px" value="#{ambConsultaListarBean.codigoCentroHospitalar}" 
+                                                                          rendered="#{ambCeConfiguracoesBean.chpSOMRendered}"
+                                                                          filter="true" filterMatchMode="contains">
+
+                                                            <p:ajax event="itemSelect" update=":frm:ptvPrincipal:ptvSecundario"
+                                                                    listener="#{ambCeConfiguracoesBean.initSegConta()}"/>
+
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{grlCentroHospitalarBean.findAll()}" var="listCentroHospitalar" itemLabel="#{listCentroHospitalar.fkIdInstituicao.descricao}" itemValue="#{listCentroHospitalar.pkIdCentro}"/> 
+                                                        </p:selectOneMenu>
+
+                                                        <h:outputLabel value="Especialidade: *" for="especialidade"/>
+                                                        <p:selectOneMenu id="especialidade" style="margin-left: 35px" value="#{ambConsultaListarBean.codigoEspecialidade}" filter="true" filterMatchMode="contains">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{ambConsultaListarBean.listarEspecialidades()}" var="listEspecialidade" itemLabel="#{listEspecialidade.descricao}" itemValue="#{listEspecialidade.pkIdEspecialidade}"/> 
+                                                        </p:selectOneMenu>
+
+                                                    </h:panelGrid>
+
+                                                    <p:panel styleClass="ui-noborder">
+                                                        <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                                            <h:panelGrid columns="1" id="dadosVitaisPessoais" styleClass="ui-noborder">
+
+                                                                <p:fieldset legend="Dados Pessoais" toggleable="true" styleClass="ui-noborder">
+                                                                    <h:panelGrid columns="6" id="dadosPess" styleClass="ui-noborder">
+                                                                        <h:outputLabel value="Nome:" for="nome"/>
+                                                                        <h:outputLabel id="nome" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                                                                        #{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                                                                        #{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                                                                       "/>
+
+                                                                        <h:outputLabel value="Data de Nascimento:" for="dna" style="margin-left: 5px"/>
+                                                                        <h:outputLabel id="dna" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.dataNascimento}"> 
+                                                                            <f:convertDateTime pattern="dd/MM/yyyy" locale="pt"/>
+                                                                        </h:outputLabel>
+
+                                                                        <h:outputLabel value="Género:" for="genero" style="margin-left: 13px"/>
+                                                                        <h:outputLabel id="genero" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdSexo.descricao}" />
+
+                                                                        <h:outputLabel value="Residência:" for="residencia"/>
+                                                                        <h:outputLabel id="residencia" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdMunicipio.nomeMunicipio}"/>
+
+                                                                        <h:outputLabel value="Contacto:" for="contacto" style="margin-left: 5px"/>
+                                                                        <h:outputLabel id="contacto" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.telefone1}"  />
+
+                                                                        <h:outputLabel value="Naturalidade:" for="naturalidade" style="margin-left: 13px"/>
+                                                                        <h:outputLabel id="naturalidade" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdMunicipio.fkIdProvincia.nomeProvincia}"  />
+                                                                    </h:panelGrid>
+
+                                                                </p:fieldset>
+
+                                                                <p:fieldset legend="Triagem" toggleable="true" styleClass="ui-noborder">
+                                                                    <h:panelGrid columns="4" styleClass="ui-noborder">
+
+                                                                        <h:outputLabel value="Estado do Paciente:" for="estadoPac"/>
+                                                                        <h:outputLabel id="estadoPac" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdEstado.descricao}"/>
+
+                                                                        <h:outputLabel value="Peso:" for="peso" style="margin-left: 20px"/>
+                                                                        <h:outputLabel id="peso" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.peso}"/>
+
+                                                                        <h:outputLabel value="Temperatura:" for="temperatura"/>
+                                                                        <h:outputLabel id="temperatura" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.temperatura}"/>
+
+                                                                        <h:outputLabel value="Pulso (bpm):" for="pulso" style="margin-left: 20px"/>
+                                                                        <h:outputLabel id="pulso" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.pulso}"/>
+
+                                                                        <h:outputLabel value="TA Sistólica (mmHg):" for="tensaoarterialMax"/>
+                                                                        <h:outputLabel id="tensaoarterialMax" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.tensaoArterialMaxima}"/>
+
+                                                                        <h:outputLabel value="TA Diastólica (mmHg):" for="tensaoarterialMin" style="margin-left: 20px"/>
+                                                                        <h:outputLabel id="tensaoarterialMin" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.tensaoArterialMinima}"/>
+
+
+                                                                        <h:outputLabel value="Frequencia Cardíaca (bpm):" for="fc"/>
+                                                                        <h:outputLabel id="fc" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.frequenciaCardiaca}"/>
+
+                                                                        <h:outputLabel value="Frequencia Respiratoria (rpm):" for="fr" style="margin-left: 20px"/>
+                                                                        <h:outputLabel id="fr" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.frequenciaRespiratoria}"/>
+
+
+                                                                        <h:outputLabel value="Classificação da dor:" for="classificacao"/>   
+                                                                        <h:outputLabel id="classificacao" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.fkIdClassificacaoDor.descricao}"/>
+
+                                                                        <h:outputLabel value="Local da dor:" for="local" style="margin-left: 20px"/>                            
+                                                                        <p:inputTextarea id="local" readonly="true" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.localDaDor}" autoResize="false"/>
+
+                                                                        <h:outputLabel value="Altura:" for="altura"/>
+                                                                        <h:outputLabel id="altura" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.altura}"/>
+
+                                                                        <h:outputLabel value="Glicêmia (mg/dL):" for="glicemia" style="margin-left: 20px"/>
+                                                                        <h:outputLabel id="glicemia" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.glicemia}"/>
+
+                                                                        <h:outputLabel for="menu" value="Sinais/Sintomas:" />
+                                                                        <p:inputTextarea id="sintomas" readonly="true" value="#{ambTriagemListarBean.lerSinaisPacientesTriagem(ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.pkIdTriagem)}" autoResize="false"/>
+
+                                                                        <h:outputLabel value="Observações:" for="obs" style="margin-left: 20px"/>
+                                                                        <p:inputTextarea id="obs" readonly="true" value="#{ambConsultaListarBean.ambConsultorioAtendimento.fkIdTriagem.observacoes}" autoResize="false"/>
+                                                                    </h:panelGrid>
+
+                                                                </p:fieldset>
+
+                                                                <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+
+                                                            </h:panelGrid>
+
+                                                        </h:panelGrid>
+
+                                                    </p:panel>
+
+                                                </h:panelGrid>
+
+                                            </center>
+
+                                        </p:panel>
+
+                                    </p:tab>
+
+                                    <p:tab id="hc" title="História Clínica">
+                                        <h:panelGrid id="panelHC" columns="1" columnClasses="label, value" styleClass="ui-noborder">
+                                            <p:fieldset styleClass="ui-noborder">
+                                                <p:inputTextarea id="obsP" value="#{ambConsultaCriarBean.ambConsulta.historiaClinica}" cols="90" rows="25" autoResize="false"/>
+                                            </p:fieldset>
+                                        </h:panelGrid>
+                                    </p:tab>
+                                    
+                                    <p:tab id="qp" title="Queixas Principais">
+                                        <p:panel styleClass="ui-noborder">
+                                            <center>
+                                                <h:panelGrid id="panelQP" columns="1" columnClasses="label, value" styleClass="ui-noborder">
+
+                                                    <p:fieldset styleClass="ui-noborder">
+                                                        <h:panelGrid columns="4" styleClass="ui-noborder">
+                                                            <h:outputLabel value="O que sente?" for="queixa" style="margin-right: 65px"/>
+                                                            <p:inputTextarea id="queixa" value="#{ambConsultaCriarBean.ambConsulta.sintoma}"/>
+
+                                                            <h:outputLabel value="Quando, como e onde começou?" for="hda" style="margin-left: 5px"/>
+                                                            <p:inputTextarea id="hda" style="margin-right: 5px" value="#{ambConsultaCriarBean.ambConsulta.historiaDoencaActual}" autoResize="false"/>
+                                                        </h:panelGrid>
+                                                    </p:fieldset>
+
+                                                    <p:fieldset legend="Medicação Anterior" toggleable="true" styleClass="ui-noborder">
+                                                        <h:panelGrid columns="2" class="float-left" styleClass="ui-noborder">
+                                                            <h:outputLabel value="Fez alguma medicação?" for="tma"/>
+                                                            <p:selectOneRadio id="tma" value="#{ambConsultaCriarBean.selecione}">
+                                                                <f:selectItem itemLabel="Não" itemValue="true"/> 
+                                                                <f:selectItem itemLabel="Sim" itemValue="false"/>
+                                                                <p:ajax update="ma" listener="#{ambConsultaCriarBean.seleccionar()}"/>
+                                                            </p:selectOneRadio>
+
+                                                            <h:outputLabel value="Qual foi?" for="ma"/>
+                                                            <p:inputTextarea id="ma" disabled="#{ambConsultaCriarBean.ma}" value="#{ambConsultaCriarBean.ambConsulta.medicacaoAnterior}" autoResize="false"/>
+                                                        </h:panelGrid>
+
+                                                    </p:fieldset>
+
+                                                </h:panelGrid>
+                                            </center>
+                                        </p:panel>
+                                    </p:tab>
+
+                                    <p:tab id="exameFisico" title="Exame Físico">
+                                        <p:panel styleClass="ui-noborder">
+                                            <center>
+                                                <h:panelGrid columns="2" columnClasses="label, value" styleClass="ui-noborder">
+
+                                                    <p:fieldset legend="Impressões Gerais" toggleable="true" styleClass="ui-noborder">
+
+                                                        <h:panelGrid columns="2" styleClass="ui-noborder"> 
+
+                                                            <h:outputLabel value="Impressões Gerais:"/>
+
+                                                            <h:panelGroup styleClass="ui-noborder">
+
+                                                                <h:panelGrid columns="3" styleClass="ui-noborder">
+
+                                                                    <h:selectManyCheckbox layout="pageDirection" value="#{ambConsultaListarBean.listaImpressoes}" label="impressoesGerais"> 
+                                                                        <f:selectItems value="#{ambConsultaListarBean.listarImpressoesGerais()}" var="li" itemLabel="#{li.descricao}" itemValue="#{li.pkIdImpressoesGerais}" />
+                                                                    </h:selectManyCheckbox>
+
+                                                                </h:panelGrid>
+
+                                                            </h:panelGroup>
+
+                                                        </h:panelGrid>
+
+                                                    </p:fieldset>
+
+                                                    <p:fieldset legend="Mucosas" toggleable="true" styleClass="ui-noborder">
+                                                        <h:panelGrid columns="2" styleClass="ui-noborder">
+                                                            <h:outputLabel value="Coloração:"/>
+                                                            <h:panelGroup styleClass="ui-noborder">
+
+                                                                <h:panelGrid columns="3" styleClass="ui-noborder">
+
+                                                                    <h:selectManyCheckbox layout="pageDirection" value="#{ambConsultaListarBean.listaMucosasColoracao}">
+                                                                        <f:selectItems value="#{ambConsultaListarBean.listarColoracao()}" var="listaColoracao" itemLabel="#{listaColoracao.descricao}" itemValue="#{listaColoracao.pkIdColoracao}"/>
+                                                                    </h:selectManyCheckbox>
+
+                                                                </h:panelGrid>
+
+                                                            </h:panelGroup>
+
+                                                            <h:outputLabel value="Estado de Hidratação:"/>
+                                                            <h:panelGroup styleClass="ui-noborder">
+                                                                <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                                                    <p:selectOneMenu id="hidratacao" value="#{ambConsultaCriarBean.codigoEstadoHidratacao}" >
+                                                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                                        <f:selectItems value="#{ambConsultaListarBean.listarEstadoHidratacao()}" var="leh" itemLabel="#{leh.descricao}" itemValue="#{leh.pkIdEstadoHidratacao}"/> 
+                                                                    </p:selectOneMenu>
+
+                                                                </h:panelGrid>
+                                                            </h:panelGroup>
+
+                                                        </h:panelGrid>
+                                                    </p:fieldset>
+
+                                                    <p:fieldset legend="Pele e Anexos" toggleable="true" styleClass="ui-noborder">
+                                                        <h:panelGrid columns="4" styleClass="ui-noborder">
+                                                            <h:outputLabel value="Cor:"/>
+                                                            <h:panelGroup styleClass="ui-noborder">
+
+                                                                <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                                                    <h:selectManyCheckbox layout="pageDirection" value="#{ambConsultaListarBean.listaCorPele}" >
+                                                                        <f:selectItems value="#{ambConsultaListarBean.listarCor()}" var="lc" itemLabel="#{lc.descricao}" itemValue="#{lc.pkIdCor}"/>
+                                                                    </h:selectManyCheckbox>
+
+                                                                </h:panelGrid>
+
+                                                            </h:panelGroup>
+
+                                                            <h:outputLabel value="Textura:"/>
+                                                            <h:panelGroup styleClass="ui-noborder">
+
+                                                                <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                                                    <h:selectManyCheckbox layout="pageDirection" value="#{ambConsultaListarBean.listaTexturaPele}" >
+                                                                        <f:selectItems value="#{ambConsultaListarBean.listarTextura()}" var="listaTextura" itemLabel="#{listaTextura.descricao}" itemValue="#{listaTextura.pkIdTextura}"/>
+                                                                    </h:selectManyCheckbox>
+
+                                                                </h:panelGrid>
+
+                                                            </h:panelGroup>
+
+                                                            <h:outputLabel value="Turgor:" />
+                                                            <h:panelGroup styleClass="ui-noborder">
+
+                                                                <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                                                    <h:selectManyCheckbox layout="pageDirection" value="#{ambConsultaListarBean.listaTurgorPele}">
+                                                                        <f:selectItems value="#{ambConsultaListarBean.listarTurgor()}" var="listaTurgor" itemLabel="#{listaTurgor.descricao}" itemValue="#{listaTurgor.pkIdTurgor}"/>
+                                                                    </h:selectManyCheckbox>
+
+                                                                </h:panelGrid>
+
+                                                            </h:panelGroup>
+
+                                                            <h:outputLabel for="outrosDados" value="Outros Dados:" />
+                                                            <p:inputTextarea id="outrosDados" value="#{ambConsultaCriarBean.ambConsulta.outrosDados}"/>
+
+                                                        </h:panelGrid>
+                                                    </p:fieldset>
+
+                                                    <p:fieldset legend="Tecido Celular Subcutâneo" toggleable="true" styleClass="ui-noborder">
+                                                        <h:panelGrid columns="4" styleClass="ui-noborder">
+                                                            <h:outputLabel value="Presença de Pregas:" />
+                                                            <h:panelGroup styleClass="ui-noborder">
+                                                                <h:panelGrid columns="3" styleClass="ui-noborder">
+
+                                                                    <p:selectOneRadio id="presenca" value="#{ambConsultaCriarBean.selecione}">
+                                                                        <f:selectItem itemLabel="Não" itemValue="true" />
+                                                                        <f:selectItem itemLabel="Sim" itemValue="false" />
+                                                                        <p:ajax update="et, turgor" listener="#{ambConsultaCriarBean.seleccionar()}" />
+                                                                    </p:selectOneRadio>
+
+                                                                </h:panelGrid>
+                                                            </h:panelGroup>
+
+                                                            <h:outputLabel value="Espessura:" />
+                                                            <h:panelGroup styleClass="ui-noborder">
+
+                                                                <h:panelGrid columns="3" styleClass="ui-noborder">
+
+                                                                    <h:selectManyCheckbox id="et" layout="pageDirection" disabled="#{ambConsultaCriarBean.presencaDePregas}" value="#{ambConsultaListarBean.listaEspessuraTecido}" >
+                                                                        <f:selectItems value="#{ambConsultaListarBean.listarEspessura()}" var="listaEspessura" itemLabel="#{listaEspessura.descricao}" itemValue="#{listaEspessura.pkIdEspessura}"/>
+                                                                    </h:selectManyCheckbox>
+
+                                                                </h:panelGrid>
+
+                                                            </h:panelGroup>
+
+                                                            <h:outputLabel value="Turgor:" />
+                                                            <h:panelGroup styleClass="ui-noborder">
+
+                                                                <h:panelGrid columns="3" styleClass="ui-noborder">
+
+                                                                    <h:selectManyCheckbox id="turgor" layout="pageDirection" disabled="#{ambConsultaCriarBean.turgor}" value="#{ambConsultaListarBean.listaTurgorTecido}" >
+                                                                        <f:selectItems value="#{ambConsultaListarBean.listarTurgor()}" var="listaTurgorTecido" itemLabel="#{listaTurgorTecido.descricao}" itemValue="#{listaTurgorTecido.pkIdTurgor}"/>
+                                                                    </h:selectManyCheckbox>
+
+                                                                </h:panelGrid>
+
+                                                            </h:panelGroup>
+                                                        </h:panelGrid>
+                                                    </p:fieldset>
+
+                                                    <p:fieldset legend="Gânglios" toggleable="true" styleClass="ui-noborder">
+                                                        <h:panelGrid columns="2" styleClass="ui-noborder">
+                                                            <h:outputLabel value="Presença de Adenomegalias" for="pda"/>
+                                                            <p:selectOneRadio id="pda" value="#{ambConsultaCriarBean.selecione}">
+                                                                <f:selectItem itemLabel="Não" itemValue="true" />
+                                                                <f:selectItem itemLabel="Sim" itemValue="false" />
+                                                                <p:ajax update="localizacao, tamanho, dor, aderencia" listener="#{ambConsultaCriarBean.seleccionar()}" />
+                                                            </p:selectOneRadio>
+
+                                                            <h:outputLabel value="Localização:" />
+                                                            <p:inputTextarea id="localizacao" disabled="#{ambConsultaCriarBean.localizacao}" value="#{ambConsultaCriarBean.ambConsulta.localizacao}" autoResize="false"/>
+
+                                                            <h:outputLabel value="Tamanho:" />
+                                                            <h:panelGroup styleClass="ui-noborder">
+                                                                <h:panelGrid columns="3" styleClass="ui-noborder">
+
+                                                                    <p:selectOneMenu id="tamanho" disabled="#{ambConsultaCriarBean.tamanho}" value="#{ambConsultaCriarBean.codigoTamanho}" >
+                                                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                                        <f:selectItems value="#{ambConsultaListarBean.listarTamanho()}" var="listarTamanho" itemLabel="#{listarTamanho.descricao}" itemValue="#{listarTamanho.pkIdTamanho}"/> 
+                                                                    </p:selectOneMenu>
+
+                                                                </h:panelGrid>
+                                                            </h:panelGroup>
+
+                                                            <h:outputLabel value="Dor:" />
+                                                            <p:selectOneMenu id="dor" disabled="#{ambConsultaCriarBean.dor}" value="#{ambConsultaCriarBean.codigoClassificacaoDor}" >
+                                                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                                <f:selectItems value="#{ambConsultaListarBean.listarClassificacaoDor()}" var="cd" itemLabel="#{cd.descricao}" itemValue="#{cd.pkIdClassificacaoDor}"/>
+                                                            </p:selectOneMenu>
+
+                                                            <h:outputLabel value="Aderência:" for="aderencia"/>
+                                                            <p:selectOneMenu id="aderencia" disabled="#{ambConsultaCriarBean.aderencia}" value="#{ambConsultaCriarBean.codigoAderencia}" >
+                                                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                                <f:selectItems value="#{ambConsultaListarBean.listarAderencia()}" var="listaAderencia" itemLabel="#{listaAderencia.descricao}" itemValue="#{listaAderencia.pkIdAderencia}"/>
+                                                            </p:selectOneMenu>
+
+                                                        </h:panelGrid>
+                                                    </p:fieldset>
+
+                                                </h:panelGrid>
+                                            </center>
+                                        </p:panel>
+                                    </p:tab>
+
+                                    <p:tab title="Hipótese de Diagnóstico">
+
+                                        <h:panelGrid columns="1" styleClass="ui-noborder" width="100%">
+
+                                            #{ambHipoteseDiagnosticoBean.init()}
+                                            <ui:include src="../ambDiagnosticos/hipoteseDiagnosticoAmbCe.xhtml"/>
+
+                                            <p:fieldset styleClass="ui-noborder">
+                                                <h:panelGrid columns="6" styleClass="ui-noborder" width="100%">
+                                                    <h:outputLabel value="Outros:" for="outros"/>
+                                                    <p:inputText id="outros" style="margin-left: 5px; margin-right: 60px" value="#{ambConsultaListarBean.ambDiagnosticoHipoteseHasDoenca.outros}"/>
+
+                                                    <h:outputLabel value="Observações:" for="observacoes" style="margin-left: 45px"/>
+                                                    <p:inputTextarea id="observacoes" value="#{ambConsultaCriarBean.ambConsulta.observacoes}" autoResize="false"/>
+
+                                                    <h:outputLabel value="Alta/Internado? *" for="observacoesMedicas" style="margin-left: 20px"/>
+                                                    <p:selectOneMenu id="observacoesMedicas" style="margin-right: 45px" value="#{ambConsultaCriarBean.codigoObservacoesMedicas}">
+                                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                        <f:selectItems value="#{ambConsultaListarBean.listarObservacoesMedicas()}" var="om" itemLabel="#{om.descricao}" itemValue="#{om.pkIdObservacoesMedicas}"/> 
+                                                    </p:selectOneMenu>
+                                                </h:panelGrid>
+                                            </p:fieldset>
+
+                                            <center>
+                                                <p:panelGrid columns="2" style="margin-left: 550px" styleClass="ui-noborder">
+                                                    <p:commandButton value="Guardar" ajax="false" icon="ui-icon-disk" 
+                                                                     action="#{ambConsultaCriarBean.gravarReconsulta()}" 
+                                                                     process="@this"/>
+                                                    <p:commandButton value="Cancelar" action="#{ambConsultaCriarBean.fecharReconsulta()}" type="reset" icon="ui-icon-cancel"/>
+                                                </p:panelGrid>
+                                            </center>
+
+                                        </h:panelGrid>     
+
+                                    </p:tab>
+
+                                </p:tabView>
+
+                            </p:tab>
+
+                            <p:tab title="Histórico Geral">
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="De:" for="data1"/>
+                                        <p:calendar id="data1" value="#{ambConsultaListarBean.dataInicio}" locale="pt"/>
+
+                                        <h:outputLabel value="Até:" for="data2"/>
+                                        <p:calendar id="data2" value="#{ambConsultaListarBean.dataFinal}" locale="pt"/>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="data1" value="Insira a Data Inicial"/>
+                                    <p:tooltip for="data2" value="Insira a Data Final"/>                                    
+
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true" 
+                                                     actionListener="#{ambConsultaListarBean.pesquisarReconsultas()}"
+                                                     update="tabelaHistoricoGeralReconsulta" style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="reconsultaHistoricoGeralAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>
+
+                            <p:tab title="Histórico Clínico do Paciente">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Processo:" for="numProcessoReconsulta"/>
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="numProcessoReconsulta" value="#{ambConsultaCriarBean.admsPacienteReconsulta.numeroPaciente}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="numProcessoReconsulta" value="Insira o Nº de Processo"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoPacienteReconsulta" ajax="true"
+                                                     actionListener="#{ambConsultaListarBean.pesquisaDePacienteReconsultado(ambConsultaCriarBean.admsPacienteReconsulta.numeroPaciente)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="reconsultaHistoricoPacienteAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>
+
+                        </p:tabView>
+                    </div>
+                </h:form>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogListarConsulta" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="listarDetalhesConsultaAmb.xhtml"/>
+                    </p:dialog>
+                </center>  
+
+                <center>
+                    <p:dialog header="Editar Consultas" closable="true" showEffect="fade"
+                              widgetVar="dialogEditarConsulta" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="consultaEditarAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+                
+                <center>
+                    <p:dialog header="Prescrição Médica" closable="true" showEffect="fade" width="70%" height="600px" position="center"
+                              widgetVar="dialogPrescricaoMedicaReconsulta" modal="true" closeOnEscape="true" resizable="false">
+                        <ui:include src="../ambReceitas/prescricaoMedicaReconsultaCriarAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>
+

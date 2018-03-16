@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <li class="ic-home">
+            <h:link outcome="/faces/interVisao/homeInter.xhtml">
+                <span>Página Inicial</span>
+            </h:link>
+        </li>
+        <li class="ic-gallery">           
+            <h:link outcome="/faces/interVisao/interTabelasAuxiliares/cadastrarEnfermaria.xhtml" rendered="false">
+                <span>Enfermarias</span>
+            </h:link>    
+        </li>
+        <li class="ic-grid-tables">
+            <a href="javascript:"><span>Configurações</span></a>
+        </li>
+        <li class="ic-grid-tables">
+            <a href="javascript:"><span>Tabelas Auxiliares</span></a>
+            <ul>
+                <li><h:link value="Enfermarias" outcome="/faces/interVisao/interTabelasAuxiliares/enfermariaListarInter.xhtml"/></li>
+                <li><h:link value="Salas" outcome="/faces/interVisao/interTabelasAuxiliares/salaListarInter.xhtml"/></li>
+                <li><h:link value="Camas" outcome="/faces/interVisao/interTabelasAuxiliares/camaListarInter.xhtml"/></li>
+                <li><h:link value="Estados Cama Internamento" outcome="/faces/interVisao/interTabelasAuxiliares/estadoCamaListarInter.xhtml"/></li>
+                <li><h:link value="Tipos de Doença Internamento" outcome="/faces/interVisao/interTabelasAuxiliares/tipoDoencaInternamentoListarInter.xhtml"/></li>
+                <li><h:link value="Tipos de Notificações" outcome="/faces/interVisao/interTabelasAuxiliares/tipoNotificacaoListarInter.xhtml"/></li>
+                <li><h:link value="Tipos de Alta" outcome="/faces/interVisao/interTabelasAuxiliares/tipoAltaListarInter.xhtml"/></li>
+                <li><h:link value="Horários Medicação" outcome="/faces/interVisao/interTabelasAuxiliares/horaMedicacaoListarInter.xhtml"/></li>
+                <li><h:link value="Opções Medicação" outcome="/faces/interVisao/interTabelasAuxiliares/opcaoMedicacaoListarInter.xhtml"/></li>
+                <li><h:link value="Parametros Vitais" outcome="/faces/interVisao/interTabelasAuxiliares/parametrosVitaisListarInter.xhtml"/></li>
+                <li><h:link value="Unidades Pulso" outcome="/faces/interVisao/interTabelasAuxiliares/pulsoUnidadeListarInter.xhtml"/></li>
+                <li><h:link value="Resultados Doença" outcome="/faces/interVisao/interTabelasAuxiliares/resultadoDoencaListarInter.xhtml"/></li>
+            </ul>
+        </li>
+        <li class="ic-notifications" id="notificacao">
+            <a href="javascript:" onclick="PF('dialogVerNotificacoes').show()">
+                <span>
+                    Notificações<strong style="color: #{interNotificacaoBean.getColorSize()}">(#{interNotificacaoBean.size()})</strong>
+                </span>
+            </a>
+        </li>
+        <ui:include src="./interNotificacoes/dialogDeNotificacaoInter.xhtml"/>
+    </h:body>
+</html>
+

@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <p:dialog header="Nova Triagem" widgetVar="dlgConsultaNovoTb" resizable="false" draggable="false" responsive="true" 
+                  modal="true" showEffect="explode" hideEffect="explode" width="55%">
+            <h:form>  
+                <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" 
+                             columnClasses="ui-grid-col-12">
+                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-2,ui-grid-col-10">
+                        <p:outputLabel for="paciente" value="#{msn_tb.lb_paciente}" />
+                        <p:selectOneMenu id="paciente" value="#{tbTriagemNovoBean.tbTriagem.fkConsulta.pkIdConsulta}" filter="true" style="width: 95%">
+                            <f:selectItem itemLabel="Selecione o Paciente" itemValue="" />
+                            <f:selectItems value="#{tbTriagemNovoBean.pacientes}" var="c" itemLabel="#{tbTriagemNovoBean.getPaciente(c)}" itemValue="#{c.pkIdConsulta}"/>
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                    <p:panelGrid columns="4" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4">
+                        <p:outputLabel for="peso" value="#{msn_tb.peso}" />
+                        <p:inputText id="peso" value="#{tbTriagemNovoBean.tbTriagem.peso}" style="width: 90%"/>
+
+                        <h:outputLabel for="altura" value="#{msn_tb.altura}"/>
+                        <p:inputText id="altura" value="#{tbTriagemNovoBean.tbTriagem.altura}" style="width: 90%"/>
+
+                        <p:outputLabel for="temperatura" value="#{msn_tb.temperatura}" />
+                        <p:inputText id="temperatura" value="#{tbTriagemNovoBean.tbTriagem.temperatura}" style="width: 90%"/>
+
+                        <h:outputLabel for="tensao" value="#{msn_tb.tensao}"/>
+                        <p:inputText id="tensao" value="#{tbTriagemNovoBean.tbTriagem.tensao}" style="width: 90%"/>
+                    </p:panelGrid>
+                    <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-2,ui-grid-col-10">
+                        <p:outputLabel for="obs" value="#{msn_tb.observacao}" />
+                        <p:inputTextarea id="obs" value="#{tbTriagemNovoBean.tbObservacao.descricao}" rows="10" cols="35" style="width: 95%" autoResize="false" scrollHeight="10"/>
+                    </p:panelGrid>
+
+                    <f:facet name="footer">
+                        <p:panelGrid columns="2" styleClass="floatright">
+                            <p:commandButton value="#{msn_tb.bt_salvar}" actionListener="#{tbTriagemNovoBean.createTriagem()}"
+                                             process="@form" partialSubmit="true" update="formulario:tabela" oncomplete="PF('dlgConsultaNovoTb').hide()"/>
+                            <p:commandButton value="#{msn_tb.bt_fechar}" type="button" onclick="PF('dlgConsultaNovoTb').hide()"/>
+                        </p:panelGrid>
+                    </f:facet>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+    </body>
+</html>

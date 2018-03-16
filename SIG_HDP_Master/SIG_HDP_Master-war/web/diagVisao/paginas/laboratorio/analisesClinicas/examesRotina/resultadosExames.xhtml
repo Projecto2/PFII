@@ -1,0 +1,289 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h2>Laboratório -> Análises Clínicas -> Exames de Rotina -> Resultados dos Exames</h2>
+
+        <center>
+
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+            <h:form prependId="false" >
+                <br/>
+                <p:fieldset>
+                    <h:panelGrid columns="2" width="100%">
+                        <h:panelGrid columns="2" id="gridCamposPesquisa">
+
+                            <h:outputLabel value="Nº de Registos: "/>
+                            <p:spinner id="numRegistos" value="#{diagResultadosExameRealizadoBean.numeroRegistos}" 
+                                       min="1" required="true" requiredMessage="É necessário informar o número de registos a retornar."/>
+
+                            <f:validateBean disabled="true">
+                                <p:outputLabel value="Nº de Processo: "/>
+                                <f:validateBean disabled="true">
+                                    <p:inputText id="numProcesso" style="width: 100%" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoPesquisar.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" />
+                                </f:validateBean>
+
+                                <p:outputLabel value="Paciente: "/>
+                                <h:panelGrid columns="4" width="100%" cellpadding="5">
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="nome" style="width: 110%; margin-left: -5px" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoPesquisar.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="nome" value="Nome" />
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="sobreNome" style="width: 110%" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoPesquisar.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="sobreNome" value="Sobrenome" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="Categoria do Exame: "/>
+                                <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoPesquisar.fkIdExame.fkIdCategoriaExame.pkIdCategoria}">
+                                    <p:ajax event="change" process="@this" update="comboExames"
+                                            listener="#{diagResultadosExameRealizadoBean.carregarListaExamesPorCategoria()}" />
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{diagExameBean.findAllCategoriaExamesLaboratorio()}" var="categoria"
+                                                   itemLabel="#{categoria.descricaoCategoria}" itemValue="#{categoria.pkIdCategoria}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Exame: "/>
+                                <p:selectOneMenu id="comboExames" style="width: 95%; text-align: center" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoPesquisar.fkIdExame.pkIdExame}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{diagResultadosExameRealizadoBean.listaExames}" var="exame"
+                                                   itemLabel="#{exame.descricaoExame}" itemValue="#{exame.pkIdExame}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Tipo de Amostra: "/>
+                                <p:selectOneMenu id="comboTipoAmostra" style="width: 95%; text-align: center" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoPesquisar.fkIdAmostra.fkIdTipoAmostra.pkIdTipoAmostra}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{diagResultadosExameRealizadoBean.findAllTiposAmostra()}" var="amostra"
+                                                   itemLabel="#{amostra.descricaoTipoAmostra}" itemValue="#{amostra.pkIdTipoAmostra}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Resultados: "/>
+                                <p:inputTextarea style="width: 100%" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoPesquisar.resultados}" />
+
+                                <p:outputLabel value="Realizado por: "/>
+                                <h:panelGrid columns="4" width="100%" cellpadding="5">
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="nomeTecnico" style="width: 110%; margin-left: -5px" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoPesquisar.fkIdFuncionario.fkIdPessoa.nome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="nomeTecnico" value="Nome" />
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="sobreNomeTecnico" style="width: 110%" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoPesquisar.fkIdFuncionario.fkIdPessoa.sobreNome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="sobreNomeTecnico" value="Sobrenome" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="Realizado entre: "/>
+                                <h:panelGrid columns="3" width="100%" cellpadding="3">
+
+                                    <p:calendar id="dataInicio" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}"  value="#{diagResultadosExameRealizadoBean.dataInicioPesquisa}" locale="pt"/> 
+                                    <p:outputLabel value="e"/> 
+                                    <p:calendar id="dataFim" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}" value="#{diagResultadosExameRealizadoBean.dataFimPesquisa}" style="width: 120%" locale="pt"/>
+                                </h:panelGrid>
+
+                                <p:watermark for="dataInicio" value="Data Inicial" />
+                                <p:watermark for="dataFim" value="Data Final" />
+
+                            </f:validateBean>
+
+                            <br/>
+                            <h:panelGrid columns="2" width="100%">
+                                <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                 action="#{diagResultadosExameRealizadoBean.pesquisarResultadosExamesRealizados('ExameNormal')}" 
+                                                 partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                <p:commandButton style="width: 100%" value="Limpar" action="#{diagResultadosExameRealizadoBean.limparPesquisa()}" 
+                                                 partialSubmit="true" icon="ui-icon-close" process="@this"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable id="dataTable" rows="5" paginator="true" paginatorPosition="bottom" 
+                             rowKey="#{pes.pkIdExameRealizado}" selectionMode="single"
+                             var="pes" value="#{diagResultadosExameRealizadoBean.itens}"
+                             emptyMessage="Nenhum registo de exame realizado encontrado.">
+
+                    <p:column headerText="Código">
+                        <center>
+                            <h:outputText value="#{pes.pkIdExameRealizado}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nº Processo">
+                        <center>
+                            <h:outputText value="#{pes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nº Subprocesso">
+                        <center>
+                            <h:outputText value="#{pes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Paciente" filterBy="#{pes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}">
+                        <center>
+                            #{pes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                            #{pes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                            #{pes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Exame" filterBy="#{pes.fkIdExame.descricaoExame}">
+                        <center>
+                            #{pes.fkIdExame.descricaoExame}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Tipo de Amostra" filterBy="#{pes.fkIdExame.fkIdCategoriaExame.descricaoCategoria}">
+                        <center>
+                            #{pes.fkIdAmostra.fkIdTipoAmostra.descricaoTipoAmostra}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data">
+                        <center>
+                            <h:outputText value="#{pes.data}">
+                                <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>
+                            </h:outputText>
+                        </center>
+                    </p:column>
+
+
+                    <p:column>
+                        <center>
+                            <p:commandButton value="Visualizar" action="#{diagResultadosExameRealizadoBean.selecionarExameRealizadoVisualizar(pes)}" 
+                                             onclick="PF('dialogVisualizar').show();" icon="ui-icon-info"
+                                             process="@this" update=":formVisualizarExameRealizado"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+        </center>
+
+        <p:dialog header="Visualizar Resultado de Exame Realizado" closable="false" showEffect="fade" position="top"
+                  widgetVar="dialogVisualizar" modal="true"
+                  height="20%" width="40%"
+                  style="font-size: 14px;">
+
+            <h:form id="formVisualizarExameRealizado">
+
+                <h:panelGrid columns="2" class="float-right">
+                    <p:commandButton id="btImprimir" value="Imprimir" style="width: 130px" icon="ui-icon-print" actionListener="#{diagResultadosExameRealizadoBean.imprimirReport()}" 
+                                     ajax="false" onclick="this.btImprimir.target = '_blank'"/>
+                    <p:commandButton value="Fechar" onclick="dialogVisualizar.hide()" process="@this" style="width: 130px"
+                                     action="#{diagResultadosExameRealizadoBean.selecionarExameRealizadoVisualizar(null)}" />
+                </h:panelGrid>
+
+                <br/>
+                <br/>
+
+                <p:fieldset style="width: 95%">
+
+                    <h:panelGrid columns="2" cellpadding="4" >
+                        <h3>Código da solicitação: </h3>
+                        <p:outputLabel value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdSolicitacao.pkIdSolicitacao}"/>
+
+                        <h3>Código do exame realizado: </h3>
+                        <p:outputLabel value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.pkIdExameRealizado}"/>
+
+                        <h3>Número do Processo: </h3>
+                        <p:outputLabel value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.pkIdExameRealizado}"/>
+
+                        <h3>Número do Subprocesso: </h3>
+                        <p:outputLabel value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+
+                        <h3>Paciente: </h3>
+                        <h:panelGroup>
+                            #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                            #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                            #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                        </h:panelGroup>
+
+                        <h3>Exame: </h3>
+                        <p:outputLabel value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdExame.descricaoExame}"/>
+
+                        <h3>Categoria do Exame: </h3>
+                        <p:outputLabel value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdExame.fkIdCategoriaExame.descricaoCategoria}"/>
+
+                        <h3>Classificação do Exame: </h3>
+                        <p:outputLabel value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}"/>
+
+                        <h3>Data de Atendimento: </h3>
+                        <h:outputLabel style="border: none" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                        </h:outputLabel>
+
+                        <h3>Solicitado por: </h3>
+                        <h:panelGroup>
+                            #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdRecepcionista.fkIdPessoa.nome} 
+                            #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdRecepcionista.fkIdPessoa.nomeDoMeio}
+                            #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdServicoSolicitado.fkIdRecepcionista.fkIdPessoa.sobreNome}
+                        </h:panelGroup>
+
+                        <h3>Data da Realização: </h3>
+                        <h:outputLabel style="border: none" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.data}">
+                            <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>
+                        </h:outputLabel>
+
+                        <h3>Realizado por: </h3>
+                        <h:panelGroup>
+                            #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdFuncionario.fkIdPessoa.nome} 
+                            #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                            #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdFuncionario.fkIdPessoa.sobreNome}
+                        </h:panelGroup>
+
+                        <h3>Tipo de amostra: </h3>
+                        <p:outputLabel value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdAmostra.fkIdTipoAmostra.descricaoTipoAmostra}"/>
+
+                        <c:if test="${diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdExame.fkIdTipoResultado.descricaoTipoResultadoExame == 'Numerico'}">
+                            <c:if test="${diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdExame.valorReferenciaMinimo.toString().length() == 0}">
+                                <c:if test="${diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdExame.valorReferenciaMaximo.toString().length() == 0}">
+
+                                    <h3>Valor de Referência:  </h3>
+                                    <p:outputLabel value="[#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdExame.valorReferenciaMinimo} 
+                                                   - #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdExame.valorReferenciaMaximo}] 
+                                                   #{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.fkIdExame.fkIdUnidadeMedida.abreviatura}"/>
+                                </c:if>
+                            </c:if>
+                        </c:if>
+
+                        <h3>Resultado: </h3>
+                        <p:inputTextarea  cols="30" rows="4" value="#{diagResultadosExameRealizadoBean.diagExameRealizadoVisualizar.resultados}" readonly="true" />
+
+                    </h:panelGrid>
+
+                </p:fieldset>
+
+            </h:form>
+        </p:dialog>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+    </ui:define>
+
+</ui:composition>

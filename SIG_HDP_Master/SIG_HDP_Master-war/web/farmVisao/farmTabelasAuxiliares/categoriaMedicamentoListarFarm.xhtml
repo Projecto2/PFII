@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Cat. Medicamentos</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Tabelas Auxiliares -> Categorias de Medicamento</h2>
+            <p:messages id="msg" autoUpdate="true" closable="true"/>
+            <p:growl autoUpdate="true"/>
+            <h:form id="formPesquisa">
+               <br/><br/>
+               <center><h2>Classificação Nacional de Medicamentos</h2></center>
+               <p:fieldset>
+                  <br/>
+                  <h:panelGrid columns="1" cellpadding="5">
+                     <p:commandButton style="width: 220px" icon="ui-icon-plus" onclick="PF('dialogCategoria').show();"
+                                      value="Nova Categoria" action="#{farmCategoriaMedicamentoListarBean.setCategoriaEditar(null)}" 
+                                      update=":formulario:gridCampos :formulario:gridBotoes"/>
+                  </h:panelGrid>
+               </p:fieldset>
+               <p:dataTable id="dataTable" var="categoria" value="#{farmCategoriaMedicamentoListarBean.categoriasPesquisadas}"
+                            emptyMessage="Nenhum registro encontrado. Aguardando Pesquisa."
+                            paginator="true" paginatorPosition="bottom" rows="10" rowsPerPageTemplate="10,30,50,100,150,200">
+                  <p:column headerText="Capítulo" sortBy="#{categoria.capitulo}" filterBy="#{categoria.capitulo}">
+                     <center>
+                        #{categoria.capitulo}
+                     </center>
+                  </p:column>
+
+                  <p:column headerText="Categoria" sortBy="#{categoria.descricao}" filterBy="#{categoria.descricao}">
+                     <center>
+                        #{categoria.descricao}
+                     </center>
+                  </p:column>
+                  
+                  <p:column headerText="Categoria Pai" sortBy="#{categoria.fkIdCategoriaSuper.descricao}" filterBy="#{categoria.fkIdCategoriaSuper.descricao}">
+                     <center>
+                        #{categoria.fkIdCategoriaSuper.capitulo} - #{categoria.fkIdCategoriaSuper.descricao}
+                     </center>
+                  </p:column>
+                  <p:column headerText="--------------------">
+                     <center>
+                        <p:menuButton value="Opções">
+
+                           <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogCategoria').show();"
+                                       action="#{farmCategoriaMedicamentoListarBean.setCategoriaEditar(categoria)}" process="dataTable" 
+                                       partialSubmit="true" update=":formulario:gridCampos :formulario:gridBotoes"/>
+                           <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                       action="#{farmCategoriaMedicamentoListarBean.setCategoriaRemover(categoria)}"/>
+                        </p:menuButton>
+                     </center>
+                  </p:column>
+               </p:dataTable>
+               
+               <p:confirmDialog message="Tem certeza que pretende remover a categoria selecionada ?"
+                                header="Remover Categoria" severity="alert" widgetVar="confirmDialogRemover">
+                  <p:commandButton value="Sim" actionListener="#{farmCategoriaMedicamentoListarBean.remove()}" process="@this"
+                                   update="dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                  <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+               </p:confirmDialog>
+            </h:form>
+            
+            <center>
+               <p:dialog header="Categoria" closable="false" showEffect="fade" width="65%"
+                         widgetVar="dialogCategoria" modal="true" closeOnEscape="true">
+                  <h:form id="formulario">
+                     <p:messages autoUpdate="true" closable="true"/>
+                     <p:fieldset>
+                        <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                           
+                           <p:outputLabel value="Nome da Categoria"/>
+                           <p:inputText value="#{farmCategoriaMedicamentoListarBean.categoriaEditar.descricao}" style="width: 97%"
+                                        required="true" requiredMessage="Indique o nome da categoria"/>
+                           
+                           <p:outputLabel value="Categoria Pai"/>
+                           <p:selectOneMenu id="categoriaSuper" style="width: 95%" filter="tue"
+                                            value="#{farmCategoriaMedicamentoListarBean.categoriaEditar.fkIdCategoriaSuper.pkIdCategoriaMedicamento}">
+                              <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                              <f:selectItems value="#{farmListasUteisBean.todasCategorias}"/>
+                           </p:selectOneMenu>
+                        </h:panelGrid>
+
+                        <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                           <p:commandButton value="Guardar" action="#{farmCategoriaMedicamentoListarBean.create()}" style="width: 150px"
+                                            rendered="#{farmCategoriaMedicamentoListarBean.categoriaEditar.pkIdCategoriaMedicamento == null}" 
+                                            process="@form" partialSubmit="true" icon="ui-icon-disk"
+                                            onclick="PF('dialogCategoria').hide()" update=":formPesquisa:dataTable"/>
+                           
+                           <p:commandButton value="Guardar Edição" action="#{farmCategoriaMedicamentoListarBean.edit()}" style="width: 150px"
+                                            rendered="#{farmCategoriaMedicamentoListarBean.categoriaEditar.pkIdCategoriaMedicamento != null}"  
+                                            process="@form" partialSubmit="true"  icon="ui-icon-disk"
+                                            onclick="PF('dialogCategoria').hide()" update=":formPesquisa:dataTable"/>
+                           
+                           <p:commandButton value="Fechar" onclick="PF('dialogCategoria').hide()" style="width: 150px" 
+                                            process="@this"  icon="ui-icon-close"
+                                            actionListener="#{farmCategoriaMedicamentoListarBean.setCategoriaEditar(null)}"/>
+                        </h:panelGrid>
+                     </p:fieldset>
+                  </h:form>
+               </p:dialog>
+            </center>
+         </ui:define>            
+      </ui:composition>
+   </h:body>
+</html>

@@ -1,0 +1,211 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+                
+                <!--<h1>Solicitacao Medica</h1>-->
+                <p:separator/>
+                <p:messages id="msg" autoUpdate="true" closable="true"/>
+                <p:growl autoUpdate="true"/>
+                <br/>
+                <center>
+                    <div class="ui-fluid">
+                    <h:panelGrid columns="1" width="95%">
+                        <h:form id="formNovo">
+                        
+                            #{detetorAtualizacaoPagina.checkAtualizacao("solicitacaoMedicaInternamento")}
+                            <p:fieldset toggleable="true" legend="#{msgs.informacoesGerais}" collapsed="false">
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                        <p:outputLabel for="centroHospitalar" value="#{msgs.centroHospitalar}: "/>
+                                        <h:outputText id="centroHospitalar" value="#{admsSolicitacaoMedicaInternamentoBean.solicitacao.fkIdCentro.fkIdInstituicao.descricao}"/>
+
+                                        <p:outputLabel for="responsavel" value="#{msgs.responsavelPeloPaciente}: " />
+                                        <h:outputText id="responsavel" value="#{admsSolicitacaoMedicaInternamentoBean.solicitacao.fkIdResponsavelPaciente.nomeCompleto}"/>
+
+                                        <p:outputLabel for="numeroTelefoneResponsavel" value="#{msgs.numeroResponsavel}: "/>
+                                        <h:outputText id="numeroTelefoneResponsavel" value="#{admsSolicitacaoMedicaInternamentoBean.solicitacao.fkIdResponsavelPaciente.telefone1}"/>
+
+                                        <p:outputLabel for="grauParentesco" value="#{msgs.grausParentesco}: "/>
+                                        <h:outputText id="grauParentesco" value="#{admsSolicitacaoMedicaInternamentoBean.solicitacao.fkIdResponsavelPaciente.fkIdGrauParentesco.descricaoGrauParentesco}"/>
+                                    </p:panelGrid>
+                                    <br/>
+                                </p:panelGrid>
+
+                            </p:fieldset>
+
+                            <p:fieldset toggleable="true" legend="Adicionar Servicos">
+                                <h:panelGrid columns="1" style="width: 100%"  styleClass="ui-noborder">
+                                    <p:panelGrid columns="2" layout="grid"  styleClass="ui-noborder" style="width: 70%">
+                                        <f:validateBean disabled="true">
+                                        <p:outputLabel value="#{msgs.grupoDoservico}: " style="width: 100%"/>
+                                        <p:selectOneMenu id="comboGrupoServ" value="#{admsSolicitacaoMedicaInternamentoBean.servicoPesquisa.fkIdGrupoServico.pkIdGrupoServico}" 
+                                                        filter="true">
+                                           <f:selectItem itemValue="#{null}" itemLabel="" />
+                                           <f:selectItems value="#{admsGrupoServicoBean.findAll()}" var="grupoServico" 
+                                                          itemLabel="#{grupoServico.descricaoGrupoServico}" itemValue="#{grupoServico.pkIdGrupoServico}"/>
+                                           <f:ajax execute="@this"/>
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel value="#{msgs.tipoDoServico}: " style="width: 50%"/>
+                                        <p:selectOneMenu id="comboTipoServ" value="#{admsSolicitacaoMedicaInternamentoBean.servicoPesquisa.fkIdTipoServico.pkIdTipoServico}" 
+                                                        filter="true">
+                                           <f:selectItem itemValue="#{null}" itemLabel="" />
+                                           <f:selectItems value="#{admsTipoServicoBean.findAll()}" var="tipoServico" 
+                                                          itemLabel="#{tipoServico.descricaoTipoServico}" itemValue="#{tipoServico.pkIdTipoServico}"/>
+                                           <f:ajax execute="@this"/>
+                                       </p:selectOneMenu>
+
+                                        <p:outputLabel value="#{msgs.especialidade}: " style="width: 50%"/>
+                                        <p:selectOneMenu id="comboEsp" value="#{admsSolicitacaoMedicaInternamentoBean.servicoPesquisa.fkIdEspecialidade.pkIdEspecialidade}" 
+                                                        filter="true">
+                                           <f:selectItem itemValue="#{null}" itemLabel="" />
+                                           <f:selectItems value="#{grlEspecialidadeBean.pesquisaPorEspecialidadeMedica()}" var="especialidade" 
+                                                          itemLabel="#{especialidade.descricao}" itemValue="#{especialidade.pkIdEspecialidade}"/>
+                                           <f:ajax execute="@this"/>
+                                       </p:selectOneMenu>
+                                        </f:validateBean>
+                                        <br/>
+
+                                        <p:commandButton value="#{msgs.pesquisar} #{msgs.servico}"
+                                            actionListener="#{admsSolicitacaoMedicaInternamentoBean.pesquisarServicos()}" style="width: 100%" 
+                                            partialSubmit="true" process="@this comboTipoSolicitacao" update="comboTipoSolicitacao comboServico comboPrecoServico valorPreco"/>
+                                    </p:panelGrid>
+                                    
+                                    <p:separator/>
+                                    
+                                    <p:panelGrid columns="2" layout="grid"  styleClass="ui-noborder" style="width: 70%">
+                                        <p:outputLabel value="#{msgs.servico}: " style="width: 50%"/>
+                                        <f:validateBean disabled="true">
+                                        <p:selectOneMenu id="comboServico" value="#{admsSolicitacaoMedicaInternamentoBean.servicoPesquisa.pkIdServico}"
+                                                        valueChangeListener="#{admsSolicitacaoMedicaInternamentoBean.changeServico}" filter="true">
+                                           <f:selectItems value="#{admsSolicitacaoMedicaInternamentoBean.servicoLista}" var="servicosLista" 
+                                                          itemLabel="#{servicosLista.nomeServico}" itemValue="#{servicosLista.pkIdServico}"/>
+                                           <f:ajax execute="@this comboTipoSolicitacao" render="comboTipoSolicitacao comboPrecoServico valorPreco"/>
+                                        </p:selectOneMenu>
+                                        </f:validateBean>
+                                    </p:panelGrid>
+                                    
+                                    <p:separator/>
+
+                                    <p:panelGrid columns="2" style="width: 70%" layout="grid"  styleClass="ui-noborder">
+                                        <p:outputLabel value="#{msgs.tipoSolicitacao}: "/>
+                                        <f:validateBean disabled="true">
+                                            <p:selectOneMenu id="comboTipoSolicitacao"
+                                                             value="#{admsSolicitacaoMedicaInternamentoBean.servicoSolicitado.fkIdTipoSolicitacao.pkIdTipoSolicitacao}">
+                                                <f:selectItems value="#{admsTipoSolicitacaoBean.findAll()}" 
+                                                               var="tipoSolicitacao" itemLabel="#{tipoSolicitacao.descricaoTipoSolicitacaoServico}" 
+                                                               itemValue="#{tipoSolicitacao.pkIdTipoSolicitacao}"/>
+                                                <f:ajax execute="@this" render="valorPreco"/>
+                                            </p:selectOneMenu>
+                                        </f:validateBean>
+
+                                        <p:outputLabel value="Categoria: "/>
+                                        <f:validateBean disabled="true">
+                                            <p:selectOneMenu id="comboPrecoServico" value="#{admsSolicitacaoMedicaInternamentoBean.preco.pkIdCategoriaServico}" disabled="#{admsSolicitacaoMedicaInternamentoBean.getListaPrecos().size() == 1}">
+                                                <f:selectItems value="#{admsSolicitacaoMedicaInternamentoBean.getListaPrecos()}"
+                                                               var="precoLista" itemLabel="#{precoLista.descricaoCategoriaServico}" itemValue="#{precoLista.pkIdCategoriaServico}"/>
+                                                <f:ajax execute="@this comboTipoSolicitacao" render="comboTipoSolicitacao valorPreco"/>
+                                            </p:selectOneMenu>
+                                        </f:validateBean>
+
+                                        <p:outputLabel value="#{msgs.valor} (1 / 2 / DP / DP-FS): " rendered="false"/>
+                                        <br/>
+                                        <p:inputText id="valorPreco" readonly="true" disabled="true" value="#{admsSolicitacaoMedicaInternamentoBean.getValorPreco().valor} / #{admsSolicitacaoMedicaInternamentoBean.getValorPreco().valorPreco2} / #{admsSolicitacaoMedicaInternamentoBean.getValorPreco().valorPrecoDp} / #{admsSolicitacaoMedicaInternamentoBean.getValorPreco().valorPrecoDpfs}"/>
+                                    </p:panelGrid>
+                                    
+                                    <p:separator />
+
+                                    <p:panelGrid columns="2" style="width: 70%" layout="grid"  styleClass="ui-noborder">
+                                        <p:outputLabel value="#{msgs.classificacaoSolicitacaoServico}: " style="width: 50%"/>
+                                        <p:selectOneMenu id="comboClassificacao" value="#{admsSolicitacaoMedicaInternamentoBean.servicoSolicitado.fkIdClassificacaoServicoSolicitado.pkIdClassificacaoServicoSolicitado}">
+                                            <f:selectItems value="#{admsClassificacaoServicoSolicitadoBean.findAll()}" var="classificacao" 
+                                                           itemLabel="#{classificacao.descricaoClassificacaoServicoSolicitado}" itemValue="#{classificacao.pkIdClassificacaoServicoSolicitado}"/>
+                                        </p:selectOneMenu>
+                                    </p:panelGrid>
+                                    
+                                    <p:separator/>
+                                    
+                                    <center>
+                                        <p:commandButton value="#{msgs.adicionar}" style="padding: auto" actionListener="#{admsSolicitacaoMedicaInternamentoBean.adicionarServicoSolicitado()}"
+                                                         partialSubmit="true" process="@this comboServico comboTipoSolicitacao comboClassificacao"
+                                                         update="comboClassificacao dataTable"/>
+                                    </center>
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                            
+                            <p:dataTable id="dataTable" var="servicoSolicitado" value="#{admsSolicitacaoMedicaInternamentoBean.solicitacao.admsServicoSolicitadoList}"
+                                         style="width: 100%" emptyMessage="Não Existem Serviços"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.servico}">
+                                    <center>                                        
+                                        #{servicoSolicitado.fkIdServico.nomeServico}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.categoriaDoServico}">
+                                    <center>                                        
+                                        #{servicoSolicitado.fkIdPrecoCategoriaServico.fkIdCategoriaServico.descricaoCategoriaServico}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.especialidade}">
+                                    <center>                                        
+                                        #{servicoSolicitado.fkIdServico.fkIdEspecialidade.descricao}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.classificacao}">
+                                    <center>                                        
+                                        #{servicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.tipoSolicitacao}">
+                                    <center>                                        
+                                        #{servicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.preco} (1 / 2 / DP / DP-FS)">
+                                    <center>                                        
+                                        #{servicoSolicitado.fkIdPrecoCategoriaServico.valor} / #{servicoSolicitado.fkIdPrecoCategoriaServico.valorPreco2} / #{servicoSolicitado.fkIdPrecoCategoriaServico.valorPrecoDp} / #{servicoSolicitado.fkIdPrecoCategoriaServico.valorPrecoDpfs}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="">
+                                    <center>
+                                        <p:menuButton value="#{msgs.opcoes}">
+                                            <p:menuitem value="#{msgs.remover} #{msgs.servico}" icon="ui-icon-trash"
+                                                        action="#{admsSolicitacaoMedicaInternamentoBean.removerServicoSolicitado(servicoSolicitado)}"
+                                                        process="@this"
+                                                        partialSubmit="true" update="dataTable"/>
+                                        </p:menuButton>
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+                            
+                            <p:poll immediate="true" partialSubmit="true" process="@this" listener="#{admsSolicitacaoMedicaInternamentoBean.setPararAtualizacao(true)}" stop="#{admsSolicitacaoMedicaInternamentoBean.isPararAtualizacao()}" 
+                                    update="@this comboGrupoServ comboTipoServ comboEsp centroHospitalar" 
+                                    interval="1"/>
+                        </h:form>
+                    </h:panelGrid>
+                </div>
+                </center>
+
+                <p:separator/>
+
+                <center>
+                    <h:form>
+                        <h:panelGrid columns="2" cellpadding="3">
+                            <p:commandButton value="#{msgs.gravar} #{msgs.solicitacao}" actionListener="#{admsSolicitacaoMedicaInternamentoBean.gravarSolicitacao()}" 
+                                           partialSubmit="true" process="@this" 
+                                           update=":formNovo:dataTable :formNovo:comboServico :formNovo:comboPrecoServico
+                                           :formNovo:valorPreco" icon="ui-icon-disk">
+                            </p:commandButton>
+
+                            <!--<p:commandButton value="Voltar" ajax="false" immediate="true" actionListener="" action="pacienteAdms"/>-->
+                        </h:panelGrid>
+                    </h:form>
+                </center>
+    </h:body>
+</html>
+

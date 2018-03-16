@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Dispensas -> Atendimento -> Realizadas no Turno</h2>
+            <h:form id="formPrincipal">
+               <p:growl autoUpdate="true"/>
+               <p:fieldset style="border: none">
+                  <br/>
+                  <center><h2 style="width: 97%">Dispensas Realizadas no Dia</h2></center>
+
+                  <p:messages id="msg" autoUpdate="true" closable="true"/>
+                  <p:panelGrid columns="2" style="width: 100%; border: none">
+                     <h:panelGrid columns="4">
+                        <p:commandButton style="width: 155px; height: 45px; color: #0052A4;" 
+                                         icon="ui-icon-arrowreturnthick-1-w" value="VOLTAR"
+                                         action="dispensaNovaFarm.xhtml?faces-redirect=true"/>
+                        <p:commandButton style="width: 155px; height: 45px; color: #0052A4;"
+                                         icon="ui-icon-minusthick" value="FECHAR TURNO" 
+                                         partialSubmit="true" process="@this"
+                                         action="dispensaFecharTurnoFarm.xhtml?faces-redirect=true"/>
+                     </h:panelGrid>
+
+                     <h:panelGrid class="float-right">
+                        <p><strong>
+                              <h:outputText id="dataActual" style="color: #002142;font-size: 14px" value="#{farmDispensaNovaBean.dataHoje}">
+                                 <f:convertDateTime pattern="dd-MM-yyyy - HH:mm:ss" />
+                              </h:outputText>
+                           </strong>
+                        </p>
+                        <p style="color: #002142;font-size: 14px">Turno: <strong >#{farmDispensaNovaBean.dispensa.fkIdTurnoDispensa.fkIdTurno.descricao}</strong></p>
+                     </h:panelGrid>
+                  </p:panelGrid>
+                  <br/>
+                  <center>
+                     <p:separator/>
+                     <p></p>
+                     <p:dataTable id="realizadas" var="item"
+                                  value="#{farmTurnoDispensaBean.listaItensDispensadosPesquisados}"
+                                  emptyMessage="Nenhuma dispensa realizada no turno." >
+
+                        <p:column headerText="Hora"  sortBy="#{item.fkIdDispensa.dataHora}">
+                           <center><h:outputText style="color: #002142;font-size: 14px" value="#{item.fkIdDispensa.dataHora}">
+                              <f:convertDateTime pattern="HH:mm:ss" />
+                           </h:outputText></center>
+                        </p:column>
+
+                        <p:column headerText="Descrição"  sortBy="#{item.fkIdLoteProduto.fkIdProduto}">
+                           <h:outputText value="#{item.fkIdLoteProduto.fkIdProduto.descricao} #{item.fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao} #{item.fkIdLoteProduto.fkIdProduto.dosagem} #{item.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/>
+                        </p:column>
+
+                        <p:column headerText="Forma"  sortBy="#{item.fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao}">
+                           <center>
+                              <h:outputText value="#{item.fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao}"/>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Nº de Lote"  sortBy="#{item.fkIdLoteProduto.numeroLote}">
+                           <h:outputText value="#{item.fkIdLoteProduto.numeroLote}"/>
+                        </p:column>
+
+                        <p:column headerText="Validade"  sortBy="#{item.fkIdLoteProduto.dataValidade}">
+                           <center>
+                              <h:outputText style="color: #002142;font-size: 14px" value="#{item.fkIdLoteProduto.dataValidade}">
+                                 <f:convertDateTime pattern="dd-MM-yyyy" />
+                              </h:outputText>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Quantidade"  sortBy="#{item.quantidade}">
+                           <center>
+                              <h:outputText value="#{item.quantidade}"/>
+                           </center>
+                        </p:column>
+                     </p:dataTable>
+
+                  </center>
+               </p:fieldset>
+            </h:form>
+         </ui:define>
+      </ui:composition>
+
+   </body>
+</html>

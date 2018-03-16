@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                
+                <h1>#{msgs.admissoes} -> #{msgs.grupoDeServico}</h1>
+                <!--<p:messages id="msg" autoUpdate="true" closable="true"/>-->
+                <p:growl autoUpdate="true"/>
+                <br/>
+                <center>
+                    <h:panelGrid columns="1" width="70%">
+                        <h:form id="formPesquisa">
+                            #{detetorAtualizacaoPagina.checkAtualizacao("")}
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="3" style="width: 90%">
+                                    
+                                    <p:outputLabel value="#{msgs.descricaoGrupoServico}: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="nomeGrupoServicoPesquisa" style="width: 100%" 
+                                                     value="#{admsGrupoServicoBean.grupoServicoPesquisa.descricaoGrupoServico}"/>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="#{msgs.grupoPai}: "/>
+                                    <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="codigoGrupoServicoPesquisa" value="#{admsGrupoServicoBean.grupoServicoPesquisa.fkIdGrupoServicoPai.pkIdGrupoServico}"                                                    
+                                                     style="width: 95%">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{admsGrupoServicoBean.findAll()}" var="grupoPaiPesquisa" 
+                                                       itemLabel="#{grupoPaiPesquisa.descricaoGrupoServico}" itemValue="#{grupoPaiPesquisa.pkIdGrupoServico}"/>
+                                    </p:selectOneMenu>
+                                    </f:validateBean>
+
+                                    
+                                    <br/>
+                                    <h:panelGrid columns="2" cellpadding="3" style="width: 100%">
+                                        <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{admsGrupoServicoBean.pesquisar()}" 
+                                                         icon="ui-icon-search" ajax="true" partialSubmit="true" update="nomeGrupoServicoPesquisa codigoGrupoServicoPesquisa dataTable"/>
+                                        <p:commandButton value="#{msgs.carregar}" style="width: 100%" 
+                                                         icon="ui-icon-refresh" 
+                                                         partialSubmit="true" process="@this" update="@this dataTable"
+                                                         actionListener="#{admsGrupoServicoBean.carregar()}"/>
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            
+                            
+                            <p:dataTable id="dataTable" var="grupoServico" value="#{admsGrupoServicoBean.getAdmsGrupoServicoLista()}"
+                                         style="width: 100%" emptyMessage="Não Existem Grupos de Serviços"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.grupoServicos}">
+                                    <center>                                        
+                                        #{grupoServico.descricaoGrupoServico}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.grupoPai}">
+                                    <center>                                        
+                                        #{grupoServico.fkIdGrupoServicoPai.descricaoGrupoServico}
+                                    </center>
+                                </p:column>
+                                <!--<p:column headerText="# {msgs.opcoes}">
+                                    <center>
+                                        <p:commandButton value="# {msgs.editar}" icon="ui-icon-pencil" onclick="PF('dialogEditar').show();"
+                                                         actionListener="# {admsGrupoServicoBean.setGrupoEditar(grupoServico)}"
+                                                         process="@this" partialSubmit="true" update=":formEditar:editarDescricaoGrupo :formEditar:editarComboPai :formEditar:editarObservacao"/>
+                                    </center>
+                                </p:column>-->
+                            </p:dataTable>
+                        </h:form>
+                    </h:panelGrid>
+                </center>
+                
+
+                
+                <!--<center>
+                    <p:dialog header="# {msgs.novo}" closable="false" showEffect="fade"
+                              widgetVar="dialogNovo" modal="true" closeOnEscape="true"
+                              width="40%" height="220px">
+                        <h:form id="formNovoGrupo">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="4" width="90%">
+                                    <p:outputLabel value="# {msgs.descricaoGrupoServico}*: "/>
+                                    <p:inputText id="nomeGrupoServico" style="width: 100%" value="# {admsGrupoServicoBean.grupoServico.descricaoGrupoServico}"
+                                                 required="true" requiredMessage="Indique A Descrição Do Grupo De Servicos"/>
+
+                                    <p:outputLabel value="# {msgs.grupoPai}*: "/>
+                                    <p:selectOneMenu id="comboPai" value="# {admsGrupoServicoBean.grupoServico.fkIdGrupoServicoPai.pkIdGrupoServico}"                                                    
+                                                     style="width: 94%">
+                                        <f:selectItem itemLabel="" itemValue="# {null}"/>
+                                        <f:selectItems value="# {admsGrupoServicoBean.findAll()}" var="grupoPai" 
+                                                       itemLabel="# {grupoPai.descricaoGrupoServico}" itemValue="# {grupoPai.pkIdGrupoServico}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.observacoes}"/>
+                                    <p:inputTextarea id="observacaoGrupoServico" style="width: 100%" value="# {admsGrupoServicoBean.grupoServico.observacaoGrupoServico}"/>
+                                    
+                                    <br/>
+                                    <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                        <p:commandButton value="# {msgs.gravar}" icon="ui-icon-disk" style="width: 100%" actionListener="# {admsGrupoServicoBean.create()}"
+                                                         partialSubmit="true" 
+                                                         process="@this nomeGrupoServico comboPai observacaoGrupoServico"
+                                                         update=":formPesquisa:dataTable nomeGrupoServico comboPai observacaoGrupoServico"/>
+                                        <p:commandButton value="# {msgs.fechar}" style="width: 100%" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"
+                                                         action="# {admsGrupoServicoBean.limpar()}"/>   
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center>-->
+                
+                
+                
+                <!--<center>
+                    <p:dialog header="# {msgs.editarGrupoServicos}" closable="false" showEffect="fade"
+                              widgetVar="dialogEditar" modal="true" closeOnEscape="true" 
+                              width="40%" height="220px">
+                        <h:form id="formEditar">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="4" width="90%">
+                                    <p:outputLabel value="# {msgs.descricaoGrupoServico}*: "/>
+                                    <p:inputText id="editarDescricaoGrupo" style="width: 100%" value="# {admsGrupoServicoBean.grupoEditar.descricaoGrupoServico}"
+                                                 required="true" requiredMessage="Indique A Descrição Do Grupo De Servicos"/>
+                                    
+                                    <p:outputLabel value="# {msgs.grupoPai}*: "/>
+                                    <p:selectOneMenu id="editarComboPai" value="# {admsGrupoServicoBean.grupoEditar.fkIdGrupoServicoPai.pkIdGrupoServico}"                                                    
+                                                     style="width: 94%">
+                                        <f:selectItem itemLabel="" itemValue="# {null}"/>
+                                        <f:selectItems value="# {admsGrupoServicoBean.findAll()}" var="grupoPai" 
+                                                       itemLabel="# {grupoPai.descricaoGrupoServico}" itemValue="# {grupoPai.pkIdGrupoServico}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.observacoes}"/>
+                                    <p:inputTextarea id="editarObservacao" style="width: 100%" value="# {admsGrupoServicoBean.grupoEditar.observacaoGrupoServico}"/>
+                                    
+                                    <br/>
+                                    <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                        <p:commandButton value="# {msgs.gravarEdicao}" icon="ui-icon-disk" style="width: 100%" action="# {admsGrupoServicoBean.editarGrupoServicoPesquisar()}"
+                                                         partialSubmit="true"
+                                                         process="@form :formEditar:editarDescricaoGrupo :formEditar:editarComboPai :formEditar:editarObservacao"
+                                                         update=":formPesquisa:dataTable"/>
+                                        <p:commandButton value="# {msgs.fechar}" style="width: 100%" onclick="PF('dialogEditar').hide()" partialSubmit="true" process="@this"
+                                                         action="# {admsGrupoServicoBean.limpar()}"/>                                    
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center>-->
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

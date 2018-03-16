@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Remover Horário de Funcionários</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Remover Horário de Funcionários</h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:growl id="msg2" autoUpdate="true" escape="true"/>
+                    <br/>
+                    <center>
+                         <h:panelGrid columns="1" width="100%">
+                              <h:form id="formularioPrincipal">
+                                   <p:fieldset id="fieldset">
+                                        <center>
+                                             <p:panel header="Tabela do Horário Geral de Trabalho Resumida. Abaixo Está a Lista dos Funcionários Associados ao Horário" toggleable="true" style="border: none">
+                                                  <p:panelGrid columns="2" style="width: 100%">
+                                                       <p:outputLabel style="font-weight: bold" value="Hora de Entrada: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.horaEntrada}" disabled="true">
+                                                            <f:convertDateTime pattern="HH:mm"/>
+                                                       </h:inputText>
+                                                       <p:outputLabel style="font-weight: bold" value="Hora de Saída: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.horaSaida}" disabled="true">
+                                                            <f:convertDateTime pattern="HH:mm"/>
+                                                       </h:inputText>
+                                                  </p:panelGrid>
+                                             </p:panel>
+                                        </center>
+
+                                        <p:panel id="painelPesquisa" style="border: none">
+                                             <h:panelGrid columns="3" cellpadding="5">
+                                                  <p:outputLabel style="font-size: medium;" value="Resultados a apresentar: (#{rhHorarioDeFuncionariosRemoverBean.funcionariosComHorarioGeralList.size()})"/>
+                                                  <p:inputText id="nomePesquisar" value="#{rhHorarioDeFuncionariosRemoverBean.nomeCompleto}" style="width: 280px">
+                                                       <p:watermark value="Filtrar por nome" for="nomePesquisar"/>
+                                                  </p:inputText>
+                                                  <p:commandButton value="Actualizar Lista" process="painelPesquisa" update="painelPesquisa"/>
+                                             </h:panelGrid>
+
+
+                                             <p:dataTable id="dataTable" rows="10" paginator="true" paginatorPosition="bottom" style="width: 100%"
+                                                          var="funcionario" value="#{rhHorarioDeFuncionariosRemoverBean.funcionariosComHorarioGeralList}" emptyMessage="Nenhum registro de funcionário encontrado">
+                                                  <p:column headerText="Nome Completo">
+                                                       <p:outputLabel value="#{funcionario.fkIdPessoa.nome} #{funcionario.fkIdPessoa.nomeDoMeio} #{funcionario.fkIdPessoa.sobreNome}"/>
+                                                  </p:column>
+                                                  <p:column headerText="Nº Cartão Identidade">
+                                                       #{funcionario.numeroCartao}
+                                                  </p:column>
+                                                  <p:column headerText="Profissão">
+                                                       #{funcionario.fkIdProfissao.descricao}
+                                                  </p:column>
+                                                  <p:column headerText="Categoria">
+                                                       #{funcionario.fkIdCategoria.descricao}
+                                                  </p:column>
+                                                  <p:column headerText="Estado" style="text-align: center">
+                                                       #{funcionario.fkIdEstadoFuncionario.descricao}
+                                                  </p:column>
+                                                  <p:column headerText="-----------------------">
+                                                       <center>
+                                                            <p:commandButton value="Remover Horário" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash"
+                                                                        action="#{rhHorarioDeFuncionariosRemoverBean.setFuncionarioHorarioRemover(funcionario)}"/>
+                                                       </center>
+                                                  </p:column>
+                                             </p:dataTable>
+
+                                             <center>
+                                                  <p:confirmDialog message="Tem certeza que pretende remover o horário do funcionário selecionado ?"
+                                                                   header="Remover Horário do Funcionário" severity="alert" widgetVar="confirmDialogRemover">
+                                                       <p:commandButton value="Sim" actionListener="#{rhHorarioDeFuncionariosRemoverBean.removerHorarioFuncionario()}" 
+                                                                        process="@this" update="painelPesquisa" oncomplete="PF('confirmDialogRemover').hide()"/>
+                                                       <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                                                  </p:confirmDialog>
+                                             </center>
+                                        </p:panel>
+
+                                        <br/>
+                                        <br/>
+                                   </p:fieldset>
+                              </h:form>
+                         </h:panelGrid>
+                    </center>
+
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

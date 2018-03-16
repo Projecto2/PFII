@@ -1,0 +1,642 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form id="formListarHistoricoGeralConsulta">
+            <div class="ui-fluid">
+                <br/>
+                <p:tabView id="tvListarHistoricoGeralConsulta" styleClass="ui-noborder" style="height: 550px; width: 950px">
+
+                    <p:tab title="Triagem">
+
+                        <center>
+                            <span style="font-size: 16pt">
+
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                     "
+                                               style="color: #0088cc"/>
+
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <br/>
+                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                            </span>
+                        </center>
+
+                        <p:fieldset style="height: 385px">
+
+                            <h:panelGrid id="gridTriagem" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                <p:outputLabel value="Data:"/>
+                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraTriagem)}"/>
+
+                                <p:outputLabel value="Funcionário:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nome}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                     "/>
+
+                                <p:outputLabel value="Frequência Cardíaca:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).frequenciaCardiaca}"/>
+
+                                <p:outputLabel value="Frequência Respiratória:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).frequenciaRespiratoria}"/> 
+
+                                <p:outputLabel value="Glicemia:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).glicemia}"/>
+
+                                <p:outputLabel value="Local da dor:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).localDaDor}"/>
+
+                                <p:outputLabel value="Observações:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).observacoes}"/>
+
+                                <p:outputLabel value="Pulso:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).pulso}"/>
+
+                                <p:outputLabel value="Tensão Arterial Máxima:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).tensaoArterialMaxima}"/>
+
+                                <p:outputLabel value="Tensão Arterial Mínima:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).tensaoArterialMinima}"/>
+
+                                <p:outputLabel value="Altura:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).altura}"/>
+
+                                <p:outputLabel value="Peso:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).peso}"/>
+
+                                <p:outputLabel value="Temperatura:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbTriagem(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).temperatura}"/>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+                    </p:tab>
+
+                    <p:tab title="Encaminhamento">
+
+                        <center>
+                            <span style="font-size: 16pt">
+
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                     "
+                                               style="color: #0088cc"/>
+
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <br/>
+                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                            </span>
+                        </center>
+
+                        <p:fieldset style="height: 385px">
+
+                            <h:panelGrid id="gridEncaminhamento" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                <p:outputLabel value="Data:"/>
+                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbConsultorioAtendimento(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraCadastro)}"/>
+
+                                <p:outputLabel value="Funcionário:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsultorioAtendimento(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nome}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsultorioAtendimento(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsultorioAtendimento(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                     "/>
+
+                                <p:outputLabel value="Médico Escalado:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsultorioAtendimento(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.nome}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsultorioAtendimento(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.nomeDoMeio}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsultorioAtendimento(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.sobreNome}
+                                                     "/>
+
+                                <p:outputLabel value="Consultório Médico:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsultorioAtendimento(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdMedicoHasEscala.fkIdConsultorio.nome}"/>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+                    </p:tab>
+
+                    <p:tab title="Consulta">
+
+                        <p:tabView id="tvConsulta" styleClass="ui-noborder" style="height: 480px; width: 910px">
+
+                            <p:tab title="História Clínica">
+
+                                <center>
+                                    <span style="font-size: 16pt">
+
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                              #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                              #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                             "
+                                                       style="color: #0088cc"/>
+
+                                        <br/>
+                                        #{msgs.subProcesso}:
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                        </p:outputLabel>
+                                        <br/>
+                                        <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                                    </span>
+                                </center>
+
+                                <p:fieldset style="height: 310px">
+
+                                        <h:panelGrid id="gridHistoriaClinica" columns="2" styleClass="ui-noborder" style="width: 100%">
+                                            
+                                            <p:outputLabel value="Data:"/>
+                                            <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraConsulta)}"/>
+                                            
+                                            <p:outputLabel value="História Clínica:" style="margin-right: 0px"/>
+                                            <p:inputTextarea value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).historiaClinica}" cols="90" rows="20" autoResize="false" readonly="true"/>
+                                        
+                                        </h:panelGrid>
+
+                                </p:fieldset>
+
+                            </p:tab>
+
+                            <p:tab title="Queixas Principais">
+
+                                <center>
+                                    <span style="font-size: 16pt">
+
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                              #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                              #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                             "
+                                                       style="color: #0088cc"/>
+
+                                        <br/>
+                                        #{msgs.subProcesso}:
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                        </p:outputLabel>
+                                        <br/>
+                                        <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                                    </span>
+                                </center>
+
+                                <p:fieldset style="height: 310px">
+
+                                    <h:panelGrid id="gridQueixasPrincipais" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                        <p:outputLabel value="Data da Consulta:"/>
+                                        <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraConsulta)}"/>
+
+                                        <p:outputLabel value="Sintoma:"/>
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).sintoma}"/>
+
+                                        <p:outputLabel value="História doença actual:"/>
+                                        <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).historiaDoencaActual}"/>
+
+                                    </h:panelGrid>
+
+                                </p:fieldset>
+
+                            </p:tab>
+
+                            <p:tab id="exameFisico" title="Exame Físico">
+
+                                <p:tabView id="tvConsulta" styleClass="ui-noborder" style="height: 420px; width: 870px">
+
+                                    <p:tab title="Impressões Gerais">
+
+                                        <center>
+                                            <span style="font-size: 16pt">
+
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                                     "
+                                                               style="color: #0088cc"/>
+
+                                                <br/>
+                                                #{msgs.subProcesso}:
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                                </p:outputLabel>
+                                                <br/>
+                                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                                            </span>
+                                        </center>
+
+                                        <p:fieldset style="height: 255px">
+
+                                            <h:panelGrid id="gridImpressoesGerais" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                                <p:outputLabel value="Data da Consulta:"/>
+                                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraConsulta)}"/>
+
+                                                <p:outputLabel value="Impressões Gerais:"/>
+                                                <p:outputLabel value="#{ambConsultaListarBean.listarImpressoesGerais(ambConsultaListarBean.seleccionarDetalhesConsulta(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado)))}"/>
+
+                                            </h:panelGrid>
+
+                                        </p:fieldset>
+
+                                    </p:tab>
+
+                                    <p:tab title="Mucosas">
+
+                                        <center>
+                                            <span style="font-size: 16pt">
+
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                                     "
+                                                               style="color: #0088cc"/>
+
+                                                <br/>
+                                                #{msgs.subProcesso}:
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                                </p:outputLabel>
+                                                <br/>
+                                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                                            </span>
+                                        </center>
+
+                                        <p:fieldset style="height: 255px">
+
+                                            <h:panelGrid id="gridMucosas" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                                <p:outputLabel value="Data da Consulta:"/>
+                                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraConsulta)}"/>
+
+                                                <p:outputLabel value="Coloração:"/>
+                                                <p:outputLabel value="#{ambConsultaListarBean.listarColoracao(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado))}"/>
+
+                                                <p:outputLabel value="Estado de Hidratação:"/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdEstadoHidratacao.descricao}"/>
+
+                                            </h:panelGrid>
+
+                                        </p:fieldset>
+
+                                    </p:tab>
+
+                                    <p:tab title="Pele e Anexos">
+
+                                        <center>
+                                            <span style="font-size: 16pt">
+
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                                     "
+                                                               style="color: #0088cc"/>
+
+                                                <br/>
+                                                #{msgs.subProcesso}:
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                                </p:outputLabel>
+                                                <br/>
+                                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                                            </span>
+                                        </center>
+
+                                        <p:fieldset style="height: 255px">
+
+                                            <h:panelGrid id="gridPeleEAnexos" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                                <p:outputLabel value="Data da Consulta:"/>
+                                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraConsulta)}"/>
+
+                                                <p:outputLabel value="Cor:"/>
+                                                <p:outputLabel value="#{ambConsultaListarBean.listarCor(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado))}"/>
+
+                                                <p:outputLabel value="Textura:"/>
+                                                <p:outputLabel value="#{ambConsultaListarBean.listarTextura(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado))}"/>
+
+                                                <p:outputLabel value="Turgor:"/>
+                                                <p:outputLabel value="#{ambConsultaListarBean.listarTurgorPele(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado))}"/>
+
+                                                <p:outputLabel value="Outros:"/>
+                                                <p:inputTextarea value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).outrosDados}" autoResize="false" readonly="true"/>
+
+                                            </h:panelGrid>
+
+                                        </p:fieldset>
+
+                                    </p:tab>
+
+                                    <p:tab title="Tecido Celular Subcutâneo">
+
+                                        <center>
+                                            <span style="font-size: 16pt">
+
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                                     "
+                                                               style="color: #0088cc"/>
+
+                                                <br/>
+                                                #{msgs.subProcesso}:
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                                </p:outputLabel>
+                                                <br/>
+                                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                                            </span>
+                                        </center>
+
+                                        <p:fieldset style="height: 255px">
+
+                                            <h:panelGrid id="gridTecidoCelularSubcutaneo" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                                <p:outputLabel value="Data da Consulta:"/>
+                                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraConsulta)}"/>
+
+                                                <p:outputLabel value="Espessura:"/>
+                                                <p:outputLabel value="#{ambConsultaListarBean.listarEspessura(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado))}"/>
+
+                                                <p:outputLabel value="Turgor:"/>
+                                                <p:outputLabel value="#{ambConsultaListarBean.listarTurgorTecido(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado))}"/>
+
+                                            </h:panelGrid>
+
+                                        </p:fieldset>
+
+                                    </p:tab>
+
+                                    <p:tab title="Gânglios">
+
+                                        <center>
+                                            <span style="font-size: 16pt">
+
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                                     "
+                                                               style="color: #0088cc"/>
+
+                                                <br/>
+                                                #{msgs.subProcesso}:
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                                </p:outputLabel>
+                                                <br/>
+                                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                                            </span>
+                                        </center>
+
+                                        <p:fieldset style="height: 255px">
+
+                                            <h:panelGrid id="gridGanglios" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                                <p:outputLabel value="Data da Consulta:"/>
+                                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraConsulta)}"/>
+
+                                                <h:outputLabel value="Localização:" />
+                                                <p:inputTextarea value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).localizacao}" autoResize="false" readonly="true"/>
+
+                                                <h:outputLabel value="Tamanho:" />
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdTamanho.descricao}"/>
+
+                                                <h:outputLabel value="Dor:" />
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdClassificacaoDor.descricao}"/>
+
+                                                <h:outputLabel value="Aderência:" />
+                                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbConsulta(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdAderencia.descricao}"/>
+
+                                            </h:panelGrid>
+
+                                        </p:fieldset>
+
+                                    </p:tab>
+
+                                </p:tabView>
+
+                            </p:tab>
+
+                        </p:tabView>
+
+                    </p:tab>
+
+                    <p:tab title="Pré-Diagnóstico">
+
+                        <center>
+                            <span style="font-size: 16pt">
+
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                     "
+                                               style="color: #0088cc"/>
+
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <br/>
+                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                            </span>
+                        </center>
+
+                        <p:fieldset style="height: 385px">
+
+                            <h:panelGrid id="gridPreDiagnostico" columns="1" styleClass="ui-noborder" style="width: 100%">
+
+                                <h:panelGrid columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                    <p:outputLabel value="Data:" style="margin-right: 0px"/>
+                                    <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbDiagnosticoHipotese(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraHipoteseDiagnostico)}"/>
+
+                                    <p:outputLabel value="Médico:" style="margin-right: 0px"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnosticoHipotese(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nome}
+                                                          #{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnosticoHipotese(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                          #{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnosticoHipotese(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                         "/>
+
+                                    <p:outputLabel value="Centro de Proveniência:"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnosticoHipotese(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsulta.fkIdCentro.fkIdInstituicao.descricao}"/>
+
+                                    <p:outputLabel value="Especialidade:"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnosticoHipotese(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsulta.fkIdEspecialidade.descricao}"/>
+
+                                    <p:outputLabel value="Observações Médicas:"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnosticoHipotese(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsulta.fkIdObservacoesMedicas.descricao}"/>
+
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="3" styleClass="ui-noborder" style="width: 100%">
+                                    <p:outputLabel value="Pré-Diagnóstico:" style="margin-right: 55px"/><!--58px-->
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.lerPreDiagnostico(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado)}"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.lerPreDiagnosticoOutros(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado)}"/>
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+                    </p:tab>
+
+                    <p:tab title="Diagnóstico">
+
+                        <center>
+                            <span style="font-size: 16pt">
+
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                     "
+                                               style="color: #0088cc"/>
+
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <br/>
+                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                            </span>
+                        </center>
+
+                        <p:fieldset style="height: 385px">
+
+                            <h:panelGrid id="gridDiagnostico" columns="1" styleClass="ui-noborder" style="width: 100%">
+
+                                <h:panelGrid columns="2" styleClass="ui-noborder" style="width: 100%">
+                                    <p:outputLabel value="Data:"/>
+                                    <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbDiagnostico(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraDiagnostico)}"/>
+
+                                    <p:outputLabel value="Médico:"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnostico(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nome}
+                                                          #{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnostico(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                          #{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnostico(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                         "/>
+
+                                    <p:outputLabel value="Centro de Proveniência:"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnostico(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdCentro.fkIdInstituicao.descricao}"/>
+
+                                    <p:outputLabel value="Observações:"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnostico(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).observacoes}"/>
+
+                                    <p:outputLabel value="Observações Médicas:"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbDiagnostico(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdObservacoesMedicas.descricao}"/>
+
+                                </h:panelGrid>
+
+                                <h:panelGrid columns="3" styleClass="ui-noborder" style="width: 100%">
+                                    <p:outputLabel value="Diagnóstico Médico:" style="margin-right: 316px"/><!--330px-->
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.lerDiagnostico(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado)}"/>
+                                    <p:outputLabel value="#{ambHistoricoMetodosUteisBean.lerDiagnosticoOutros(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado)}"/>
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+                    </p:tab>
+
+                    <p:tab title="Receita">
+
+                        <center>
+                            <span style="font-size: 16pt">
+
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                     "
+                                               style="color: #0088cc"/>
+
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <br/>
+                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                            </span>
+                        </center>
+
+                        <p:fieldset style="height: 385px">
+
+                            <h:panelGrid id="gridReceita" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                <p:outputLabel value="Data:" style="margin-right: 20px"/>
+                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosAmbPrescricaoMedica(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHoraPrescricao)}
+                                               "/>
+
+                                <p:outputLabel value="Médico:" style="margin-right: 20px"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosAmbPrescricaoMedica(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nome}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbPrescricaoMedica(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosAmbPrescricaoMedica(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                     "/>
+
+                                <p:outputLabel value="Receita:" style="margin-right: 20px"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.lerRemedio(ambHistoricoMetodosUteisBean.listarDadosAmbPrescricaoMedica(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.pkIdServicoSolicitado)}"/> 
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+                    </p:tab>
+
+                </p:tabView>
+                <br/>
+                <center>
+                    <p:commandButton value="#{msgs.fechar}" icon="ui-icon-close" onclick="PF('dialogListarHistoricoGeralConsulta').hide()" partialSubmit="true" process="@this" style="margin-bottom: 15px;" styleClass="ui-noborder"/> 
+                </center>
+            </div>
+        </h:form>
+    </h:body>
+</html>

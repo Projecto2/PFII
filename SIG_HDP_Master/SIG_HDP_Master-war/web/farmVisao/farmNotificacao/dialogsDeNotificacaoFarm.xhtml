@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Farmacos</title>
+   </h:head>
+
+   <h:body>
+
+      <!-- DIALOG PARA VISUALIZACAO DAS NOTIFICACOES -->
+      <p:dialog id="dialogVerNotificacoes" header="Notificações" showEffect="fade" closable="true" modal="true" width="50%"
+                widgetVar="dialogVerNotificacoes" closeOnEscape="true" resizable="false" height="430px">
+         <h:form style="background-color: white"> 
+            <p:fieldset>
+               <h:panelGrid columns="5" style="width:90%" cellspacing="5" class="float-right">
+                  <p:commandLink style="color: #0098d0; font-size: 13px" 
+                                 value="Ver Todas informações de Stock" 
+                                 action="/farmVisao/farmInfoStock/stockRupturaFarm.xhtml?faces-redirect=true"/>
+
+                  <p:outputLabel value="|"/>
+
+                  <p:commandLink style="color: #0098d0; font-size: 13px"
+                                 value="Ver Todas informações de Validade" 
+                                 action="/farmVisao/farmInfoStock/stockValidadeProdutosFarm.xhtml?faces-redirect=true"
+                                 actionListener="#{farmStockValidadeProdutosBean.pesquisarLotesProdutos()}"/>
+
+                  <p:outputLabel value="|"/>
+                  <p:commandButton style="color: #0098d0; font-size: 13px" 
+                                   onstart="PF('w_dlgLoading').show()" oncomplete="PF('w_dlgLoading').hide()"
+                                   value="Recarregar" update=":dialogVerNotificacoes"
+                                   action="#{farmNotificacaoBean.pesquisarNotificacoes()}"/>
+
+
+                  <p:dialog  widgetVar="w_dlgLoading" header="A processar" modal="true" closable="false" resizable="false">
+                     <center>
+                        <img src="../../resources/Imagens/loading.gif" style="margin: auto" width="128" height="128" alt="loading"/>
+                     </center>
+                     <br/>
+                     <p>Pode demorar alguns segundos. Por favor aguarde....</p>
+                  </p:dialog>
+               </h:panelGrid>
+            </p:fieldset>
+            <p></p>
+            <p:dataScroller value="#{farmNotificacaoBean.listaNotificacoes}" 
+                            var="notificacao" chunkSize="5">
+
+               <f:facet name="loader">
+                  <p:commandButton type="button" value="Ver Mais Notificações" 
+                                   icon="ui-icon-circle-triangle-s"/>
+               </f:facet>
+
+               <h:panelGrid style="width:100%;" columnClasses="logo,detail">
+                  <p:outputPanel style="background-color: white; width:100%">
+                     <p style="color: #00172F; font-size: initial; font-size: 14px; text-align-last: left"> 
+                        <strong style="color: #{farmNotificacaoBean.getColorTitle(notificacao)}">
+                           #{notificacao.titulo}
+                        </strong>
+                     </p>
+
+                     <br/>
+                     <h:panelGrid cellpadding="5">
+                        <p style="text-align: justify; font-size: 13px ">
+                           #{notificacao.corpo}
+                        </p>
+                        <p>---</p>
+                        <h:outputText value="#{notificacao.dataCadastro}" 
+                                      style="color: #0098d0; font-size: x-small">
+                           <f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+                        </h:outputText>
+                     </h:panelGrid>
+
+                  </p:outputPanel>
+
+                  <p:separator/>
+               </h:panelGrid>
+            </p:dataScroller>
+         </h:form>
+      </p:dialog>
+
+   </h:body>
+</html>

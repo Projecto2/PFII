@@ -1,0 +1,192 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+   <body>
+
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalSeg.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralSeg.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Segurança -> Utilizadores</h2>
+            <h:form id="formSolicitacao">
+               <p:messages id="msg" autoUpdate="true" closable="true"/>
+               <p></p>
+               <p:fieldset>
+                  <p:fieldset>
+
+                     <h:panelGrid columns="2" id="gridCamposPesquisa" cellpadding="4">
+                        <f:validateBean disabled="true">
+                           <p:outputLabel value="Nome"/>
+                           <f:validateBean disabled="true"><p:inputText value="#{segUtilizadoresListar.contaPesquisar.fkIdFuncionario.fkIdPessoa.nome}" style="width: 99%"/></f:validateBean>
+
+                           <p:outputLabel value="Sobrenome"/>
+                           <f:validateBean disabled="true"><p:inputText value="#{segUtilizadoresListar.contaPesquisar.fkIdFuncionario.fkIdPessoa.sobreNome}" style="width: 99%"/></f:validateBean>
+                        </f:validateBean>
+                        <p></p>
+                        <h:panelGrid columns="3">
+                           <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true"
+                                            action="#{segUtilizadoresListar.pesquisarConta()}" 
+                                            update="resultado"
+                                            process="gridCamposPesquisa" />
+
+                           <p:commandButton value="Novo" icon="ui-icon-plus"
+                                            process="@this" action="utilizadorNovoSeg.xhtml?faces-redirect=true"/>
+
+                        </h:panelGrid> 
+                     </h:panelGrid>
+
+                     <p></p>
+
+                  </p:fieldset>
+                  <p:dataTable style="width: 100%;" id="resultado" var="item" rows="6" rowsPerPageTemplate="6,12,16"
+                               value="#{segUtilizadoresListar.contasPesquisadas}" 
+                               emptyMessage="Sem pedidos pendentes de momento."
+                               paginator="true" paginatorPosition="bottom">
+
+                     <p:column headerText="Conta criada em">
+                        <center>
+                           <h:outputText value="#{item.dataCadastro}">
+                              <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>                                 
+                           </h:outputText>
+                        </center>                                
+                     </p:column>
+                     <p:column headerText="Funcionário">
+                        <center>
+                           <h:outputText value="#{item.fkIdFuncionario.fkIdPessoa.nome} 
+                                         #{item.fkIdFuncionario.fkIdPessoa.nomeDoMeio} 
+                                         #{item.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                        </center>
+                     </p:column>
+                     <p:column headerText="Categoria">
+                        <center>
+                           <h:outputText value="#{item.fkIdFuncionario.fkIdCategoria.descricao}"/>
+                        </center>                                
+                     </p:column>
+                     <p:column headerText="Estado da Conta">
+                        <center>
+                           <p:inputSwitch value="#{item.estadoConta}" disabled="true"/>
+                        </center>                                
+                     </p:column>
+
+                     <p:column headerText="------">
+                        <center>
+                           <p:menuButton value="Opções">
+
+                              <p:menuitem value="Editar" partialSubmit="true"
+                                          onclick="PF('dialogEditar').show()" 
+                                          process="@this" icon="ui-icon-pencil"
+                                          actionListener="#{segUtilizadoresListar.setContaEditar(item)}">
+                              </p:menuitem>
+
+                              <p:menuitem value="Gerir Perfis" 
+                                          partialSubmit="true" process="@this" 
+                                          icon="ui-icon-transfer-e-w">
+                              </p:menuitem>
+
+                              <p:menuitem value="Bloquear Conta" rendered="#{item.estadoConta}" 
+                                          partialSubmit="true" process="@this" 
+                                          icon="ui-icon-locked">
+                              </p:menuitem>
+
+                              <p:menuitem value="Desbloquear Conta" rendered="#{!item.estadoConta}" 
+                                          partialSubmit="true" process="@this" 
+                                          icon="ui-icon-unlocked">
+                              </p:menuitem>
+                           </p:menuButton>
+                        </center>
+                     </p:column>
+                  </p:dataTable>
+
+                  <p:dialog header="Editar Conta" closable="false" showEffect="fade"
+                            widgetVar="dialogEditar" modal="true" closeOnEscape="true"
+                            width="35%" >
+                     <h:form id="formEditar">
+                        <center>
+                           <h:panelGrid  columns="1" rendered="#{segUtilizadoresListar.contaEditar != null}">
+
+                              <h:panelGrid columns="1">
+                                 <h:outputLabel value="Atribuir Novo Perfil?" style="font-weight: bold; vertical-align: baseline;" />
+                                 <p:selectOneMenu id="resposta" value="#{segUtilizadoresListar.resposta2}" style="display: block; width: 287px;">  
+                                    <f:selectItem  itemLabel="Não" itemValue="2"/>
+                                    <f:selectItem  itemLabel="Sim" itemValue="1"/>
+                                    <p:ajax event="change"  update="panel1"/>
+                                 </p:selectOneMenu>
+
+                              </h:panelGrid>
+                              <h:panelGroup id="panel1" rendered="#{segUtilizadoresListar.resposta2 eq '1'}">
+                                 <h:outputLabel  id="novoperfil" value="Novo Perfil:" style="font-weight: bold;"  />
+                                 <h:selectOneMenu id="todosperfis" value="#{segUtilizadoresListar.idPerfil}" 
+                                                  style="width: 287px; " >  
+                                    <f:selectItem itemLabel="Selecione " noSelectionOption="true"/>
+                                    <f:selectItems value="#{segUtilizadoresListar.listarPerfis}" var="perfil" 
+                                                   itemLabel="#{perfil.descricao}" itemValue="#{perfil.pkIdPerfil}"/>
+                                 </h:selectOneMenu>
+                              </h:panelGroup>
+
+                              <h:panelGroup id="painelEditar">
+                                 <h:outputLabel value="Username:" style="font-weight: bold;"/>
+                                 <h:inputText id="username" value="#{segUtilizadoresListar.contaEditar.nomeUtilizador}" 
+                                              styleClass="input-xlarge"/>
+                              </h:panelGroup>
+
+                              <h:panelGroup>
+                                 <h:outputLabel value="Senha Actual:" style="font-weight: bold;"/>
+                                 <p:password id="senhaActual" value="#{segUtilizadoresListar.senhaActual}" styleClass="input-xlarge"/>
+                              </h:panelGroup>
+
+                              <h:panelGrid columns="2">
+                                 <h:panelGroup>
+                                    <h:outputLabel value="Nova Senha:" style="font-weight: bold;"/>
+                                    <p:password id="novaSenha" feedback="true"
+                                                promptLabel="Por favor insira a senha" weakLabel="Fraco" 
+                                                goodLabel="Bom" strongLabel="Forte" value="#{segUtilizadoresListar.password2}" 
+                                                styleClass="input-xlarge"/>
+                                 </h:panelGroup>
+                                 <h:panelGroup>
+                                    <h:outputLabel value="Repita Senha:" style="font-weight: bold;"/>
+                                    <p:password id="repitaSenha" value="#{segUtilizadoresListar.senhaConfirma}" styleClass="input-xlarge"/>
+                                 </h:panelGroup>
+                              </h:panelGrid>
+
+                              <h:panelGrid columns="3">
+                                 <h:panelGroup >
+                                    <h:outputLabel value="Perfil Actual:" style="font-weight: bold;"/>
+                                    <h:inputText id="perfilActual" disabled="true" 
+                                                 value="#{segUtilizadoresListar.contaEditar.fkIdPerfil.descricao}" 
+                                                 styleClass="input-xlarge"/>
+                                 </h:panelGroup>
+
+
+                              </h:panelGrid>
+
+
+                              <br/>
+                           </h:panelGrid>
+                           <p:commandButton value="Guardar" 
+                                            update="formSolicitacao:resultado"
+                                            icon="ui-icon-check" onclick="PF('dialogEditar').hide()"
+                                            action="#{segUtilizadoresListar.editarContaUtilizador()}"/>
+
+                           <p:commandButton value="Fechar" icon="ui-icon-close"
+                                            onclick="PF('dialogEditar').hide();" type="button"
+                                            action="#{segUtilizadoresListar.setContaEditar(null)}"/>
+                        </center></h:form>
+                  </p:dialog> 
+               </p:fieldset>
+            </h:form> 
+         </ui:define>
+      </ui:composition>
+   </body>
+</html>

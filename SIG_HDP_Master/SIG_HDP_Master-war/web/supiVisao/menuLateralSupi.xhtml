@@ -1,0 +1,40 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <!-- Definindo a cor da barra lateral-->
+    <h:form style="background-color: rgba(230,230,230,0.05); height: 620px">
+        <p:panelMenu style="width: 100%">
+
+            <p:submenu label="Escalas">
+
+                <p:menuitem value="Escalas" action="/faces/supiVisao/supiEscala/escalaListarSupi.xhtml?faces-redirect=true"/>
+                <p:menuitem value="Atribuir Enfermarias" action="/faces/supiVisao/supiEscala/atribuicaoDeEnfermariaSupi.xhtml?faces-redirect=true"/>
+                <p:menuitem value="Escala de Médicos " action="/faces/supiVisao/supiEscala/escalaNovoMedicoSupi.xhtml?faces-redirect=true"/>
+                <p:menuitem value="Atribuir Consultórios Médicos" action="/faces/supiVisao/supiEscala/atribuicaoDeConsultoriosEnfermariaSupi.xhtml?faces-redirect=true"/>
+            </p:submenu>
+            <p:submenu label="Estágios">
+
+                <p:menuitem value="Criação de Turmas " action="/faces/supiVisao/supiGestaoEstagios/turmaNovaSupi.xhtml?faces-redirect=true"/>
+                <p:menuitem value="Definição de Plano de Estudos " action="/faces/supiVisao/supiGestaoEstagios/novaAgendaAulaSupi.xhtml?faces-redirect=true"/>
+
+            </p:submenu>
+
+            <p:submenu label="Avaliações">
+                <p:menuitem value="Pontuações" action="/faces/supiVisao/supiAvaliacao/listarPontuacaoSupi.xhtml?faces-redirect=true"/>
+                <p:menuitem value="Critérios" action="/faces/supiVisao/supiAvaliacao/criterioListarSupi.xhtml?faces-redirect=true"/>
+                
+               <p:submenu label="Avaliações ">
+                <p:menuitem value="Avaliação CNT" action="/faces/supiVisao/supiAvaliacao/listarAvaliacaoSupiCnt.xhtml?faces-redirect=true"/>
+                 <p:menuitem value="Avaliação Medicina" action="/faces/supiVisao/supiAvaliacao/listarAvaliacaoSupiMedicina.xhtml?faces-redirect=true"/>
+                  <p:menuitem value="Avaliação Pediatria" action="/faces/supiVisao/supiAvaliacao/listarAvaliacaoSupiPediatria.xhtml?faces-redirect=true"/>
+                 </p:submenu>
+                  <p:menuitem value="Avaliação Final" action="/faces/supiVisao/supiAvaliacao/avaliacaoFinalSupi.xhtml?faces-redirect=true"/>
+            
+                </p:submenu>
+
+        </p:panelMenu>
+    </h:form>
+</ui:composition>

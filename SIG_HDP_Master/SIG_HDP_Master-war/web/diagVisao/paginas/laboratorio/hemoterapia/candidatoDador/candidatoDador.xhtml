@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagCandidatoDadorBean.temMensagemPendente == true}">
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Erro'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+        </c:if>
+
+        <h2>Laboratório -> Hemoterápia -> Candidatos à Dadores de Sangue</h2>
+
+        <center>
+
+            <p:growl id="ms" autoUpdate="true" sticky="true"/>
+            <h:form prependId="false" >
+                <br/>
+                <p:fieldset style="width: 97%;">
+                    <h:panelGrid columns="2" width="100%">
+                        <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">
+
+                            <h:panelGrid columns="2" cellpadding="3">
+
+                                <f:validateBean disabled="true">
+
+                                    <h:outputLabel value="Nº de Registos: "/>
+                                    <p:spinner id="numRegistos" value="#{diagCandidatoDadorBean.numeroRegistos}" 
+                                               min="1" required="true" requiredMessage="É necessário informar o número de registos a retornar."/>
+                                    
+                                    <f:validateBean disabled="true">
+                                        <h:outputLabel value="Código do Dador: "/>
+                                        <p:inputText style="width: 100%" value="#{diagCandidatoDadorBean.diagCandidatoDadorPesquisa.codigoCandidatoDador}"/>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="Nome: "/>
+                                    <h:panelGrid columns="4" width="100%" cellpadding="3">
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="nome" style="width: 100%" value="#{diagCandidatoDadorBean.diagCandidatoDadorPesquisa.fkIdPessoa.nome}" />
+                                        </f:validateBean>
+                                        <p:watermark for="nome" value="Nome" />
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="sobreNome" style="width: 100%" value="#{diagCandidatoDadorBean.diagCandidatoDadorPesquisa.fkIdPessoa.sobreNome}" />
+                                        </f:validateBean>
+                                        <p:watermark for="sobreNome" value="Sobrenome" />
+                                    </h:panelGrid>
+
+                                    <p:outputLabel value="Nacionalidade: "/>
+                                    <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagCandidatoDadorBean.diagCandidatoDadorPesquisa.fkIdPessoa.fkIdNacionalidade.pkIdPais}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{diagCandidatoDadorBean.listaPais}" var="pais"
+                                                       itemLabel="#{pais.nacionalidade}" itemValue="#{pais.pkIdPais}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Sexo: "/>
+                                    <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagCandidatoDadorBean.diagCandidatoDadorPesquisa.fkIdPessoa.fkIdSexo.pkIdSexo}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{itensAjaxBean.sexoList}" var="sexo"
+                                                       itemLabel="#{sexo.descricao}" itemValue="#{sexo.pkIdSexo}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Grupo Sanguíneo: "/>
+                                    <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagCandidatoDadorBean.diagCandidatoDadorPesquisa.fkIdPessoa.fkIdGrupoSanguineo.pkIdGrupoSanguineo}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{diagGrupoSanguineoBean.findAll()}" var="grupo"
+                                                       itemLabel="#{grupo.descricaoGrupoSanguineo}" itemValue="#{grupo.pkIdGrupoSanguineo}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Cadastrado entre: "/>
+                                    <h:panelGrid columns="3" width="100%">
+                                        <p:calendar id="dataInicioCadastro" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}" value="#{diagCandidatoDadorBean.dataInicioCadastro}" locale="pt"/> 
+                                        <p:outputLabel value="e" style="margin-right: 5px"/> 
+                                        <p:calendar id="dataFimCadastro" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}" value="#{diagCandidatoDadorBean.dataFimCadastro}" locale="pt"/>
+                                    </h:panelGrid>
+                                </f:validateBean>
+
+                                <br/>
+                                <h:panelGrid columns="3" width="100%">
+                                    <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                     action="#{diagCandidatoDadorBean.pesquisarCandidatos()}" 
+                                                     partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                    <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagCandidatoDadorBean.limparPesquisaRedirecionarPesquisaCandidato()}" 
+                                                     partialSubmit="true" process="@this" style="width: 100%"/>
+                                    <p:commandButton value="Novo Candidato" icon="ui-icon-plus" action="pessoaPesquisarGrl.xhtml?faces-redirect=true"
+                                                     partialSubmit="true" process="@this" style="width: 100%"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable id="dataTable" rows="5" paginator="true" paginatorPosition="bottom" rowKey="#{pes.pkIdCandidatoDador}" selectionMode="single"
+                             var="pes" value="#{diagCandidatoDadorBean.itens}"
+                             emptyMessage="Nenhum registo de candidato encontrado.">
+
+                    <p:column headerText="Cód. Dador" filterBy="#{pes.codigoCandidatoDador}">
+                        <center>
+                            #{pes.codigoCandidatoDador}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nome Completo" filterBy="#{pes.fkIdPessoa.nome}">
+                        <center>
+                            #{pes.fkIdPessoa.nome} 
+                            #{pes.fkIdPessoa.nomeDoMeio}
+                            #{pes.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Grupo Sanguíneo">
+                        <center>
+                            #{pes.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nacionalidade" filterBy="#{pes.fkIdPessoa.fkIdNacionalidade.nomePais}">
+                        <center>
+                            #{pes.fkIdPessoa.fkIdNacionalidade.nomePais}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data Nasc">
+                        <center>
+                            <h:outputText value="#{pes.fkIdPessoa.dataNascimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Sexo" filterBy="#{pes.fkIdPessoa.fkIdSexo.descricao}">
+                        <center>
+                            #{pes.fkIdPessoa.fkIdSexo.descricao}
+                        </center>
+                    </p:column>
+
+                    <p:column>
+                        <center>
+                            <p:commandButton value="Visualizar" icon="ui-icon-info" action="#{diagCandidatoDadorBean.visualizarCandidato(pes.fkIdPessoa)}"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+        </center>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+    </ui:define>
+</ui:composition>

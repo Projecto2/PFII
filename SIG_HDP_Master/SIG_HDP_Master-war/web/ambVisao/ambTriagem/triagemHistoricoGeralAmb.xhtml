@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <p:dataTable  id="tabelaHistoricoGeralTriagem" sortMode="multiple" var="item" rows="8" paginator="true" paginatorPosition="bottom" 
+                      value="#{ambTriagemListarBean.pesquisarTriagens()}"  
+                      reflow="true" emptyMessage="Nenhum registo encontrado."
+                      selectionMode="single" rowKey="#{item.pkIdTriagemSinal}">
+
+            <p:column headerText="Nº de Processo" sortBy="#{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterBy="#{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains">
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Nº de Subprocesso">
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                </center>
+            </p:column>
+            
+            <p:column headerText="Nome" sortBy="#{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                #{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                #{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                      filterBy="#{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                #{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                #{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" filterMatchMode="contains" >
+                <h:outputText value="#{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                     #{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                     #{item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" />
+            </p:column>
+
+            <p:column headerText="Peso" >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.peso}" />
+                </center>
+            </p:column>
+
+            <p:column headerText="Altura">
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.altura}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Pulso" >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.pulso}" />
+                </center>
+            </p:column>
+
+            <p:column headerText="Temperatura" >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.temperatura}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Freq. Card." >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.frequenciaCardiaca}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Freq. Resp." >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.frequenciaRespiratoria}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="TA Alta" >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.tensaoArterialMaxima}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="TA Baixa" >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.tensaoArterialMinima}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Sintomas" ><!--item.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdSexo.descricao-->
+                <h:outputText value="#{item.fkIdSinal.descricao}" />
+            </p:column>
+
+            <p:column headerText="Estado do Paciente" >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}" />
+                </center>
+            </p:column>
+
+            <p:column headerText="Observações" >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.observacoes}" />
+                </center>
+            </p:column>
+
+            <p:column headerText="Data" >
+                <center>
+                    <h:outputText value="#{item.fkIdTriagem.dataHoraTriagem}" >
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt"/>
+                    </h:outputText>
+                </center>
+            </p:column>
+
+            <p:column headerText="------">
+                <center>
+                    <p:menuButton value="Opções">
+
+                        <p:separator/>
+                        <p:menuitem value="Editar" icon="ui-icon-pencil" process="@this" partialSubmit="true" ajax="true"
+                                    actionListener="#{ambTriagemListarBean.seleccionarDetalhesTriagem(item.fkIdTriagem)}" 
+                                    update=":formEditarTriagem:panelEditarTriagem" onclick="PF('dialogEditarTriagem').show();"/>
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Eliminar" icon="ui-icon-trash"
+                                    action="#{ambTriagemEliminarBean.setAmbTriagemEliminar(item.fkIdTriagem)}" 
+                                    onclick="PF('confirmDialog').show()"/>
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Mais detalhes" icon="ui-icon-info" process="@this" partialSubmit="true" ajax="true" 
+                                    actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(ambTriagemListarBean.seleccionarDetalhesTriagem(item.fkIdTriagem).fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                    update=":formPacienteVisualizar" onclick="PF('dialogMaisDetalhes').show();"/>
+                        <p:separator/>
+
+                    </p:menuButton>
+                </center>
+            </p:column>
+
+        </p:dataTable>
+
+        <center>
+            <p:confirmDialog message="Tem certeza que pretende eliminar o item seleccionado?"
+                             header="Eliminar dados do Paciente" severity="alert" widgetVar="confirmDialog">
+                <p:commandButton value="Sim" actionListener="#{ambTriagemEliminarBean.removerRegisto(ambTriagemEliminarBean.getAmbTriagemEliminar())}" 
+                                 process="@this" update="tabelaHistoricoGeralTriagem" oncomplete="PF('confirmDialog').hide()"/>
+                <p:commandButton value="Não" onclick="PF('confirmDialog').hide();" type="button" />
+            </p:confirmDialog>
+        </center>
+
+    </h:body>
+</html>
+

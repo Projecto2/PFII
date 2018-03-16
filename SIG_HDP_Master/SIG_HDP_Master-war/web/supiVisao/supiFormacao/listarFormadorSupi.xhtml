@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <p:panel header="Gestão de Formação">
+                    <p:messages id="messagens" closable="true"/>
+                    <h:form id="formPrincipal" acceptcharset="ISO-8859-1">
+                        
+                            <h:panelGrid columns="2" cellpadding="3">
+
+                                <p:outputLabel value="Nome: "/>
+                                <f:validateBean disabled="true">
+                                    <p:inputText id="nomeFormador" value="#{supiFormadorBean.pesquisaFormador.fkIdFuncionario.fkIdPessoa.nome}" style="width: 250px"  />
+                                    
+                                </f:validateBean>
+                                <p:outputLabel value="Especialidade: "/>
+                                <p:selectOneMenu id="comboEspec" value="#{supiFormadorBean.pesquisaFormador.fkIdAreaFormacao.pkIdAreaFormacao}" style="width: 100%" filter="true">
+                                    <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>
+                                    <f:selectItems value="#{supiFormadorBean.todasAreasFormacao}"/>
+                                </p:selectOneMenu>
+                                
+                                <br> </br>
+                                <h:panelGrid columns="3">
+                                    <p:commandButton value="Pesquisar" action="#{supiFormadorBean.pesquisarFormador()}" update="tabela"/>
+                                    <p:commandButton value="Novo Formador" ajax="false" immediate="true" icon="ui-icon-plus" action="cadastroFormador"/>
+                                    <p:commandButton value="Limpar" icon="ui-icon-close" ajax="true"
+                                            action="#{supiFormadorBean.limparPesquisas()}" update="tabela" />
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+                        <center><h2> Formadores </h2></center>
+
+                        <p:dataTable id="tabela" var="escala" sortMode="multiple" paginator="true" rows="4"
+                                     value="#{supiFormadorBean.listaFormadores}" 
+                                     selectionMode="single" rowKey="#{escala.pkIdFormador}">
+                            
+                            <p:column headerText="Código">
+                                <h:outputText value="#{escala.pkIdFormador}"/>
+                            </p:column>
+
+                            <p:column headerText="Nome" filterBy="#{escala.nome}">
+                                <h:outputText value="#{escala.fkIdFuncionario.fkIdPessoa.nome} #{escala.fkIdFuncionario.fkIdPessoa.sobreNome}">
+
+                                </h:outputText>
+                            </p:column>
+
+
+                            <p:column headerText="Área de Formção">
+                                <h:outputText value="#{escala.fkIdAreaFormacao.descricao}"/>
+                            </p:column> 
+                            
+                            <p:column headerText="Tipo de Formador">
+                                <h:outputText value="#{escala.fkIdTipoFormador.descricao}"/>
+                            </p:column> 
+
+
+                            <p:column headerText="Data de Cadastro">
+                                <h:outputText value="#{escala.dataCadastro}">
+                                    <f:convertDateTime pattern="dd/MM/yyy" locale="pt"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="-------">
+                                <center>
+                                <p:menuButton value="Opções">
+                                    <p:menuitem value="Ver Detalhes" partialSubmit="true" process="@this" icon="ui-icon-info"
+                                                action="#{supiFormadorBean.setPesquisaFormador(escala)}"
+                                                onclick="PF('visualizar').show()" update=":formVisualizar:pgVisualizar"/>
+                                    <p:menuitem value="Eliminar" partialSubmit="true" process="@this" icon="ui-icon-trash"
+                                          actionListener="#{supiFormadorBean.setPesquisaFormador(escala)}"
+                                          onclick="PF('dialogEliminar').show()" update="tabela"/>
+                                    <p:menuitem ajax="false" value="Actualizar" icon="ui-icon-refresh"/>
+                                    
+                                </p:menuButton>
+                                </center>
+                            </p:column>
+
+                            
+                        </p:dataTable>
+
+                    </h:form>
+
+                    <h:form id="formVisualizar" acceptcharset="ISO-8859-1">
+                        <p:dialog header="Dados do Programa Mensal"  id="visualizar" widgetVar="visualizar">
+                            <p:growl id="growlVisualizar" sticky="true" />
+                            <h:panelGrid id="pgVisualizar" columns="2" width="100%" cellspacing="3" style=" font-family: cursive;alignment-adjust: central; ">
+                                <h:outputLabel value="Nome: "/>
+                                <h:outputLabel value="#{supiFormadorBean.pesquisaFormador.fkIdFuncionario.fkIdPessoa.nome} #{supiFormadorBean.pesquisaFormador.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{supiFormadorBean.pesquisaFormador.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                 <h:outputLabel value="Sexo:" />
+                                 <h:outputLabel  value="#{supiFormadorBean.pesquisaFormador.fkIdFuncionario.fkIdPessoa.fkIdSexo.descricao}"/>
+                                <h:outputLabel value="Data de Nascimento:" />
+                                <h:outputText value="#{supiFormadorBean.pesquisaFormador.dataNascimento}">
+                                    <f:convertDateTime pattern="dd-MM-yyy"/>
+                                </h:outputText>
+                                 <h:outputLabel value="Tipo Formador:" />
+                                 <h:outputLabel  value="#{supiFormadorBean.pesquisaFormador.fkIdTipoFormador.descricao}"/>
+                                <h:outputLabel value="Área de Formação:" />
+                                <h:outputLabel  value="#{supiFormadorBean.pesquisaFormador.fkIdAreaFormacao.descricao}"/>
+
+
+                            </h:panelGrid> 
+                            <p:commandButton style=" border-radius:10%;" ajax="true"  value="Voltar" onclick="PF('visualizar').hide();"/>
+                        </p:dialog>
+
+                    </h:form>
+                    <center>
+                  <h:form id="formEliminar">
+                     <p:confirmDialog message="Deseja eliminar o formador? Pode estar a ser utilizado... "
+                                      header="Eliminar Formador" severity="alert"
+                                      widgetVar="dialogEliminar">
+
+                        <p:commandButton value="Sim" actionListener="#{supiAvaliacaoNovaBean.eliminar()}"
+                                         update=":formPrincipal:tabela" 
+                                         oncomplete="PF('dialogEliminar').hide();"/>
+
+                        <p:commandButton value="Não" onclick="PF('dialogEliminar').hide();" type="button" />
+                     </p:confirmDialog>
+                  </h:form>
+               </center>
+
+                </p:panel>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

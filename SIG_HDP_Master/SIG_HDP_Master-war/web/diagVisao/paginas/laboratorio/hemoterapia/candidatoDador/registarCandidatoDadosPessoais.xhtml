@@ -1,0 +1,283 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagCandidatoDadorBean.temMensagemPendente == true}">
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Erro'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+        </c:if>
+
+        <h2>Laboratório -> Hemoterápia -> Registo de Candidato à Dador -> Dados Pessoais</h2>
+
+        <h:form id="formNovo">
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+            <center>
+                <br/>
+                <h:panelGrid columns="1" width="70%">
+
+                    <p:panel>
+                        <p:tabView id="tabPessoa" style="height: 450px">
+
+                            <!--    <p:wizard nextLabel="Próximo" backLabel="Anterior"> -->
+                            <p:tab title="Dados Pessoais">
+                                <h:panelGrid width="100%">
+                                    <h:panelGrid columns="2" width="100%" cellpadding="3">
+                                        <h3>Nome *: </h3>
+                                        <p:inputText id="nome" style="width: 60%" value="#{diagCandidatoDadorBean.grlPessoa.nome}" maxlength="75"
+                                                     required="true" requiredMessage="Indique o nome">
+                                            <f:validator validatorId="nome-validator"/>
+                                        </p:inputText>
+
+                                        <h3>Nome do Meio: </h3>
+                                        <p:inputText id="nomeMeio" style="width: 60%" value="#{diagCandidatoDadorBean.grlPessoa.nomeDoMeio}" maxlength="150">
+                                            <f:validator validatorId="nome-validator"/>
+                                        </p:inputText>
+
+                                        <h3>Sobrenome *: </h3>
+                                        <p:inputText id="sobreNome" style="width: 60%" value="#{diagCandidatoDadorBean.grlPessoa.sobreNome}" maxlength="75"
+                                                     required="true" requiredMessage="Indique o sobrenome">
+                                            <f:validator validatorId="nome-validator"/>
+                                        </p:inputText>
+
+                                        <h3>Documento de identificacao: </h3>
+                                        <p:panelGrid style="width: 60%" columns="3">
+                                            <p:outputLabel value="#{diagCandidatoDadorBean.grlPessoa.grlDocumentoIdentificacaoList.size()}" id="documentos"/>
+                                            <p:commandButton style="width: 100%" id="addDocumento" immediate="true" icon="ui-icon-plus" actionListener="#{diagCandidatoDadorBean.definirPessoaDocumentoId(diagCandidatoDgrlPessoaan.pessoa)}" 
+                                                             onclick="PF('dialogDocumentoId').show()"/>
+                                        </p:panelGrid>
+
+                                        <h3>Data de Nascimento *: </h3>
+                                        <p:calendar id="dataNascimento" maxdate="#{diagCandidatoDadorBean.getDataNascimentoValida()}" locale="pt" navigator="true"  value="#{diagCandidatoDadorBean.grlPessoa.dataNascimento}"
+                                                    required="true" requiredMessage="Indique a data de nascimento">
+                                        </p:calendar>
+
+                                        <h3>Sexo *: </h3>
+                                        <p:selectOneMenu id="sexo" style="width: 55%" value="#{diagCandidatoDadorBean.grlPessoa.fkIdSexo.pkIdSexo}">
+                                            <f:selectItems value="#{itensAjaxBean.sexoList}" var="sex"
+                                                           itemLabel="#{sex.descricao}" itemValue="#{sex.pkIdSexo}"/>
+                                        </p:selectOneMenu>
+
+                                        <h3>Nacionalidade *: </h3>
+                                        <p:selectOneMenu id="nacionalidade" style="width: 55%" required="true"
+                                                         requiredMessage="Indique a nacionalidade"
+                                                         value="#{diagCandidatoDadorBean.grlPessoa.fkIdNacionalidade.pkIdPais}">
+                                            <f:selectItems value="#{diagCandidatoDadorBean.listaPais}" var="nacion"
+                                                           itemLabel="#{nacion.nacionalidade}" itemValue="#{nacion.pkIdPais}"/>
+                                        </p:selectOneMenu>
+
+                                        <h3>Estado Civil *: </h3>
+                                        <p:selectOneMenu id="estadoCivil" style="width: 55%" required="true" requiredMessage="Indique o estado civil"
+                                                         value="#{diagCandidatoDadorBean.grlPessoa.fkIdEstadoCivil.pkIdEstadoCivil}">
+                                            <f:selectItems value="#{itensAjaxBean.estadoCivilList}" var="estado"
+                                                           itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoCivil}"/>
+                                        </p:selectOneMenu>
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                                <p:tooltip id="toolTipFade" for="documentos addDocumento" value="#{diagCandidatoDadorBean.documentosDeIdentificacao(diagCandidatoDadorBean.grlPessoa)}" position="top"/>
+                            </p:tab>
+
+                            <p:tab title="Filiação">
+                                <h:panelGrid columns="2" width="100%" cellpadding="3">
+                                    <h3>Nome Completo do Pai: </h3>
+                                    <p:inputText id="nomePai" style="width: 70%" value="#{diagCandidatoDadorBean.grlPessoa.nomePai}" maxlength="45"/>
+
+                                    <h3>Nome Completo da Mãe: </h3>
+                                    <p:inputText id="nomeMae" style="width: 70%" value="#{diagCandidatoDadorBean.grlPessoa.nomeMae}" maxlength="45"/>
+                                </h:panelGrid>
+                            </p:tab>
+
+                            <p:tab title="Contacto">
+                                <h:panelGrid columns="2" cellpadding="2" width="100%">
+                                    <h3>Telefone 1 *: </h3>
+                                    <p:inputMask id="telefone1" style="width: 50%" value="#{diagCandidatoDadorBean.grlPessoa.fkIdContacto.telefone1}" mask="(+244) 999-999-999"
+                                                 required="true" requiredMessage="Indique o telefone1"/>
+
+                                    <h3>Telefone 2: </h3>
+                                    <p:inputMask id="telefone2" style="width: 50%" value="#{diagCandidatoDadorBean.grlPessoa.fkIdContacto.telefone2}" mask="(+244) 999-999-999"/>
+
+                                    <h3>Email 1: </h3>
+                                    <p:inputText id="email1" style="width: 50%" value="#{diagCandidatoDadorBean.grlPessoa.fkIdContacto.email1}" maxlength="100">
+                                        <p:keyFilter mask="email"/>
+                                    </p:inputText>
+
+                                    <h3>Email 2: </h3>
+                                    <p:inputText id="email2" style="width: 50%" value="#{diagCandidatoDadorBean.grlPessoa.fkIdContacto.email2}" maxlength="100">
+                                        <p:keyFilter mask="email"/>
+                                    </p:inputText>
+                                </h:panelGrid>
+                            </p:tab>
+
+                            <p:tab title="Endereço">
+                                <h:panelGrid columns="2" width="100%" cellpadding="5">
+
+                                    <h3>País *: </h3>
+                                    <p:selectOneMenu id="comboPais" style="width: 45%" value="#{itensAjaxBean.pais}"
+                                                     valueChangeListener="#{itensAjaxBean.changePais}">
+                                        <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                       itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                        <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio comboDistrito comboComuna"/>
+                                    </p:selectOneMenu>
+
+                                    <h3>Provícia *: </h3>
+                                    <p:selectOneMenu id="comboProvincia" style="width: 45%" 
+                                                     value="#{itensAjaxBean.provincia}"
+                                                     valueChangeListener="#{itensAjaxBean.changeProvincia}">
+                                        <f:selectItems value="#{itensAjaxBean.provinciaList}" var="prov"
+                                                       itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                                        <f:ajax execute="@this" event="change" render="comboMunicipio comboDistrito comboComuna"/>
+                                    </p:selectOneMenu>
+
+                                    <h3>Município *: </h3>
+                                    <p:selectOneMenu id="comboMunicipio" style="width: 45%" required="true" requiredMessage="Indique o município"
+                                                     value="#{diagCandidatoDadorBean.grlPessoa.fkIdEndereco.fkIdMunicipio.pkIdMunicipio}" valueChangeListener="#{itensAjaxBean.changeMunicipio}">
+                                        <f:selectItems value="#{itensAjaxBean.municipioList}" var="mun"
+                                                       itemLabel="#{mun.nomeMunicipio}" itemValue="#{mun.pkIdMunicipio}"/>
+                                        <f:ajax execute="@this" event="change" render="comboDistrito comboComuna"/>
+                                    </p:selectOneMenu>
+
+                                    <h3>Distrito *: </h3>
+                                    <p:selectOneMenu id="comboDistrito" style="width: 45%"
+                                                     value="#{diagCandidatoDadorBean.grlPessoa.fkIdEndereco.fkIdDistrito.pkIdDistrito}">
+                                        <f:selectItems value="#{itensAjaxBean.distritoList}" var="dist"
+                                                       itemLabel="#{dist.descricao}" itemValue="#{dist.pkIdDistrito}"/>
+                                    </p:selectOneMenu>
+
+                                    <h3>Comuna *: </h3>
+                                    <p:selectOneMenu id="comboComuna" style="width: 45%" required="true" requiredMessage="Indique a comuna"
+                                                     value="#{diagCandidatoDadorBean.grlPessoa.fkIdEndereco.fkIdComuna.pkIdComuna}">
+                                        <f:selectItems value="#{itensAjaxBean.comunaList}" var="com"
+                                                       itemLabel="#{com.descricaoComuna}" itemValue="#{com.pkIdComuna}"/>
+                                    </p:selectOneMenu>
+
+                                    <h3>Bairro *: </h3>
+                                    <p:inputText id="bairro" style="width: 50%" value="#{diagCandidatoDadorBean.grlPessoa.fkIdEndereco.bairro}" maxlength="50"
+                                                 required="true" requiredMessage="Indique o bairro"/>
+
+                                    <h3>Rua: </h3>
+                                    <p:inputText id="rua" style="width: 50%" value="#{diagCandidatoDadorBean.grlPessoa.fkIdEndereco.rua}" maxlength="50"/>
+
+                                    <h3>Nº Casa: </h3>
+                                    <p:inputText id="numeroCasa" style="width: 50%" value="#{diagCandidatoDadorBean.grlPessoa.fkIdEndereco.numeroCasa}" maxlength="50"/>
+
+                                    <h3>Codigo Postal: </h3>
+                                    <p:inputText id="codPostal" style="width: 50%" value="#{diagCandidatoDadorBean.grlPessoa.fkIdEndereco.codigoPostal}" maxlength="100"/>
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab title="Outros">
+                                <h:panelGrid columns="2" width="100%" cellpadding="3">
+                                    <h3>Religião: </h3>
+                                    <p:selectOneMenu id="religiao" style="width: 45%; text-align: center" value="#{diagCandidatoDadorBean.grlPessoa.fkIdReligiao.pkIdReligiao}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{itensAjaxBean.religiaoList}" var="rel"
+                                                       itemLabel="#{rel.descricao}" itemValue="#{rel.pkIdReligiao}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+
+                            </p:tab>
+                            <!--      </p:wizard> -->
+                        </p:tabView>
+
+                        <br/>
+                        <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left;"/>
+
+                        <br/>
+                        <center>
+                            <p:commandButton style="font-size: medium" value="Registar" icon="ui-icon-disk" action="#{diagCandidatoDadorBean.registarCandidatosDadosPessoais()}"
+                                             partialSubmit="true"
+                                             update=":formNovo:tabPessoa:nome :formNovo:tabPessoa:nomeMeio :formNovo:tabPessoa:sobreNome 
+                                             :formNovo:tabPessoa:dataNascimento :formNovo:tabPessoa:sexo 
+                                             :formNovo:tabPessoa:estadoCivil :formNovo:tabPessoa:nacionalidade :formNovo:tabPessoa:nomePai 
+                                             :formNovo:tabPessoa:nomeMae :formNovo:tabPessoa:telefone1 :formNovo:tabPessoa:telefone2 
+                                             :formNovo:tabPessoa:email1 :formNovo:tabPessoa:email2 :formNovo:tabPessoa:comboPais :formNovo:tabPessoa:comboProvincia
+                                             :formNovo:tabPessoa:comboMunicipio :formNovo:tabPessoa:comboComuna :formNovo:tabPessoa:comboDistrito 
+                                             :formNovo:tabPessoa:bairro :formNovo:tabPessoa:rua :formNovo:tabPessoa:numeroCasa 
+                                             :formNovo:tabPessoa:codPostal :formNovo:tabPessoa:religiao :documentoId:tipoDocumento 
+                                             :documentoId:numeroDocumento :documentoId:dataTable"/>
+                            <p:commandButton style="font-size: medium" process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" 
+                                             action="#{diagCandidatoDadorBean.limparPesquisaPessoa()}"/>
+                        </center>
+
+                    </p:panel>
+
+                </h:panelGrid>
+            </center>
+        </h:form>
+
+        <h:form id="documentoId">
+            <p:dialog widgetVar="dialogDocumentoId" header="Documento de identificacao"
+                      width="45%" height="400px" showEffect="fade" closable="true"
+                      hideEffect="fade" modal="true" position="center">
+
+                <p:fieldset>
+                    <h:panelGrid width="80%" columns="2" cellpadding="4">
+
+                        <h3>Tipo de documento de identificacao *: </h3>
+                        <p:selectOneMenu id="tipoDocumento" style="width: 100%" value="#{diagCandidatoDadorBean.tipoDocumento}">
+                            <f:selectItems value="#{itensAjaxBean.tipoDocumentoIdentificacaoList}" var="tipo"
+                                           itemLabel="#{tipo.descricao}" itemValue="#{tipo.pkTipoDocumentoIdentificacao}"/>
+                        </p:selectOneMenu>
+
+                        <h3>Numero do documento: </h3>
+                        <p:inputText id="numeroDocumento" style="width: 97%" value="#{diagCandidatoDadorBean.numeroDocumento}"/>
+                        <br/>
+                        <p:commandButton style="width: 100%" icon="ui-icon-plus" value="Adicionar" 
+                                         actionListener="#{diagCandidatoDadorBean.adicionarDocumentoDeIdentificacao(diagCandidatoDadorBean.grlPessoa)}" 
+                                         partialSubmit="true" process="@this numeroDocumento tipoDocumento" 
+                                         update="dataTable :formNovo:tabPessoa:documentos :formNovo:tabPessoa:toolTipFade"/>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable id="dataTable" value="#{diagCandidatoDadorBean.grlPessoa.getGrlDocumentoIdentificacaoList()}" 
+                             var="docId"
+                             style="width: 100%" emptyMessage="Não Existem Documentos"
+                             paginator="true" paginatorPosition="bottom" rows="4">
+                    <p:column headerText="Tipo documento">
+                        <center>                                        
+                            #{docId.fkTipoDocumentoIdentificacao.descricao}
+                        </center>
+                    </p:column>
+                    <p:column headerText="Numero do documento">
+                        <center>                                        
+                            #{docId.numeroDocumento}
+                        </center>
+                    </p:column>
+                    <p:column headerText="Remover">
+                        <center>                                        
+                            <p:commandButton style="width: 70%" icon="ui-icon-plus" value="Remover" partialSubmit="true" 
+                                             actionListener="#{diagCandidatoDadorBean.removerDocumentoIdentificacao(diagCandidatoDadorBean.grlPessoa, docId)}" process="@this" update="dataTable :formNovo:tabPessoa:documentos :formNovo:tabPessoa:toolTipFade"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+            </p:dialog>
+        </h:form>
+
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+    </ui:define>
+</ui:composition>

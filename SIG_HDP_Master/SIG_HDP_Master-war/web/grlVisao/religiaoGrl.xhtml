@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+     <h:head>
+          <title>Religiões</title>
+     </h:head>
+
+     <h:body>
+          #{detetorAtualizacaoPagina.checkAtualizacao("")}
+          <p:messages id="msg" autoUpdate="true" closable="true"/>
+          <p:growl id="msg2" autoUpdate="true"/>
+          <br/>
+          <center>
+               <h:panelGrid columns="1" width="85%">
+                    <h:form id="formPesquisa">
+                         <p:fieldset style="width: 97%">
+                              <br/>
+                              <h:panelGrid cellpadding="5" width="100%">
+                                   <p:commandButton style="width: 220px;" value="Carregar" icon="ui-icon-refresh" action="religiaoGrl.xhtml?faces-redirect=true" 
+                                                    actionListener="#{grlReligiaoExcelBean.carregarReligiaoTabela()}"/>
+                              </h:panelGrid>
+                         </p:fieldset>  
+                         <p:dataTable id="dataTable" var="religiao" value="#{grlReligiaoBean.findAll()}"
+                                      emptyMessage="Nenhum registro de religião encontrado"
+                                      paginator="true" paginatorPosition="bottom" rows="10">
+                              <p:column headerText="Religião" sortBy="#{religiao.descricao}" filterBy="#{religiao.descricao}">
+                                   <center>
+                                        #{religiao.descricao}
+                                   </center>
+                              </p:column>
+                         </p:dataTable>
+                    </h:form>
+               </h:panelGrid>
+          </center>
+
+     </h:body>
+</html>

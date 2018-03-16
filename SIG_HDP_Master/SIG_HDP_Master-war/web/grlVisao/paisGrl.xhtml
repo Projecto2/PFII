@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+     <h:head>
+          <title>Países</title>
+     </h:head>
+
+     <h:body>
+          <p:messages id="msg" autoUpdate="true" closable="true"/>
+          <p:growl id="msg2" autoUpdate="true"/>
+          <br/>
+          <center>
+               #{detetorAtualizacaoPagina.checkAtualizacao("")}
+               <h:panelGrid columns="1" width="75%">
+                    <h:form id="formPesquisa">
+                         <p:fieldset>
+                              <br/>
+                              <h:panelGrid columns="1" cellpadding="5">
+                                   <p:commandButton style="width: 220px" icon="ui-icon-refresh"
+                                                    value="Carregar" action="#{grlPaisBean.carregar()}" 
+                                                    update=":formulario:gridCampos :formulario:gridBotoes"/>
+                              </h:panelGrid>
+                         </p:fieldset>
+                         <p:dataTable id="dataTable" var="pais" value="#{grlPaisBean.findAll()}"
+                                      emptyMessage="Nenhum registro de país encontrado"
+                                      paginator="true" paginatorPosition="bottom" rows="10">
+                              <p:column headerText="País" sortBy="#{pais.nomePais}" filterBy="#{pais.nomePais}">
+                                   <center>
+                                        #{pais.nomePais}
+                                   </center>
+                                
+                              </p:column>
+                               <!--<p:column headerText="">
+                                   <center>
+                                        <p:menuButton value="Opções">
+
+                                             <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogPais').show();"
+                                                         action="# {paisBean.setPais(pais)}" process="dataTable" 
+                                                         partialSubmit="true" update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                             <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                                         action="# {paisBean.setPaisRemover(pais)}"/>
+                                        </p:menuButton>
+                                   </center>
+                              </p:column>
+                            -->
+                         </p:dataTable>
+                         <p:confirmDialog message="Tem certeza que pretende remover o país selecionado ?"
+                                          header="Remover País" severity="alert" widgetVar="confirmDialogRemover">
+                              <p:commandButton value="Sim" actionListener="#{grlPaisBean.remove()}" process="@this"
+                                               update=":msg :msg2 dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                              <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                         </p:confirmDialog>
+                    </h:form>
+               </h:panelGrid>
+          </center>
+
+          <center>
+               <p:dialog header="País" closable="false" showEffect="fade" width="35%"
+                         widgetVar="dialogPais" modal="true" closeOnEscape="true">
+                    <h:form id="formulario">
+                         <p:fieldset>
+                              <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                                   <p:outputLabel value="Nome do País"/>
+                                   <p:inputText value="#{grlPaisBean.pais.nomePais}" style="width: 190px"
+                                                required="true" requiredMessage="Indique o nome do país"/>
+                              </h:panelGrid>
+
+                              <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                                   <p:commandButton value="Guardar" action="#{grlPaisBean.create()}" style="width: 150px"
+                                                    rendered="#{grlPaisBean.pais.pkIdPais == null}" process="@form" partialSubmit="true"
+                                                    onclick="PF('dialogPais').hide()" update=":formPesquisa:dataTable"/>
+                                   <p:commandButton value="Guardar Edição" action="#{grlPaisBean.edit()}" style="width: 150px"
+                                                    rendered="#{grlPaisBean.pais.pkIdPais != null}"  process="@form" partialSubmit="true"
+                                                    onclick="PF('dialogPais').hide()" update=":formPesquisa:dataTable"
+                                                    disabled="#{grlPaisBean.pais.nomePais.trim().equalsIgnoreCase('Médico') || grlPaisBean.pais.nomePais.trim().equalsIgnoreCase('Enfermeiro')}"/>
+                                   <p:commandButton value="Fechar" onclick="PF('dialogPais').hide()" style="width: 150px" process="@this" 
+                                                    actionListener="#{grlPaisBean.setPais(null)}"/>
+                              </h:panelGrid>
+                         </p:fieldset>
+                    </h:form>
+               </p:dialog>
+          </center>
+     </h:body>
+</html>

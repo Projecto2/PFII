@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:body>
+        <h:form id="formEditarConsulta">
+            <p:messages id="ms3" autoUpdate="true" closable="true"/>
+            <p:growl id="ms4" autoUpdate="true"/>
+            <br/>
+            <center>
+                <p:panel id="panelEditarConsulta" styleClass="ui-noborder">
+
+                    <h:panelGrid id="gridEditarConsulta" styleClass="ui-noborder">
+
+                        <p:panel styleClass="ui-noborder">
+                            
+                            <center>
+                                <span style="font-size: 16pt">
+
+                                    <p:outputLabel value="#{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}: 
+                                                   #{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                   #{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                   #{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                   "
+                                                   style="color: #0088cc"/>
+
+                                    <br/>
+                                    #{msgs.subProcesso}:
+                                    <p:outputLabel value="#{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // " id="numeroSupProcesso"/>
+                                    <p:outputLabel value="#{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+
+                                </span>
+                            </center>
+
+                        </p:panel>
+
+                        <h:panelGrid columns="1" styleClass="ui-noborder" width="100%">
+
+                            #{ambHipoteseDiagnosticoBean.init()}
+                            <ui:include src="../ambDiagnosticos/hipoteseDiagnosticoAmbCe.xhtml"/>
+
+                            <p:fieldset styleClass="ui-noborder">
+                                <h:panelGrid columns="6" styleClass="ui-noborder" width="100%">
+                                    <h:outputLabel value="Outros:" for="outros"/>
+                                    <p:inputText id="outros" style="margin-left: 5px; margin-right: 60px" value="#{ambConsultaListarBean.ambDiagnosticoHipoteseHasDoenca.outros}"/>
+
+                                    <h:outputLabel value="Observações:" for="observacoes" style="margin-left: 45px"/>
+                                    <p:inputTextarea id="observacoes" value="#{ambConsultaCriarBean.ambConsulta.observacoes}" autoResize="false"/>
+
+                                    <h:outputLabel value="Alta/Internado? *" for="observacoesMedicas" style="margin-left: 20px"/>
+                                    <p:selectOneMenu id="observacoesMedicas" style="margin-right: 45px" value="#{ambConsultaCriarBean.codigoObservacoesMedicas}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{ambConsultaListarBean.listarObservacoesMedicas()}" var="om" itemLabel="#{om.descricao}" itemValue="#{om.pkIdObservacoesMedicas}"/> 
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                            </p:fieldset>
+
+                        </h:panelGrid>
+
+                        <p:separator />
+                        <p:separator />
+
+                        <p:panel>
+                            <center>
+                                <p:commandButton icon="ui-icon-pencil" value="Editar" process="gridEditarConsulta" 
+                                                 update="ms3 ms4 dataTableEditarConsulta">
+                                    <p:ajax update=":formEditarConsulta:panelEditarConsulta" listener="#{ambConsultaListarBean.findPacientesConsultados()}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-close" actionListener="#{ambConsultaCriarBean.fecharConsulta()}" 
+                                                 value="Fechar" type="button"
+                                                 onclick="PF('dialogEditarConsulta').hide()">
+                                    <p:ajax update=":formEditarConsulta:panelEditarConsulta" listener="#{ambConsultaListarBean.findPacientesConsultados()}"/>
+                                </p:commandButton>
+                            </center>
+                        </p:panel>
+
+                    </h:panelGrid>
+
+                    <p:dataTable  id="dataTableEditarConsulta" sortMode="multiple" var="itemConsultaEditar" rows="5" paginator="true" paginatorPosition="bottom"
+                                  value="#{ambConsultaListarBean.findPacientesConsultados()}" reflow="true" emptyMessage="Nenhum registo encontrado."
+                                  selectionMode="single" rowKey="#{itemConsultaEditar.pkIdDiagnosticoHipoteseDoenca}">
+
+                        <p:column headerText="Nº de Processo" sortBy="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"
+                                  filterBy="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains">
+                            <center>
+                                <h:outputText value="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Nº de Subprocesso">
+                            <center>
+                                <h:outputText value="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Nome" sortBy="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                  #{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                  #{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}"
+                                  filterBy="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                  #{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                  #{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" filterMatchMode="contains">
+                            <h:outputText value="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}"/>
+                        </p:column>
+
+                        <p:column headerText="Médico" >
+                            <h:outputText value="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdFuncionario.fkIdPessoa.nome} 
+                                          #{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                          #{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                          "/>
+                        </p:column>
+
+                        <p:column headerText="Classificação da Dor">
+                            <h:outputText value="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdClassificacaoDor.descricao}"/>
+                        </p:column>
+
+                        <p:column headerText="Grávida">
+                            <h:outputText value="#{itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConfirmacao.descricao}"/>
+                        </p:column>
+
+                        <p:column headerText="Hipótese de Diagnóstico">
+                            <h:outputText value="#{itemConsultaEditar.fkIdSubcategorias.nome}"/>
+                            <h:outputText value="#{itemConsultaEditar.outros}"/>
+                        </p:column>
+
+                        <p:column headerText="Data">
+                            <center>
+                                <h:outputText value="#{itemConsultaEditar.fkIdDiagnosticoHipotese.dataHoraHipoteseDiagnostico}" >
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt"/>
+                                </h:outputText>
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="------">
+                            <center>
+                                <p:commandButton value="Eliminar" update="dataTableEditarConsulta" ajax="true" icon="ui-icon-trash"
+                                                 actionListener="#{ambConsultaEliminarBean.removerDoencaConsulta(itemConsultaEditar)}"/>
+                            </center>
+                        </p:column>                        
+                        
+                        <p:column headerText="------">
+                            <center>
+                                <p:commandButton value="Selecionar" icon="ui-icon-pencil" process="@this" partialSubmit="true"
+                                                 actionListener="#{ambConsultaListarBean.seleccionarDetalhesConsulta(itemConsultaEditar.fkIdDiagnosticoHipotese.fkIdConsulta)}" 
+                                                 update=":formEditarConsulta:panelEditarConsulta" 
+                                                 onclick="PF('dialogEditarConsulta').show()">
+                                </p:commandButton>
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:panel>
+
+            </center>
+
+        </h:form>
+
+    </h:body>
+</html>
+

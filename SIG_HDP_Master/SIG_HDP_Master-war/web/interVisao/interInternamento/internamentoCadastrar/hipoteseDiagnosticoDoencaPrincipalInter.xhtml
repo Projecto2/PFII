@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <h:form id="formularioId">
+
+            <div class="ui-fluid">
+
+                <p:fieldset 
+                    legend="Hipótese de Diagnóstico (CID-10)" 
+                    id="hipoteseDiagnosticoFS"
+                    >
+
+                    <p:panelGrid columns="2" columnClasses="ui-grid-col-4,ui-grid-col-8" layout="grid" styleClass="ui-panelgrid-blank">
+
+                        <h:outputLabel value="Perfil Preferencial:" />
+                        <h:outputLabel 
+                            rendered="#{! interCidHipoteseDiagnosticoBean.perfilPreferencialSOMrendered}"
+                            value="#{interCidHipoteseDiagnosticoBean.perfilPreferencial}" 
+                            />
+                        <p:tree 
+                            selectionMode="single"
+                            dynamic="true" 
+                            rendered="#{interCidHipoteseDiagnosticoBean.perfilPreferencialSOMrendered}"
+                            value="#{interCidHipoteseDiagnosticoBean.ambCidTreePerfisPreferencial.root}" 
+                            var="node"
+                            >
+                            <p:ajax 
+                                event="select" 
+                                update=":doencas:formularioId:hipoteseDiagnosticoFS"
+                                listener="#{interCidHipoteseDiagnosticoBean.ambCidTreePerfisPreferencial.onNodeSelect}" 
+                                />
+                            <p:ajax event="expand" listener="#{interCidHipoteseDiagnosticoBean.ambCidTreePerfisPreferencial.onNodeExpand}" />
+                            <p:ajax event="collapse" listener="#{interCidHipoteseDiagnosticoBean.ambCidTreePerfisPreferencial.onNodeCollapse}" />
+                            <p:ajax event="unselect" listener="#{interCidHipoteseDiagnosticoBean.ambCidTreePerfisPreferencial.onNodeUnSelect}"/>
+                            <p:treeNode>
+                                <h:outputText value="#{node}"/>
+                            </p:treeNode>
+                        </p:tree>
+
+
+                        <p:outputLabel value="Prioridade Preferencial das Doenças:"/>
+                        <h:outputLabel 
+                            rendered="#{! interCidHipoteseDiagnosticoBean.prioridadeDoencaSOMrendered}"
+                            value="#{interCidHipoteseDiagnosticoBean.ambCidDoencasPrioridadesPreferencial.descricao}" 
+                            />
+
+                        <p:selectOneMenu 
+                            id="prioridadeDoencaSOM" 
+                            rendered="#{interCidHipoteseDiagnosticoBean.prioridadeDoencaSOMrendered}"
+                            value="#{interCidHipoteseDiagnosticoBean.idDoencasPrioridadesPreferencial}"
+                            filter="true"
+                            >
+                            <p:ajax 
+                                event="itemSelect" 
+                                update="hipoteseDiagnosticoFS"
+                                listener="#{interCidHipoteseDiagnosticoBean.gravarDoencasPrioridades()}"
+                                />
+                            <f:selectItems 
+                                value="#{ambCidDoencasPrioridadesBean.findAllFromPerfilPreferencial(ambCidConfiguracoesBean.perfilPreferencial)}"
+                                var="prioridadeDoencaVar" 
+                                itemLabel="#{prioridadeDoencaVar.descricao}"
+                                itemValue="#{prioridadeDoencaVar.pkIdDoencasPrioridades}" 
+                                />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Capítulo da Doença:"/>
+                        <h:outputLabel 
+                            rendered="#{! interCidHipoteseDiagnosticoBean.capitulosDoencasSOMrendered}"
+                            value="#{interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.fkIdAgrupamentos.fkIdCapitulos.nome}"
+                            />
+                        <p:selectOneMenu 
+                            id="capitulosDoencasSOM" 
+                            rendered="#{interCidHipoteseDiagnosticoBean.capitulosDoencasSOMrendered}"
+                            disabled="#{interCidHipoteseDiagnosticoBean.capitulosDoencasSOMdisabled}"  
+                            value="#{interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.fkIdAgrupamentos.fkIdCapitulos.pkIdCapitulos}"
+                            filter="true"
+                            >
+                            <p:ajax
+                                event="itemSelect"
+                                update="hipoteseDiagnosticoFS" 
+                                listener="#{interCidHipoteseDiagnosticoBean.installAmbCidCapitulos(interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.fkIdAgrupamentos.fkIdCapitulos.pkIdCapitulos)}"
+                                />
+                            <f:selectItems 
+                                value="#{ambCidCapitulosBean.findAllOrderByNomeFromPerfilPreferencial(interCidHipoteseDiagnosticoBean.perfilPreferencial, interCidHipoteseDiagnosticoBean.idDoencasPrioridadesPreferencial)}"
+                                var="capitulosVar" itemLabel="#{capitulosVar.nome}"
+                                itemValue="#{capitulosVar.pkIdCapitulos}" 
+                                />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Agrupamento da Doença:"/>
+                        <h:outputLabel 
+                            rendered="#{! interCidHipoteseDiagnosticoBean.agrupamentosDoencasSOMrendered}"
+                            value="#{interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.fkIdAgrupamentos.nome}"
+                            />
+                        <p:selectOneMenu 
+                            id="agrupamentosDoencasSOM"
+                            rendered="#{interCidHipoteseDiagnosticoBean.agrupamentosDoencasSOMrendered}"
+                            value="#{interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.fkIdAgrupamentos.pkIdAgrupamentos}"
+                            filter="true"
+                            >
+                            <p:ajax
+                                event="itemSelect"
+                                update="hipoteseDiagnosticoFS" 
+                                listener="#{interCidHipoteseDiagnosticoBean.installAmbCidAgrupamentos(interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.fkIdAgrupamentos.pkIdAgrupamentos)}"
+                                />
+                            <f:selectItems 
+                                value="#{ambCidAgrupamentosBean.findAllOrderByNomeFromPerfilPreferencial(interCidHipoteseDiagnosticoBean.perfilPreferencial, interCidHipoteseDiagnosticoBean.idDoencasPrioridadesPreferencial, interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.fkIdAgrupamentos.fkIdCapitulos.pkIdCapitulos)}"
+                                var="agrupamentoVar" itemLabel="#{agrupamentoVar.nome}"
+                                itemValue="#{agrupamentoVar.pkIdAgrupamentos}" 
+                                />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Categoria da Doença:"/>
+                        <h:outputLabel 
+                            rendered="#{! interCidHipoteseDiagnosticoBean.categoriasDoencasSOMrendered}"
+                            value="#{interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.nome}"
+                            />
+                        <p:selectOneMenu 
+                            id="categoriasDoencasSOM"
+                            rendered="#{interCidHipoteseDiagnosticoBean.categoriasDoencasSOMrendered}"
+                            value="#{interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.pkIdCategorias}"
+                            filter="true"
+                            >
+                            <p:ajax
+                                event="itemSelect"
+                                update="hipoteseDiagnosticoFS" 
+                                listener="#{interCidHipoteseDiagnosticoBean.installAmbCidCategorias(interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.pkIdCategorias)}"
+                                />
+                            <f:selectItems 
+                                value="#{ambCidCategoriasBean.findAllOrderByNomeFromPerfilPreferencial(interCidHipoteseDiagnosticoBean.perfilPreferencial, interCidHipoteseDiagnosticoBean.idDoencasPrioridadesPreferencial, interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.fkIdAgrupamentos.pkIdAgrupamentos)}"
+                                var="categoriaVar" itemLabel="#{categoriaVar.nome}"
+                                itemValue="#{categoriaVar.pkIdCategorias}" 
+                                />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Doença:"/>
+                        <p:selectOneMenu 
+                            id="doencaSelecionada"
+                            value="#{interRegistoInternamentoBean.doencaPrincipal}"
+                            filter="true">
+                            <f:selectItem itemLabel="" itemValue="" />
+                            <f:selectItems 
+                                value="#{ambCidSubcategoriasBean.findAllOrderByNomeFromPerfilPreferencial(interCidHipoteseDiagnosticoBean.perfilPreferencial, interCidHipoteseDiagnosticoBean.idDoencasPrioridadesPreferencial, interCidHipoteseDiagnosticoBean.ambCidPerfisDoencas.fkIdSubcategorias.fkIdCategorias.pkIdCategorias)}"
+                                var="subCategoriaVar"
+                                itemLabel="#{subCategoriaVar.nome}" itemValue="#{subCategoriaVar.nome}"
+                                />
+                        </p:selectOneMenu>
+                    </p:panelGrid>
+                </p:fieldset>
+
+            </div>
+
+        </h:form>
+
+    </body>
+</html>

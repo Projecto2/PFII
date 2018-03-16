@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ava" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="095e7f4d-99f9-4ff0-a75b-cc86f1fb81db">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codigoAvaliacao" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT
+     SU_AvaliacaoDesempenho.`idAvaliacaoDesempenho` AS SU_AvaliacaoDesempenho_idAvaliacaoDesempenho,
+     SU_AvaliacaoDesempenho.`dataAvalicao` AS SU_AvaliacaoDesempenho_dataAvalicao,
+     SU_AvaliacaoDesempenho.`totalMensal` AS SU_AvaliacaoDesempenho_totalMensal,
+     SU_AvaliacaoDesempenho.`observacao` AS SU_AvaliacaoDesempenho_observacao,
+     SU_CriterioAvaliacao.`descricaoCriterio` AS SU_CriterioAvaliacao_descricaoCriterio,
+     SU_AvaliaCriterios.`pontuacao` AS SU_AvaliaCriterios_pontuacao,
+     grh_pessoa.`primeiroNome` AS grh_pessoa_primeiroNome,
+     grh_pessoa.`ultimoNome` AS grh_pessoa_ultimoNome,
+     grh_pessoa.`idPessoa` AS grh_pessoa_idPessoa,
+     grh_estagiario.`idEstagiario` AS grh_estagiario_idEstagiario
+FROM
+     `SU_AvaliacaoDesempenho` SU_AvaliacaoDesempenho INNER JOIN `SU_AvaliaCriterios` SU_AvaliaCriterios ON SU_AvaliacaoDesempenho.`idAvaliacaoDesempenho` = SU_AvaliaCriterios.`fk_idAvaliacaoDesempenho`
+     INNER JOIN `SU_CriterioAvaliacao` SU_CriterioAvaliacao ON SU_AvaliaCriterios.`fk_idCriterioAvaliacao` = SU_CriterioAvaliacao.`idCriteriAvaliacao`
+     INNER JOIN `grh_estagiario` grh_estagiario ON SU_AvaliacaoDesempenho.`fk_idEstagiario` = grh_estagiario.`idEstagiario`
+     INNER JOIN `grh_pessoa` grh_pessoa ON grh_estagiario.`grh_pessoa_idPessoa` = grh_pessoa.`idPessoa` where SU_AvaliacaoDesempenho.`idAvaliacaoDesempenho` = $P{codigoAvaliacao}]]>
+	</queryString>
+	<field name="SU_AvaliacaoDesempenho_idAvaliacaoDesempenho" class="java.lang.Integer"/>
+	<field name="SU_AvaliacaoDesempenho_dataAvalicao" class="java.sql.Date"/>
+	<field name="SU_AvaliacaoDesempenho_totalMensal" class="java.lang.Double"/>
+	<field name="SU_AvaliacaoDesempenho_observacao" class="java.lang.String"/>
+	<field name="SU_CriterioAvaliacao_descricaoCriterio" class="java.lang.String"/>
+	<field name="SU_AvaliaCriterios_pontuacao" class="java.lang.Double"/>
+	<field name="grh_pessoa_primeiroNome" class="java.lang.String"/>
+	<field name="grh_pessoa_ultimoNome" class="java.lang.String"/>
+	<field name="grh_pessoa_idPessoa" class="java.lang.Integer"/>
+	<field name="grh_estagiario_idEstagiario" class="java.lang.Integer"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="96">
+			<staticText>
+				<reportElement uuid="af0eee99-3f97-4b73-808e-89e0ea0d7570" key="staticText-16" x="198" y="0" width="184" height="32"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA  MINISTERIO DA SAÚDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a6f02245-41f2-41de-8fd8-8189438fd445" key="staticText-18" x="74" y="31" width="362" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AVENIDA PEDRO DE CASTRO VANDUNÉM "LOY" - K. KIAXE - LUANDA TEL-FAX (02) 470781 470507 EMAIL: hospdp@bonet.net]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d6585fca-2226-43ce-ac00-765261560441" key="staticText-17" x="52" y="59" width="418" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="24" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[HOSPITAL DIVINA PROVIDÊNCIA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="31">
+			<staticText>
+				<reportElement uuid="5278425f-086e-4a6c-a431-ee14cbf6db76" key="staticText-6" x="172" y="0" width="204" height="25" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ficha de Avaliação Mensal]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="57">
+			<line>
+				<reportElement uuid="8f971e77-cdd1-49e2-9b7d-f246d4c3ef8a" x="-20" y="56" width="595" height="1" forecolor="#666666"/>
+			</line>
+			<staticText>
+				<reportElement uuid="93208b19-2531-4af5-ba31-15b2fa9b76f1" mode="Opaque" x="376" y="40" width="68" height="14" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Pontuação]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1956942f-e6eb-47ca-9593-fa5c75f4b72f" mode="Opaque" x="74" y="42" width="59" height="14" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Critério]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a62c7069-f26b-4055-b02f-d9a660b9ed77" mode="Opaque" x="3" y="3" width="49" height="15" forecolor="#006699"/>
+				<textElement textAlignment="Left">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="1cb82e2a-af0f-4190-8f7f-28f118590d6c" x="50" y="1" width="201" height="20"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grh_pessoa_primeiroNome}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="01f21dc0-09f9-41ed-a6f6-dca610c13940" x="198" y="1" width="246" height="20"/>
+				<textElement textAlignment="Left">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grh_pessoa_ultimoNome}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="119f49cf-cf5c-4d14-bdb3-a7488c926c4c" mode="Opaque" x="3" y="22" width="126" height="16" forecolor="#006699"/>
+				<textElement textAlignment="Left">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data da Avaliação]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy">
+				<reportElement uuid="24f6c5bc-54d4-45d4-b2d9-bed3c2b6423d" x="129" y="21" width="97" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SU_AvaliacaoDesempenho_dataAvalicao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="8f8dae3d-cc89-4af8-a71c-be2c7bb37b68" mode="Opaque" x="228" y="20" width="97" height="20" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Mensal]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="702bc075-5cea-4b8b-b456-9236e0dbab75" x="325" y="20" width="43" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SU_AvaliacaoDesempenho_totalMensal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25">
+			<line>
+				<reportElement uuid="5e5e15ed-e9fa-4e38-b6e1-7170352e977b" positionType="FixRelativeToBottom" x="-25" y="19" width="599" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="6265eac4-b97d-4215-987a-831c79255799" x="3" y="0" width="218" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SU_CriterioAvaliacao_descricaoCriterio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="26c18abf-4702-46aa-8d30-30e065a6edbb" x="325" y="0" width="154" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SU_AvaliaCriterios_pontuacao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="48">
+			<textField>
+				<reportElement uuid="450db071-566c-46fa-ad5c-70af8d8b63df" mode="Opaque" x="0" y="33" width="515" height="13" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pag "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="c2a871e9-342f-4da4-9657-568ddd4c4e98" mode="Opaque" x="514" y="33" width="40" height="13" backcolor="#E6E6E6"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="6b16228e-94f5-4914-9371-11f166ade27b" x="0" y="32" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="3a78dd91-98b1-4ce9-aa16-37202914e91c" key="staticText-6" x="-1" y="0" width="222" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[O Chefe de Secção]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7b274745-f420-4de6-a055-cb761d47d880" key="staticText-6" x="325" y="1" width="231" height="18"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[A Direcção de Enfermagem]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="f517b5bb-46a8-49f0-8649-dc7a7841cce0" x="323" y="29" width="231" height="1"/>
+			</line>
+			<line>
+				<reportElement uuid="507ed509-3ee1-4f73-b80b-0c53d4ad8599" x="1" y="27" width="220" height="1"/>
+			</line>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

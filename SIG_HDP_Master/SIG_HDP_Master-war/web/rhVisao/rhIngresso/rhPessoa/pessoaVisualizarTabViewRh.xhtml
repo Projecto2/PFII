@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <h:outputScript name="JS/previewImagem.js"/>
+     </h:head>
+
+     <h:body>
+          <p:tabView id="tabPessoaVisualizar">
+               <p:tab title="Fotografia">
+                    <p:panel style="width:220px; height:160px;">
+                         <center>
+                              <h:graphicImage id="imgFotografia" url="#{rhPessoaBean.apresentarFotoPessoaVisualizar()}" width="190px" height="140px"/>
+                         </center>
+                    </p:panel>
+               </p:tab>
+               <p:tab title="Dados Pessoais">
+                    <h:panelGrid columns="2" cellpadding="4">
+                         <p:outputLabel style="font-size: 15px" value="Nome: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.nome} #{rhPessoaBean.pessoaVisualizar.nomeDoMeio}
+                                        #{rhPessoaBean.pessoaVisualizar.sobreNome}"/>
+                         <p:outputLabel style="font-size: 15px" value="Data de Nascimento: "/>
+                         <h:inputText value="#{rhPessoaBean.pessoaVisualizar.dataNascimento}" style="border: none; background: none" readonly="true">
+                              <f:convertDateTime pattern="dd-MM-yyyy"/>
+                         </h:inputText>
+                         <p:outputLabel style="font-size: 15px" value="Sexo: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdSexo.descricao}"/>
+                         <p:outputLabel style="font-size: 15px" value="Nacionalidade: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdNacionalidade.nacionalidade}"/>
+                         <p:outputLabel style="font-size: 15px" value="Estado Civil: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEstadoCivil.descricao}"/>
+                    </h:panelGrid>
+               </p:tab>
+               <p:tab title="Filiação">
+                    <h:panelGrid columns="2" cellpadding="7">
+                         <p:outputLabel style="font-size: 15px" value="Nome do Pai: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.nomePai}"/>
+                         <p:outputLabel style="font-size: 15px" value="Nome da Mãe: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.nomeMae}"/>
+                    </h:panelGrid>
+               </p:tab>
+               <p:tab title="Contacto">
+                    <h:panelGrid columns="2" cellpadding="7">
+                         <p:outputLabel style="font-size: 15px" value="Telefone1: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdContacto.telefone1}"/>
+                         <p:outputLabel style="font-size: 15px" value="Telefone2: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdContacto.telefone2}"/>
+                         <p:outputLabel style="font-size: 15px" value="Email1: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdContacto.email1}"/>
+                         <p:outputLabel style="font-size: 15px" value="Email2: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdContacto.email2}"/>
+                    </h:panelGrid>
+               </p:tab>
+               <p:tab title="Endereço">
+                    <h:panelGrid columns="2" cellpadding="5">
+                         <p:outputLabel style="font-size: 15px" value="País: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEndereco.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}"/>
+                         <p:outputLabel style="font-size: 15px" value="Província: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEndereco.fkIdMunicipio.fkIdProvincia.nomeProvincia}"/>
+                         <p:outputLabel style="font-size: 15px" value="Município: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEndereco.fkIdMunicipio.nomeMunicipio}"/>
+                         <p:outputLabel style="font-size: 15px" value="Comuna: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEndereco.fkIdComuna.descricaoComuna}"/>
+                         <p:outputLabel style="font-size: 15px" value="Distrito "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEndereco.fkIdDistrito.descricao}"/>
+                         <p:outputLabel style="font-size: 15px" value="Bairro: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEndereco.bairro}"/>
+                         <p:outputLabel style="font-size: 15px" value="Rua: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEndereco.rua}"/>
+                         <p:outputLabel style="font-size: 15px" value="Nº Casa: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEndereco.numeroCasa}"/>
+                         <p:outputLabel style="font-size: 15px" value="Código Postal: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdEndereco.codigoPostal}"/>
+                    </h:panelGrid>
+               </p:tab>
+               <p:tab title="Outros">
+                    <h:panelGrid columns="2" cellpadding="7">
+                         <p:outputLabel style="font-size: 15px" value="Religião: "/>
+                         <p:outputLabel value="#{rhPessoaBean.pessoaVisualizar.fkIdReligiao.descricao}"/>
+                    </h:panelGrid>
+               </p:tab>
+          </p:tabView>
+     </h:body>
+</html>

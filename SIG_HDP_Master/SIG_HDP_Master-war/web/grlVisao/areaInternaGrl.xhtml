@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Comunas</title>
+     </h:head>
+
+     <h:body>
+          <p:messages id="msg" autoUpdate="true" closable="true"/>
+          <p:growl id="msg2" autoUpdate="true"/>
+          <br/>
+          <center>
+               #{detetorAtualizacaoPagina.checkAtualizacao("")}
+               <h:panelGrid width="75%">
+                    <h:form id="formPesquisa">
+                            <p:growl autoUpdate="true"/>
+                            #{detetorAtualizacaoPagina.checkAtualizacao("")}
+                            <p:fieldset>
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+
+                                    <p:outputLabel value="#{msgs.descricaoAreaInterna}:"/>
+                                    <p:inputText id="descricaoAreaInternaPesquisa" style="width: 100%" value="#{grlAreaInternaBean.areaInternaPesquisa.descricaoAreaInterna}" 
+                                                 />
+
+                                    <p:outputLabel value="#{msgs.codigoAreaInterna}:"/>
+                                    <p:inputText id="codigoAreaPesquisa" style="width: 100%" value="#{grlAreaInternaBean.areaInternaPesquisa.codigoAreaInterna}" 
+                                                 />
+
+                                    <br/>
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                        <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{grlAreaInternaBean.pesquisar()}" 
+                                                         icon="ui-icon-search" ajax="true" partialSubmit="true" update="descricaoAreaInternaPesquisa codigoAreaPesquisa dataTable"/>
+                                        <!-- <p:commandButton value="# {msgs.novo}" icon="ui-icon-plus" style="width: 100%" onclick="PF('dialogNovo').show();" partialSubmit="true" process="@this" update="@this"/>-->
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                            </p:fieldset>
+                            
+                            
+                            <p:dataTable id="dataTable" var="areaInterna" value="#{grlAreaInternaBean.getGrlAreaInternaLista()}"
+                                         style="width: 100%" emptyMessage="Não Existem Áreas Internas"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.descricaoAreaInterna}" filterBy="#{areaInterna.descricaoAreaInterna}" filterMatchMode="contains">
+                                    <center>                                        
+                                        #{areaInterna.descricaoAreaInterna}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.codigoAreaInterna}" filterBy="#{areaInterna.codigoAreaInterna}" filterMatchMode="contains">
+                                    <center>                                        
+                                        #{areaInterna.codigoAreaInterna}
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </h:panelGrid>
+                </center>
+                
+                                <!--<p:column headerText="# {msgs.opcoes}">
+                                    <center>
+                                        <p:commandButton value="# {msgs.editar}" icon="ui-icon-pencil" onclick="PF('dialogEditar').show();"
+                                                         action="# {grlAreaInternaBean.setAreaInterna(areaInterna)}"
+                                                         process="@this" partialSubmit="true" update=":formEditar:editarDescricaoAreaInterna :formEditar:editarCodigoAreaInterna"/>
+                                    </center>
+                                </p:column>-->
+                <!--<center>
+                    <p:dialog header="Nova Área Interna" closable="false" showEffect="fade"
+                              widgetVar="dialogNovo" modal="true" closeOnEscape="true"
+                              width="40%" height="220px">
+                        <h:form id="formNovaArea">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="4" width="100%">
+                                    <p:outputLabel value="# {msgs.descricaoAreaInternaObrigatorio}"/>
+                                    <p:inputText id="descricaoAreaInterna" style="width: 100%" value="# {grlAreaInternaBean.areaInterna.descricaoAreaInterna}"
+                                                 required="true" requiredMessage="Indique o nome da área interna"/>
+                                    
+                                    <p:outputLabel value="# {msgs.codigoAreaInterna}: "/>
+                                    <p:inputText id="codigoArea" style="width: 100%" value="# {grlAreaInternaBean.areaInterna.codigoAreaInterna}"/>
+                                    
+                                    <p:outputLabel value="# {msgs.observacoes}: "/>
+                                    <p:inputTextarea id="observacaoAreaInterna" style="width: 100%" value="# {grlAreaInternaBean.areaInterna.observacoes}"/>
+                                    
+                                    <br/>
+                                    <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                        <p:commandButton value="# {msgs.gravar}" style="width: 100%" actionListener="# {grlAreaInternaBean.create()}"
+                                                         icon="ui-icon-disk" partialSubmit="true" 
+                                                         process="@this descricaoAreaInterna codigoArea observacaoAreaInterna"
+                                                         update=":formPesquisa:dataTable descricaoAreaInterna codigoArea observacaoAreaInterna"/>
+                                        <p:commandButton value="Fechar" style="width: 100%" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"
+                                                         action="# {grlAreaInternaBean.limpar()}"/>   
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center>
+                
+                <center>
+                    <p:dialog header="Editar Área Interna" closable="false" showEffect="fade"
+                              widgetVar="dialogEditar" modal="true" closeOnEscape="true" width="40%" height="220px">
+                        <h:form id="formEditar">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="4" width="100%">
+                                    <p:outputLabel value="# {msgs.descricaoAreaInternaObrigatorio}"/>
+                                    <p:inputText id="editarDescricaoAreaInterna" style="width: 100%" value="# {grlAreaInternaBean.areaInterna.descricaoAreaInterna}"
+                                                 required="true" requiredMessage="Indique A Descrição Da Área Interna"/>
+                                    
+                                    <p:outputLabel value="# {msgs.codigoAreaInterna}: "/>
+                                    <p:inputText id="editarCodigoAreaInterna" style="width: 100%" value="# {grlAreaInternaBean.areaInterna.codigoAreaInterna}"/>
+                                    
+                                    <p:outputLabel value="# {msgs.observacoes}: "/>
+                                    <p:inputTextarea id="editarObservacoesAreaInterna" style="width: 100%" value="# {grlAreaInternaBean.areaInterna.observacoes}"/>
+                                    
+                                    <br/>
+                                    <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                        <p:commandButton value="# {msgs.gravarEdicao}" icon="ui-icon-disk" style="width: 100%" actionListener="# {grlAreaInternaBean.editarAreaPesquisar()}"
+                                                         update=":formPesquisa:dataTable"/>
+                                        <p:commandButton value="# {msgs.fechar}" style="width: 100%" onclick="PF('dialogEditar').hide()" partialSubmit="true" process="@this"
+                                                         action="# {grlAreaInternaBean.limpar()}"/>                                    
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center>-->
+     </h:body>
+</html>

@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form acceptcharset="ISO-8859-1">
+
+                    <h2>Superintendência-> Estágios -> Nova Agenda de Aula</h2>
+                    <p:growl id="msg" autoUpdate="true"/>
+                    <p:fieldset id="fieldsetPrincipal">
+
+                        <h:panelGrid columns="4" cellpadding="7">
+
+                            <p:outputLabel value="Nome da Turma: "/>
+                            <f:validateBean disabled="true">
+                                <h:selectOneMenu id="comboTurma" style="width: 200px" value="#{supiCriarAgendaAulaBean.supiAgendaAula.fkIdCriacaoTurma.pkIdCriacaoTurma}"
+                                                 valueChangeListener="#{supiCriarAgendaAulaBean.changeTurma}">
+                                    <f:selectItems value="#{supiCriarAgendaAulaBean.findallCriacaoTurma()}" var="item" itemLabel="#{item.codigoTurma}" itemValue="#{item.pkIdCriacaoTurma}"/>
+                                    <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+                                    <f:ajax execute="@this" event="change" render="tabela"/>
+                                </h:selectOneMenu>
+                            </f:validateBean>
+
+                            <h:outputLabel value="Tema:"/>
+                            <p:inputText value="#{supiCriarAgendaAulaBean.supiAgendaAula.tema}" />
+
+                            <h:outputLabel value="Número de Aula:"/>
+                            <h:selectOneMenu id="comboNumAula" style="width: 200px" value="#{supiCriarAgendaAulaBean.supiAgendaAula.numeroAula}">
+
+                                <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+                                <f:selectItem itemLabel="1" itemValue="1"/>
+                                <f:selectItem itemLabel="2" itemValue="2"/>
+                                <f:selectItem itemLabel="3" itemValue="3"/>
+                                <f:selectItem itemLabel="4" itemValue="4"/>
+                                <f:selectItem itemLabel="5" itemValue="5"/>
+
+                            </h:selectOneMenu>
+
+                            <p:outputLabel value="Data da Aula: "/> 
+                            <p:calendar value="#{supiCriarAgendaAulaBean.supiAgendaAula.data}"
+                                        required="true" requiredMessage="Preencha a Data da aula"
+                                        pattern="dd/MM/yyy" locale="pt" navigator="true">
+                            </p:calendar>
+
+                            <p:outputLabel value="Orientador "/>
+                            <f:validateBean disabled="true">
+                                <h:selectOneMenu id="comboResponsa" style="width: 200px" value="#{supiCriarAgendaAulaBean.supiAgendaAula.fkIdFuncionario.pkIdFuncionario}"
+                                                 required="true" requiredMessage="Seleccione o Reaponsável">
+                                    <f:selectItems value="#{supiCriarAgendaAulaBean.findallFuncionario()}" var="item" itemLabel="#{item.fkIdPessoa.nome} #{item.fkIdPessoa.sobreNome}" itemValue="#{item.pkIdFuncionario}" />
+                                    <f:selectItem itemLabel="Seleccione" itemValue="#{null}"/>
+
+                                </h:selectOneMenu>
+
+                                <h:outputLabel value="Telemóvel"/>
+                                <p:inputText value="#{supiCriarAgendaAulaBean.supiAgendaAula.telefone}" />
+
+
+                            </f:validateBean>
+
+                            <p:commandButton value="Adicionar" actionListener="#{supiCriarAgendaAulaBean.salvaAgenda()}" update="fieldsetPrincipal"/>
+
+                        </h:panelGrid>
+
+                        <p:dataTable id="tabela" var="agenda" sortMode="multiple" paginator="false" rows="4"
+                                     value="#{supiCriarAgendaAulaBean.listaAgendaAula}" 
+                                     selectionMode="single" rowKey="#{agenda.pkIdAgendaAula}" >
+
+                           
+                            
+                            <p:column headerText="Tema" >
+                                <h:outputText value="#{agenda.tema}">
+
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Data da Aula">
+                                <h:outputText value="#{agenda.data}">
+                                    <f:convertDateTime pattern="dd/MM/yyy" locale="pt"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Orientador">
+                                <h:outputText value="#{agenda.fkIdFuncionario.fkIdPessoa.nome} #{agenda.fkIdFuncionario.fkIdPessoa.sobreNome}">
+
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Telefone" >
+                                <h:outputText value="#{agenda.telefone}">
+
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="-------">
+                                <center>
+                                    <p:menuButton value="Opções">
+                                        <p:menuitem value="Controlo de Presença" actionListener="#{supiCriarAgendaAulaBean.pegarIdAgenda(agenda.pkIdAgendaAula)}" partialSubmit="true" process="@this" icon="ui-icon-info" update=":formVisualizar:fieldset" onclick="PF('visualizar').show()"/>
+                                        <p:menuitem value="Eliminar" partialSubmit="true" process="@this" icon="ui-icon-trash"/>
+                                        <p:menuitem value="Ver Presença" actionListener="#{supiCriarAgendaAulaBean.pegarIdAgenda(agenda.pkIdAgendaAula)}" partialSubmit="true" process="@this" icon="ui-icon-info" update=":formVisualizarPresenca:fieldset" onclick="PF('visualizarPresenca').show()"/>
+
+                                        <p:menuitem ajax="false" value="Actualizar" icon="ui-icon-refresh"/>
+
+                                    </p:menuButton>
+                                </center>
+                            </p:column>
+
+
+                        </p:dataTable>
+
+                    </p:fieldset>
+
+                </h:form>
+
+                <p:dialog id="visualizar" widgetVar="visualizar" closable="true" width="50%">
+
+                    <h:form id="formVisualizar" prependId="true">
+                        <p:fieldset id="fieldset">
+                          
+                            <p:selectOneMenu id="est"  value="#{supiCriarAgendaAulaBean.idestagiario}">
+                                           
+                                        <f:selectItems value="#{supiCriarAgendaAulaBean.listarEstagiarios()}" var="st" itemLabel="#{st.fkIdEstagiario.fkIdPessoa.nome} #{st.fkIdEstagiario.fkIdPessoa.nomeDoMeio} #{st.fkIdEstagiario.fkIdPessoa.sobreNome}" itemValue="#{st.fkIdEstagiario.pkIdEstagiario}" />                                                 
+                                           
+                                           
+                                    </p:selectOneMenu>
+                                
+                              
+                                    <p:selectOneMenu id="pre"  value="#{supiCriarAgendaAulaBean.sig}">
+                                           
+                                            <f:selectItems value="#{supiCriarAgendaAulaBean.findallestadopresenca()}" var="presenca" itemLabel="#{presenca.sigla}" itemValue="#{presenca.pkIdEstadoPresenca}" />                                                 
+                                           
+                                           
+                                    </p:selectOneMenu>
+                                       
+                                  
+                                       
+                            <p:commandButton partialSubmit="true" process="@all"    value="Confirmar" actionListener="#{supiCriarAgendaAulaBean.salvarPresenca()}" />
+
+                          
+                        </p:fieldset>
+
+
+
+                    </h:form>
+
+
+                </p:dialog>
+                
+                
+                
+               <p:dialog id="visualizarPresenca" widgetVar="visualizarPresenca" closable="true" width="50%">
+
+                    <h:form id="formVisualizarPresenca" prependId="true">
+                        <p:fieldset id="fieldset">
+                          
+                            <p:dataTable id="tabela" var="agend" sortMode="multiple" paginator="false" rows="4"
+                                     value="#{supiCriarAgendaAulaBean.listarEstagiariosAgenda()}" 
+                                     selectionMode="single" rowKey="#{agend.pkIdControloPresenca}" >
+                            
+                            
+                                <p:column headerText="Estagiario" >
+                                <h:outputText value="#{agend.fkIdEstagiario.fkIdPessoa.nome} #{agend.fkIdEstagiario.fkIdPessoa.nomeDoMeio} #{agend.fkIdEstagiario.fkIdPessoa.sobreNome}"   >
+
+                                </h:outputText>
+                            </p:column>
+                                
+                              <p:column headerText="Presença" >
+                                  <h:outputText value="#{agend.fkIdEstadoPresenca.descricao}">
+
+                                </h:outputText>
+                            </p:column>  
+                            
+                            
+                            </p:dataTable>
+                              
+                            
+                          
+                        </p:fieldset>
+
+
+
+                    </h:form>
+
+
+                </p:dialog>
+                
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

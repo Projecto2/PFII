@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">       
+
+        <h2>Laboratório -> Análises Clínicas -> Farmácia -> Histórico de Utilização de Materiais</h2>
+
+        <center>
+
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+
+            <h:form prependId="false" >
+                <br/>
+                <p:fieldset style="width: 97%;">
+                    <h:panelGrid columns="2" width="100%">
+                        <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">
+
+                            <h:panelGrid columns="2" cellpadding="3">
+
+                                <f:validateBean disabled="true">
+
+                                    <h:outputLabel value="Nº de Registos: "/>
+                                    <p:spinner id="numRegistos" value="#{diagRegistoUtilizacaoMaterialBean.numeroRegistos}" 
+                                               min="1" required="true" requiredMessage="É necessário informar o número de registos a retornar."/>
+
+                                    <p:outputLabel value="Registado por: "/>
+                                    <h:panelGrid columns="4" width="100%" cellpadding="3">
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="nome" style="width: 100%" value="#{diagRegistoUtilizacaoMaterialBean.diagControloSemanalMaterialPesquisar.fkIdFuncionario.fkIdPessoa.nome}" />
+                                        </f:validateBean>
+                                        <p:watermark for="nome" value="Nome" />
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="sobreNome" style="width: 100%" value="#{diagRegistoUtilizacaoMaterialBean.diagControloSemanalMaterialPesquisar.fkIdFuncionario.fkIdPessoa.sobreNome}" />
+                                        </f:validateBean>
+                                        <p:watermark for="sobreNome" value="Sobrenome" />
+                                    </h:panelGrid>                                    
+
+                                    <p:outputLabel value="Registado entre: "/>
+                                    <h:panelGrid columns="3" width="100%">
+                                        <p:calendar id="dataInicioCadastro" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}" value="#{diagRegistoUtilizacaoMaterialBean.dataInicioCadastro}" locale="pt"/> 
+                                        <p:outputLabel value="e" style="margin-right: 5px"/> 
+                                        <p:calendar id="dataFimCadastro" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}" value="#{diagRegistoUtilizacaoMaterialBean.dataFimCadastro}" locale="pt"/>
+                                    </h:panelGrid>
+                                </f:validateBean>
+
+                                <br/>
+                                <h:panelGrid columns="3" width="100%">
+                                    <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                     action="#{diagRegistoUtilizacaoMaterialBean.pesquisarHistorico()}" 
+                                                     partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                    <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagRegistoUtilizacaoMaterialBean.limparPesquisa()}" 
+                                                     partialSubmit="true" process="@this" style="width: 100%"/>                                    
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable  id="dataTable" rows="12" paginator="true" paginatorPosition="bottom" rowKey="#{item.pkIdControloSemanalMaterial}" selectionMode="single"
+                              var="item" value="#{diagRegistoUtilizacaoMaterialBean.listaPesquisaHistorico}"
+                              emptyMessage="Nenhum registo de utilização de materiais encontrado.">
+
+                    <p:column headerText="Código do Registo">
+                        <center>
+                            <h:outputText value="#{item.pkIdControloSemanalMaterial}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Registado Por" filterBy="#{item.fkIdFuncionario.fkIdPessoa.nome}">
+                        <center>
+                            #{item.fkIdFuncionario.fkIdPessoa.nome} 
+                            #{item.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                            #{item.fkIdFuncionario.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data do Registo" >
+                        <center>
+                            <h:outputText value="#{item.data}">
+                                <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>		
+                            </h:outputText>
+                        </center>
+                    </p:column>                   
+
+                    <p:column>
+                        <center>
+                            <p:commandButton value="Visualizar" action="#{diagRegistoUtilizacaoMaterialBean.setDiagControloSemanalMaterialVisualizar(item)}"
+                                             onclick="PF('dialogVisualizar').show();" process="@this" update=":formVisual" icon="ui-icon-info"/>
+                        </center>
+                    </p:column>                 
+
+                </p:dataTable>
+
+            </h:form>           
+
+        </center>
+
+        <p:dialog closable="false" showEffect="fade" widgetVar="dialogVisualizar" modal="true" width="40%" resizable="false" position="center">
+            <h:form id="formVisual">
+                <h:panelGrid columns="2" class="float-right">
+                    <p:commandButton value="Fechar" onclick="dialogVisualizar.hide()" 
+                                     action="#{diagRegistoUtilizacaoMaterialBean.setDiagControloSemanalMaterialVisualizar(null)}" process="@this" style="width: 100px"/>
+                </h:panelGrid>
+
+                <br/>
+                <br/>
+
+                <h:panelGrid columns="2" cellpadding="4">
+
+                    <h3>Registado por: </h3>
+                    <h:panelGrid columns="1" cellpadding="4">
+                        #{diagRegistoUtilizacaoMaterialBean.diagControloSemanalMaterialVisualizar.fkIdFuncionario.fkIdPessoa.nome} 
+                        #{diagRegistoUtilizacaoMaterialBean.diagControloSemanalMaterialVisualizar.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                        #{diagRegistoUtilizacaoMaterialBean.diagControloSemanalMaterialVisualizar.fkIdFuncionario.fkIdPessoa.sobreNome}
+                    </h:panelGrid>
+
+                    <h3>Data de Registo: </h3>
+                    <h:outputText style="border: none" value="#{diagRegistoUtilizacaoMaterialBean.diagControloSemanalMaterialVisualizar.data}">
+                        <f:convertDateTime pattern="dd-MM-yyyy"/>
+                    </h:outputText>                    
+                </h:panelGrid>
+
+                <p:dataTable id="dataTable" rows="5" paginator="true" paginatorPosition="bottom" 
+                             var="produto" value="#{diagRegistoUtilizacaoMaterialBean.listaProdutosVisualizar}">
+
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Produto" />
+                        </f:facet>
+                        <h:outputText value="#{produto.fkIdMaterial.descricao} 
+                                      (#{produto.fkIdMaterial.fkIdFormaFarmaceutica.descricao})  
+                                      #{produto.fkIdMaterial.dosagem} 
+                                      #{produto.fkIdMaterial.fkIdUnidadeMedida.abreviatura}" />
+                    </p:column>
+
+                    <p:column headerText="Quantidade">
+                        <center>
+                            #{produto.quantidade}
+                        </center>
+                    </p:column>
+
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

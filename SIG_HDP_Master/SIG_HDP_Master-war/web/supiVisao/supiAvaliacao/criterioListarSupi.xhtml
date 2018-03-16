@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h:form id="formPrincipal" acceptcharset="ISO-8859-1">
+                    <center>
+
+                        <p:messages id="messagens" closable="true"/>
+                        <center> <h2 name="header"> Critérios de Avaliação </h2></center>
+
+                        <p:growl autoUpdate="true"/>
+
+                        <p:fieldset>
+                            <h:panelGrid columns="2" cellpadding="3">
+                                <f:validateBean disabled="true">
+
+                                    <p:outputLabel value="Critério"/>
+                                    <h:inputText id="nome" style="width: 98%" value="#{supiCriterioBean.criterioPesquisa.descricaoCriterio}"></h:inputText>
+                                </f:validateBean>
+                                <br> </br>
+                                <h:panelGrid columns="3" >
+
+                                    <p:commandButton value="Pesquisar Criterio" actionListener="#{supiCriterioBean.pesquisarCriterio()}" icon="ui-icon-search" ajax="true" partialSubmit="true" update="nome tabela"/>
+                                    <p:commandButton value="Novo Critério" ajax="false" immediate="true" icon="ui-icon-plus" action="criterioSupi"/> <!-- icon="ui-icon-plus" ajax="true" partialSubmit="true" process="@this" update="@this"--> 
+                                    <p:commandButton value="Limpar" icon="ui-icon-close" ajax="true"
+                                                     action="#{supiCriterioBean.limparPesquisas()}" update="tabela" />
+                                </h:panelGrid>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+
+
+                        <p:separator/>
+                        <h:panelGrid width="90%">
+
+                            <p:dataTable id="tabela" var="cargo" value="#{supiCriterioBean.listaCriterio}" sortMode="multiple"  paginator="true" rows="4"
+                                         selectionMode="single" rowKey="#{cargo.pkIdCriterioAvaliacao}">
+
+
+                                <p:column sortBy="#{cargo.descricaoCriterio}" headerText="Critério" filterBy="#{cargo.descricaoCriterio}">
+                                    <h:outputText value="#{cargo.descricaoCriterio}"/>
+                                </p:column>
+                                <p:column headerText="-------">
+
+                                    <center>
+                                        <p:commandButton value="Eliminar" partialSubmit="true" process="@this" icon="ui-icon-trash"
+                                                         actionListener="#{supiCriterioBean.setCriterioPesquisa(cargo)}"
+                                                         onclick="PF('dialogEliminar').show()" update="tabela" />
+
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+
+                        </h:panelGrid>
+
+                    </center>
+
+                </h:form>
+                <center>
+                    <h:form id="formEliminar">
+                        <p:confirmDialog message="Deseja eliminar o critério? Pode estar a ser utilizado... "
+                                         header="Eliminar Critério" severity="alert"
+                                         widgetVar="dialogEliminar">
+
+                            <p:commandButton value="Sim" actionListener="#{supiCriterioBean.eliminar()}"
+                                             update=":formPrincipal:tabela" 
+                                             oncomplete="PF('dialogEliminar').hide();"/>
+
+                            <p:commandButton value="Não" onclick="PF('dialogEliminar').hide();" type="button" />
+                        </p:confirmDialog>
+                    </h:form>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

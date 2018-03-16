@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>Internamento -> Tabelas Auxiliares -> Camas</h2>
+                <br/>
+                <p:growl id="ms" autoUpdate="true" />
+                <h:form id="camas" >
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="0">
+                            <p:outputLabel value="Enfermaria"/>
+                            <p:selectOneMenu style="width: 90%" value="#{interCamaListarBean.enfermaria}" id="cboEnfermaria">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{interEnfermariaListarBean.listarTodas()}" 
+                                               var="enf"
+                                               itemLabel="#{enf.descricao}"
+                                               itemValue="#{enf.pkIdEnfermaria}" 
+                                               />
+                                <p:ajax event="change" update="cboQuarto" />
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Sala"/>
+                            <p:selectOneMenu style="width: 90%;" value="#{interCamaListarBean.fk_id_sala}" id="cboQuarto" filter="true">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{interSalaListarBean.listarTodosDaEnfermaria(interCamaListarBean.enfermaria)}" 
+                                               var="q"
+                                               itemLabel="#{q.nomeSala}"
+                                               itemValue="#{q.pkIdSalaInternamento}" 
+                                               />
+                            </p:selectOneMenu>   
+
+                            <p:outputLabel value="Estado"/>
+                            <p:selectOneMenu style="width: 90%;" value="#{interCamaListarBean.status}">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{interEstadoCamaListarBean.findAll()}" 
+                                               var="stat"
+                                               itemLabel="#{stat.descricao}"
+                                               itemValue="#{stat.pkIdEstadoCama}" 
+                                               />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Cama"/>
+                            <p:inputText value="#{interCamaListarBean.nomeCama}" style="width: 96%"/>
+                            <p></p><p></p>
+                            <h:panelGrid columns="2" cellpadding="0">
+                                <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interCamaListarBean.pesquisar()}" update="resultado" ajax="true"/>
+                                <p:commandButton value="Actualizar Camas" icon="ui-icon-refresh"  process="@this" id="adicionar" actionListener="#{interCamaExcelBean.carregarCamaInternamentoTabela()}" update="resultado">
+                                    <p:tooltip id="toolTipAdicionar" for="adicionar" value="Actualizar Camas"/>
+                                </p:commandButton> 
+                            </h:panelGrid>
+                        </h:panelGrid> 
+                    </p:fieldset>
+                    <p:panel id="resultado" style="border: 0px;">
+                        <p:dataTable  id="datatable" var="cam" editable="true" scrollWidth="31%"  value="#{interCamaListarBean.listaCamas}" 
+                                      emptyMessage="Nenhum registo de cama encontrado" selectionMode="single" selection="#{interCamaListarBean.cama}"
+                                      rowKey="#{cam.pkIdCamaInternamento}" paginator="true" paginatorPosition="bottom" rows="10" >
+
+                            <p:column headerText="Descrição" filterBy="#{cam.descricaoCamaInternamento}" sortBy="#{cam.descricaoCamaInternamento}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{cam.descricaoCamaInternamento}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{cam.descricaoCamaInternamento}" readonly="true"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Código"  filterBy="#{cam.codigoCamaInternamento}" sortBy="#{cam.codigoCamaInternamento}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{cam.codigoCamaInternamento}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{cam.codigoCamaInternamento}" readonly="true"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Enfermaria" filterBy="#{cam.fkIdSalaInternamento.fkIdEnfermaria.descricao}" sortBy="#{cam.fkIdSalaInternamento.fkIdEnfermaria.descricao}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{cam.fkIdSalaInternamento.fkIdEnfermaria.descricao}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{cam.fkIdSalaInternamento.fkIdEnfermaria.descricao}" readonly="true"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Sala" filterBy="#{cam.fkIdSalaInternamento.nomeSala}" sortBy="#{cam.fkIdSalaInternamento.nomeSala}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{cam.fkIdSalaInternamento.nomeSala}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <h:inputText value="#{cam.fkIdSalaInternamento.nomeSala}" readonly="true"/>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Estado" filterBy="#{cam.fkIdEstadoCama.descricao}" sortBy="#{cam.fkIdEstadoCama.descricao}">
+                                <p:cellEditor>
+                                    <f:facet name="output">
+                                        <h:outputText value="#{cam.fkIdEstadoCama.descricao}"/>
+                                    </f:facet>
+                                    <f:facet name="input">
+                                        <p:selectOneMenu style="width: 90%;" value="#{interCamaListarBean.status}" disabled="#{cam.fkIdEstadoCama.descricao == 'Ocupada' || cam.fkIdEstadoCama.descricao == 'Reservada'}">
+                                            <f:selectItem itemLabel="" itemValue="" />
+                                            <p:ajax
+                                                event="itemSelect"
+                                                update="datatable" 
+                                                listener="#{interCamaListarBean.alterarEstadoCama(cam.pkIdCamaInternamento)}"
+                                                />
+                                            <f:selectItems value="#{interEstadoCamaListarBean.findAllLivre()}" 
+                                                           var="statAlt"
+                                                           itemLabel="#{statAlt.descricao}"
+                                                           itemValue="#{statAlt.pkIdEstadoCama}" 
+                                                           />
+                                        </p:selectOneMenu>
+                                    </f:facet>
+                                </p:cellEditor>
+                            </p:column>
+
+                            <p:column headerText="Alterar Estado Cama">
+                                <p:rowEditor />
+                            </p:column>    
+
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

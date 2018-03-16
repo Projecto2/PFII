@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="justificativoAusenciaServicoInter" language="groovy" pageWidth="595" pageHeight="450" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c219dd0e-c276-4360-92f6-6eddecdbbbcd">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="33"/>
+	<parameter name="idade" class="java.lang.Integer"/>
+	<parameter name="dataCorrente" class="java.util.Date"/>
+	<parameter name="doencaPrincipal" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome" class="java.lang.String"/>
+	<field name="fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio" class="java.lang.String"/>
+	<field name="fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome" class="java.lang.String"/>
+	<field name="fkIdFuncionarioEnfermeiro.fkIdSeccaoTrabalho.descricao" class="java.lang.String"/>
+	<field name="dataRegisto" class="java.util.Date"/>
+	<title>
+		<band height="131">
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="10" y="13" width="95" height="61" uuid="1956b660-e35c-4c78-88ee-b28e46befd21"/>
+				<imageExpression><![CDATA["LogotipoDivina.jpg"]]></imageExpression>
+			</image>
+			<image vAlign="Middle">
+				<reportElement x="453" y="10" width="71" height="63" uuid="462cffc4-6f18-43da-affe-90ea86f4febc"/>
+				<imageExpression><![CDATA["insigniaAngola.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="51" y="11" width="422" height="25" forecolor="#0000FF" uuid="dab156cf-603c-4d82-a1a6-9956df9db865"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="15"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="37" width="422" height="20" forecolor="#0000FF" uuid="b2e8f2e7-3b79-490b-94ae-e438120d9d5b"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<text><![CDATA[GABINETE PROVINCIAL DE  LUANDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="54" width="422" height="30" forecolor="#0000FF" uuid="8b3a7b0b-63f8-4e8f-af5d-2d5bf964386b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Abyssinica SIL" size="18" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="90" width="514" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="37345288-eddd-4e82-874b-5530883eda1c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Controlo do Golf - K. Kiaxi - LUANDA Tel-Fax(02) 470781 - 470507 E-mail:hospdp@ebonet.net]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="10" y="90" width="515" height="16" uuid="d14fff60-ac45-4be9-a3d3-0576283e11a7"/>
+			</rectangle>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="32">
+			<staticText>
+				<reportElement x="66" y="12" width="387" height="20" uuid="f5b1511d-dcf0-4706-ad60-cb8374a34b9d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[JUSTIFICATIVO PARA AUSÊNCIA DE SERVIÇO]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="177" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="28" width="36" height="20" uuid="e78c2e45-2966-4cda-8ab0-da713c22b46f"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="178" y="28" width="15" height="20" uuid="693987a8-5708-4361-86e7-0090f8f6ce72"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[de]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="193" y="28" width="15" height="20" forecolor="#0000FF" uuid="8d74d505-c29f-4205-99f9-d3dabb612d97"/>
+				<textFieldExpression><![CDATA[$P{idade}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="208" y="28" width="347" height="20" uuid="26c2ae62-59aa-4f3a-8881-65d963622dab"/>
+				<text><![CDATA[anos de idade.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="48" width="259" height="20" uuid="25dfcae2-dcc2-4201-ad7a-4955ad12d09e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Foi atendido(a) neste hospital em (Secção / Centro)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="259" y="48" width="296" height="20" forecolor="#0000FF" uuid="eee3df9e-a35f-4c34-9475-13e475c1e25f"/>
+				<textFieldExpression><![CDATA[$F{fkIdFuncionarioEnfermeiro.fkIdSeccaoTrabalho.descricao}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="68" width="555" height="20" uuid="ba60de12-c9ff-441a-9331-34dc923afd5e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[As condições de saúde não são boas e impedem-lhe de estar presente no trabalho.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="88" width="117" height="20" uuid="5f0b9468-5f81-4027-858f-878bb374594c"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Motivo / Diagnóstico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="108" width="52" height="20" uuid="276d3a8e-9e50-49fc-bc1a-c8694245d49f"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Desde]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="41" y="108" width="65" height="20" forecolor="#0000FF" uuid="29be8c6f-9421-487a-8dce-f7291cd3ace1"/>
+				<textFieldExpression><![CDATA[$F{dataRegisto}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="100" y="108" width="26" height="20" uuid="09febeff-a141-4c03-8288-6c179f4a6dad"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[até]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="126" y="108" width="74" height="20" forecolor="#0000FF" uuid="05e6cdc9-7a93-41a4-8697-8a975e20d065"/>
+				<textFieldExpression><![CDATA[$P{dataCorrente}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="332" y="108" width="41" height="20" uuid="2296cb84-c2c9-4ab4-a029-63451a8e582e"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Luanda]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="373" y="108" width="74" height="20" forecolor="#0000FF" uuid="9796e366-e0df-4c71-982e-a3def3ae7e38"/>
+				<textFieldExpression><![CDATA[$P{dataCorrente}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="10" y="155" width="174" height="1" uuid="55890332-2dc0-4326-9bbf-7a0d0bcb12fa"/>
+			</line>
+			<line>
+				<reportElement x="290" y="154" width="174" height="1" uuid="1a1d6761-ab51-4270-8970-9b0e4d442b9b"/>
+			</line>
+			<staticText>
+				<reportElement x="63" y="155" width="102" height="20" uuid="421990d6-e826-45bc-8ff3-91a32565773c"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[A Administração]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="340" y="155" width="133" height="20" uuid="dbeeff72-cae4-48c3-9275-24d38cc8bb88"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[O Médico Assistente]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="36" y="28" width="144" height="20" forecolor="#0000FF" uuid="1ca34e26-e6bc-4ce3-be22-a255119777a3"/>
+				<textFieldExpression><![CDATA[$F{fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}+" "+$F{fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}+" "+$F{fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="117" y="88" width="438" height="20" forecolor="#0000FF" uuid="c7e88cb1-92d6-45ee-9406-13ec4b719a9b"/>
+				<textFieldExpression><![CDATA[$P{doencaPrincipal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="43">
+			<rectangle>
+				<reportElement mode="Transparent" x="10" y="3" width="515" height="16" uuid="7285767b-79fb-4f50-9505-ce866898c507"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Opaque" x="11" y="4" width="514" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="9eba304e-a9d1-4dcf-9654-1b84ed5e36e7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="410" y="21" width="114" height="20" uuid="002265d8-eb2c-4b83-af60-af4610db7952"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="424" y="3" width="100" height="20" uuid="9c53d9ab-7ef9-43d5-aab7-7a867db5e3cf"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Definir Horário de Funcionários</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Definir Horário de Funcionários</h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true" showDetail="true"/>
+                    <p:growl id="msg2" autoUpdate="true" escape="true" showDetail="true"/>
+                    <br/>
+                    <center>
+                         <h:panelGrid columns="1" width="100%">
+                              <h:form id="formularioPrincipal">
+                                   <p:fieldset id="fieldset">
+                                        <center>
+                                             <p:panel header="Tabela do Horário Geral de Trabalho" toggleable="true">
+                                                  <p:panelGrid columns="2" style="width: 80%">
+                                                       <p:outputLabel style="font-weight: bold" value="Hora de Entrada: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.horaEntrada}" disabled="true">
+                                                            <f:convertDateTime pattern="HH:mm"/>
+                                                       </h:inputText>
+                                                       <p:outputLabel style="font-weight: bold" value="Hora de Intervalo: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.horaIntervalo}" disabled="true">
+                                                            <f:convertDateTime pattern="HH:mm"/>
+                                                       </h:inputText>
+                                                       <p:outputLabel style="font-weight: bold" value="Tempo de Intervalo(Minutos): "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.minutosIntervalo}" disabled="true"/>
+                                                       <p:outputLabel style="font-weight: bold" value="Hora de Saída: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.horaSaida}" disabled="true">
+                                                            <f:convertDateTime pattern="HH:mm"/>
+                                                       </h:inputText>
+                                                       <p:outputLabel style="font-weight: bold" value="Data da Última Alteração do Horário: "/>
+                                                       <h:inputText style="background: none; border: none" value="#{rhHorarioGeralDeTrabalhoBean.horarioDefinido.dataDaUltimaAlteracao}" disabled="true">
+                                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                                       </h:inputText>
+                                                  </p:panelGrid>
+                                             </p:panel>
+                                             <br/>
+                                        </center>
+
+                                        <center>
+                                             <p:panel id="painelPickList">
+                                                  <p:pickList id="pickList" value="#{rhHorarioDeFuncionariosDefinirBean.funcionarios}" var="funcionario" effect="slide"
+                                                              itemValue="#{funcionario}" itemLabel="#{funcionario.fkIdPessoa.nome} #{funcionario.fkIdPessoa.nomeDoMeio} #{funcionario.fkIdPessoa.sobreNome}"
+                                                              showSourceControls="true" showCheckbox="true" responsive="true" converter="rhPickListFuncionarioConverter"
+                                                              showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" style="height: 300px">
+
+                                                       <f:facet name="sourceCaption">Disponíveis(Não Associar ao Horário Geral)</f:facet>
+                                                       <f:facet name="targetCaption">Selecionados(Associar ao Horário Geral)</f:facet>
+
+                                                       <p:ajax event="transfer" listener="#{rhHorarioDeFuncionariosDefinirBean.onTransfer}" update="msg" />
+                                                       <p:ajax event="select" listener="#{rhHorarioDeFuncionariosDefinirBean.onSelect}" update="msg" />
+                                                       <p:ajax event="unselect" listener="#{rhHorarioDeFuncionariosDefinirBean.onUnselect}" update="msg" />
+                                                       <p:ajax event="reorder" listener="#{rhHorarioDeFuncionariosDefinirBean.onReorder}" update="msg" />
+
+                                                       <p:column style="width: 400px">
+                                                            <center>
+                                                                 <p:panel id="panelFoto" style="height:70px; width: 160px; ">
+                                                                      <h:graphicImage id="imgFotografia" width="130px" height="50px" 
+                                                                                      url="#{rhPessoaBean.pastaFoto}#{funcionario.fkIdPessoa.fkIdFoto.ficheiro}"/>
+                                                                 </p:panel>
+                                                                 <h:outputText value="#{funcionario.fkIdPessoa.nome} #{funcionario.fkIdPessoa.nomeDoMeio} #{funcionario.fkIdPessoa.sobreNome}"/>
+                                                                 <h:outputText value=" - Cartão Nº #{funcionario.numeroCartao}"/>
+                                                            </center>
+                                                       </p:column>
+                                                  </p:pickList>
+                                             </p:panel>
+                                        </center>
+
+                                        <br/>
+                                        <br/>
+                                   </p:fieldset>
+
+                                   <h:panelGrid columns="2" cellpadding="5" class="float-right">
+                                        <p:commandButton style="width: 170px" value="Guardar Alterações" action="#{rhHorarioDeFuncionariosDefinirBean.guardarAlteracoes()}" update="painelPickList"/>
+                                   </h:panelGrid>
+
+                              </h:form>
+                         </h:panelGrid>
+                    </center>
+
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

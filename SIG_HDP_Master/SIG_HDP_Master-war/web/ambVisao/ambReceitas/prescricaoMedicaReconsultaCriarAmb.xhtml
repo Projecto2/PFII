@@ -1,0 +1,224 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <h:form id="formPrescricaoMedica">
+            <p:messages id="ms3" autoUpdate="true" closable="true"/>
+            <p:growl id="ms4" autoUpdate="true"/>
+            <br/>
+            <center>
+                <p:panel id="panelPrescricaoMedica" styleClass="ui-noborder">
+
+                    <h:panelGrid id="gridPrescricaoMedica" styleClass="ui-noborder">
+        
+                        <p:panel styleClass="ui-noborder">
+                            <center>
+                                <span style="font-size: 16pt">
+                                    
+                                    <p:outputLabel value="#{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}: 
+                                                          #{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                          #{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                          #{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                         "
+                                                   style="color: #0088cc"/>
+                                    
+                                    <br/>
+                                    #{msgs.subProcesso}:
+                                    <p:outputLabel value="#{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // " id="numeroSupProcesso"/>
+                                    <p:outputLabel value="#{ambConsultaListarBean.ACAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+                                    
+                                </span>
+                            </center>
+                            <center>
+                                <h:panelGrid columns="2" styleClass="ui-noborder">
+                                    
+                                    <h:outputLabel value="#{msgs.centroHospitalar} #{msgs.proveniencia}: *" for="centroHospitalar"/>
+                                    <h:selectOneMenu  id="centroHospitalar" style="width: 101%" value="#{ambPrescricaoMedicaListarBean.codigoCentroHospitalar}">
+                                         <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                         <f:selectItems value="#{grlCentroHospitalarBean.findAll()}" var="listCentroHospitalar" itemLabel="#{listCentroHospitalar.fkIdInstituicao.descricao}" itemValue="#{listCentroHospitalar.pkIdCentro}"/> 
+                                    </h:selectOneMenu>
+                                    
+                                    <p:outputLabel value="Classe:"/>         
+                                    <f:validateBean disabled="true">
+                                        <p:selectOneMenu id="cat1" style="width: 97%" filter="true"
+                                                         disabled="#{(ambFarmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                         value="#{ambFarmProdutoListarBean.categoriaNivel1.pkIdCategoriaMedicamento}"
+                                                         valueChangeListener="#{ambFarmProdutoListarBean.changeCategoriaNivel1}">
+                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                            <f:selectItems value="#{ambFarmProdutoListarBean.listaNivel1}" var="cat1"
+                                                           itemLabel="#{cat1.capitulo} - #{cat1.descricao}" itemValue="#{cat1.pkIdCategoriaMedicamento}"/>
+                                            <f:ajax execute="@this" event="change" render="cat2 cat3 cat4 mediO"/>
+                                        </p:selectOneMenu>
+                                    </f:validateBean>    
+
+                                    <p:outputLabel value="Subclasse:"/>         
+                                    <f:validateBean disabled="true">
+                                        <p:selectOneMenu id="cat2" style="width: 97%" filter="true"
+                                                         disabled="#{!(ambFarmProdutoListarBean.listaNivel2.size() > 0) || (ambFarmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                         value="#{ambFarmProdutoListarBean.categoriaNivel2.pkIdCategoriaMedicamento}"
+                                                         valueChangeListener="#{ambFarmProdutoListarBean.changeCategoriaNivel2}">
+                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                            <f:selectItems value="#{ambFarmProdutoListarBean.listaNivel2}" var="cat2"
+                                                           itemLabel="#{cat2.capitulo} - #{cat2.descricao}" itemValue="#{cat2.pkIdCategoriaMedicamento}"/>
+                                            <f:ajax execute="@this" event="change" render="cat3 cat4 mediO"/>
+                                        </p:selectOneMenu>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="Categoria:"/>    
+                                    <f:validateBean disabled="true">
+                                        <p:selectOneMenu id="cat3" style="width: 97%" filter="true"
+                                                         disabled="#{!(ambFarmProdutoListarBean.listaNivel3.size() > 0) || (ambFarmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                         value="#{ambFarmProdutoListarBean.categoriaNivel3.pkIdCategoriaMedicamento}"
+                                                         valueChangeListener="#{ambFarmProdutoListarBean.changeCategoriaNivel3}">
+                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                            <f:selectItems value="#{ambFarmProdutoListarBean.listaNivel3}" var="cat3"
+                                                           itemLabel="#{cat3.capitulo} - #{cat3.descricao}" itemValue="#{cat3.pkIdCategoriaMedicamento}"/>
+                                            <f:ajax execute="@this" event="change" render="cat4 mediO"/>
+                                        </p:selectOneMenu>
+                                    </f:validateBean>
+                                    
+                                    <p:outputLabel value="SubCategoria:"/>     
+                                    <f:validateBean disabled="true">
+                                        <p:selectOneMenu id="cat4" style="width: 97%" filter="true"
+                                                         disabled="#{!(ambFarmProdutoListarBean.listaNivel4.size() > 0) || (ambFarmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                         value="#{ambFarmProdutoListarBean.categoriaNivel4.pkIdCategoriaMedicamento}">
+                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                            <f:selectItems value="#{ambFarmProdutoListarBean.listaNivel4}" var="cat4"
+                                                           itemLabel="#{cat4.capitulo} - #{cat4.descricao}" itemValue="#{cat4.pkIdCategoriaMedicamento}"/>
+
+                                            <f:ajax execute="@this" event="change" render="mediO"/>
+                                        </p:selectOneMenu>
+                                    </f:validateBean>
+                                    
+                                    <p:outputLabel value="Forma Farmacêutica:"/>
+                                    <p:selectOneMenu id="formaF" style="width: 97%" filter="true"
+                                                     value="#{ambPrescricaoMedicaListarBean.fkIdFormaFarmaceutica}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{farmListasUteisBean.todasFormasFarmaceuticas}"/>
+                                        <f:ajax execute="@this" event="change" render="mediO"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel value="Via de Administração:"/>
+                                    <p:selectOneMenu style="width: 97%;" value="#{ambPrescricaoMedicaListarBean.fkIdViaAdministracao}" id="cboViaAdm" filter="true">
+                                        <f:selectItem itemLabel="" itemValue=""/>
+                                        <f:selectItems value="#{farmViaAdministracaoBean.findAll()}" 
+                                                       var="vAdms"
+                                                       itemLabel="#{vAdms.descricao}"
+                                                       itemValue="#{vAdms.pkIdViaAdministracao}" 
+                                                       />
+                                        <f:ajax execute="@this" event="change" render="mediO"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="Medicamento: *" for="mediO"/>
+                                    <p:selectOneMenu id="mediO" value="#{ambPrescricaoMedicaListarBean.codigoPrescricaoProduto}" style=" border-radius:10%; font-weight:500; width:97%;" filter="true">
+                                        <f:selectItem itemLabel="" itemValue=""/>                                        
+                                        <f:selectItems value="#{ambPrescricaoMedicaListarBean.lerTodosMedicamentosPorViaAdmissao()}" 
+                                                       var="mdO"
+                                                       itemLabel="#{mdO.descricao} (#{mdO.dosagem}#{mdO.fkIdUnidadeMedida.abreviatura}) - #{mdO.fkIdFormaFarmaceutica.descricao}"
+                                                       itemValue="#{mdO.pkIdProduto}" 
+                                                       />
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="Hora: *" for="horamedO"/>
+                                    <p:selectOneMenu id="horamedO" value="#{ambPrescricaoMedicaListarBean.codigoHoraMedicacao}" style=" border-radius:10%; font-weight:500; width:97%;">
+                                        <f:selectItem itemLabel="" itemValue=""/>                                        
+                                        <f:selectItems value="#{ambPrescricaoMedicaListarBean.listarTodosHorarios()}" 
+                                                       var="hO"
+                                                       itemLabel="#{hO.descricao}"
+                                                       itemValue="#{hO.pkIdHoraMedicacao}" 
+                                                       />
+                                    </p:selectOneMenu>
+                                    
+                                    <h:outputLabel value="Quantidade: *" for="qtd"/>
+                                    <h:inputText id="qtd" value="#{ambPrescricaoMedicaListarBean.quantidade}" style="width: 99%"/>
+                                    
+                                    <h:outputLabel value="Observções:" for="obsP"/>
+                                    <p:inputTextarea id="obsP" value="#{ambPrescricaoMedicaListarBean.observacoes}" cols="90" rows="10" autoResize="false"/> 
+
+                                </h:panelGrid>
+
+                            </center>
+
+                        </p:panel>
+
+                        <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+
+                        <p:separator />
+                        <p:separator />
+
+                        <p:panel>
+                            <center>
+                                <p:commandButton icon="ui-icon-disk" value="Adicionar à Receita"
+                                                 action="#{ambPrescricaoMedicaCriarBean.criarReceitaConsulta()}"
+                                                 actionListener="#{ambNotificacoesCriarBean.criarAmbNotificacaoReceitaConsulta()}"
+                                                 process="gridPrescricaoMedica" update="dataTable mediO horamedO qtd" 
+                                                 />
+                                <p:commandButton action="#{ambPrescricaoMedicaCriarBean.salvarReceitaConsulta(false)}"
+                                                 actionListener="#{ambConsultaCriarBean.fecharReconsulta()}" 
+                                                 value="Fechar" type="button"
+                                                 onclick="PF('dialogPrescricaoMedicaReconsulta').hide()"
+                                                 style="width: 160px" />
+                            </center>
+                        </p:panel>
+                    </h:panelGrid>
+
+                    <p:dataTable  id="dataTable" sortMode="multiple" var="itemTabelaDialog" rows="5" paginator="true" paginatorPosition="bottom"
+                                  value="#{ambPrescricaoMedicaListarBean.lerPrescricoesConsulta(ambConsultaListarBean.ACAux)}" reflow="true" emptyMessage="Nenhum registo encontrado."
+                                  selectionMode="single" rowKey="#{itemTabelaDialog.pkIdPrescricaoMedicaProduto}">
+
+                        <center>
+                            <p:column headerText="Medicamento" sortBy="#{itemTabelaDialog.fkIdFarmProduto.descricao}" filterBy="#{itemTabelaDialog.fkIdFarmProduto.descricao}" filterMatchMode="contains" width="120">
+                               <h:outputText value="#{itemTabelaDialog.fkIdFarmProduto.descricao} (#{itemTabelaDialog.fkIdFarmProduto.dosagem}#{itemTabelaDialog.fkIdFarmProduto.fkIdUnidadeMedida.abreviatura})"/>
+                           </p:column>
+                        </center>    
+
+                        <center>
+                           <p:column headerText="Via de Admininistração" sortBy="#{itemTabelaDialog.fkIdFarmProduto.fkIdViaAdministracao.descricao}" filterBy="#{itemTabelaDialog.fkIdFarmProduto.fkIdViaAdministracao.descricao}" filterMatchMode="contains" width="120">
+                               <h:outputText value="#{itemTabelaDialog.fkIdFarmProduto.fkIdViaAdministracao.descricao}"/>
+                           </p:column>
+                        </center>    
+
+                        <center>
+                           <p:column headerText="Forma Farmacêutica" sortBy="#{itemTabelaDialog.fkIdFarmProduto.fkIdFormaFarmaceutica.descricao}" filterBy="#{itemTabelaDialog.fkIdFarmProduto.fkIdFormaFarmaceutica.descricao}" filterMatchMode="contains" width="120">
+                               <h:outputText value="#{itemTabelaDialog.fkIdFarmProduto.fkIdFormaFarmaceutica.descricao}"/>
+                           </p:column>
+                        </center>    
+
+                        <p:column headerText="Quantidade">
+                            <h:outputText value="#{itemTabelaDialog.quantidade}"/>
+                        </p:column>
+
+                        <p:column headerText="Hora">
+                            <h:outputText value="#{itemTabelaDialog.fkIdHoraMedicacao.descricao}"/>
+                        </p:column>  
+
+                        <p:column headerText="Data">
+                            <h:outputText value="#{itemTabelaDialog.fkIdPrescricaoMedica.dataHoraPrescricao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="------">
+                            <center>
+                                <p:commandButton value="Eliminar" update="dataTable" ajax="true" icon="ui-icon-trash"
+                                                 actionListener="#{ambPrescricaoMedicaEliminarBean.removerRemedioReceita(itemTabelaDialog)}"/>
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>
+                    
+                </p:panel>
+                
+            </center>
+            
+        </h:form>
+
+    </h:body>
+</html>
+

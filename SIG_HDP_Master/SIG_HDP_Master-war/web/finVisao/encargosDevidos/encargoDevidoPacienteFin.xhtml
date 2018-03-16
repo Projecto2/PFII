@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalFin.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralFin.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>#{msgs.admissoes} -> #{msgs.pacientes} -> #{msgs.agendamentos}</h1>
+                <!--<p:messages id="ms" autoUpdate="true" closable="true"/>-->
+                <p:growl autoUpdate="true"/>
+                <h:form id="procuraEncargoPaciente">
+                    <center>
+                        <span style="font-size: 16pt">
+                            <p:commandLink style="color: #0088cc" value="#{finEncargoDevidoPacienteBean.getPaciente().numeroPaciente}: #{finEncargoDevidoPacienteBean.getPaciente().fkIdPessoa.nome} #{finEncargoDevidoPacienteBean.getPaciente().fkIdPessoa.sobreNome}" 
+                                           ajax="true" partialSubmit="true" process="@this" 
+                                           actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(finEncargoDevidoPacienteBean.getPaciente())}" 
+                                           update=":formPacienteVisualizar" 
+                                           onclick="PF('dialogMaisDetalhes').show();"/>
+                        </span>
+                    </center>
+                    
+                    <p:fieldset>
+                        <div class="ui-fluid">
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <p:outputLabel for="intervaloDeDatas" value="#{msgs.dataDaSolicitacao}: *"/>
+                                    <p:panelGrid id="intervaloDeDatas" columns="2">
+                                        <p:calendar required="true" requiredMessage="Data de Início do Intervalo da Solicitação Obrigatória" id="dataInicial" locale="pt"
+                                                    navigator="true" maxdate="#{finEncargoDevidoPacienteBean.getMomentoActual()}" 
+                                                    value="#{finEncargoDevidoPacienteBean.dataInicial}"/>
+
+                                        <p:calendar required="true" requiredMessage="Data de Final do Intervalo da Solicitação Obrigatória" id="dataFinal" locale="pt" 
+                                                    navigator="true" maxdate="#{finEncargoDevidoPacienteBean.getMomentoActual()}" 
+                                                    value="#{finEncargoDevidoPacienteBean.dataFinal}"/>
+                                    </p:panelGrid>
+                                    
+                                    <p:outputLabel for="subProcesso" value="#{msgs.subProcesso}: "/>
+                                    <p:inputNumber emptyValue="0" minValue="0" decimalPlaces="0" id="subProcesso" value="#{finEncargoDevidoPacienteBean.subProcesso}"/>
+                                    
+                                    <p:outputLabel for="tipoEncargo" value="#{msgs.tipoDeEncargo}: "/>
+                                    <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="tipoEncargo"
+                                                     value="#{finEncargoDevidoPacienteBean.encargoDevidoPesquisa.fkIdTipoEncargo.pkIdTipoEncargo}"
+                                                     valueChangeListener="#{finEncargoDevidoPacienteBean.changeTipoEncargo}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{finTipoEncargoBean.findAll()}" 
+                                                       var="tipoEncargo"
+                                                       itemLabel="#{tipoEncargo.descricaoTipoEncargo}" 
+                                                       itemValue="#{tipoEncargo.pkIdTipoEncargo}"/>
+                                        <f:ajax execute="@this" render="servico categoriaServico"/>
+                                    </p:selectOneMenu>
+                                    </f:validateBean>
+                                </p:panelGrid> 
+                                
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <p:outputLabel for="servico" value="#{msgs.servico}: "/>
+                                    <p:selectOneMenu id="servico" disabled="#{!finEncargoDevidoPacienteBean.isEscolhaServico()}"
+                                                     value="#{finEncargoDevidoPacienteBean.idServico}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{admsServicoBean.findAll()}" 
+                                                       var="servico" 
+                                                       itemLabel="#{servico.nomeServico}" 
+                                                       itemValue="#{servico.pkIdServico}"/>
+                                        <f:ajax execute="@this" render="categoriaServico"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel for="categoriaServico" value="#{msgs.categoriaDoServico}: "/>
+                                    <p:selectOneMenu id="categoriaServico" disabled="#{!finEncargoDevidoPacienteBean.isEscolhaServico()}"
+                                                     value="#{finEncargoDevidoPacienteBean.encargoDevidoPesquisa.fkIdPrecoCategoriaServico.fkIdCategoriaServico.pkIdCategoriaServico}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{finEncargoDevidoPacienteBean.getCategoriasServicos()}" 
+                                                       var="categoriaaServico" 
+                                                       itemLabel="#{categoriaaServico.descricaoCategoriaServico}" 
+                                                       itemValue="#{categoriaaServico.pkIdCategoriaServico}"/>
+                                    </p:selectOneMenu>
+
+                                                                                                                                                         
+                                </p:panelGrid> 
+                                
+                                
+                            </p:panelGrid>
+                        </div>
+                        
+                        <h:panelGrid columns="1" width="50%">
+                            <p:commandButton value="#{msgs.pesquisar}" id="pesquisar" 
+                                                 actionListener="#{finEncargoDevidoPacienteBean.pesquisar()}" 
+                                                 partialSubmit="true" process="@this dataInicial dataFinal subProcesso tipoEncargo servico categoriaServico" 
+                                                 update="dataTable" 
+                                                 style="width: 50%"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    
+                    <p:watermark for="dataInicial" value="#{msgs.aPartirDe}"/>
+                    <p:watermark for="dataFinal" value="#{msgs.ate}"/>
+                    <p:tooltip for="dataInicial" position="top" value="#{msgs.aPartirDe}"/>
+                    <p:tooltip for="dataFinal" position="top" value="#{msgs.ate}"/>
+                    
+                    <p:dataTable reflow="true" id="dataTable" var="encargoDevido" value="#{finEncargoDevidoPacienteBean.getListaEncargosDevidos()}"
+                                 selection="#{finEncargoDevidoPacienteBean.listaEncargosDevidosEscolhidosParaPagar}"
+                                 rowKey="#{encargoDevido.pkIdEncargoDevido}"
+                                 style="width: 100%" emptyMessage="Sem Encargos Devidos"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+                        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+                        <p:column headerText="Numero SubProcesso">
+                            <center>     
+                                #{encargoDevido.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}
+                            </center>
+                        </p:column>
+                        <p:column filterBy="#{encargoDevido.descricaoEncargoDevido}" headerText="#{msgs.descricao}">
+                            <center>     
+                                #{encargoDevido.descricaoEncargoDevido}
+                            </center>
+                        </p:column>
+                        <p:column sortBy="#{encargoDevido.data}" headerText="Data da Criação do Encargo">
+                            <center>    
+                                <h:outputText value="#{encargoDevido.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </h:outputText>
+                            </center>
+                        </p:column>
+                        <p:column filterBy="#{encargoDevido.quantidade}" headerText="#{msgs.quantidade}">
+                            <center>   
+                                #{encargoDevido.quantidade}
+                            </center>
+                        </p:column>
+                        <p:column filterBy="#{encargoDevido.fkIdTipoEncargo.descricaoTipoEncargo}" headerText="#{msgs.tipoDeEncargo}">
+                            <center>   
+                                #{encargoDevido.fkIdTipoEncargo.descricaoTipoEncargo}
+                            </center>
+                        </p:column>
+                        <p:column filterBy="#{encargoDevido.fkIdPrecoCategoriaServico.fkIdCategoriaServico.fkIdServico.nomeServico}" headerText="#{msgs.servico}">
+                            <center>      
+                                #{encargoDevido.fkIdPrecoCategoriaServico.fkIdCategoriaServico.fkIdServico.nomeServico}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.categoriaDoServico}">
+                            <center> 
+                                #{encargoDevido.fkIdPrecoCategoriaServico.fkIdCategoriaServico.descricaoCategoriaServico}
+                            </center>
+                        </p:column>
+                        <p:column headerText="Valor a Pagar">
+                            <center> 
+                                #{encargoDevido.valor}
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                    <br/>
+                    <br/>
+                    <center>
+                        <p:commandButton value="Efetuar #{msgs.pagamento}" ajax="false"
+                            actionListener="#{finEncargoDevidoPacienteBean.definirEncargosASeremPagos()}"
+                            action="/finVisao/pagamento/pagamentoFin.xhtml"/>
+                    </center>
+                    
+                </h:form>
+                
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="/admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

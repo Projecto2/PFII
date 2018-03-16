@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="listaPacientesInternados" language="groovy" pageWidth="650" pageHeight="842" columnWidth="610" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8475645f-a260-4354-af52-8c5e7c5d9569">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="servico" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="fkIdCamaInternamento.codigoCamaInternamento" class="java.lang.String"/>
+	<field name="fkIdCamaInternamento.fkIdSalaInternamento.codigoSalaInternamento" class="java.lang.String"/>
+	<field name="fkIdInscricaoInternamento.numeroInscricao" class="java.lang.String"/>
+	<field name="fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome" class="java.lang.String"/>
+	<field name="fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio" class="java.lang.String"/>
+	<field name="fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="118" splitType="Stretch">
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="44" y="14" width="95" height="61" uuid="1b762eb0-d3fa-431d-a657-66be43d01fbe"/>
+				<imageExpression><![CDATA["LogotipoDivina.jpg"]]></imageExpression>
+			</image>
+			<image vAlign="Middle">
+				<reportElement x="487" y="11" width="71" height="63" uuid="22b7b141-1635-418d-804f-9ba5980c1f92"/>
+				<imageExpression><![CDATA["insigniaAngola.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="85" y="38" width="422" height="20" forecolor="#0000FF" uuid="7540d34d-e125-4a22-bc56-9d812a4ebfcc"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<text><![CDATA[GABINETE PROVINCIAL DE  LUANDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="85" y="12" width="422" height="25" forecolor="#0000FF" uuid="ecf94bdd-89d3-42f4-bde7-76b5210f56db"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="15"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="85" y="55" width="422" height="30" forecolor="#0000FF" uuid="d7f1bb58-b8a8-4085-9b55-084fde37a432"/>
+				<textElement textAlignment="Center">
+					<font fontName="Abyssinica SIL" size="18" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="4" y="85" width="600" height="16" uuid="383e56fd-7fb0-473b-b21b-f846b0fb05c7"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Opaque" x="4" y="86" width="600" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="5b9b12cc-e23b-4cbc-a74c-d9f561c1705c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Controlo do Golf - K. Kiaxi - LUANDA Tel-Fax(02) 470781 - 470507 E-mail:hospdp@ebonet.net]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="51" splitType="Stretch">
+			<staticText>
+				<reportElement x="157" y="20" width="291" height="20" uuid="f02a2117-068c-49cc-ac26-fa60877c1d06"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14" isBold="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[LISTA DE PACIENTES INTERNADOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="312" y="0" width="65" height="20" uuid="f15d58e3-0b40-47db-862e-2769f6acb829"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data : ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="358" y="0" width="100" height="20" uuid="6565ee54-0073-4a9c-bb52-2fab40358713"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="148" y="0" width="198" height="20" uuid="d80ff9b0-444a-4c5d-9f33-5f13dfc3a7fa"/>
+				<textElement>
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{servico}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement x="14" y="0" width="100" height="20" uuid="9bf02b9d-e26a-4fb3-8c9e-a2cdf2f48951"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[  CAMA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="114" y="0" width="100" height="20" uuid="968717ad-66de-4dd6-a5fb-5d6ea5fd63e4"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   SALA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="214" y="0" width="385" height="20" uuid="15b37a32-c500-490e-90b9-9275d5e477e2"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[   PACIENTE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="14" y="0" width="100" height="20" uuid="d5743c67-7589-4a9f-b5a3-5fa2cdeebb85"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$F{fkIdCamaInternamento.codigoCamaInternamento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="214" y="0" width="385" height="20" uuid="d26471d6-9602-4f17-9a00-6e32ac6d411a"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$F{fkIdInscricaoInternamento.numeroInscricao}+" - "+$F{fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}+" "+$F{fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} +" "+$F{fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="114" y="0" width="100" height="20" uuid="3c110e0e-dfba-46f8-bbb4-78670db1885b"/>
+				<box>
+					<pen lineWidth="0.25"/>
+					<topPen lineWidth="0.25"/>
+					<leftPen lineWidth="0.25"/>
+					<bottomPen lineWidth="0.25"/>
+					<rightPen lineWidth="0.25"/>
+				</box>
+				<textFieldExpression><![CDATA["   "+$F{fkIdCamaInternamento.fkIdSalaInternamento.codigoSalaInternamento}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="10" y="10" width="600" height="16" uuid="98be07ee-cae4-427f-bf7e-19b8c838ebe0"/>
+			</rectangle>
+			<textField>
+				<reportElement x="496" y="26" width="114" height="20" uuid="86075334-be68-412c-b741-980c53e1cb10"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="12" width="600" height="14" forecolor="#0000FF" backcolor="#C0C0C0" uuid="71dc919e-9e89-4f3b-9092-0d6f69e3f4ba"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="510" y="10" width="100" height="20" uuid="e12590ba-89ab-4b44-9268-79368ae371d3"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

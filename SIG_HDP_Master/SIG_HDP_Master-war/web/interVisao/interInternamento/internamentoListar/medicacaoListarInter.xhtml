@@ -1,0 +1,423 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>#{interObjetosSessaoBean.menuTitulo} -> Ficha de Controlo Terapeutica. Listagem de Medicamentos Dados ao Paciente</h2>
+                <br/>                
+                <h:form id="ficha">
+                    <p:growl id="ms" autoUpdate="true" />
+                    <p:button value="Voltar" styleClass="float-right" style="width: 130px;" outcome="registoInternamentoListarInter" icon="ui-icon-arrowreturnthick-1-w"/>
+                    <center>
+                        <span style="font-size: 16pt">
+                            <p:commandLink style="color: #0088cc" value="#{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                           ajax="true" partialSubmit="true" process="@this" 
+                                           actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                           update=":formPacienteVisualizar" 
+                                           onclick="PF('dialogMaisDetalhes').show();"/>
+                            <br/>
+                            #{msgs.subProcesso}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                            #{msgs.dataDaSolicitacao}: 
+                            <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </p:outputLabel>
+                        </span>
+                    </center>  
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="2">
+
+                            <p:outputLabel value="Medicamento"/>
+                            <p:inputText value="#{interMedicacaoListarBean.medicamentoPesq}" style="width: 96%"/>
+
+                            <p:outputLabel value="Forma Farmacêutica"/>
+                            <p:selectOneMenu id="formaFarmaceutica" style="width: 93%" filter="true"
+                                             value="#{interMedicacaoListarBean.formaFarmaceuticaPesq}">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{farmListasUteisBean.todasFormasFarmaceuticas}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Via Administração"/>
+                            <p:selectOneMenu style="width: 93%;" value="#{interMedicacaoListarBean.viaPesq}" id="cboVia" filter="true">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{farmViaAdministracaoBean.findAll()}" 
+                                               var="v"
+                                               itemLabel="#{v.descricao}"
+                                               itemValue="#{v.descricao}" 
+                                               />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Horario" for="horaPesq"/>
+                            <p:selectOneMenu id="horaPesq" value="#{interMedicacaoListarBean.horarioPesq}" style=" border-radius:10%;font-weight:500;width:93%;">
+                                <f:selectItem itemLabel="" itemValue=""/>                                        
+                                <f:selectItems value="#{interHoraMedicacaoListarBean.listarTodas}" 
+                                               var="hP"
+                                               itemLabel="#{hP.descricao}"
+                                               itemValue="#{hP.descricao}" 
+                                               />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Estado"/>
+                            <p:selectOneMenu value="#{interMedicacaoListarBean.opcaoMedicacaoPesq}" style=" border-radius:10%;font-weight:500;width:93%;" filter="true" >
+                                <f:selectItem itemLabel="" itemValue=""/>                                        
+                                <f:selectItems value="#{interOpcaoMedicacaoListarBean.findByDescricao()}" 
+                                               var="e"
+                                               itemLabel="#{e.codigo}"
+                                               itemValue="#{e.pkIdOpcaoMedicacao}" 
+                                               />
+                            </p:selectOneMenu> 
+
+                            <p:outputLabel value="Enfermeiro"/>
+                            <p:inputText style="width: 96%" id="nome" value="#{interMedicacaoListarBean.nomeEnfermeiro}"/>
+
+                            <p:outputLabel value="Data de Registo"/>
+                            <h:panelGrid columns="4">
+                                <p:calendar navigator="true" id="de" size="29" value="#{interMedicacaoListarBean.dataRegistoPesq1}" /> 
+                                <p:watermark for="de" value="De" />
+                                <p:calendar navigator="true" id="a" size="29" value="#{interMedicacaoListarBean.dataRegistoPesq2}" /> 
+                                <p:watermark for="a" value="A" />
+                            </h:panelGrid>
+
+                            <p></p><p></p>                            
+                            <h:panelGrid columns="3" cellpadding="1" width="100%">
+                                <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interMedicacaoListarBean.pesquisarMedicacaoRealizada()}" update="resultado" style="width: 100%"/>
+                                <p:commandButton value="Marcação dos Horários" icon="ui-icon-plus"  id="adicionar" onclick="PF('addFicha').show();" update=":cadastro:pac :cadastro:numeroSupProcesso :cadastro:dataSolicitacao" rendered="#{interControloDiarioBean.registoInternamento.ativo}" style="width: 100%">
+                                    <p:tooltip id="toolTipAdicionar" for="adicionar" value="Registar Uma Nova Medicação" />
+                                </p:commandButton>
+                                <p:commandButton value="Registar Entrega Medicamentos" icon="ui-icon-plus"  id="adicionarMedicacao" action="#{interMedicacaoListarBean.registarMedicacao()}" partialSubmit="true" process="@this">
+                                    <p:tooltip id="toolTipAdicionarMedicacao" for="adicionarMedicacao" value="Registar Enrega de Medicamentos ao Paciente" />
+                                </p:commandButton>
+                            </h:panelGrid>       
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:panel id="resultado" style="border: 0px;">
+                        <p:dataTable  id="datatable" var="registo"  scrollWidth="31%"  value="#{interMedicacaoListarBean.listaMedicacaoRealizada}" 
+                                      emptyMessage="Nenhum registo de medicação encontrado" selectionMode="single" rowKey="#{registo.pkIdRealizarMedicacao}" paginator="true" paginatorPosition="bottom" rows="10" >
+
+                            <f:facet name="header">
+                                Registo de medicamentos entregues ao paciente
+                            </f:facet>  
+
+                            <p:column headerText="Medicamento" sortBy="#{registo.fkIdMedicacaoHasFarmProduto.fkIdProduto.descricao}" filterBy="#{registo.fkIdMedicacaoHasFarmProduto.fkIdProduto.descricao}" filterMatchMode="contains" width="100">
+                                <h:outputText value="#{registo.fkIdMedicacaoHasFarmProduto.fkIdProduto.descricao} (#{registo.fkIdMedicacaoHasFarmProduto.fkIdProduto.dosagem}#{registo.fkIdMedicacaoHasFarmProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura})"/>
+                            </p:column>  
+
+                            <p:column headerText="Forma Farmacêutica" width="70">
+                                <h:outputText value="#{registo.fkIdMedicacaoHasFarmProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao}"/>
+                            </p:column>
+
+                            <p:column headerText="Via de Administração"  sortBy="#{registo.fkIdMedicacaoHasFarmProduto.fkIdProduto.fkIdViaAdministracao.descricao}" filterBy="#{registo.fkIdMedicacaoHasFarmProduto.fkIdProduto.fkIdViaAdministracao.descricao}" filterMatchMode="contains" width="100">
+                                <h:outputText value="#{registo.fkIdMedicacaoHasFarmProduto.fkIdProduto.fkIdViaAdministracao.descricao}"/>
+                            </p:column>
+
+                            <p:column headerText="Quantidade">
+                                <h:outputText value="#{registo.fkIdMedicacaoHasFarmProduto.dose}"/>
+                            </p:column>
+
+                            <p:column headerText="S.O.S">
+                                <h:outputText value="#{interMedicacaoListarBean.findSOS(registo.fkIdMedicacaoHasFarmProduto.SOS)}"/>
+                            </p:column>
+
+                            <p:column headerText="Data / Hora Entrega ao Paciente" rendered="false">
+                                <h:outputText value="#{registo.dataRegistadaNoPaciente}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText> 
+                                <h:outputText value=" #{registo.hora}"/>
+
+                            </p:column> 
+
+                            <p:column headerText="Data / Hora Registada no Sistema" sortBy="#{registo.dataHora}" filterBy="#{registo.dataHora}" filterMatchMode="contains" width="100">
+                                <h:outputText value="#{registo.dataHora}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                </h:outputText>    
+                            </p:column> 
+
+                            <p:column headerText="Estado" sortBy="#{registo.fkIdOpcaoMedicacao.codigo} - #{registo.fkIdOpcaoMedicacao.descricao}" filterBy="#{registo.fkIdOpcaoMedicacao.codigo} - #{registo.fkIdOpcaoMedicacao.descricao}" filterMatchMode="contains" width="100">
+                                <h:outputText value="#{registo.fkIdOpcaoMedicacao.codigo} - #{registo.fkIdOpcaoMedicacao.descricao}"/>
+                            </p:column>
+
+                            <p:column headerText="Médico / Enfermeiro" sortBy="#{registo.fkIdFuncionario.fkIdPessoa.nome} #{registo.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{registo.fkIdFuncionario.fkIdPessoa.sobreNome}" filterBy="#{registo.fkIdFuncionario.fkIdPessoa.nome} #{registo.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{registo.fkIdFuncionario.fkIdPessoa.sobreNome}" filterMatchMode="contains" width="100">
+                                <h:outputText value="#{registo.fkIdFuncionario.fkIdPessoa.nome} #{registo.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{registo.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                            </p:column>
+
+                            <p:column headerText="------" width="100">
+                                <center>
+                                    <p:menuButton value="Opções">
+                                        <p:menuitem value="Editar" icon="ui-icon-pencil" action="#"/>
+                                        <p:menuitem value="Visualizar" icon="ui-icon-search" action="#"/>
+                                    </p:menuButton>  
+                                </center>    
+                            </p:column>  
+
+                        </p:dataTable>
+                    </p:panel>    
+
+                    <!--Por os botoes na tabela
+                    <p:commandButton value="Visualizar" icon="ui-icon-search"  process="@this" type="button" onclick="addMedicacao.show();"/>
+                    -->
+                </h:form>
+
+                <!--FORMULARIO PARA CADASTRO-->
+                <h:form id="cadastro">
+                    <p:dialog id="addFicha" widgetVar="addFicha" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="1100" height="550">
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Medicação -> Marcação dos Horários</h2>
+                        <p:panel header="Ficha Terapeutica - Medicação" id="bb">
+                            <p:growl id="ms" autoUpdate="true" />
+                            <br/>
+                            <center>
+                                <span style="font-size: 16pt">
+                                    <p:commandLink style="color: #0088cc" id="pac" value="#{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                                   ajax="true" partialSubmit="true" process="@this" 
+                                                   actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                                   update=":formPacienteVisualizar" 
+                                                   onclick="PF('dialogMaisDetalhes').show();"/>
+                                    <br/>
+                                    #{msgs.subProcesso}:
+                                    <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //" id="numeroSupProcesso"/>
+                                    #{msgs.dataDaSolicitacao}: 
+                                    <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+                                </span>
+                            </center>                           
+                            <br/>
+
+                            <h:panelGrid columns="2">
+
+                                <p:outputLabel value="Classe"/>         
+                                <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="cat1" style="width: 90%" filter="true"
+                                                     disabled="#{(interFarmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                     value="#{interFarmProdutoListarBean.categoriaNivel1.pkIdCategoriaMedicamento}"
+                                                     valueChangeListener="#{interFarmProdutoListarBean.changeCategoriaNivel1}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{interFarmProdutoListarBean.listaNivel1}" var="cat1"
+                                                       itemLabel="#{cat1.capitulo} - #{cat1.descricao}" itemValue="#{cat1.pkIdCategoriaMedicamento}"/>
+                                        <f:ajax execute="@this" event="change" render="cat2 cat3 cat4 mediO"/>
+                                    </p:selectOneMenu>
+                                </f:validateBean>    
+
+                                <p:outputLabel value="Subclasse"/>         
+                                <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="cat2" style="width: 90%" filter="true"
+                                                     disabled="#{!(interFarmProdutoListarBean.listaNivel2.size() > 0) || (interFarmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                     value="#{interFarmProdutoListarBean.categoriaNivel2.pkIdCategoriaMedicamento}"
+                                                     valueChangeListener="#{interFarmProdutoListarBean.changeCategoriaNivel2}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{interFarmProdutoListarBean.listaNivel2}" var="cat2"
+                                                       itemLabel="#{cat2.capitulo} - #{cat2.descricao}" itemValue="#{cat2.pkIdCategoriaMedicamento}"/>
+                                        <f:ajax execute="@this" event="change" render="cat3 cat4 mediO"/>
+                                    </p:selectOneMenu>
+                                </f:validateBean>
+
+                                <p:outputLabel value="Categoria"/>    
+                                <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="cat3" style="width: 90%" filter="true"
+                                                     disabled="#{!(interFarmProdutoListarBean.listaNivel3.size() > 0) || (interFarmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                     value="#{interFarmProdutoListarBean.categoriaNivel3.pkIdCategoriaMedicamento}"
+                                                     valueChangeListener="#{interFarmProdutoListarBean.changeCategoriaNivel3}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{interFarmProdutoListarBean.listaNivel3}" var="cat3"
+                                                       itemLabel="#{cat3.capitulo} - #{cat3.descricao}" itemValue="#{cat3.pkIdCategoriaMedicamento}"/>
+                                        <f:ajax execute="@this" event="change" render="cat4 mediO"/>
+                                    </p:selectOneMenu>
+                                </f:validateBean>
+                                <p:outputLabel value="SubCategoria"/>     
+                                <f:validateBean disabled="true">
+                                    <p:selectOneMenu id="cat4" style="width: 90%" filter="true"
+                                                     disabled="#{!(interFarmProdutoListarBean.listaNivel4.size() > 0) || (interFarmProdutoListarBean.produtoPesquisa.fkIdTipoProduto.pkIdTipoProduto == 2)}"
+                                                     value="#{interFarmProdutoListarBean.categoriaNivel4.pkIdCategoriaMedicamento}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{interFarmProdutoListarBean.listaNivel4}" var="cat4"
+                                                       itemLabel="#{cat4.capitulo} - #{cat4.descricao}" itemValue="#{cat4.pkIdCategoriaMedicamento}"/>
+
+                                        <f:ajax execute="@this" event="change" render="mediO"/>
+                                    </p:selectOneMenu>
+                                </f:validateBean>
+                                <p:outputLabel value="Forma Farmacêutica"/>
+                                <p:selectOneMenu id="formaF" style="width: 60%" filter="true"
+                                                 value="#{interMedicacaoNovoBean.fkIdFormaFarmaceutica}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmListasUteisBean.todasFormasFarmaceuticas}"/>
+                                    <f:ajax execute="@this" event="change" render="mediO"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Via de Administração"/>
+                                <p:selectOneMenu style="width: 60%;" value="#{interMedicacaoNovoBean.fkIdViaAdministracao}" id="cboViaAdm" filter="true">
+                                    <f:selectItem itemLabel="" itemValue="" />
+                                    <f:selectItems value="#{farmViaAdministracaoBean.findAll()}" 
+                                                   var="vAdms"
+                                                   itemLabel="#{vAdms.descricao}"
+                                                   itemValue="#{vAdms.pkIdViaAdministracao}" 
+                                                   />
+                                    <f:ajax execute="@this" event="change" render="mediO"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Medicamento * " for="mediO"/>
+                                <p:selectOneMenu id="mediO" value="#{interMedicacaoNovoBean.medicacaoProdutoOral.fkIdProduto.pkIdProduto}" style=" border-radius:10%;font-weight:500;width:60%;" filter="true">
+                                    <f:selectItem itemLabel="" itemValue=""/>                                        
+                                    <f:selectItems value="#{interMedicacaoNovoBean.lerTodosMedicamentosPorViaAdmissao()}" 
+                                                   var="mdO"
+                                                   itemLabel="#{mdO.descricao} (#{mdO.dosagem}#{mdO.fkIdUnidadeMedida.abreviatura}) - #{mdO.fkIdFormaFarmaceutica.descricao}"
+                                                   itemValue="#{mdO.pkIdProduto}" 
+                                                   />
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Hora * " for="horamedO"/>
+                                <p:selectOneMenu id="horamedO" value="#{interMedicacaoNovoBean.medicacaoProdutoOral.fkIdHoraMedicacao.pkIdHoraMedicacao}" style=" border-radius:10%;font-weight:500;width:60%;">
+                                    <f:selectItem itemLabel="" itemValue=""/>                                        
+                                    <f:selectItems value="#{interHoraMedicacaoListarBean.listarTodas}" 
+                                                   var="hO"
+                                                   itemLabel="#{hO.descricao}"
+                                                   itemValue="#{hO.pkIdHoraMedicacao}" 
+                                                   />
+                                </p:selectOneMenu>
+                                <h:outputLabel value="Quantidade * " for="dosO"/>
+                                <h:inputText id="dosO" value="#{interMedicacaoNovoBean.dose}"/>  
+                                <h:outputLabel value="S.O.S"/>
+                                <p:selectOneRadio value="#{interMedicacaoNovoBean.sos}">
+                                    <f:selectItem itemLabel="Não" itemValue="0" />
+                                    <f:selectItem itemLabel="Sim" itemValue="1" />
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+                            <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+                            <p:separator />
+                            <p:separator />
+                            <h:panelGrid style="margin-left: 84px; margin-top: -10px" columns="2">
+                                <p:commandButton value="Adicionar" action="#{interMedicacaoNovoBean.salvar()}" update="resultadoO mediO horamedO dosO" style="width: 130px" icon="ui-icon-plus"/>
+                                <p:commandButton value="Fechar" onclick="PF('addFicha').hide()"
+                                                 action="#{interMedicacaoNovoBean.setSalvou(false)}" process="@this" style="width: 100%"/>             
+                            </h:panelGrid>
+                            <p:panel id="resultadoO" style="border: 0px;">
+                                <p:dataTable  id="datatableO" var="medicamentoVarO"  scrollWidth="31%"  value="#{interMedicacaoListarBean.pesquisarPorViaAdms(0)}" 
+                                              emptyMessage="Nenhum medicamento adicionado" selectionMode="single" rowKey="#{medicamentoVarO.pkIdInterMedicacaoHasFarmProduto}" paginator="true" paginatorPosition="bottom" rows="5" style="height: 10%">
+                                    <f:facet name="header">
+                                        Lista de Medicamentos
+                                    </f:facet>              
+
+                                    <p:column>
+                                        <h:outputText value="#{interMedicacaoListarBean.pesquisarPorViaAdms(0).indexOf(medicamentoVarO)+1}"/>
+                                    </p:column>
+
+                                    <center>
+                                        <p:column headerText="Medicamento" sortBy="#{medicamentoVarO.fkIdProduto.descricao}" filterBy="#{medicamentoVarO.fkIdProduto.descricao}" filterMatchMode="contains" width="120">
+                                            <h:outputText value="#{medicamentoVarO.fkIdProduto.descricao} (#{medicamentoVarO.fkIdProduto.dosagem}#{medicamentoVarO.fkIdProduto.fkIdUnidadeMedida.abreviatura})"/>
+                                        </p:column>
+                                    </center>    
+
+                                    <center>
+                                        <p:column headerText="Via de Admininistração" sortBy="#{medicamentoVarO.fkIdProduto.fkIdViaAdministracao.descricao}" filterBy="#{medicamentoVarO.fkIdProduto.fkIdViaAdministracao.descricao}" filterMatchMode="contains" width="120">
+                                            <h:outputText value="#{medicamentoVarO.fkIdProduto.fkIdViaAdministracao.descricao}"/>
+                                        </p:column>
+                                    </center>    
+
+                                    <center>
+                                        <p:column headerText="Forma Farmacêutica" sortBy="#{medicamentoVarO.fkIdProduto.fkIdFormaFarmaceutica.descricao}" filterBy="#{medicamentoVarO.fkIdProduto.fkIdFormaFarmaceutica.descricao}" filterMatchMode="contains" width="120">
+                                            <h:outputText value="#{medicamentoVarO.fkIdProduto.fkIdFormaFarmaceutica.descricao}"/>
+                                        </p:column>
+                                    </center>    
+
+                                    <p:column headerText="Quantidade">
+                                        <h:outputText value="#{medicamentoVarO.dose}"/>
+                                    </p:column>
+
+                                    <center>
+                                        <p:column headerText="S.O.S" filterBy="#{interMedicacaoListarBean.findSOS(medicamentoVarO.SOS)}" width="100">
+                                            <h:outputText value="#{interMedicacaoListarBean.findSOS(medicamentoVarO.SOS)}"/>
+                                        </p:column>
+                                    </center>    
+
+                                    <p:column headerText="Hora">
+                                        <h:outputText value="#{medicamentoVarO.fkIdHoraMedicacao.descricao}"/>
+                                    </p:column>  
+
+                                    <p:column>
+                                        <p:commandButton value="Editar" icon="ui-icon-pencil" action="#{interMedicacaoEditarBean.setMedicacaoProdutoOral(medicamentoVarO)}" onclick="PF('editMedicacao').show();" process="@this" partialSubmit="true" update=":editarMedicacaoO:medi :editarMedicacaoO:horamed :editarMedicacaoO:dos"/>
+                                    </p:column>  
+
+                                    <p:column width="80">
+                                        <p:commandButton action="#{interMedicacaoListarBean.eliminarMedicamento(medicamentoVarO)}" value="Eliminar" update="datatableO" ajax="true" icon="ui-icon-delete"/>
+                                    </p:column>       
+
+                                </p:dataTable>
+                            </p:panel>  
+                        </p:panel>          
+                    </p:dialog>
+                </h:form> 
+
+                <!--FORMULARIO PARA EDITAR MEDICAÇÃO ORAL-->
+                <h:form id="editarMedicacaoO">
+                    <p:dialog id="editMedicacao" widgetVar="editMedicacao" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="600" height="400">
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Editar Medicação</h2>
+                        <p:separator/>
+                        <p:panel header="Ficha Terapeutica - Medicamento Via Oral" id="bb">
+                            <p:growl id="ms" autoUpdate="true" />
+                            <br/>
+                            <p:outputLabel id="pac" value="Paciente: #{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao} - #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" style="font-weight: bold; font-size: 16px; text-decoration: underline; margin-left: 220px"/>
+                            <br/>
+                            <br/>
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Medicamento * " for="medi"/>
+                                <p:selectOneMenu id="medi" value="#{interMedicacaoEditarBean.medicacaoProdutoOral.fkIdProduto.pkIdProduto}" style=" border-radius:10%;font-weight:500;width:50%;" required="true" requiredMessage="O medicamento é obrigatória." filter="true">
+                                    <f:selectItem itemLabel="" itemValue=""/>                                        
+                                </p:selectOneMenu>
+                                <h:outputLabel value="Hora * " for="horamed"/>
+                                <p:selectOneMenu id="horamed" value="#{interMedicacaoEditarBean.medicacaoProdutoOral.fkIdHoraMedicacao.pkIdHoraMedicacao}" style=" border-radius:10%;font-weight:500;width:50%;" required="true" requiredMessage="O medicamento é obrigatória.">
+                                    <f:selectItem itemLabel="" itemValue=""/>                                        
+                                    <f:selectItems value="#{interHoraMedicacaoListarBean.listarTodas}" 
+                                                   var="hO"
+                                                   itemLabel="#{hO.descricao}"
+                                                   itemValue="#{hO.pkIdHoraMedicacao}" 
+                                                   />
+                                </p:selectOneMenu>
+                                <h:outputLabel value="Dose * " for="dos"/>
+                                <h:inputText id="dos" value="#{interMedicacaoEditarBean.medicacaoProdutoOral.dose}" required="true" requiredMessage="A dose é obrigatória." style="width: 50%"/>  
+                            </h:panelGrid>
+                            <h:panelGrid style="margin-left: 84px; margin-top: -10px">
+                                <p:commandButton value="Editar" action="#{interMedicacaoEditarBean.editarMedicamento(1)}" update="" style="width: 130px" onclick="PF('editMedicacao').hide()"/>
+                            </h:panelGrid>
+
+                            <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+                            <p:separator />
+                            <p:separator />    
+                            <br/>
+                            <center>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton value="Fechar" onclick="PF('editMedicacao').hide()"
+                                                     process="@this" style="width: 100%"/>             
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>          
+                    </p:dialog>
+                </h:form> 
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+     <h:head id="tituloHead">
+          <title>#{rhAvaliacaoDeDesempenhoHomeBean.tituloDaPagina}</title>
+     </h:head>
+
+     <h:body>
+
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Avaliação de Desempenho -> <h:outputText id="tituloPanel" value="#{rhAvaliacaoDeDesempenhoHomeBean.tituloDaPagina}"/></h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:growl id="msg2" autoUpdate="true"/>
+
+                    <h:form id="formulario">
+                         <p:fieldset id="fieldsetPrincipal" style=" height: 50px">
+                              <center>
+                                   <h:panelGrid columns="3" cellpadding="3">
+                                        <p:commandButton style="width: 100%; height: 30px; color: #{rhAvaliacaoDeDesempenhoHomeBean.corPesquisarAvaliacoes()}" value="Pesquisar Avaliações de Desempenho"
+                                                         actionListener="#{rhAvaliacaoDeDesempenhoHomeBean.selecionarPesquisarAvaliacoes()}" process="@this"
+                                                         update="tituloHead tituloPanel fieldsetPrincipal panelApresentacao "
+                                                         disabled="#{rhAvaliacaoDeDesempenhoHomeBean.renderizarPesquisarAvaliacoes()}"/>
+
+                                        <p:commandButton style="width: 240px; height: 30px; color: #{rhAvaliacaoDeDesempenhoHomeBean.corNovaAvaliacao()}" value="Nova Avaliação de Desempenho" icon="ui-icon-plus"
+                                                         actionListener="#{rhAvaliacaoDeDesempenhoHomeBean.selecionarNovaAvaliacao()}" process="@this" 
+                                                         update="tituloHead tituloPanel fieldsetPrincipal panelApresentacao "
+                                                         disabled="#{rhAvaliacaoDeDesempenhoHomeBean.renderizarNovaAvaliacao()}"/>
+
+                                        <p:commandButton style="width: 240px; height: 30px; color: #{rhAvaliacaoDeDesempenhoHomeBean.corCriteriosDeAvaliacao()}" value="Critérios de Avaliação"
+                                                         actionListener="#{rhAvaliacaoDeDesempenhoHomeBean.selecionarCriteriosDeAvaliacao()}" process="@this"
+                                                         update="tituloHead tituloPanel fieldsetPrincipal panelApresentacao "
+                                                         disabled="#{rhAvaliacaoDeDesempenhoHomeBean.renderizarCriteriosDeAvaliacao()}"/>
+                                   </h:panelGrid>
+                              </center>
+                         </p:fieldset>
+
+                    </h:form>
+
+                    <p:panel id="panelApresentacao" style="background: none">
+                         <p:panel rendered="#{rhAvaliacaoDeDesempenhoHomeBean.renderizarPesquisarAvaliacoes()}"
+                                  style="background: none; border: none">
+                              <ui:include src="avaliacaoDeDesempenhoPesquisarRh.xhtml"/>
+                         </p:panel>
+                         <p:panel rendered="#{rhAvaliacaoDeDesempenhoHomeBean.renderizarNovaAvaliacao()}"
+                                  style="background: none; border: none">
+                              <ui:include src="avaliacaoDeDesempenhoNovaRh.xhtml"/>
+                         </p:panel>
+                         <p:panel rendered="#{rhAvaliacaoDeDesempenhoHomeBean.renderizarCriteriosDeAvaliacao()}"
+                                  style="background: none; border: none">
+                              <ui:include src="criterioDeAvaliacaoRh.xhtml"/>
+                         </p:panel>
+                    </p:panel>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+
+               </ui:define>
+
+          </ui:composition>
+
+     </h:body>
+</html>

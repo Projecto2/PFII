@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="listaServicosSolicitados" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d2dbc5f0-ffb7-4b7f-8bd9-39f6d35bc421">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="16"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/home/gemix/NetBeansProjects/SIG_HDP_Master/SIG_HDP_Master/SIG_HDP_Master-war/web/WEB-INF/relatorios/adms/"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="fkIdServico.nomeServico" class="java.lang.String"/>
+	<field name="fkIdSolicitacao.fkIdPaciente.numeroPaciente" class="java.lang.String"/>
+	<field name="fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome" class="java.lang.String"/>
+	<field name="fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio" class="java.lang.String"/>
+	<field name="fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome" class="java.lang.String"/>
+	<field name="fkIdSolicitacao.data" class="java.util.Date"/>
+	<field name="fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico" class="java.lang.String"/>
+	<field name="fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado" class="java.lang.String"/>
+	<field name="fkIdValorPrecoServico.valor" class="java.lang.Double"/>
+	<field name="pkIdServicoSolicitado" class="java.lang.Long"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="131" splitType="Stretch">
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="10" y="13" width="95" height="61" uuid="91d95549-1053-4688-a759-a496a0075feb"/>
+				<imageExpression><![CDATA["LogotipoDivina.jpg"]]></imageExpression>
+			</image>
+			<image vAlign="Middle">
+				<reportElement x="453" y="10" width="71" height="63" uuid="c8dbfcfa-c413-445a-8a6e-b23f66eda8ff"/>
+				<imageExpression><![CDATA["insigniaAngola.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="51" y="11" width="422" height="25" forecolor="#0000FF" uuid="2181f466-d7b2-4c4b-bf85-2f1a04035f23"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="15"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="37" width="422" height="20" forecolor="#0000FF" uuid="c034395d-e8f0-4c47-8af6-d1b5d287e5c6"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<text><![CDATA[GABINETE PROVINCIAL DE  LUANDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="54" width="422" height="30" forecolor="#0000FF" uuid="c57e9042-4ebf-498d-960d-ad1a6c285f9b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Abyssinica SIL" size="18" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="90" width="514" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="f7d94b0b-892e-4cc3-a7e3-8ea4282b26c9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Controlo do Golf - K. Kiaxi - LUANDA Tel-Fax(02) 470781 - 470507 E-mail:hospdp@ebonet.net]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="10" y="90" width="515" height="16" uuid="d33f7101-324e-4140-8b49-b63f46e03072"/>
+			</rectangle>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="184" y="6" width="168" height="20" uuid="65c97a5c-189f-434f-a7f6-d0c771336a79"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Servicos]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="61" height="20" uuid="51d75b5f-6223-42b6-846a-ee3edd2ce4bf"/>
+				<text><![CDATA[fkIdServico.nomeServico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="0" width="61" height="20" uuid="8f595145-900d-4d29-8c15-cd6b022e1644"/>
+				<text><![CDATA[fkIdSolicitacao.fkIdPaciente.numeroPaciente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="122" y="0" width="61" height="20" uuid="7857f10a-4105-4230-b7f9-be1a6960608f"/>
+				<text><![CDATA[fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="183" y="0" width="61" height="20" uuid="86968ce2-4c39-4cf7-99d3-9829f05dfe00"/>
+				<text><![CDATA[fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="244" y="0" width="61" height="20" uuid="0eb1ee95-2f83-437a-8b1a-ba3ef4fa050a"/>
+				<text><![CDATA[fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="305" y="0" width="61" height="20" uuid="f6f09543-bb07-43ea-a0e6-4564e63e0f57"/>
+				<text><![CDATA[fkIdSolicitacao.data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="366" y="0" width="61" height="20" uuid="e6b21dfe-90d2-489f-98bb-03aeb7a2813c"/>
+				<text><![CDATA[fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="427" y="0" width="61" height="20" uuid="8a7307fc-3861-4204-8a6f-072e4d8c29d9"/>
+				<text><![CDATA[fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="488" y="0" width="61" height="20" uuid="b11e6bff-58c1-460b-8734-dabe156bc0cb"/>
+				<text><![CDATA[fkIdValorPrecoServico.valor]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="107" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="61" height="20" uuid="9511f86e-c530-40a6-a0fe-846f17c94df1"/>
+				<textFieldExpression><![CDATA[$F{fkIdServico.nomeServico}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="61" y="0" width="61" height="20" uuid="3bb8fc49-5439-4e75-83ef-f098c4612f20"/>
+				<textFieldExpression><![CDATA[$F{fkIdSolicitacao.fkIdPaciente.numeroPaciente}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="122" y="0" width="61" height="20" uuid="8dee79fe-485f-4ece-b596-d18b13310761"/>
+				<textFieldExpression><![CDATA[$F{fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="183" y="0" width="61" height="20" uuid="05daba3f-ed2b-4692-8baa-260c4795ad1f"/>
+				<textFieldExpression><![CDATA[$F{fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="244" y="0" width="61" height="20" uuid="76d4e094-78f5-4ca6-a768-4ca87957e8f9"/>
+				<textFieldExpression><![CDATA[$F{fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="305" y="0" width="61" height="20" uuid="08855a90-6d81-4d9d-abbb-215727cef3ae"/>
+				<textFieldExpression><![CDATA[$F{fkIdSolicitacao.data}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="366" y="0" width="61" height="20" uuid="91fda40f-2f22-451b-afb2-7d9be72c9d2c"/>
+				<textFieldExpression><![CDATA[$F{fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="427" y="0" width="61" height="20" uuid="2d1f10df-4e97-460a-bbc6-ae388c8d8ac0"/>
+				<textFieldExpression><![CDATA[$F{fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="488" y="0" width="61" height="20" uuid="fe4a9adc-fb30-4ee6-ae57-a757c6449f74"/>
+				<textFieldExpression><![CDATA[$F{fkIdValorPrecoServico.valor}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement x="0" y="29" width="394" height="78" uuid="d09e806d-ca7d-4246-be11-3395598dd846"/>
+				<subreportParameter name="fk_id_servico_solicitado">
+					<subreportParameterExpression><![CDATA[$F{pkIdServicoSolicitado}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "listaServicosSolicitados_agendamentos.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="47" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="10" y="3" width="515" height="16" uuid="3e49cc6d-ee03-4acb-8dfd-f5399dd4af4c"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Opaque" x="11" y="4" width="514" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="6bc9d0a5-4277-41b8-9b5f-026cc780be28"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="410" y="21" width="114" height="20" uuid="fea5899f-3a6a-4638-86f0-cae9176228b3"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="424" y="3" width="100" height="20" uuid="395f4811-5ce1-4bff-8575-8b3c7f629c5d"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

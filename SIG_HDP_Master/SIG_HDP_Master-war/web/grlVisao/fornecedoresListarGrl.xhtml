@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <body>
+      <p:messages id="msg" autoUpdate="true" closable="true"/>
+      <p:fieldset>
+         <h:form id="formPrincipal">  
+            <p:fieldset>
+               <h:panelGrid columns="2" cellpadding="3" id="gridCamposPesquisa">
+
+                  <p:outputLabel value="Nº de Contribuinte"/>
+                  <f:validateBean disabled="true">
+                     <p:inputText value="#{grlFornecedorListarBean.fornecedor.numeroContribuinte}"
+                                  style="width: 98%"/>
+                  </f:validateBean>
+
+                  <p:outputLabel value="Abreviatura"/>
+                  <f:validateBean disabled="true">
+                     <p:inputText value="#{grlFornecedorListarBean.fornecedor.fkIdInstituicao.codigoInstituicao}"
+                                  style="width: 98%"/>
+                  </f:validateBean>
+
+                  <p:outputLabel value="Descrição"/>
+                  <f:validateBean disabled="true">
+                     <p:inputText value="#{grlFornecedorListarBean.fornecedor.fkIdInstituicao.descricao}"
+                                  style="width: 98%"/>
+                  </f:validateBean>
+
+
+                  <p></p><p></p>
+                  <h:panelGrid columns="3">
+                     <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true"
+                                      action="#{grlFornecedorListarBean.pesquisarFornecedores()}" update="resultado"
+                                      process="gridCamposPesquisa" />
+
+                     <p:commandButton value="Limpar" icon="ui-icon-close" ajax="true"
+                                      action="#{grlFornecedorListarBean.limparCampos()}" 
+                                      update="resultado gridCamposPesquisa"
+                                      process="gridCamposPesquisa" />
+
+                     <p:commandButton value="Novo" icon="ui-icon-plus"
+                                      process="@this" action="#{farmRedireccionarBean.red_NovoIntesFornecedor()}"/>
+
+                  </h:panelGrid>                                                      
+               </h:panelGrid>
+            </p:fieldset>
+            <p:dataTable id="resultado" var="item" value="#{grlFornecedorListarBean.listaFornecedores}"
+                         rows="12" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+                         {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                         {RowsPerPageDropdown}" rowsPerPageTemplate="12,16,20" paginatorPosition="bottom"
+                         emptyMessage="Nenhum registo encontrado de momento. Aguardando pesquisa.">
+
+               <p:column headerText="Nº de Contribuinte" sortBy="#{item.numeroContribuinte}">
+                  <center><p:outputLabel value="#{item.numeroContribuinte}" /></center>
+               </p:column>        
+
+               <p:column headerText="Descrição" sortBy="#{item.fkIdInstituicao.descricao}">
+                  <center>
+                     <p:outputLabel value="#{item.fkIdInstituicao.descricao} (#{item.fkIdInstituicao.codigoInstituicao})" />                         
+                  </center>
+               </p:column>                     
+
+               <p:column headerText="Contactos">
+                  <p:outputLabel value="#{item.fkIdInstituicao.fkIdContacto.telefone1}" /><p></p>
+                  <p:outputLabel value="#{item.fkIdInstituicao.fkIdContacto.telefone2}" /><p></p>
+                  <p:outputLabel value="#{item.fkIdInstituicao.fkIdContacto.email1}" /><p></p>
+                  <p:outputLabel value="#{item.fkIdInstituicao.fkIdContacto.email2}" /><p></p>
+               </p:column>
+
+               <p:column headerText="Endereço">
+                  <center>
+                     <h:outputText value="Rua #{item.fkIdInstituicao.fkIdEndereco.rua}, casa nº 
+                                   #{item.fkIdInstituicao.fkIdEndereco.numeroCasa}"/>
+                     <p></p>
+                     <h:outputText value="#{item.fkIdInstituicao.fkIdEndereco.bairro}.
+                                   #{item.fkIdInstituicao.fkIdEndereco.fkIdMunicipio.nomeMunicipio},
+                                   #{item.fkIdInstituicao.fkIdEndereco.fkIdMunicipio.fkIdProvincia.nomeProvincia}-
+                                   #{item.fkIdInstituicao.fkIdEndereco.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}" >
+
+                     </h:outputText>
+                  </center>
+               </p:column>
+
+               <p:column headerText="------">
+                  <center>
+                     <p:menuButton value="Opções">
+                        <p:menuitem value="Editar" partialSubmit="true" process="@this" icon="ui-icon-pencil"
+                                    onclick="PF('dialogEditar').show()" 
+                                    update=":formPrincipal:resultado :formEditar:tabVisualizar :formEditar:painelGuardar"
+                                    actionListener="#{grlFornecedorListarBean.setFornecedorEditar(item)}">
+                        </p:menuitem>
+                        <p:menuitem value="Eliminar" partialSubmit="true"
+                                    onclick="PF('dialogEliminar').show()"
+                                    process="@this" icon="ui-icon-trash"
+                                    actionListener="#{grlFornecedorListarBean.setFornecedorEditar(item)}">
+                        </p:menuitem>
+
+                     </p:menuButton>
+                  </center>
+               </p:column>
+            </p:dataTable>
+         </h:form>
+         <center>
+            <p:dialog header="Editar Fornecedor" closable="false" showEffect="fade"
+                      widgetVar="dialogEditar" modal="true" closeOnEscape="true"
+                      width="55%" >
+               <h:form id="formEditar">
+                  <p:growl autoUpdate="true"/>
+                  <p:fieldset>
+                     <p:messages id="msg" autoUpdate="true" closable="true"/>
+                     <h:panelGrid style="width: 100%" cellpadding="2">
+                        <h:panelGrid  style="width: 100%">
+                           <p:tabView id="tabVisualizar">
+                              <p:tab title="Descrição">
+                                 <h:panelGrid columns="2" width="100%">
+                                    <p:outputLabel value="Nº de Contribuinte"/>
+                                    <p:inputText value="#{grlFornecedorListarBean.fornecedorEditar.numeroContribuinte}"
+                                                 style="" required="true" requiredMessage="ggg"/>
+
+                                    <p:outputLabel value="Abreviatura"/>
+                                    <f:validateBean disabled="true">
+                                       <p:inputText value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.codigoInstituicao}"
+                                                    style=""/>
+                                    </f:validateBean>
+
+                                    <p:outputLabel value="Descrição"/>
+                                    <f:validateBean disabled="true">
+                                       <p:inputText value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.descricao}"
+                                                    style=""/>
+                                    </f:validateBean>
+
+                                 </h:panelGrid>
+                              </p:tab>
+                              <p:tab title="Endereço">
+                                 <h:panelGrid columns="4"  cellpadding="8" width="100%" >
+                                    <p:outputLabel value="País *"/>
+                                    <h:selectOneMenu id="comboPais" style="width: 73%; text-align: center" value="#{itensAjaxBean.pais}"
+                                                     valueChangeListener="#{itensAjaxBean.changePais}">
+                                       <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                      itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                       <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio comboComuna comboDistrito"/>
+                                    </h:selectOneMenu>
+                                    <p:outputLabel value="Provícia *"/>
+                                    <h:selectOneMenu id="comboProvincia" style="width: 73%; text-align: center" 
+                                                     value="#{itensAjaxBean.provincia}"
+                                                     valueChangeListener="#{itensAjaxBean.changeProvincia}">
+                                       <f:selectItems value="#{itensAjaxBean.provinciaList}" var="prov"
+                                                      itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                                       <f:ajax execute="@this" event="change" render="comboMunicipio comboComuna comboDistrito"/>
+                                    </h:selectOneMenu>
+                                    <p:outputLabel value="Município *"/>
+                                    <h:selectOneMenu id="comboMunicipio" style="width: 73%; text-align: center" 
+                                                     required="true" requiredMessage="Indique o município"
+                                                     value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdEndereco.fkIdMunicipio.pkIdMunicipio}" 
+                                                     valueChangeListener="#{itensAjaxBean.changeMunicipio}">
+                                       <f:selectItems value="#{itensAjaxBean.municipioList}" var="mun"
+                                                      itemLabel="#{mun.nomeMunicipio}" itemValue="#{mun.pkIdMunicipio}"/>
+                                       <f:ajax execute="@this" event="change" render="comboComuna comboDistrito"/>
+                                    </h:selectOneMenu>
+                                    <p:outputLabel value="Comuna"/>
+                                    <f:validateBean disabled="true">
+                                       <h:selectOneMenu id="comboComuna" style="width: 73%; text-align: center" 
+                                                        value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdEndereco.fkIdComuna.pkIdComuna}">
+                                          <f:selectItem itemLabel="----- Selecione -----" itemValue="#{null}"/>
+                                          <f:selectItems value="#{itensAjaxBean.comunaList}" var="com"
+                                                         itemLabel="#{com.descricaoComuna}" itemValue="#{com.pkIdComuna}"/>
+                                       </h:selectOneMenu>
+                                    </f:validateBean>
+                                    <p:outputLabel value="Distrito"/>
+                                    <f:validateBean disabled="true">
+                                       <h:selectOneMenu id="comboDistrito" style="width: 73%; text-align: center" 
+                                                        value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdEndereco.fkIdDistrito.pkIdDistrito}">
+                                          <f:selectItem itemLabel="----- Selecione -----" itemValue="#{null}"/>
+                                          <f:selectItems value="#{itensAjaxBean.distritoList}" var="dist"
+                                                         itemLabel="#{dist.descricao}" itemValue="#{dist.pkIdDistrito}"/>
+                                       </h:selectOneMenu>
+                                    </f:validateBean>
+                                    <p:outputLabel value="Bairro"/>
+                                    <p:inputText value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdEndereco.bairro}"
+                                                 style="width: 60%"
+                                                 required="true" requiredMessage="Indique o bairro"/>
+                                    <p:outputLabel value="Rua"/>
+                                    <p:inputText value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdEndereco.rua}"
+                                                 style="width: 60%"/>
+                                    <p:outputLabel value="Nº Casa"/>
+                                    <p:inputText value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdEndereco.numeroCasa}"
+                                                 style="width: 60%"/>
+                                 </h:panelGrid>
+                              </p:tab>
+                              <p:tab title="Contacto">
+                                 <h:panelGrid columns="2" cellpadding="2" width="100%">
+                                    <p:outputLabel value="Telefone1 *"/>
+                                    <p:inputText value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdContacto.telefone1}"  style="width: 70%"
+                                                 required="true" requiredMessage="Indique o telefone1"/>
+                                    <p:outputLabel value="Telefone2"/>
+                                    <p:inputText value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdContacto.telefone2}"  style="width: 70%"/>
+                                    <p:outputLabel value="Email1"/>
+                                    <p:inputText style="width: 70%" value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdContacto.email1}"/>
+                                    <p:outputLabel value="Email2"/>
+                                    <p:inputText style="width: 70%" value="#{grlFornecedorListarBean.fornecedorEditar.fkIdInstituicao.fkIdContacto.email2}"/>
+                                 </h:panelGrid>
+                              </p:tab>
+                           </p:tabView>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" id="painelGuardar">
+                           <p:commandButton value="Guardar" action="#{grlFornecedorListarBean.editar()}" 
+                                            process="@form"
+                                            icon="ui-icon-check" />
+
+                           <p:commandButton value="Fechar" onclick="PF('dialogEditar').hide()" 
+                                            partialSubmit="true" process="@this"
+                                            type="reset" icon="ui-icon-close"/> 
+                        </h:panelGrid>
+                     </h:panelGrid>
+                  </p:fieldset>
+               </h:form>
+            </p:dialog>
+         </center>
+
+
+         <center>
+            <h:form id="formEliminar">
+               <p:confirmDialog message="Deseja eliminar o fornecedor? Pode estar a ser utilizado... "
+                                header="Eliminar Fornecedor" severity="alert"
+                                widgetVar="dialogEliminar">
+
+                  <p:commandButton value="Sim" actionListener="#{grlFornecedorListarBean.eliminar()}"
+                                   update=":formPrincipal:resultado" ajax="true"
+                                   oncomplete="PF('dialogEliminar').hide();"/>
+
+                  <p:commandButton value="Não" onclick="PF('dialogEliminar').hide();" type="button" />
+               </p:confirmDialog>
+            </h:form>
+         </center>
+      </p:fieldset>
+   </body>
+</html>

@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        
+        <style type="text/css">
+            .value {
+                width: 1000px;
+            }
+            a.emp1 {
+                 background: violet;
+            }
+            a.emp2 {
+                 background: green;
+            }
+            a.emp3 {
+                 background: #fbb450;
+            }
+            a.emp4 {
+                 background: blue;
+            }
+        </style>
+
+        <p:dialog width="85%" height="600px" header="#{msgs.agendar}" closable="true" showEffect="fade" widgetVar="dialogAgendamento" modal="true" closeOnEscape="true">
+            <h:form id="formAgenda">
+                
+                <div id="coresExplicacao" style="display: inline; font-size: 10; border-bottom: 1px solid #DADCFF; margin-bottom: 20px; width: 100%">
+                    #{msgs.naoGravado} <div style="width: 1%; height: 9px; background-color: violet; display: inline-block"/> &nbsp; &nbsp;
+                    #{msgs.agendado} <div style="width: 1%; height: 9px; background-color: #fbb450; display: inline-block"/> &nbsp; &nbsp;
+                    #{msgs.chegou} <div style="width: 1%; height: 9px; background-color: green; display: inline-block"/> &nbsp; &nbsp;
+                    #{msgs.efetuado} <div style="width: 1%; height: 9px; background-color: blue; display: inline-block"/> &nbsp; &nbsp;
+                </div>
+                
+                <div style="width: 100%;">
+                    <center>
+                        <div style="width: 72%; float: left; margin-right: 1%;">
+                            <p:schedule id="scheduleEditar" locale="pt" timeFormat="HH:mm" value="#{scheduleEditarBean.eventModel}" widgetVar="myscheduleEditar" timeZone="GMT+1">
+
+                                <p:ajax event="dateSelect" listener="#{scheduleEditarBean.onDateSelect}" 
+                                        update=":formDetalhesDoEvento:eventDetails :formDetalhesDoEvento:mensagemAviso :formDetalhesDoEvento:horarioAtendimento
+                                        :formDetalhesDoEvento:limitePacientes :formDetalhesDoEvento:consultasJaMarcadas botaoAgendarMedico 
+                                        :formDetalhesDoEvento:medicoAssociado" oncomplete="PF('eventDialog').show();" />
+                                <p:ajax event="eventSelect" listener="#{scheduleEditarBean.onEventSelect}" 
+                                        update=":formDetalhesDoEvento:eventDetails especialidadeMedico medicos botaoAgendarMedico 
+                                        :formDetalhesDoEvento:horarioAtendimento
+                                        :formDetalhesDoEvento:limitePacientes :formDetalhesDoEvento:consultasJaMarcadas 
+                                        :formDetalhesDoEvento:medicoAssociado" oncomplete="PF('eventDialog').show();" />
+                                <p:ajax event="eventMove" listener="#{scheduleEditarBean.onEventMove}" update="messages" />
+                                <p:ajax event="eventResize" listener="#{scheduleEditarBean.onEventResize}" update="messages"/>
+                            </p:schedule>
+                        </div>
+                        <div style="width: 25%; float: right; margin-left: 1%; margin-top: 50px; border-left:solid 1px #000000">
+                            <div> 
+                                <p:outputLabel value="#{msgs.especialidade}"/>
+                            </div>
+                            <div>
+                                <p:selectOneMenu id="especialidadeMedico" style="width: 90%;" disabled="#{!admsSolicitacaoEditarPagarBean.agendamentoMedico}" valueChangeListener="#{scheduleEditarBean.changeEspecialidade}" value="#{scheduleEditarBean.especialidade}">
+                                    <f:selectItem  itemValue="0" itemLabel=""/>
+                                    <f:selectItems value="#{grlEspecialidadeBean.pesquisaPorEspecialidadeMedica()}" var="especialidade" itemLabel="#{especialidade.descricao}" itemValue="#{especialidade.pkIdEspecialidade}"/>
+                                    <f:ajax execute="@this" render="medicos"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div>
+                                <p:outputLabel value="#{msgs.medico}"/>
+                            </div>
+                            <div>
+                                <p:selectOneMenu id="medicos" disabled="#{!admsSolicitacaoEditarPagarBean.agendamentoMedico}" style="width: 90%;" value="#{admsSolicitacaoEditarPagarBean.medico.pkIdFuncionario}">
+                                    <f:selectItem itemLabel=""/>
+                                    <f:selectItems value="#{scheduleEditarBean.getFuncionariosLista()}" var="funcionario" itemLabel="#{funcionario.fkIdPessoa.nome} #{funcionario.fkIdPessoa.sobreNome}" itemValue="#{funcionario.pkIdFuncionario}"/>
+                                    <f:ajax execute="@this dataTableHorarioMedico" render="dataTableHorarioMedico"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div style="margin-top: 10px;">
+                                <p:commandButton value="#{msgs.agendamentoMedico}" id="botaoAgendarMedico" disabled="#{!admsSolicitacaoEditarPagarBean.podeAgendarParaMedico}" actionListener="#{scheduleEditarBean.trocarEstadoDoAgendamentoMedico()}" partialSubmit="true" process="@this medicos especialidadeMedico" update="medicos especialidadeMedico"/>
+                            </div>
+                            <br/>
+                            <br/>
+                            <p:dataGrid value="#{scheduleEditarBean.getListaDosHorariosMedico()}" 
+                                        var="horario" columns="1" id="dataTableHorarioMedico">
+                                <h:panelGrid columns="2">
+                                    <h:outputText value="#{horario.fkIdDiaDaSemana.descricao}: "/>
+                                    <h:panelGrid columns="3">
+                                        <h:outputText value="#{horario.horaInicioTrabalho}">
+                                            <f:convertDateTime pattern="HH:mm"/>
+                                        </h:outputText>
+                                        <h:outputText value="às"/>
+                                        <h:outputText value="#{horario.horaFimTrabalho}">
+                                            <f:convertDateTime pattern="HH:mm"/>
+                                        </h:outputText>
+                                    </h:panelGrid>
+                                    <h:outputText value="#{horario.numeroMaximoPaciente}"/>
+                                </h:panelGrid>
+                            </p:dataGrid>
+                            
+
+                            <div style="padding-top: 30px">
+                                <h:outputText id="mensagemErro" style="color: #FF0000; font-size: 16pt" value="#{scheduleEditarBean.getMensagemEroo()}"/>
+                            </div>
+                        </div>
+
+                        <div style="clear: both"/>
+
+                        <center>
+                            <p:commandButton value="#{msgs.fechar}" partialSubmit="true" process="@this" actionListener="#{scheduleEditarBean.setMensagemEroo('')}" onclick="PF('dialogAgendamento').hide()"/>
+                        </center>
+                    </center>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <center>
+            <p:dialog widgetVar="eventDialog" header="#{msgs.detalhesDoEvento}" modal="true" closeOnEscape="true" showEffect="clip" hideEffect="clip" width="37%">
+                <h:form id="formDetalhesDoEvento">
+                    <center>
+                        <h:outputText id="mensagemAviso" style="color: orange; font-size: 12pt" value="#{scheduleEditarBean.mensagemAviso}"/>
+                    </center>
+                    <h:panelGrid id="eventDetails" cellpadding="5px;" columns="2" width="100%">
+                        <p:outputLabel for="title" value="#{msgs.titulo}" style="width: 100%; float: left"/>
+                        <p:inputText id="title" style="width: 100%" value="#{scheduleEditarBean.event.title}" disabled="#{!scheduleEditarBean.isPodeEditar()}" required="true" />
+
+                        <p:outputLabel for="from" value="#{msgs.dataHoraMarcadaInicio}" />
+                        <p:calendar id="from" locale="pt" value="#{scheduleEditarBean.event.startDate}" 
+                                    mindate="#{scheduleEditarBean.dataHoraInicioEvento()}" 
+                                    maxdate="#{scheduleEditarBean.dataHoraFimEvento()}" 
+                                    disabled="#{!scheduleEditarBean.isPodeEditar()}" 
+                                    pattern="dd/MM/yyyy HH:mm" required="true"/>
+                        
+                        
+                        <p:outputLabel for="to" value="#{msgs.dataHoraMarcadaFim}: " />
+                        <p:calendar id="to" value="#{scheduleEditarBean.event.endDate}" 
+                                    mindate="#{scheduleEditarBean.dataHoraInicioEvento()}" 
+                                    disabled="#{!scheduleEditarBean.isPodeEditar()}" 
+                                    pattern="dd/MM/yyyy HH:mm"/>
+
+
+                        <p:commandButton value="#{msgs.remover}" partialSubmit="true" process="@this" 
+                                         rendered="#{scheduleEditarBean.isPodeRemover()}" 
+                                         actionListener="#{scheduleEditarBean.removeEvent}" 
+                                         update=":formNovo:dataTable :formAgenda:especialidadeMedico :formAgenda:medicos :formAgenda:botaoAgendarMedico :formNovo:editarSolicitacao" 
+                                         oncomplete="PF('myscheduleEditar').update();PF('eventDialog').hide();"/>
+
+                        <p:commandButton id="addButton" value="#{msgs.salvar}" rendered="#{scheduleEditarBean.isPodeGravar()}" 
+                                         disabled="#{!scheduleEditarBean.isPodeEditar()}" 
+                                         partialSubmit="true" 
+                                         process="@this from to :formAgenda:medicos" 
+                                         actionListener="#{scheduleEditarBean.addEvent}" 
+                                         update=":formNovo:dataTable :formAgenda:especialidadeMedico :formAgenda:medicos :formAgenda:botaoAgendarMedico :formNovo:editarSolicitacao :formAgenda:mensagemErro"  
+                                         oncomplete="PF('myscheduleEditar').update();PF('eventDialog').hide();" />
+                    </h:panelGrid>
+                    
+                    <p:separator/>
+                    
+                    <p:panelGrid id="informacoesAdicionais" columns="2" layout="grid" styleClass="ui-noborder" style="width: 100%">
+                        <p:outputLabel for="medicoAssociado" value="#{msgs.medico}: "/>
+                        <h:outputText id="medicoAssociado" value="#{scheduleEditarBean.nomeDoMedico}" style="color: orange; font-size: 12pt"/>
+                        <p:outputLabel for="horarioAtendimento" value="#{msgs.horarioAtendimento}: "/>
+                        <h:outputText id="horarioAtendimento" value="#{scheduleEditarBean.horarioAtendimento}" style="color: orange; font-size: 12pt"/>
+                        <p:outputLabel for="limitePacientes" value="#{msgs.limiteDePacientes}: "/>
+                        <h:outputText id="limitePacientes" value="#{scheduleEditarBean.limitePacientes}" style="color: orange; font-size: 12pt"/>
+                        <p:outputLabel for="consultasJaMarcadas" value="#{msgs.jaMarcados}: "/>
+                        <h:outputText id="consultasJaMarcadas" value="#{scheduleEditarBean.jaMarcados}" style="color: orange; font-size: 12pt"/>
+                    </p:panelGrid>
+                    
+                    <p:separator/>
+                    
+                </h:form>
+            </p:dialog> 
+        </center>
+        
+    </h:body>
+</html>
+

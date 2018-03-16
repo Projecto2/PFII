@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAmb.xhtml"/>
+            </ui:define>
+            
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAmb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h:form id="formularioId">
+
+                    <p:growl autoUpdate="true"/>
+
+                    <div class="ui-fluid">
+
+                        <p:fieldset id="configuracoesPerfisFS" legend="Ambulatório -> CID10 -> Configurar Perfis">
+
+                            <p:panelGrid 
+                                columns="2" 
+                                columnClasses="ui-grid-col-4,ui-grid-col-8" 
+                                layout="grid" 
+                                styleClass="ui-panelgrid-blank"
+                                >
+
+                                <h:outputLabel value="Especialidade:" />        
+                                <p:selectOneMenu 
+                                    id="especialidadeSOM"  
+                                    value="#{ambCidConfiguracoesBean.especialidadePreferencial.pkIdEspecialidade}"
+                                    filter="true" filterMatchMode="contains"
+                                    >
+                                    <p:ajax
+                                        event="itemSelect" 
+                                        update="configuracoesPerfisFS"
+                                        listener="#{ambCidConfiguracoesBean.gravarEspecialidade()}"
+                                        />
+                                    <f:selectItem 
+                                        itemLabel="Selecione a especialidade" 
+                                        itemValue="#{null}"
+                                        />
+                                    <f:selectItems 
+                                        value="#{grlEspecialidadeBean.findAllOrderByDescricao(ambCidConfiguracoesBean.especialidadePreferencial.fkIdProfissao.pkIdProfissao)}"
+                                        var="especialidadeVar" 
+                                        itemLabel="#{especialidadeVar.descricao}"
+                                        itemValue="#{especialidadeVar.pkIdEspecialidade}" 
+                                        />
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Perfil Preferencial:" />
+                                <p:tree 
+                                    selectionMode="single"
+                                    dynamic="true" 
+                                    value="#{ambCidConfiguracoesBean.ambCidTreePerfis.root}" 
+                                    var="node"
+                                    >
+                                    <p:ajax 
+                                        event="select" 
+                                        update=":formularioId:configuracoesPerfisFS"
+                                        listener="#{ambCidConfiguracoesBean.ambCidTreePerfis.onNodeSelect}" 
+                                        />
+                                    <p:ajax event="expand" listener="#{ambCidConfiguracoesBean.ambCidTreePerfis.onNodeExpand}" />
+                                    <p:ajax event="collapse" listener="#{ambCidConfiguracoesBean.ambCidTreePerfis.onNodeCollapse}" />
+                                    <p:ajax event="unselect" listener="#{ambCidConfiguracoesBean.ambCidTreePerfis.onNodeUnSelect}"/>
+                                    <p:treeNode>
+                                        <h:outputText value="#{node}"/>
+                                    </p:treeNode>
+                                </p:tree>
+
+                                <p:outputLabel value="Prioridade Preferencial das Doenças:"/>
+                                <p:selectOneMenu 
+                                    id="prioridadeDoencaSOM" 
+                                    disabled="#{ambCidConfiguracoesBean.prioridadeDoencaSOMdisable}"  
+                                    value="#{ambCidConfiguracoesBean.idDoencasPrioridadesPreferencial}"
+                                    >
+                                    <p:ajax 
+                                        event="itemSelect" 
+                                        listener="#{ambCidConfiguracoesBean.gravarDoencasPrioridades()}"
+                                        />
+                                    <f:selectItems 
+                                        value="#{ambCidDoencasPrioridadesBean.findAllFromPerfilPreferencial(ambCidConfiguracoesBean.perfilPreferencial)}"
+                                        var="prioridadeDoencaVar" itemLabel="#{prioridadeDoencaVar.descricao}"
+                                        itemValue="#{prioridadeDoencaVar.pkIdDoencasPrioridades}" 
+                                        />
+                                </p:selectOneMenu>
+
+
+                            </p:panelGrid>
+
+                        </p:fieldset>
+
+                    </div>
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+     <h:body>
+          <center>
+               <h:form id="formPesquisaAvaliacao">
+                    <p:panel id="panelPrincipal" style="border: none; width: 900px">
+                         <p:panel style="height: 120px">
+                              <h:panelGrid columns="2" cellpadding="5" width="100%">
+
+                                   <h:panelGrid cellpadding="5">
+                                        <h:panelGrid columns="2" cellpadding="5">
+                                             <p:outputLabel value="Ano*:"/>
+                                             <p:inputNumber value="#{rhAvaliacaoDeDesempenhoPesquisarBean.anoPesquisa}" size="40" thousandSeparator=""
+                                                            minValue="0" maxValue="#{rhValidarBean.anoActual()}" required="true" requiredMessage="Indique o ano !"/>
+                                        </h:panelGrid>
+                                        <h:panelGrid columns="2">
+                                             <p:commandButton style="width: 170px" value="Pesquisar" icon="ui-icon-search" 
+                                                              action="#{rhAvaliacaoDeDesempenhoPesquisarBean.pesquisar()}" update="painelGrafico dataTable"/>
+                                             <p:commandButton style="width: 170px" value="Limpar" process="@this" 
+                                                              action="#{rhAvaliacaoDeDesempenhoPesquisarBean.limparPesquisa()}"/>
+                                        </h:panelGrid>
+                                   </h:panelGrid>
+                              </h:panelGrid>
+                         </p:panel>
+                         <br/>
+                         <p:accordionPanel activeIndex="-1" id="painelGrafico" multiple="false">
+                              <p:tab title="Gráfico de Avaliações de Desempenho">
+                                   <p:chart type="bar" model="#{rhAvaliacaoDeDesempenhoPesquisarBean.modeloGraficoDeBarras}"
+                                            rendered="#{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacoesDeDesempenhoPesquisadasList.size()>0}"/>
+                              </p:tab>
+                         </p:accordionPanel>
+                         <br/>                         
+                         <p:dataTable id="dataTable" var="avaliacao" value="#{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacoesDeDesempenhoPesquisadasList}" 
+                                      paginator="true" rows="10" paginatorPosition="bottom" emptyMessage="Nenhum registro de avaliação de desempenho encontrado">
+                              <p:column headerText="Funcionário" filterBy="#{avaliacao.fkIdFuncionario.fkIdPessoa.nome}">
+                                   <center>
+                                        <p:outputLabel value="#{avaliacao.fkIdFuncionario.fkIdPessoa.nome}
+                                                       #{avaliacao.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                       #{avaliacao.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                   </center>
+                              </p:column>
+                              <p:column headerText="Nº Cartão" filterBy="#{avaliacao.fkIdFuncionario.numeroCartao}">
+                                   <center>
+                                        <p:outputLabel value="#{avaliacao.fkIdFuncionario.numeroCartao}"/>
+                                   </center>
+                              </p:column>
+                              <p:column headerText="Classificação Geral">
+                                   <p:outputLabel value="#{avaliacao.descricaoDaClassificacao}: "/>
+                                   <p:outputLabel value="#{avaliacao.classificacao} "/>
+                              </p:column>
+                              <p:column headerText="-----------------------------">
+                                   <center>
+                                        <p:menuButton value="Opções">
+                                             <p:menuitem value="Visualizar" action="#{rhAvaliacaoDeDesempenhoPesquisarBean.setAvaliacaoDeDesempenhoVisualizar(avaliacao)}" 
+                                                         icon="ui-icon-info" onclick="PF('dialogVisualizar').show()" process="@this" update=":formVisual:panelGrid"/>
+                                             <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                                         action="#{rhAvaliacaoDeDesempenhoPesquisarBean.setAvaliacaoDeDesempenhoRemover(avaliacao)}"/>
+                                        </p:menuButton>
+                                   </center>
+                              </p:column>
+                         </p:dataTable>
+
+                         <p:confirmDialog message="Tem certeza que pretende remover a avaliação de desempenho selecionada ?"
+                                          header="Remover Avaliação de Desempenho" severity="alert" widgetVar="confirmDialogRemover">
+                              <p:commandButton value="Sim" actionListener="#{rhAvaliacaoDeDesempenhoPesquisarBean.remove()}" process="@this"
+                                               update="painelGrafico dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                              <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                         </p:confirmDialog>
+                         <br/>
+                    </p:panel>
+               </h:form>
+          </center>
+          <center>
+               <p:dialog header="Visualizar Avaliação de Desempenho" showEffect="fade" position="top"
+                         widgetVar="dialogVisualizar" modal="true" width="650px" height="560px"
+                         resizable="false" closeOnEscape="true">
+                    <h:form id="formVisual">
+                         <h:panelGrid width="100%" id="panelGrid">
+
+                              <p:panel id="panelFoto" style="width:620px; height:200px">
+                                   <h:panelGrid class="float-right">
+                                        <p:commandButton value="Fechar" onclick="PF('dialogVisualizar').hide()"
+                                                         action="#{rhAvaliacaoDeDesempenhoPesquisarBean.setAvaliacaoDeDesempenhoVisualizar(null)}"
+                                                         process="@this" style="width: 130px"/>
+                                   </h:panelGrid>
+                                   <h:graphicImage width="200px" height="140px"
+                                                   url="#{rhPessoaBean.pastaFoto}#{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacaoDeDesempenhoVisualizar.fkIdFuncionario.fkIdPessoa.fkIdFoto.ficheiro}"/>
+                                   <br/>
+                                   <p:outputLabel value="Funcionário: #{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacaoDeDesempenhoVisualizar.fkIdFuncionario.fkIdPessoa.nome} 
+                                                  #{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacaoDeDesempenhoVisualizar.fkIdFuncionario.fkIdPessoa.nomeDoMeio} 
+                                                  #{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacaoDeDesempenhoVisualizar.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                   <br/>
+                                   <h:outputLabel value="Nº Cartão Identidade: #{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacaoDeDesempenhoVisualizar.fkIdFuncionario.numeroCartao}"/>
+                                   <br/>
+                              </p:panel>
+                              <p:panel style="height: 30px">
+                                   <center>
+                                        <p:outputLabel style="font-size: 15px; float: left" value="Ano: #{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacaoDeDesempenhoVisualizar.ano} "/>
+                                        <p:outputLabel style="float: right; color:#{rhAvaliacaoDeDesempenhoPesquisarBean.corDaClassificacaoGeral()};" 
+                                                       value=" #{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacaoDeDesempenhoVisualizar.descricaoDaClassificacao}:
+                                                       #{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacaoDeDesempenhoVisualizar.classificacao}"/>
+                                   </center>
+                              </p:panel>
+
+                              <p:panel>
+                                   <p:dataTable var="classificacaoNoCriterio" value="#{rhAvaliacaoDeDesempenhoPesquisarBean.avaliacaoDeDesempenhoVisualizar.rhAvaliacaoDeDesempenhoHasRhCriterioDeAvaliacaoList}"
+                                                emptyMessage="Nenhum registro de critério de avaliação encontrado"
+                                                paginator="true" paginatorPosition="bottom" rows="6" paginatorAlwaysVisible="false">
+                                        <p:column headerText="Critério de Avaliação" filterBy="#{classificacaoNoCriterio.fkIdCriterioAvaliacao.descricao}">
+                                             <center>
+                                                  <p:outputLabel value="#{classificacaoNoCriterio.fkIdCriterioAvaliacao.pkIdCriterioDeAvaliacao}. "/>
+                                                  <p:outputLabel value="#{classificacaoNoCriterio.fkIdCriterioAvaliacao.descricao}"/>
+                                             </center>
+                                        </p:column>
+                                        <p:column headerText="Classificação">
+                                             <center>
+                                                  <p:outputLabel value="#{classificacaoNoCriterio.descricaoClassificacao} : #{classificacaoNoCriterio.classificacao}"/>
+                                             </center>
+                                        </p:column>
+                                   </p:dataTable>
+                              </p:panel>
+                         </h:panelGrid>
+                    </h:form>
+               </p:dialog>
+          </center>
+     </h:body>
+</html>

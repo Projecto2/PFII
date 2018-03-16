@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form id="formEditarTransferencia">
+            <p:messages id="ms3" autoUpdate="true" closable="true"/>
+            <p:growl id="ms4" autoUpdate="true"/>
+            <br/>
+            <center>
+                <p:panel id="panelEditarTransferencia" styleClass="ui-noborder">
+                    <h:panelGrid id="gridEditarTransferencia" styleClass="ui-noborder">
+                        <p:panel styleClass="ui-noborder">
+                            <center>
+                                <span style="font-size: 16pt">
+
+                                    <p:outputLabel value="#{ambTransferenciaListarBean.ambTransferenciaAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                          #{ambTransferenciaListarBean.ambTransferenciaAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                          #{ambTransferenciaListarBean.ambTransferenciaAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                         "
+                                                   style="color: #0088cc"/>
+
+                                    <br/>
+                                    #{msgs.subProcesso}:
+                                    <p:outputLabel value="#{ambTransferenciaListarBean.ambTransferenciaAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // " id="numeroSupProcesso"/>
+                                    <p:outputLabel value="#{ambTransferenciaListarBean.ambTransferenciaAux.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+
+                                </span>
+                            </center>
+                            <center>
+                                <h:panelGrid columns="4" cellpadding="3" styleClass="ui-noborder">
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <p:outputLabel value="Funcionário:"/>
+                                        <p:outputLabel value="#{ambTransferenciaCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.nome} 
+                                                              #{ambTransferenciaCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.nomeDoMeio} 
+                                                              #{ambTransferenciaCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.sobreNome}
+                                                             "/>
+
+                                        <h:outputLabel value="Instituição " for="instituicao"/>
+                                        <p:selectOneMenu id="instituicao" value="#{ambTransferenciaListarBean.codigoInstituicao}" filter="true" filterMatchMode="contains">
+                                              <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                              <f:selectItems value="#{ambTransferenciaListarBean.findInstituicoes()}" var="listaInstituicao" itemLabel="#{listaInstituicao.descricao}" 
+                                                           itemValue="#{listaInstituicao.pkIdInstituicao}"/>
+                                       </p:selectOneMenu>
+
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>
+
+                        <p:panel>
+                            <center>
+                                <p:commandButton icon="ui-icon-pencil" value="Editar" 
+                                                 action="#{ambTransferenciaEditarBean.editarRegisto(ambTransferenciaListarBean.ambTransferenciaAux)}" 
+                                                 process="gridEditarTransferencia" update="ms3 ms4 dataTableEditar">
+                                    <p:ajax update=":formEditarTransferencia:panelEditarTransferencia" listener="#{ambTransferenciaListarBean.findAll()}" />
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-close" actionListener="#{ambTransferenciaCriarBean.fechar()}" 
+                                                 value="Fechar" type="button"
+                                                 onclick="PF('dialogEditarTransferencia').hide()" >
+                                    <p:ajax update=":formEditarTransferencia:panelEditarTransferencia" listener="#{ambTransferenciaListarBean.findAll()}" />
+                                </p:commandButton>
+                            </center>
+                        </p:panel>
+
+                    </h:panelGrid>
+
+                    <p:dataTable  id="dataTableEditar" sortMode="multiple"  var="itemTabelaDialog" rows="5" paginator="true" paginatorPosition="bottom"
+                                  value="#{ambTransferenciaListarBean.findAll()}" reflow="true" emptyMessage="Nenhum registo encontrado."
+                                  selection="single" rowKey="#{itemTabelaDialog.pkIdTransferencia}">
+
+                        <p:column headerText="Nº de Processo" sortBy="#{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" 
+                                  filterBy="#{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains">
+                            <h:outputText value="#{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                        </p:column> 
+
+                        <p:column headerText="Nº de Subprocesso">
+                            <h:outputText value="#{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                        </p:column> 
+                        
+                        <p:column headerText="Paciente" sortBy="#{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                                #{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                                #{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                               "
+                                  filterBy="#{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                            #{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                            #{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                           " filterMatchMode="contains">
+                            <h:outputText value="#{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                 #{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                 #{itemTabelaDialog.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                "/>
+                        </p:column>
+
+                        <p:column headerText="Instituição de Destino">
+                            <center>
+                                <h:outputText value="#{itemTabelaDialog.fkIdInstituicao.descricao}"/>
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Funcionário">
+                            <h:outputText value="#{itemTabelaDialog.fkIdFuncionario.fkIdPessoa.nome}
+                                                 #{itemTabelaDialog.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                 #{itemTabelaDialog.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                "/>
+                        </p:column>
+
+                        <p:column headerText="Data">
+                            <h:outputText value="#{itemTabelaDialog.dataTransferencia}" >
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="------">
+                            <center>
+                                <p:commandButton value="Selecionar" process="@this"
+                                                 action="#{ambTransferenciaListarBean.seleccionar(itemTabelaDialog)}" 
+                                                 update=":formEditarTransferencia:panelEditarTransferencia" 
+                                                 onclick="PF('dialogEditarTransferencia').show()">
+                                </p:commandButton>
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+            </center>
+
+        </h:form>
+    </h:body>
+</html>
+

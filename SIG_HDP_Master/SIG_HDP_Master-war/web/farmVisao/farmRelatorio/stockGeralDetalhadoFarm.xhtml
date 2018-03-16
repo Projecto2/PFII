@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Stock Geral</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Relatórios -> Stock Geral (Com Mais Detalhes)</h2>
+            <p:messages id="msg" autoUpdate="true" closable="true"/>
+            <p:growl autoUpdate="true"/>
+            <br/>
+
+            <h:form id="formulario">
+               <p:fieldset>
+                  <h:panelGrid columns="2" id="gridCamposPesquisa">
+                     <f:validateBean disabled="true">
+                        <p:outputLabel value="Produto : "/>
+                        <p:selectOneMenu id="produto" style="width: 100%" filter="true"
+                                         value="#{farmStockGeralDetalhadoBean.farmProdutoPesquisa.pkIdProduto}"
+                                         valueChangeListener="#{farmStockGeralDetalhadoBean.actualizar}">
+                           <f:selectItem itemLabel="-------- Todos --------" itemValue="#{null}"/>
+                           <f:selectItems value="#{farmStockGeralDetalhadoBean.produtos}"/>
+                        </p:selectOneMenu> 
+
+                        <p:outputLabel value="Local de Armazenamento : "/>
+                        <p:selectOneMenu id="localStock" style="width: 100%" filter="true"
+                                         value="#{farmStockGeralDetalhadoBean.farmLocalArmazenamentoPesquisa.pkIdLocalArmazenamento}"
+                                         valueChangeListener="#{farmStockGeralDetalhadoBean.actualizar}">
+                           <f:selectItem itemLabel="-------- Todos --------" itemValue="#{null}"/>
+                           <f:selectItems value="#{farmInventarioBean.locaisArmazenamento}"/>
+                        </p:selectOneMenu> 
+
+                        <p></p>
+                       
+                        <p:commandButton value="Concluir" icon="ui-icon-check" ajax="true"
+                                         action="#{farmStockGeralDetalhadoBean.pesquisar()}" 
+                                         onstart="PF('w_dlgLoading').show()" oncomplete="PF('w_dlgLoading').hide()"
+                                         update="resultado" process="gridCamposPesquisa">
+                        </p:commandButton>
+                     </f:validateBean><center>
+                           <p:dialog  widgetVar="w_dlgLoading" header="A processar" modal="true" closable="false" resizable="false">
+                              <center>
+                                 <img src="../../resources/Imagens/loading.gif" style="margin: auto" width="128" height="128" alt="loading"/>
+                              </center>
+                              <br/>
+                              <p>Pode demorar alguns segundos. Por favor aguarde....</p>
+                           </p:dialog>
+                        </center>
+                  </h:panelGrid>
+               </p:fieldset>
+
+               <p:dataTable id="resultado" emptyMessage="Sem Produtos a apresentar. Aguardando Pesquisa..."
+                            paginatorPosition="bottom" paginator="true" var="produto"
+                            value="#{farmStockGeralDetalhadoBean.listaProdutos}">
+
+                  <p:column>
+                     <h5>#{produto.descricao} #{produto.dosagem} #{produto.fkIdUnidadeMedida.abreviatura}</h5>
+                     <p:fieldset id="listaDeLocais" legend="Informação de Stock" toggleable="true">
+                        <p:dataTable id="resultado" emptyMessage="Não há registos d produto em nenhum Local de Armazenamento."
+                                     var="local" value="#{farmStockGeralDetalhadoBean.listaLocais}">
+
+                           <p:column>
+                              <p:panelGrid columns="3">
+                                 <h:outputText value="#{local.descricao} (#{local.abreviatura}): "/>
+
+                                 <h:outputText value="Quant. Actual: #{farmStockGeralDetalhadoBean.getTotalParcial(produto, local)} Unidade(s)"
+                                               style="color: #{farmStockGeralDetalhadoBean.getQuantidadeItemColor(produto,local)}"/>
+
+                                 <h:outputText value="Quant. Mín. Permitida: #{farmStockGeralDetalhadoBean.getQuantidadeMinimaPermitida(produto, local)} Unidade(s) "/>
+                              </p:panelGrid>                  
+                           </p:column>
+                           <f:facet name="footer">
+                              <h:outputText style="font-size: 14px; color: #0052A4"
+                                            value="Quantidade Total: 
+                                            #{farmStockGeralDetalhadoBean.getTotalGeral(produto, farmStockGeralDetalhadoBean.listaLocais)} 
+                                            Unidade(s)"/>
+                           </f:facet>
+                        </p:dataTable>
+                     </p:fieldset>
+                  </p:column>
+               </p:dataTable>
+            </h:form>
+         </ui:define>            
+      </ui:composition>
+   </h:body>
+</html>

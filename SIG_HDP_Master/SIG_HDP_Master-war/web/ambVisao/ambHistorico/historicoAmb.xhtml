@@ -1,0 +1,227 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAmb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAmb.xhtml"/>
+            </ui:define>
+            <p:growl autoUpdate="true"/>
+
+
+            <ui:define name="center">
+
+                <p:messages autoUpdate="true" closable="true"/>
+                <p:growl autoUpdate="true"/>
+
+                <h:form acceptcharset="ISO-8859-1" id="form">
+
+                    <div class="ui-fluid">
+
+                        <h2>Consultas Externas -> Histórico -> Histórico do Paciente</h2>
+
+                        <p:tabView id="tvHistorico" styleClass="ui-noborder">
+
+                            <p:tab title="Histórico Geral por Nº Processo">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Processo:" for="npHistorico"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="npHistorico" value="#{ambHistoricoBean.admsPacienteHistoricoGeral.numeroPaciente}"/>
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="npHistorico" value="Insira o Nº de Processo"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoProcesso" ajax="true"
+                                                     actionListener="#{ambHistoricoBean.listar(ambHistoricoBean.admsPacienteHistoricoGeral.numeroPaciente)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="historicoProcessoAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab> 
+
+                            <p:tab title="Histórico Geral por Nome">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="4" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Nome do Paciente:" for="nomeHistorico"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="nomeHistorico" value="#{ambHistoricoBean.nome}" />
+                                        </f:validateBean>
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="nomeDoMeioHistorico" value="#{ambHistoricoBean.nomeDoMeio}" />
+                                        </f:validateBean>
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="sobreNomeHistorico" value="#{ambHistoricoBean.sobreNome}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="nomeHistorico" value="Insira o Nome"/>
+                                    <p:watermark for="nomeDoMeioHistorico" value="Insira o Nome do meio"/>
+                                    <p:watermark for="sobreNomeHistorico" value="Insira o Sobrenome"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoNome" ajax="true"
+                                                     actionListener="#{ambHistoricoBean.listarNome(ambHistoricoBean.nome, ambHistoricoBean.nomeDoMeio, ambHistoricoBean.sobreNome)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="historicoNomeAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>                            
+
+                            <p:tab title="Histórico de Subprocessos">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Processo:" for="np"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="np" value="#{ambHistoricoBean.admsPacienteHistoricoProcessoSubprocesso.numeroPaciente}" />
+                                        </f:validateBean>
+
+                                        <h:outputLabel value="Número de Subprocesso:" for="nsp"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputNumber id="nsp" value="#{ambHistoricoBean.numeroSubprocesso}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="np" value="Insira o Nº de Processo"/>
+                                    <p:watermark for="nsp" value="Insira o Nº de Subprocesso"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoProcessoSubprocesso" ajax="true"
+                                                     actionListener="#{ambHistoricoBean.listarProcessoSubprocesso(ambHistoricoBean.admsPacienteHistoricoProcessoSubprocesso.numeroPaciente, ambHistoricoBean.numeroSubprocesso)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="historicoProcessoSubprocessoAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>                            
+
+                            <p:tab title="Histórico de Subprocessos por Nome">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="4" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Nome do Paciente:" for="nomePS" style="margin-right: 35px"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="nomePS" value="#{ambHistoricoBean.nomeSubprocesso}" />
+                                        </f:validateBean>
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="nomeDoMeioPS" value="#{ambHistoricoBean.nomeDoMeioSubprocesso}" />
+                                        </f:validateBean>
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="sobreNomePS" value="#{ambHistoricoBean.sobreNomeSubprocesso}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Subprocesso:" for="numeroSubprocesso"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputNumber id="numeroSubprocesso" value="#{ambHistoricoBean.numeroSubprocessoNome}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="nomePS" value="Insira o Nome"/>
+                                    <p:watermark for="nomeDoMeioPS" value="Insira o Nome do meio"/>
+                                    <p:watermark for="sobreNomePS" value="Insira o Sobrenome"/>
+                                    <p:watermark for="numeroSubprocesso" value="Insira o Nº de Subprocesso"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoNomeSubprocesso" ajax="true"
+                                                     actionListener="#{ambHistoricoBean.listarNomeSubprocesso(ambHistoricoBean.nomeSubprocesso, ambHistoricoBean.nomeDoMeioSubprocesso, ambHistoricoBean.sobreNomeSubprocesso, ambHistoricoBean.numeroSubprocessoNome)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="historicoNomeSubprocessoAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab> 
+
+                        </p:tabView>
+
+                    </div>
+
+                </h:form>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogListarDiagnostico" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="listarDiagnosticoAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogListarHistoricoGeralConsulta" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center" >
+                        <ui:include src="listarHistoricoGeralConsultaAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogListarHistoricoGeralExame" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center" >
+                        <ui:include src="listarHistoricoGeralExameAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogListarHistoricoGeralInternamento" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center" >
+                        <ui:include src="listarHistoricoGeralInternamentoAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>#{msgs.admissoes} -> #{msgs.listagens} -> #{msgs.solicitacoes}</h1>
+                <!--<p:messages id="ms" autoUpdate="true" closable="true"/>-->
+                <p:growl autoUpdate="true"/>
+                <h:form id="formProcuraSolicitacoes">
+                    <div class="ui-fluid"> 
+                    
+                    #{detetorAtualizacaoPagina.checkAtualizacao("pesquisaSolicitacoesGerais")}
+                    <br/>
+
+                    
+                    <p:fieldset>
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">    
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                <p:outputLabel value="#{msgs.dataSolicitada}:  *"/>
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <p:calendar id="dataInicial" navigator="true" locale="pt" value="#{admsSolicitaoPesquisarBean.dataInicial}" maxdate="#{admsSolicitaoPesquisarBean.getDataAtual()}"/>
+                                    <p:calendar id="dataFinal" locale="pt" navigator="true" value="#{admsSolicitaoPesquisarBean.dataFinal}" maxdate="#{admsSolicitaoPesquisarBean.getDataAtual()}"/>
+                                </p:panelGrid>
+                                
+                                <p:outputLabel for="subProcesso" value="#{msgs.subProcesso}: "/>
+                                <p:inputNumber id="subProcesso" emptyValue="0" minValue="0" decimalPlaces="0" value="#{admsSolicitaoPesquisarBean.solicitacaoPesquisar.fkIdSubprocesso.numeroSubprocesso}"/>
+                                
+                                <p:outputLabel for="tipoSolicitacao" value="#{msgs.tipoDeSolicitacao}"/>
+                                <p:selectOneMenu id="tipoSolicitacao" value="#{admsSolicitaoPesquisarBean.solicitacaoMedica}" valueChangeListener="#{admsSolicitaoPesquisarBean.changeTipoDeSolicitacao}">
+                                    <f:selectItem itemValue="1" itemLabel=""/>
+                                    <f:selectItem itemValue="2" itemLabel="#{msgs.apenasSolicitacoesMedicas}"/>
+                                    <f:selectItem itemValue="3" itemLabel="#{msgs.apenasSolicitacoesNaoMedicas}"/>
+                                    <f:ajax execute="@this" render="especialidadeMedico medico"/>
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                <p:outputLabel for="especialidadeMedico" value="#{msgs.especialidade}"/>
+                                <p:selectOneMenu id="especialidadeMedico" disabled="#{!admsSolicitaoPesquisarBean.isSolicitacaoMedicaBoolean()}" 
+                                                 valueChangeListener="#{admsSolicitaoPesquisarBean.changeEspecialidade}" 
+                                                 value="#{admsSolicitaoPesquisarBean.especialidade}" filter="true">
+                                    <f:selectItem  itemValue="0" itemLabel=""/>
+                                    <f:selectItems value="#{grlEspecialidadeBean.pesquisaPorEspecialidadeMedica()}" var="especialidade" itemLabel="#{especialidade.descricao}" itemValue="#{especialidade.pkIdEspecialidade}"/>
+                                    <f:ajax execute="@this" render="medico"/>
+                                </p:selectOneMenu>
+                                
+                                <p:outputLabel for="medico" value="#{msgs.medico}"/>
+                                <p:selectOneMenu id="medico" disabled="#{!admsSolicitaoPesquisarBean.isSolicitacaoMedicaBoolean()}" value="#{admsSolicitaoPesquisarBean.medico.pkIdFuncionario}" filter="true">
+                                    <f:selectItem  itemLabel=""/>
+                                    <f:selectItems value="#{admsSolicitaoPesquisarBean.getFuncionariosLista()}" var="funcionario" itemLabel="#{funcionario.fkIdPessoa.nome} #{funcionario.fkIdPessoa.sobreNome}" itemValue="#{funcionario.pkIdFuncionario}"/>
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+                            
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                <p:commandButton value="#{msgs.pesquisar}" icon="ui-icon-search" id="pesquisar" partialSubmit="true"
+                                    process="@this dataInicial dataFinal subProcesso tipoSolicitacao medico"
+                                    actionListener="#{admsSolicitaoPesquisarBean.pesquisarSolicitacoes()}" 
+                                    update=":formProcuraSolicitacoes:dataTableSolicitacoes :formProcuraSolicitacoes:subProcesso"/>
+                            </p:panelGrid>
+                            
+                        </p:panelGrid>
+                    </p:fieldset>
+                    
+                    
+                    <center>
+                        <p:panel style="border: none; height: 40px">
+                            <h:panelGrid class="float-right" columns="2">
+                                <p:commandButton value="#{msgs.limpar} #{msgs.resultados}"
+                                                 partialSubmit="true" process="@this" update="dataTableSolicitacoes" 
+                                                 actionListener="#{admsSolicitaoPesquisarBean.limparResultadosLista()}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </center>
+                    
+                    <h:panelGrid width="100%">
+                        <p:dataTable id="dataTableSolicitacoes" var="solicitacao" value="#{admsSolicitaoPesquisarBean.listaSolicitacoes}"
+                                     style="width: 100%" emptyMessage="Não Existem Pacientes"
+                                     paginator="true" paginatorPosition="bottom" rows="10">
+                            <p:column headerText="#{msgs.dataDaSolicitacao}" sortBy="#{solicitacao.data}">
+                                <center>        
+                                    <h:outputText value="#{solicitacao.data}">
+                                        <f:convertDateTime dateStyle="default" pattern="dd-MM-yyyy HH:mm"/>
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+                            <p:column filterBy="#{solicitacao.fkIdPaciente.numeroPaciente} #{solicitacao.fkIdPaciente.fkIdPessoa.nome} #{solicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" filterMatchMode="contains" headerText="#{msgs.paciente}">
+                                <center>
+                                    <p:commandLink style="color: #0088cc" value="#{solicitacao.fkIdPaciente.numeroPaciente} : #{solicitacao.fkIdPaciente.fkIdPessoa.nome} #{solicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                        ajax="true" partialSubmit="true" process="@this" 
+                                        actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(solicitacao.fkIdPaciente)}" 
+                                        update=":formPacienteVisualizar" 
+                                        onclick="PF('dialogMaisDetalhes').show();"/>
+                                </center>
+                            </p:column>
+                            <p:column filterBy="#{solicitacao.fkIdSubprocesso.numeroSubprocesso}" filterMatchMode="contains" headerText="#{msgs.subProcesso}">
+                                <center>    
+                                    #{solicitacao.fkIdSubprocesso.numeroSubprocesso}
+                                </center>
+                            </p:column>
+                            <p:column filterBy="#{solicitacao.fkIdFuncionarioSolicitante.fkIdPessoa.nome} #{solicitacao.fkIdFuncionarioSolicitante.fkIdPessoa.sobreNome}" filterMatchMode="contains" headerText="#{msgs.funcionarioSolicilicitante}">
+                                <center>    
+                                    #{solicitacao.fkIdFuncionarioSolicitante.fkIdPessoa.nome} #{solicitacao.fkIdFuncionarioSolicitante.fkIdPessoa.sobreNome}
+                                </center>
+                            </p:column>
+                            
+                            <p:column headerText="#{msgs.numerosDeServicosSolicitados}">
+                                <center>                                     
+                                        #{admsSolicitaoPesquisarBean.carregarServicosSolicitados(solicitacao)}
+                                        <p:commandLink style="color: #0088cc" value="#{solicitacao.admsServicoSolicitadoList.size()}" 
+                                            ajax="true" partialSubmit="true" process="@this" 
+                                            actionListener="#{admsSolicitaoPesquisarBean.setSolicitacaoDetalhes(solicitacao)}" 
+                                            update=":formServicosSolicitados" 
+                                            onclick="PF('dialogServicosSolicitados').show();"/>
+                                </center>
+                            </p:column>
+                            <p:column filterBy="#{solicitacao.fkIdCentro.fkIdInstituicao.descricao}" headerText="#{msgs.centroDeProveniencia}">
+                                <center>                                        
+                                        #{solicitacao.fkIdCentro.fkIdInstituicao.descricao}
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.opcoes}">
+                                <center>
+                                    <p:menuButton value="#{msgs.opcoes}">
+                                        <p:menuitem value="#{msgs.abrirSolicitacao}" actionListener="#{admsSolicitacaoEditarPagarBean.definirSolicitacaoEPaginaAnterior(solicitacao, './solicitacoesGeraisAdms.xhtml?faces-redirect=true')}"
+                                                     action="/admsVisao/solicitacoes/solicitacaoEditarPagarAdms.xhtml?faces-redirect=true"
+                                                     process="@this" partialSubmit="true"/>
+                                        <p:menuitem value="#{msgs.servicosSolicitados}"
+                                            ajax="true" partialSubmit="true" process="@this" 
+                                            actionListener="#{admsSolicitaoPesquisarBean.setSolicitacaoDetalhes(solicitacao)}" 
+                                            update=":formServicosSolicitados" 
+                                            onclick="PF('dialogServicosSolicitados').show();"/>
+
+                                    </p:menuButton>
+                                </center>
+                            </p:column>
+                        </p:dataTable>
+                    </h:panelGrid>
+                    </div>
+                </h:form>
+                
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+                
+                
+                <center>
+                    <p:dialog header="Detalhes Solicitação" showEffect="fade"
+                              widgetVar="dialogServicosSolicitados" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <h:form id="formServicosSolicitados">
+                            <p:dataTable id="dataTableServicosSolicitados" var="servicosSolicitados" value="#{admsSolicitaoPesquisarBean.getServicosSolicitadosDetalhes()}"
+                                     style="width: 100%" emptyMessage="Não Existem Pacientes"
+                                     paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.servico}">
+                                    #{servicosSolicitados.fkIdServico.nomeServico}
+                                </p:column>
+                                <p:column headerText="#{msgs.tipoSolicitacoServico}">
+                                    #{servicosSolicitados.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}
+                                </p:column>
+                                <p:column headerText="#{msgs.modelidadeDePagamento}">
+                                    #{servicosSolicitados.fkIdPrecoCategoriaServico.fkIdCategoriaServico.descricaoCategoriaServico}
+                                </p:column>
+                                <p:column headerText="#{msgs.valor}">
+                                    #{servicosSolicitados.fkIdPrecoCategoriaServico.valor}
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </p:dialog>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

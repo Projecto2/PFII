@@ -1,0 +1,286 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagExameBean.temMensagemPendente == true}">
+            <c:if test="${diagExameBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagExameBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagExameBean.tipoMensagemPendente == 'Erro'}">
+                #{diagExameBean.getMensagem()}
+            </c:if>
+        </c:if>
+
+        <h2>Laboratório -> Análises Clínicas -> Gestão de Exames</h2>
+
+        <center>
+
+            <h:panelGrid columns="1">
+                <h:form prependId="false">
+                    <p:growl sticky="true" id="msg" autoUpdate="true"/>
+
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2">
+                            <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">
+
+                                <h:panelGrid columns="2" cellpadding="3">
+                                    <f:validateBean disabled="true">
+                                        <p:outputLabel value="Descrição: "/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="descricao" style="width: 100%" value="#{diagExameBean.diagExamePesquisar.descricaoExame}"/>
+                                        </f:validateBean>
+
+                                        <p:outputLabel value="Categoria: "/>
+                                        <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagExameBean.diagExamePesquisar.fkIdCategoriaExame.pkIdCategoria}">
+                                            <p:ajax event="change" process="@this" update="comboSubcategorias"
+                                                    listener="#{diagExameBean.carregarListaSubcategoriasPorCategoriaPesquisar()}" />
+                                            <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                            <f:selectItems value="#{diagExameBean.findAllCategoriaExamesLaboratorio()}" var="categoria"
+                                                           itemLabel="#{categoria.descricaoCategoria}" itemValue="#{categoria.pkIdCategoria}"/>
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel value="Subcategoria: "/>
+                                        <p:selectOneMenu id="comboSubcategorias" style="width: 95%; text-align: center" value="#{diagExameBean.diagExamePesquisar.fkIdSubcategoriaExame.pkIdSubcategoriaExame}">
+                                            <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                            <f:selectItems value="#{diagExameBean.listaSubcategoriasPorCategoriaPesquisar}" var="subcategoria"
+                                                           itemLabel="#{subcategoria.descricaoSubcategoria}" itemValue="#{subcategoria.pkIdSubcategoriaExame}"/>
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel value="Unidade: "/>
+                                        <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagExameBean.diagExamePesquisar.fkIdUnidadeMedida.pkIdUnidadeMedida}">
+                                            <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                            <f:selectItems value="#{diagExameBean.findAllUnidadeMedidas()}" var="unidade"
+                                                           itemLabel="#{unidade.abreviatura}" itemValue="#{unidade.pkIdUnidadeMedida}"/>
+                                        </p:selectOneMenu>
+
+                                        <p:outputLabel value="Valor de Referência entre: "/>
+                                        <h:panelGroup style="width: 90%">
+                                            <f:validateBean disabled="true">
+                                                <p:inputNumber id="valorMinimo" value="#{diagExameBean.diagExamePesquisar.valorReferenciaMinimo}"/>
+                                                e
+                                                <p:inputNumber id="valorMaximo" value="#{diagExameBean.diagExamePesquisar.valorReferenciaMaximo}"/>
+                                            </f:validateBean>
+                                        </h:panelGroup>
+
+                                    </f:validateBean>
+
+                                    <br/>
+                                    <h:panelGrid columns="3" width="100%">
+                                        <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                         action="#{diagExameBean.pesquisarExames()}" 
+                                                         partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                        <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagExameBean.limparPesquisa()}" 
+                                                         partialSubmit="true" process="@this" style="width: 100%"/>                                        
+                                        <p:commandButton style="width: 100%" value="Actualizar Exames" icon="ui-icon-refresh"  process="@this" id="adicionar" actionListener="#{diagExameExcelBean.carregarExameTabela()}" update="dataTable">
+                                            <p:tooltip id="toolTipAdicionar" for="adicionar" value="Actualizar Exames"/>
+                                        </p:commandButton> 
+
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+                    <p:dataTable id="dataTable" var="exame" value="#{diagExameBean.itens}"
+                                 rowKey="#{exame.pkIdExame}" selectionMode="single"
+                                 emptyMessage="Nenhum registo de exame encontrado"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+
+                        <p:column headerText="Descrição do Exame" filterBy="#{exame.descricaoExame}">
+                            <center>                                        
+                                #{exame.descricaoExame}
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Categoria do Exame" filterBy="#{exame.fkIdCategoriaExame.descricaoCategoria}">
+                            <center>                                        
+                                #{exame.fkIdCategoriaExame.descricaoCategoria}
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Subcategoria do Exame" filterBy="#{exame.fkIdSubcategoriaExame.descricaoSubcategoria}">
+                            <center>                                        
+                                #{exame.fkIdSubcategoriaExame.descricaoSubcategoria}
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Unidade" filterBy="#{exame.fkIdUnidadeMedida.descricao}">
+                            <center>                                        
+                                #{exame.fkIdUnidadeMedida.abreviatura}
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Valores de Referência">
+                            <center>                                        
+                                [#{exame.valorReferenciaMinimo} - #{exame.valorReferenciaMaximo}]
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <p:confirmDialog message="Tem certeza que pretende remover o exame selecionado ?"
+                                     header="Remover Exame" severity="alert" widgetVar="confirmDialogRemover">
+                        <p:commandButton value="Sim" actionListener="#{diagExameBean.remove()}" process="@this"
+                                         update=":msg dataTable @this" oncomplete="PF('confirmDialogRemover').hide();"/>
+                        <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                    </p:confirmDialog>
+
+                </h:form>
+            </h:panelGrid>
+        </center>
+
+        <center>
+
+            <p:dialog header="Registar Exame" closable="false" showEffect="fade"
+                      widgetVar="dialogRegistarExame" modal="true" closeOnEscape="true">
+                <h:form id="formRegistarExame">
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3">
+                            <h:outputLabel value="Descrição do Exame * : "/>
+                            <p:inputText id="novoExameDesc" value="#{diagExameBean.diagExame.descricaoExame}" maxlength="45" style="width: 90%"
+                                         required="true" requiredMessage="Indique a descrição do exame"/>
+
+                            <h:outputLabel value="Categoria do Exame * : "/>
+                            <p:selectOneMenu id="comboCategoriasCadastrar" style="width: 85%" value="#{diagExameBean.diagCategoriaExame.pkIdCategoria}" required="true"
+                                             requiredMessage="Indique a categoria do exame">
+                                <p:ajax event="change" process="@this" update="comboSubcategoriasCadastrar"
+                                        listener="#{diagExameBean.carregarListaSubcategoriasPorCategoriaRegistar()}" />
+                                <f:selectItems value="#{diagExameBean.findAllCategoriaExamesLaboratorio()}" var="categoria" itemLabel="#{categoria.descricaoCategoria}" 
+                                               itemValue="#{categoria.pkIdCategoria}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Subcategoria do Exame : "/>
+                            <p:selectOneMenu id="comboSubcategoriasCadastrar" style="width: 85%" value="#{diagExameBean.diagSubcategoriaExame.pkIdSubcategoriaExame}">
+                                <f:selectItem itemLabel=""/>
+                                <f:selectItems value="#{diagExameBean.listaSubcategoriasPorCategoriaRegistar}" var="subcategoria" itemLabel="#{subcategoria.descricaoSubcategoria}" 
+                                               itemValue="#{subcategoria.pkIdSubcategoriaExame}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Unidade : "/>
+                            <p:selectOneMenu style="width: 85%" value="#{diagExameBean.farmUnidadeMedida.pkIdUnidadeMedida}">
+                                <f:selectItem itemLabel=""/>
+                                <f:selectItems value="#{diagExameBean.findAllUnidadeMedidas()}" var="unidade" itemLabel="#{unidade.abreviatura}" 
+                                               itemValue="#{unidade.pkIdUnidadeMedida}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Valor de Referência entre "/>
+                            <h:panelGroup style="width: 90%">
+                                <p:inputNumber id="novoExameValorRefMin" value="#{diagExameBean.diagExame.valorReferenciaMinimo}"/>
+                                e
+                                <p:inputNumber id="novoExameValorRefMax" value="#{diagExameBean.diagExame.valorReferenciaMaximo}"/>
+                            </h:panelGroup>
+
+                            <h:outputLabel value="Tipo de Resultado * : "/>
+                            <p:selectOneRadio style="width: 95%" value="#{diagExameBean.diagTipoResultadoExame.pkIdTipoResultadoExame}" 
+                                              required="true" requiredMessage="Indique o tipo de resultado.">
+                                <f:selectItems value="#{diagExameBean.findAllTipoResultadoExames()}" var="tipoResultado" itemLabel="#{tipoResultado.descricaoTipoResultadoExame}" 
+                                               itemValue="#{tipoResultado.pkIdTipoResultadoExame}"/>
+                            </p:selectOneRadio>
+
+                        </h:panelGrid>
+
+                        <br/>
+
+                        <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                        <p:separator/>
+
+                        <h:panelGroup style=" float: right">
+                            <p:commandButton icon="ui-icon-disk" value="Registar" update="dataTable" action="#{diagExameBean.create()}"/> 
+                            <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagExameBean.limpar()}"/>
+                        </h:panelGroup>
+
+                    </p:fieldset>
+
+                </h:form>
+            </p:dialog>
+        </center>
+
+        <center>
+            <p:dialog header="Editar Exame" closable="false" showEffect="fade"
+                      widgetVar="dialogEditar" modal="true" closeOnEscape="true">
+                <h:form id="formEditar">
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3">
+                            <h:outputLabel value="Descrição do Exame * : "/>
+                            <p:inputText id="editarExameDesc" style="width: 90%" value="#{diagExameBean.diagExameEditar.descricaoExame}" 
+                                         required="true" requiredMessage="Indique a descrição do exame"/>
+
+                            <h:outputLabel value="Categoria do Exame * : "/>
+                            <p:selectOneMenu id="editarIdCategoria" style="width: 85%" value="#{diagExameBean.diagCategoriaExameEditar.pkIdCategoria}" required="true"
+                                             requiredMessage="Indique o categoria do exame">
+                                <p:ajax event="change" process="@this" update="editarIdSubcategoria"
+                                        listener="#{diagExameBean.carregarListaSubcategoriasPorCategoriaEditar()}" />
+                                <f:selectItems value="#{diagExameBean.findAllCategoriaExamesLaboratorio()}" var="categoria" itemLabel="#{categoria.descricaoCategoria}" 
+                                               itemValue="#{categoria.pkIdCategoria}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Subcategoria do Exame : "/>
+                            <p:selectOneMenu id="editarIdSubcategoria" style="width: 85%" value="#{diagExameBean.diagSubcategoriaExameEditar.pkIdSubcategoriaExame}">
+                                <f:selectItem itemLabel=""/>
+                                <f:selectItems value="#{diagExameBean.listaSubcategoriasPorCategoriaEditar}" var="subcategoria" itemLabel="#{subcategoria.descricaoSubcategoria}" 
+                                               itemValue="#{subcategoria.pkIdSubcategoriaExame}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Unidade: "/>
+                            <p:selectOneMenu id="editarIdUnidade" style="width: 85%" value="#{diagExameBean.farmUnidadeMedidaEditar.pkIdUnidadeMedida}">
+                                <f:selectItems value="#{diagExameBean.findAllUnidadeMedidas()}" var="unidade"
+                                               itemLabel="#{unidade.abreviatura}" itemValue="#{unidade.pkIdUnidadeMedida}"/>
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Valor de Referência: "/>
+                            <h:panelGroup style="width: 100%">
+                                <p:inputNumber id="editarExameValorRefMin" value="#{diagExameBean.diagExameEditar.valorReferenciaMinimo}"/>
+                                e
+                                <p:inputNumber id="editarExameValorRefMax" value="#{diagExameBean.diagExameEditar.valorReferenciaMaximo}"/>
+                            </h:panelGroup>
+
+                            <h:outputLabel value="Tipo de Resultado * : "/>
+                            <p:selectOneRadio id="editarTipoResultado" style="width: 95%" value="#{diagExameBean.diagTipoResultadoExameEditar.pkIdTipoResultadoExame}" 
+                                              required="true" requiredMessage="Indique o tipo de resultado.">
+                                <f:selectItems value="#{diagExameBean.findAllTipoResultadoExames()}" var="tipoResultado" itemLabel="#{tipoResultado.descricaoTipoResultadoExame}" 
+                                               itemValue="#{tipoResultado.pkIdTipoResultadoExame}"/>
+                            </p:selectOneRadio>
+
+                        </h:panelGrid>
+
+                        <br/>
+
+                        <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                        <p:separator/>
+
+                        <h:panelGroup style=" float: right">
+                            <p:commandButton value="Guardar Edição" action="#{diagExameBean.edit()}" icon="ui-icon-disk"
+                                             onclick="dialogEditar.hide()" update="dataTable"/>
+                            <p:commandButton value="Cancelar" onclick="dialogEditar.hide()" partialSubmit="true" process="@this"
+                                             icon="ui-icon-arrowreturnthick-1-w" action="#{diagExameBean.limpar()}"/>
+                        </h:panelGroup>
+
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+        </center>
+
+    </ui:define>
+
+</ui:composition>

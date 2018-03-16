@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form id="frm"  acceptcharset="ISO-8859-1">
+                    <p:panel header="Gestão de Avaliação">  
+                        <p:messages id="messagens" closable="true"/>
+                        
+                            
+                                <p:tabView id="tab1"> 
+                                <p:tab id="personal" title="Estagiário Ensino Superior">
+                                   
+                                    <h:panelGrid columns="2" columnClasses="label, value">
+                                        <h:outputLabel value="Estagiário:" />
+
+                                        <p:selectOneMenu  id="estagiario" value="#{supiAvaliacaoNovaBean.estagiario.pkIdEstagiario}" filter="true"
+                                                          required="true" requiredMessage="Deve selecionar o Estagiário">
+                                            <f:selectItem itemLabel="Selecione"/>
+
+                                            <f:selectItems value="#{supiAvaliacaoNovaBean.getListaAvaliacaoDesempenho()}"
+                                                           var="prof"
+                                                           itemLabel="#{prof.fkIdEstagiario.fkIdPessoa.nome} #{prof.fkIdEstagiario.fkIdPessoa.nomeDoMeio} #{prof.fkIdEstagiario.fkIdPessoa.sobreNome}"
+                                                           itemValue="#{prof.fkIdEstagiario.pkIdEstagiario}"/>
+
+                                            <p:ajax event="change" update="panelAvalia" listener="#{supiAvaliacaoNovaBean.buscaEstagiario(supiAvaliacaoNovaBean.estagiario.pkIdEstagiario)}"/>
+
+                                        </p:selectOneMenu>
+
+                                    </h:panelGrid>
+
+                                    <h:panelGrid columns="2" cellspacing="6" id="panelAvalia" style="font-family: cursive,sans-serif;font-size:14px; color: black;" >
+
+                                        <h:outputLabel value="Secção CNT:"/>
+                                        <p:inputText id="cnt" 
+                                                     value="#{supiAvaliacaoNovaBean.verificaCNT(supiAvaliacaoNovaBean.estagiario.pkIdEstagiario)}" readonly="true"/>
+
+                                        <h:outputLabel value="Secção Medicina:"/>
+                                        <p:inputText id="medicina" 
+                                                     value="#{supiAvaliacaoNovaBean.estagiario}" readonly="true"/>
+
+                                        <h:outputLabel value="Secção Pediatria:"/>
+                                        <p:inputText id="pediatria"  value="#{supiAvaliacaoNovaBean.estagiario}" readonly="true"/>
+
+                                        <h:outputLabel value="Processo de Enfermagem"/>
+                                        <p:inputText value="#{supiAvaliacaoNovaBean.estagiario}" readonly="true"/>
+
+                                        <h:outputLabel value="Nota Relatório"/>
+                                        <p:inputText value="#{supiAvaliacaoNovaBean.estagiario}" readonly="true"/>
+
+                                        <h:outputLabel value="Nota Presença"/>
+                                        <p:inputText value="#{supiAvaliacaoNovaBean.estagiario.fkIdBi}" readonly="true"/>
+
+                                        <h:outputLabel value="Resultado Final"/>
+                                        <p:inputText value="#{supiAvaliacaoNovaBean.estagiario}" readonly="true"/>
+
+                                        <h:outputLabel value="Valor da Avaliação:" for="valorObtido"  style="font-family: cursive,sans-serif;font-size:16px; font-size: medium;color: black;"/>
+                                        <p:inputText id="valorObtido" value="#{supiAvaliacaoNovaBean.pontuacaoTotal}" size="5" readonly="true"/>
+
+                                        <p:commandButton ajax="false" value="Limpar"
+                                                         action="#{supiAvaliacaoNovaBean.chamar()}"/>
+                                    </h:panelGrid>
+
+                                </p:tab>
+
+                                <p:tab id="personal1" title="Estagiário Ensino Médio">
+                                    <p:messages />
+                                    <h:panelGrid columns="2" columnClasses="label, value">
+                                        <h:outputLabel value="Estagiário:" />
+
+                                        <p:selectOneMenu  id="estagiario1" value="#{supiAvaliacaoNovaBean.estagiario.pkIdEstagiario}" filter="true"
+                                                          required="true" requiredMessage="Deve selecionar o Estagiário">
+                                            <f:selectItem itemLabel="Selecione"/>
+
+                                            <f:selectItems value="#{supiAvaliacaoNovaBean.getListaAvaliacaoDesempenho()}"
+                                                           var="prof"
+                                                           itemLabel="#{prof.fkIdEstagiario.fkIdPessoa.nome} #{prof.fkIdEstagiario.fkIdPessoa.nomeDoMeio} #{prof.fkIdEstagiario.fkIdPessoa.sobreNome}"
+                                                           itemValue="#{prof.fkIdEstagiario.pkIdEstagiario}"/>
+
+                                            <p:ajax event="change" update="panelAvalia1" listener="#{supiAvaliacaoNovaBean.buscaEstagiario(supiAvaliacaoNovaBean.estagiario.pkIdEstagiario)}"/>
+
+                                        </p:selectOneMenu>
+
+                                    </h:panelGrid>
+
+                                    <h:panelGrid columns="1" cellspacing="3" id="panelAvalia1" style="font-family: cursive,sans-serif;font-size:14px; color: black;" >
+
+                                        <h:outputLabel value="Secção CNT:"/>
+                                        <p:inputText id="cnt1" 
+                                                     value="#{supiAvaliacaoNovaBean.verificaCNT(supiAvaliacaoNovaBean.estagiario.pkIdEstagiario)}" readonly="true"/>
+
+                                        <h:outputLabel value="Secção Medicina:"/>
+                                        <p:inputText id="medicina1" 
+                                                     value="#{supiAvaliacaoNovaBean.estagiario}" readonly="true"/>
+
+                                        <h:outputLabel value="Secção Pediatria:"/>
+                                        <p:inputText id="pediatria1"  value="#{supiAvaliacaoNovaBean.estagiario}" readonly="true"/>
+
+                                        <h:outputLabel value="Nota Relatório"/>
+                                        <p:inputText value="#{supiAvaliacaoNovaBean.estagiario}" readonly="true"/>
+
+                                        <h:outputLabel value="Nota Presença"/>
+                                        <p:inputText value="#{supiAvaliacaoNovaBean.estagiario.fkIdBi}" readonly="true"/>
+
+                                        <h:outputLabel value="Resultado Final"/>
+                                        <p:inputText value="#{supiAvaliacaoNovaBean.estagiario}" readonly="true"/>
+
+                                        <h:outputLabel value="Valor da Avaliação:" for="valorObtido"  style="font-family: cursive,sans-serif;font-size:16px; font-size: medium;color: black;"/>
+                                        <p:inputText id="valorObtido1" value="#{supiAvaliacaoNovaBean.pontuacaoTotal}" size="5" readonly="true"/>
+
+                                        <p:commandButton ajax="false" value="Limpar"
+                                                         action="#{supiAvaliacaoNovaBean.chamar()}"/>
+                                    </h:panelGrid>
+
+                                </p:tab>
+
+                           
+                        </p:tabView>
+
+
+                      </p:panel>
+                </h:form> 
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

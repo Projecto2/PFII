@@ -1,0 +1,62 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <!-- Definindo a cor da barra lateral-->
+    <h:form style="background-color: rgba(230,230,230,0.05); height: 620px">
+        <p:panelMenu style="width: 100%">
+
+            <p:submenu label="Laboratório" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[0])}">
+                <p:submenu label="Análises Clínicas" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[2])}">
+                    <p:menuitem value="Gestão de Exames" url="/faces/diagVisao/paginas/laboratorio/analisesClinicas/exames.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[4])}"/>
+                    <p:submenu label="Exames de Rotina" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[5])}">
+                        <p:menuitem value="Solicitações de Exames" url="/faces/diagVisao/paginas/laboratorio/analisesClinicas/examesRotina/pedidosExames.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[8])}"/>
+                        <p:menuitem value="Resultados de Exames" url="/faces/diagVisao/paginas/laboratorio/analisesClinicas/examesRotina/resultadosExames.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[9])}"/>
+                    </p:submenu>
+
+                    <p:submenu label="Exames de Urgência/Emergência" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[6])}">
+                        <p:menuitem value="Solicitações de Exames" url="/faces/diagVisao/paginas/laboratorio/analisesClinicas/examesInternamento/pedidosExames.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[8])}"/>
+                        <p:menuitem value="Resultados de Exames" url="/faces/diagVisao/paginas/laboratorio/analisesClinicas/examesInternamento/resultadosExames.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[9])}"/>
+                    </p:submenu>
+
+                    <p:submenu label="Farmácia">
+                        <p:menuitem value="Solicitações de Materiais" url="/faces/diagVisao/paginas/diagFarmacia/solicitacaoNovaDiag.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[10])}"/>
+                        <p:menuitem value="Movimentos (Pedidos)" url="/faces/diagVisao/paginas/diagFarmacia/movimentosListarDiag.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[11])}"/>
+                        <p:menuitem value="Stock" url="/faces/diagVisao/paginas/diagFarmacia/stockFarmaciaListarDiag.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[12])}"/>
+                        <p:menuitem value="Registo de Utilização de Material" url="/faces/diagVisao/paginas/diagFarmacia/registoUtilizacaoMaterial.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[12])}"/>
+                        <p:menuitem value="Histórico de Utilização de Material" url="/faces/diagVisao/paginas/diagFarmacia/historicoUtilizacaoMaterial.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[12])}"/>
+                    </p:submenu>
+                </p:submenu>
+
+                <p:submenu label="Hemoterápia" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[3])}">
+                    <p:menuitem value="Candidatos à Dador" url="/faces/diagVisao/paginas/laboratorio/hemoterapia/candidatoDador/candidatoDador.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[13])}"/>
+                    <p:menuitem value="Banco de Sangue" url="/faces/diagVisao/paginas/laboratorio/hemoterapia/bancoDeSangue.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[14])}"/>
+                    <p:submenu label="Tipagem à Pacientes" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[15])}">
+                        <p:menuitem value="Solicitações de Tipagem" url="/faces/diagVisao/paginas/laboratorio/hemoterapia/tipagemDoente/pedidosTipagemDoente.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[17])}"/>
+                        <p:menuitem value="Resultados de Tipagem" url="/faces/diagVisao/paginas/laboratorio/hemoterapia/tipagemDoente/tipagemDoente.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[18])}"/>
+                    </p:submenu>
+
+                    <p:submenu label="Transfusões" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[16])}">
+                        <p:menuitem value="Solicitações de Componentes Sanguíneos" url="/faces/diagVisao/paginas/laboratorio/hemoterapia/transfusao/solicitacoesComponentesSanguineos.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[19])}"/>
+                        <p:menuitem value="Solicitações de Componentes Sanguíneos Aprovadas" url="/faces/diagVisao/paginas/laboratorio/hemoterapia/transfusao/solicitacoesComponentesSanguineosAprovadas.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[20])}"/>
+                        <p:menuitem value="Histórico de Entrada e Saída" url="/faces/diagVisao/paginas/laboratorio/hemoterapia/transfusao/historicoTransfusoes.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[21])}"/>
+                    </p:submenu>
+                </p:submenu>
+
+            </p:submenu>
+            <p:submenu label="Imagiologia" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[1])}">
+                <p:menuitem value="Gestão de Exames" url="/faces/diagVisao/paginas/imagiologia/examesImagiologia.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[22])}"/>
+                <p:submenu label="Radiografia" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[23])}">
+                    <p:menuitem value="Solicitações de Exames" url="/faces/diagVisao/paginas/imagiologia/radiografia/pedidosExames.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[8])}"/>
+                    <p:menuitem value="Resultados de Exames" url="/faces/diagVisao/paginas/imagiologia/radiografia/resultadosExames.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[9])}"/>
+                </p:submenu>
+
+                <p:submenu label="Ecografia" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[24])}">
+                    <p:menuitem value="Solicitações de Exames" url="/faces/diagVisao/paginas/imagiologia/ecografia/pedidosExames.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[8])}"/>
+                    <p:menuitem value="Resultados de Exames" url="/faces/diagVisao/paginas/imagiologia/ecografia/resultadosExames.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeDIAG[9])}"/>
+                </p:submenu>
+            </p:submenu>
+        </p:panelMenu>
+    </h:form>
+</ui:composition>

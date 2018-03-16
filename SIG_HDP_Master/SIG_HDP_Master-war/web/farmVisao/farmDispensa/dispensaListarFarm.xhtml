@@ -1,0 +1,175 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Dispensas Realizadas</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Dispensas -> Ver Realizadas</h2>
+            <p:growl autoUpdate="true"/>
+            <p:fieldset>
+               <h:form id="formPrincipal">  
+                  <p:dataGrid var="turno" value="#{farmTurnoDispensaBean.listaTurnoDispensa}">
+                     <p:panel>
+                        <h:panelGrid columns="4" width="100%" style="background-color: rgba(173,216,230,.5);
+                                     border-radius: 5px; height: 75px">
+                           <strong>Abertura: </strong>
+                           <h:outputText style="color: #008866;" value="#{turno.dataAbertura}">
+                              <f:convertDateTime pattern="dd-MM-yyyy - HH:mm:ss" />
+                           </h:outputText>
+
+                           <strong>Fecho: </strong>
+                           <h:outputText style="color: #036fab" value="#{turno.dataHoraFecho}">
+                              <f:convertDateTime pattern="dd-MM-yyyy - HH:mm:ss" />
+                           </h:outputText>
+
+                           <strong>Por: </strong>
+                           <p:outputLabel value="#{turno.fkIdFuncionarioQueAbriu.fkIdPessoa.nome} 
+                                          #{turno.fkIdFuncionarioQueAbriu.fkIdPessoa.sobreNome}" 
+                                          style="color: #008866"/>
+
+                           <strong>Por: </strong>
+                           <p:outputLabel value="#{turno.fkIdFuncionarioQueFechou.fkIdPessoa.nome} 
+                                          #{turno.fkIdFuncionarioQueFechou.fkIdPessoa.sobreNome}" 
+                                          style="color: #036fab"/>
+                        </h:panelGrid>
+
+                        <br/>
+                        <center><h2  style="width: 30%">#{turno.fkIdTurno.descricao}</h2></center>
+
+                        <p:panel style="height: 50px; border: none">
+                           <h:panelGrid class="float-right">
+                              <p:menuButton value="Opções">
+                                 <p:menuitem value="Itens Dispensados" partialSubmit="true" process="@this" 
+                                             icon="ui-icon-info" onclick="PF('turnoVisualizarItens').show()"
+                                             update=":formVisualizar:resultado"
+                                             actionListener="#{farmTurnoDispensaBean.pesquisarItensDispensadosNoTurno(turno)}">
+                                 </p:menuitem>
+                                 <p:menuitem value="Reimprimir Fecho"  icon="ui-icon-print"  ajax="false"
+                                             disabled="#{!farmTurnoDispensaBean.turnoFechado(turno)}"
+                                             actionListener="#{farmTurnoDispensaBean.imprimirRelatorio(turno)}">
+                                 </p:menuitem>
+                              </p:menuButton>
+                           </h:panelGrid>
+                        </p:panel>
+                     </p:panel>
+                  </p:dataGrid>
+
+                  <p:dataTable style="width: 100%;" id="resultado" var="item" rows="6" 
+                               rowsPerPageTemplate="10,15,25,50" paginatorPosition="bottom"
+                               value="#{farmTurnoDispensaBean.listaItensDispensadosPesquisados}" 
+                               emptyMessage="Aguardando Pesquisa..." rendered="false"
+                               paginator="true">
+
+                     <p:column headerText="Data-Hora" sortBy="#{item.fkIdDispensa.dataHora}">
+                        <center>
+                           <h:outputText style="font-size: 14px" value="#{item.fkIdDispensa.dataHora}">
+                              <f:convertDateTime pattern="dd-MM-YYY HH:mm:ss" />
+                           </h:outputText>
+                        </center>
+                     </p:column>
+
+                     <p:column headerText="Turno" sortBy="#{item.fkIdDispensa.fkIdTurnoDispensa.fkIdTurno.descricao}">
+                        <center>
+                           <h:outputText style="font-size: 14px" 
+                                         value="#{item.fkIdDispensa.fkIdTurnoDispensa.fkIdTurno.descricao}"/>
+                        </center>
+                     </p:column>
+
+                     <p:column headerText="Local de Atendimento" sortBy="#{item.fkIdDispensa.fkIdTurnoDispensa.fkIdLocalDeAtendimento.descricao}">
+                        <center>
+                           <h:outputText style="font-size: 14px" 
+                                         value="#{item.fkIdDispensa.fkIdTurnoDispensa.fkIdLocalDeAtendimento.descricao}"/>
+                        </center>
+                     </p:column>
+
+                     <p:column headerText="Paciente" sortBy="#{item.fkIdDispensa.fkIdPaciente.fkIdPessoa.nome}">
+                        <center>
+                           <h:outputText style="font-size: 14px"
+                                         value="#{item.fkIdDispensa.fkIdPaciente.fkIdPessoa.nome} 
+                                         #{item.fkIdDispensa.fkIdPaciente.fkIdPessoa.sobreNome} - 
+                                         #{item.fkIdDispensa.fkIdPaciente.numeroPaciente}"/>
+                        </center>
+                     </p:column>
+                     <p:column headerText="Prescrição Médica" sortBy="#{item.fkIdDispensa.prescricaoMedica}">
+                        <center>
+                           <h:outputText style="font-size: 14px"
+                                         value="#{item.fkIdDispensa.prescricaoMedica}"/>
+                        </center>
+                     </p:column>
+                  </p:dataTable>
+
+               </h:form>  
+
+               <center>
+                  <p:dialog header="Itens Dispensados no Turno" showEffect="fade" width="60%" height="300px"
+                            widgetVar="turnoVisualizarItens" modal="true" closeOnEscape="true">
+                     <h:form id="formVisualizar">
+                        <p:fieldset>
+                           <p:dataTable id="resultado" var="itemDispensado" 
+                                        value="#{farmTurnoDispensaBean.listaItensDispensadosPesquisados}"
+                                        emptyMessage="Sem Itens Dispensados no Turno">
+
+                              <p:column headerText="Data-Hora" sortBy="#{itemDispensado.fkIdDispensa.dataHora}">
+                                 <center>
+                                    <h:outputText style="font-size: 14px" value="#{itemDispensado.fkIdDispensa.dataHora}">
+                                       <f:convertDateTime pattern="dd-MM-YYY HH:mm:ss" />
+                                    </h:outputText>
+                                 </center>
+                              </p:column>
+
+                              <p:column headerText="Turno" sortBy="#{itemDispensado.fkIdDispensa.fkIdTurnoDispensa.fkIdTurno.descricao}">
+                                 <center>
+                                    <h:outputText style="font-size: 14px" 
+                                                  value="#{itemDispensado.fkIdDispensa.fkIdTurnoDispensa.fkIdTurno.descricao}"/>
+                                 </center>
+                              </p:column>
+
+                              <p:column headerText="Local de Atendimento" sortBy="#{itemDispensado.fkIdDispensa.fkIdTurnoDispensa.fkIdLocalDeAtendimento.descricao}">
+                                 <center>
+                                    <h:outputText style="font-size: 14px" 
+                                                  value="#{itemDispensado.fkIdDispensa.fkIdTurnoDispensa.fkIdLocalDeAtendimento.descricao}"/>
+                                 </center>
+                              </p:column>
+
+                              <p:column headerText="Paciente" sortBy="#{itemDispensado.fkIdDispensa.fkIdPaciente.fkIdPessoa.nome}">
+                                 <center>
+                                    <h:outputText style="font-size: 14px"
+                                                  value="#{itemDispensado.fkIdDispensa.fkIdPaciente.fkIdPessoa.nome} 
+                                                  #{itemDispensado.fkIdDispensa.fkIdPaciente.fkIdPessoa.sobreNome} - 
+                                                  #{itemDispensado.fkIdDispensa.fkIdPaciente.numeroPaciente}"/>
+                                 </center>
+                              </p:column>
+                              <p:column headerText="Prescrição Médica" sortBy="#{itemDispensado.fkIdDispensa.prescricaoMedica}">
+                                 <center>
+                                    <h:outputText style="font-size: 14px"
+                                                  value="#{itemDispensado.fkIdDispensa.prescricaoMedica}"/>
+                                 </center>
+                              </p:column>
+                           </p:dataTable>
+                        </p:fieldset>
+                     </h:form>
+                  </p:dialog>
+               </center>
+            </p:fieldset>
+         </ui:define>
+      </ui:composition>
+   </h:body>
+</html>

@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSeg.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSeg.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>Segurança -> Utilizadores -> Novo</h2>
+                <h:form id="formSolicitacao">
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p></p>
+                    <p:fieldset>
+                        <h:form prependId="false">
+                            <p:growl id="ms2" autoUpdate="true"/>
+                            <br/>
+
+                            <p:fieldset >
+                                <center>
+                                    <h2>Verifique as informacoes</h2>
+                                </center> 
+
+                                <h:panelGrid columns="2">
+                                    <p:outputLabel value="Perfil"/>
+                                    <h:selectOneMenu style="width: 100%; text-align: center" value="#{segUtilizadorNovoBean.idPerfil}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{segUtilizadorNovoBean.listarPerfis}" var="perfil"
+                                                       itemLabel="#{perfil.descricao}" itemValue="#{perfil.pkIdPerfil}"/>
+                                    </h:selectOneMenu>
+                                    <p:outputLabel value="Funcionario"/>
+                                    <h:outputText value="#{segUtilizadorNovoBean.conta.fkIdFuncionario.fkIdPessoa.nome} 
+                                                  #{segUtilizadorNovoBean.conta.fkIdFuncionario.fkIdPessoa.nomeDoMeio} 
+                                                  #{segUtilizadorNovoBean.conta.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+
+                                    <p:outputLabel value="Nome de Utilizador"/>
+                                    <h:outputText value="#{segUtilizadorNovoBean.conta.nomeUtilizador}"/>
+
+                                    <p:outputLabel value="Palavra-Passe"/>
+                                    <h:outputText value="#{segUtilizadorNovoBean.palavaraPasseVizualizar}"/>
+
+                                    <p:outputLabel value="Estado da Conta"/>
+                                    <h:outputText value="#{segUtilizadorNovoBean.conta.estadoConta}"/>
+
+                                </h:panelGrid>
+
+                            </p:fieldset>
+
+                            <p:commandButton icon="ui-icon-seek-prev" value="Voltar"
+                                             action="utilizadorNovoSeg.xhtml?faces-redirect=true"/>
+                            <p:commandButton icon="ui-icon-check" value="Concluir"
+                                             action="#{segUtilizadorNovoBean.criarConta()}"/>
+
+
+                        </h:form>
+
+                    </p:fieldset>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

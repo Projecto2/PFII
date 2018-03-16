@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>Cadastro-> Nova Escala de Enfermagem 2222</h1>
+                <p:messages autoUpdate="true" closable="true"/>
+                <p:growl id="msgs" autoUpdate="true"/>
+                <h:form id="form">
+                    <center>
+                        <br/>
+                        <p:fieldset>
+                            <h:panelGrid columns="4" cellpadding="7">
+                                <p:outputLabel value="Tipo de Escala: *"/>
+                                <h:selectOneMenu id="comboTipoEscala" style="width: 200px" value="#{supiEscalaTesteBean.pkIdTipoEscala}" required="true">
+                                    <f:selectItem itemLabel="Seleccione" noSelectionOption="true" />
+                                    <f:selectItems value="#{supiTipoEscalaBean.findall}" var="item" itemLabel="#{item.descricao}" itemValue="#{item.pkIdTipoEscala}" />
+                                </h:selectOneMenu>
+
+                                <p:outputLabel value="Secção: *"/>
+                                <h:selectOneMenu id="comboSeccao" style="width: 200px" value="#{supiEscalaTesteBean.pkIdSeccao}" required="true">
+                                    <f:selectItem itemLabel="Seleccione" noSelectionOption="true" />
+                                    <f:selectItems value="#{supiSessaoSupiBean.findall}" var="item" itemLabel="#{item.descricao}" itemValue="#{item.pkIdSeccao}" />
+                                </h:selectOneMenu>
+
+                                <p:outputLabel value="Ano: *"/>
+                                <p:inputText id="ano" style="width: 190px" required="true" readonly="true" requiredMessage="Indique o Ano" 
+                                             value="#{supiEscalaTesteBean.ano}" converterMessage="Ano Inválido"/>
+
+                                <p:outputLabel value="Mês: *"/>
+                                <h:selectOneMenu id="comboMes" style="width: 200px" value="#{supiEscalaTesteBean.mes}">
+                                    <f:selectItem itemLabel="Seleccione" noSelectionOption="true" />
+                                    <f:selectItems value="#{supiEscalaTesteBean.selectMeses()}" var="item" itemValue="#{item.value}"/>
+                                    <p:ajax event="change" update="cars1 totalDias" listener="#{supiEscalaTesteBean.prepararEscalaMensalSupervisor()}"/>
+                                </h:selectOneMenu>
+
+
+                            </h:panelGrid>
+                        </p:fieldset>
+
+
+                        <p:dataTable id="cars1" var="car"   value="#{supiEscalaTesteBean.escalaMensal}" 
+                                     editMode="cell"  editable="true" rowIndexVar="rowIndexVar">
+
+                            <p:ajax event="rowEdit" listener="#{supiEscalaTesteBean.onRowEdit}" />
+                            <p:ajax event="rowEditCancel" listener="#{supiEscalaTesteBean.onRowCancel}"  />
+
+                            <p:column  headerText="Supervisores"  width="150">
+                                <h:outputText value="#{car.funcionario.fkIdPessoa.nome} #{car.funcionario.fkIdPessoa.nomeDoMeio} #{car.funcionario.fkIdPessoa.sobreNome}" style="width:100%" />
+                            </p:column>
+                            <c:forEach  var="itemDia" begin="1"  end="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes)}" step="1"  varStatus="status">
+                                <p:column  headerText="#{itemDia} #{supiEscalaTesteBean.diaSemana(itemDia)}" width="28">
+                                    <p:cellEditor>
+                                        <f:facet name="output"><h:outputText value="#{supiEscalaTesteBean.buscaSiglaTurno(car.turnos[status.index-1])}" /></f:facet>
+                                        <f:facet name="input" >
+                                            <h:selectOneMenu id="dia#{itemDia}" value="#{car.turnos[status.index-1]}">
+                                                <f:selectItem itemLabel="" itemValue="#{null}" />
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" itemLabel="#{turno.sigla}" itemValue="#{turno.pkIdTurno}" />
+                                                <f:ajax event="change" render="#{supiEscalaTesteBean.diaBlocked} :form:totalDias cargaHoraria"  listener="#{supiEscalaTesteBean.setChangedSOI(car.turnos[status.index-1] , itemDia, rowIndexVar)}"/>                                                  
+                                            </h:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+                            </c:forEach>
+
+                            <p:column headerText="Carga Horaria"  width="50">
+                                <h:outputText id="cargaHoraria" value="#{car.cargaHoraria}" />
+                            </p:column>
+                            <p:column style="width:32px">
+                                <p:rowEditor />
+                            </p:column>
+
+                            <p:columnGroup type="footer">
+                                <p:row>
+                                    <p:column footerText="DIA " />
+                                    <c:forEach  var="itemDia" begin="1"  end="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes)}" step="1"  varStatus="status">
+                                        <p:column footerText="0" width="28"/>
+                                    </c:forEach>
+                                </p:row>
+                                <p:row>
+                                    <p:column footerText="DA" />
+                                    <c:forEach  var="itemDia" begin="1"  end="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes)}" step="1"  varStatus="status">
+                                        <p:column footerText="0" width="28"/>
+                                    </c:forEach>
+                                </p:row>
+                            </p:columnGroup>
+
+                        </p:dataTable>
+
+                        <p:spacer height="20"/> 
+
+                        <p:dataTable id="totalDias">
+                            <p:columnGroup type="header">
+                                <p:row>
+                                    <p:column  headerText="DIA" width="150"/>
+                                    <c:forEach  var="dia" begin="1"  end="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes)}" step="1"  varStatus="status1">
+                                        <p:column width="28"  headerText="#{supiEscalaTesteBean.totalDiaD[status1.index-1]}">                                     
+                                            <h:inputText />
+                                        </p:column>
+                                    </c:forEach>
+                                </p:row>
+                                <p:row>
+                                    <p:column  width="150"  headerText="DA" />
+                                    <c:forEach  var="dia" begin="1"  end="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes)}" step="1"  varStatus="status2">
+                                        <p:column width="28"   headerText="#{supiEscalaTesteBean.totalDiaDA[status2.index-1]}" />
+                                    </c:forEach>
+                                </p:row>
+                                <p:row>
+                                    <p:column width="150"  headerText="MANHÃ" />
+                                    <c:forEach  var="dia" begin="1"  end="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes)}" step="1"  varStatus="status3">
+                                        <p:column width="28"  headerText="#{supiEscalaTesteBean.totalDiaManha[status3.index-1]}" />
+                                    </c:forEach>
+                                </p:row>
+                                <p:row>
+                                    <p:column width="150"  headerText="TARDE" />
+                                    <c:forEach  var="dia" begin="1"  end="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes)}" step="1"  varStatus="status4">
+                                        <p:column width="28"  headerText="#{supiEscalaTesteBean.totalDiaTarde[status4.index-1]}" />
+                                    </c:forEach>
+                                </p:row>
+                                <p:row>
+                                    <p:column width="150"  headerText="VELA" />
+                                    <c:forEach  var="dia" begin="1"  end="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes)}" step="1"  varStatus="status5">
+                                        <p:column width="28"  headerText="#{supiEscalaTesteBean.totalDiaVela[status5.index-1]}" />
+                                    </c:forEach>
+                                </p:row>
+                            </p:columnGroup>
+                        </p:dataTable>
+
+                        <p:commandButton ajax="false" value="Guardar"
+                                         action="#{supiEscalaTesteBean.salvaEscala()}" icon="ui-icon-disk" style="margin-left:100px;"/>
+
+                        <p:commandButton ajax ="false" action="listarFormador" value="Turno/Funcionário"/>
+                    </center>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

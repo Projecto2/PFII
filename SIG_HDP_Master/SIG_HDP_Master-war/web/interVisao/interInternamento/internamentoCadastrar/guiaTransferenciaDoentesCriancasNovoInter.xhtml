@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <!--FORMULARIO PARA CADASTRO-->
+                <h:form id="cadastro">
+                    <p:growl id="ms" autoUpdate="true" />
+                    <h2>#{interObjetosSessaoBean.menuTitulo} -> Pacientes -> Internados -> Guia Médica de Transferência</h2>
+                    <p:separator/>
+                    <center>
+                        <span style="font-size: 16pt">
+                            <p:commandLink style="color: #0088cc" value="#{interGuiaTransferenciaDoentesNovoBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interGuiaTransferenciaDoentesNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interGuiaTransferenciaDoentesNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interGuiaTransferenciaDoentesNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                           ajax="true" partialSubmit="true" process="@this" 
+                                           actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interGuiaTransferenciaDoentesNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                           update=":formPacienteVisualizar" 
+                                           onclick="PF('dialogMaisDetalhes').show();"/>
+                            <br/>
+                            #{msgs.subProcesso}: #{interGuiaTransferenciaDoentesNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                            #{msgs.dataDaSolicitacao}: 
+                            <p:outputLabel value="#{interGuiaTransferenciaDoentesNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </p:outputLabel>
+                        </span>
+                    </center>
+                    <br/>
+                    <h:panelGrid columns="2" cellspacing="1" cellpadding="1" id="pnlDados">                                   
+
+                        <h:outputLabel value="Médico/Enfermeiro * "/>
+                        <p:selectOneMenu value="#{interGuiaTransferenciaDoentesNovoBean.guiaTransferenciaDoentes.fkIdFuncionarioAssistente.pkIdFuncionario}" 
+                                         required="true" requiredMessage="O Médico Assistente é obrigatório." style=" border-radius:10%;font-weight:500;width: 92%;"  filter="true">
+                            <f:selectItem itemLabel="" itemValue="" />
+                            <f:selectItems value="#{interGuiaTransferenciaDoentesNovoBean.findAll()}" 
+                                           var="ma"
+                                           itemLabel="#{ma.fkIdPessoa.nome} #{ma.fkIdPessoa.nomeDoMeio} #{ma.fkIdPessoa.sobreNome}"
+                                           itemValue="#{ma.pkIdFuncionario}" 
+                                           />
+                        </p:selectOneMenu> 
+
+                        <h:outputLabel value="Destino * "/>
+                        <p:inputText value="#{interGuiaTransferenciaDoentesNovoBean.guiaTransferenciaDoentes.destino}" style="width: 100%;" required="true" requiredMessage="O destino é obrigatório."/>
+
+                        <h:outputLabel value="Diagnóstico Final * "/>
+                        <p:inputTextarea value="#{interGuiaTransferenciaDoentesNovoBean.guiaTransferenciaDoentes.queixasPrincipais}" rows="9" style="width: 100%" required="true" requiredMessage="Queixas principais é obrigatório."/>                                   
+
+                        <h:outputLabel value="Critério Clínico"/>
+                        <p:inputText value="#" style="width: 100%;"/>
+                        
+                        <h:outputLabel value="Motivo da Transferência"/>
+                        <p:inputText value="#" style="width: 100%;"/>
+
+                        <h:outputLabel value="Meio de Transporte"/>
+                        <p:inputText value="#" style="width: 100%;"/>
+                        
+                    </h:panelGrid>
+                    <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+                    <p:separator />
+                    <p:separator />
+
+                    <h:panelGrid columns="2">
+                        <p:commandButton value="Salvar" action="#{interGuiaTransferenciaDoentesNovoBean.salvar()}" partialSubmit="true" process="@this"
+                                         style="width: 100%" ajax="false" disabled="#{interGuiaTransferenciaDoentesNovoBean.gravou}"/>  
+                        <p:commandButton value="Voltar" style="width: 100%;" action="#{interGuiaTransferenciaDoentesNovoBean.voltar()}" partialSubmit="true" process="@this"/>
+                    </h:panelGrid>
+                </h:form>  
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h2>Hemoterápia -> Transfusões -> Testes de Compatibilidade</h2>
+
+        <center>
+
+            <br/>
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+            <h:form prependId="false" >
+
+                <p:fieldset style="width: 97%;">
+                    <h:panelGrid columns="2" width="100%">
+                        <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">
+
+                            <h:panelGrid columns="2" cellpadding="3">
+
+                                <p:outputLabel value="Nº de Processo: "/>
+                                <f:validateBean disabled="true">
+                                    <p:inputText id="numProcesso" style="width: 100%" value="#{diagTesteCompatibilidadeBean.admsPacientePesquisarTesteCompatibiladade.numeroPaciente}" />
+                                </f:validateBean>
+
+                                <p:outputLabel value="Paciente: "/>
+                                <h:panelGrid columns="4" width="100%" cellpadding="5">
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="nomePaciente" style="width: 100%" value="#{diagTesteCompatibilidadeBean.admsPacientePesquisarTesteCompatibiladade.fkIdPessoa.nome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="nomePaciente" value="Nome" />
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="sobreNomePaciente" style="width: 100%" value="#{diagTesteCompatibilidadeBean.admsPacientePesquisarTesteCompatibiladade.fkIdPessoa.sobreNome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="sobreNomePaciente" value="Sobrenome" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="Nacionalidade: "/>
+                                <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagTesteCompatibilidadeBean.admsPacientePesquisarTesteCompatibiladade.fkIdPessoa.fkIdNacionalidade.pkIdPais}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                   itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Sexo: "/>
+                                <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagTesteCompatibilidadeBean.admsPacientePesquisarTesteCompatibiladade.fkIdPessoa.fkIdSexo.pkIdSexo}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{itensAjaxBean.sexoList}" var="sexo"
+                                                   itemLabel="#{sexo.descricao}" itemValue="#{sexo.pkIdSexo}"/>
+                                </p:selectOneMenu>
+
+                                <br/>
+                                <h:panelGrid columns="3" width="100%">
+                                    <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                     action="#{diagTesteCompatibilidadeBean.setPesquisar(true)}" 
+                                                     partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                    <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagTesteCompatibilidadeBean.limparPesquisa()}" 
+                                                     partialSubmit="true" process="@this" style="width: 100%"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable id="dataTable" rows="5" paginator="true" paginatorPosition="bottom" rowKey="#{paciente.pkIdPaciente}" selectionMode="single"
+                             var="paciente" value="#{diagTesteCompatibilidadeBean.pesquisarTestesCompatibilidade()}"
+                             emptyMessage="Nenhum registo de paciente com teste de compatibilidade encontrado">
+
+                    <p:column headerText="Nº Processo">
+                        <center>
+                            <h:outputText value="#{paciente.numeroPaciente}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Paciente" filterBy="#{paciente.fkIdPessoa.nome}">
+                        <center>
+                            #{paciente.fkIdPessoa.nome} 
+                            #{paciente.fkIdPessoa.nomeDoMeio}
+                            #{paciente.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data Nasc">
+                        <center>
+                            <h:outputText value="#{paciente.fkIdPessoa.dataNascimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nacionalidade" filterBy="#{paciente.fkIdPessoa.fkIdNacionalidade.nomePais}">
+                        <center>
+                            #{paciente.fkIdPessoa.fkIdNacionalidade.nomePais}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Sexo" filterBy="#{paciente.fkIdPessoa.fkIdSexo.descricao}">
+                        <center>
+                            #{paciente.fkIdPessoa.fkIdSexo.descricao}
+                        </center>
+                    </p:column>
+
+                    <p:column>
+                        <center>
+                            <p:commandButton value="Visualizar" icon="ui-icon-info" action="#{diagTesteCompatibilidadeBean.redirecionarVisualizarTestesCompatibilidade('pesquisarTestesCompatibilidade', paciente)}"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+        </center>
+    </ui:define>
+
+</ui:composition>

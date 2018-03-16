@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <h:outputScript name="JS/previewImagem.js"/>
+    </h:head>
+
+    <h:body>
+        <center>
+            <f:validateBean disabled="true">
+                <p:tabView id="tabPessoa" style="width: 62%">
+                    <p:tab title="Fotografia">
+                        <center>
+                            <p:panel id="gridFoto" style="width: 495px; height: 150px;">
+                                <h:graphicImage url="#{rhPessoaBean.apresentarFoto()}" width="190px" height="140px"/>
+
+                                <h:panelGrid cellpadding="7" style="float: right">
+                                    <p:commandButton type="button" value="Carregar Foto"
+                                                     onclick="PF('dialogFoto').show();" style="width: 225px"/>
+                                    <p:commandButton value="Remover" process="@this" update="gridFoto"  style="width: 225px"
+                                                     action="#{rhPessoaBean.removerFoto(rhPessoaBean.pessoa.fkIdFoto, true)}"/>
+                                </h:panelGrid>
+                            </p:panel>
+                        </center>
+                    </p:tab>
+
+                    <p:tab title="Dados Pessoais">
+                        <h:panelGrid columns="2" width="100%" cellpadding="3">
+                            <p:outputLabel value="Nome Completo*: "/>
+                            <h:panelGrid columns="3">
+                                <p:inputText id="primeiroNome" style="width: 100px" value="#{rhPessoaBean.pessoa.nome}"
+                                             required="true" requiredMessage="Indique o nome">
+                                    <p:watermark value="*Primeiro Nome" for="primeiroNome"/>
+                                </p:inputText>
+                                <p:inputText id="nomeDoMeio" style="width: 160px" value="#{rhPessoaBean.pessoa.nomeDoMeio}">
+                                    <p:watermark value="Nome do Meio" for="nomeDoMeio"/>
+                                </p:inputText>
+                                <p:inputText id="ultimoNome" style="width: 100px" value="#{rhPessoaBean.pessoa.sobreNome}"
+                                             required="true" requiredMessage="Indique o último nome">
+                                    <p:watermark value="*Último Nome" for="ultimoNome"/>
+                                </p:inputText>
+                            </h:panelGrid>
+                            <p:outputLabel value="Data de Nascimento*:"/>
+                            <p:calendar locale="pt" navigator="true" size="48" value="#{rhPessoaBean.pessoa.dataNascimento}" yearRange= "c-120:c" pattern="dd-MM-yyyy"
+                                        required="true" requiredMessage="Indique a data de nascimento" maxdate="#{rhValidarBean.dataDeHoje}">
+                            </p:calendar>
+
+                            <p:outputLabel value="Sexo*:"/>
+                            <h:selectOneMenu style="width: 400px; text-align: center" value="#{rhPessoaBean.pessoa.fkIdSexo.pkIdSexo}">
+                                <f:selectItems value="#{itensAjaxBean.sexoList}" var="sex"
+                                               itemLabel="#{sex.descricao}" itemValue="#{sex.pkIdSexo}"/>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="Nacionalidade*:"/>
+                            <h:selectOneMenu style="width: 400px; text-align: center" required="true"
+                                             requiredMessage="Indique a nacionalidade"
+                                             value="#{rhPessoaBean.pessoa.fkIdNacionalidade.pkIdPais}">
+                                <f:selectItems value="#{itensAjaxBean.paisList}" var="nacion"
+                                               itemLabel="#{nacion.nacionalidade}" itemValue="#{nacion.pkIdPais}"/>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="Estado Civil*:"/>
+                            <h:selectOneMenu style="width: 400px; text-align: center" required="true" requiredMessage="Indique o estado civil"
+                                             value="#{rhPessoaBean.pessoa.fkIdEstadoCivil.pkIdEstadoCivil}">
+                                <f:selectItems value="#{itensAjaxBean.estadoCivilList}" var="estado"
+                                               itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoCivil}"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                    </p:tab>
+
+                    <p:tab title="Filiação">
+                        <h:panelGrid columns="2" width="100%" cellpadding="3">
+                            <p:outputLabel value="Nome Completo do Pai*:"/>
+                            <p:inputText style="width: 290px" value="#{rhPessoaBean.pessoa.nomePai}"
+                                         required="true" requiredMessage="Indique o nome do pai" />
+                            <p:outputLabel value="Nome Completo da Mãe*:"/>
+                            <p:inputText style="width: 290px" value="#{rhPessoaBean.pessoa.nomeMae}"
+                                         required="true" requiredMessage="Indique o nome da mãe" />
+                        </h:panelGrid>
+                    </p:tab>
+
+                    <p:tab title="Contacto">
+                        <h:panelGrid columns="2" cellpadding="3" width="100%">
+                            <p:outputLabel value="Telefone1*:"/>
+                            <p:inputText style="width: 290px" value="#{rhPessoaBean.pessoa.fkIdContacto.telefone1}"
+                                         required="true" requiredMessage="Indique o telefone1"/>
+                            <p:outputLabel value="Telefone2:"/>
+                            <p:inputText style="width: 290px" value="#{rhPessoaBean.pessoa.fkIdContacto.telefone2}"/>
+                            <p:outputLabel value="Email1:"/>
+                            <p:inputText style="width: 290px" value="#{rhPessoaBean.pessoa.fkIdContacto.email1}"/>
+                            <p:outputLabel value="Email2:"/>
+                            <p:inputText style="width: 290px" value="#{rhPessoaBean.pessoa.fkIdContacto.email2}"/>
+                        </h:panelGrid>
+                    </p:tab>
+
+                    <p:tab title="Endereço">
+                        <h:panelGrid columns="2" cellpadding="5" width="100%">
+                            <p:outputLabel value="País*:"/>
+                            <h:selectOneMenu id="comboPais" style="width: 300px; text-align: center" value="#{itensAjaxBean.pais}"
+                                             valueChangeListener="#{itensAjaxBean.changePais}">
+                                <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                               itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio comboComuna comboDistrito"/>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="Provícia*:"/>
+                            <h:selectOneMenu id="comboProvincia" style="width: 300px; text-align: center" 
+                                             value="#{itensAjaxBean.provincia}"
+                                             valueChangeListener="#{itensAjaxBean.changeProvincia}">
+                                <f:selectItems value="#{itensAjaxBean.provinciaList}" var="prov"
+                                               itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                                <f:ajax execute="@this" event="change" render="comboMunicipio comboComuna comboDistrito"/>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="Município*:"/>
+                            <h:selectOneMenu id="comboMunicipio" style="width: 300px; text-align: center" 
+                                             required="true" requiredMessage="Indique o município"
+                                             value="#{rhPessoaBean.pessoa.fkIdEndereco.fkIdMunicipio.pkIdMunicipio}" 
+                                             valueChangeListener="#{itensAjaxBean.changeMunicipio}">
+                                <f:selectItems value="#{itensAjaxBean.municipioList}" var="mun"
+                                               itemLabel="#{mun.nomeMunicipio}" itemValue="#{mun.pkIdMunicipio}"/>
+                                <f:ajax execute="@this" event="change" render="comboComuna comboDistrito"/>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="Comuna:"/>
+                            <h:selectOneMenu id="comboComuna" style="width: 300px; text-align: center" 
+                                             value="#{rhPessoaBean.pessoa.fkIdEndereco.fkIdComuna.pkIdComuna}">
+                                <f:selectItem itemLabel="----- Selecione -----" itemValue="#{null}"/>
+                                <f:selectItems value="#{itensAjaxBean.comunaList}" var="com"
+                                               itemLabel="#{com.descricaoComuna}" itemValue="#{com.pkIdComuna}"/>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="Distrito:"/>
+                            <h:selectOneMenu id="comboDistrito" style="width: 300px; text-align: center" 
+                                             value="#{rhPessoaBean.pessoa.fkIdEndereco.fkIdComuna.pkIdComuna}">
+                                <f:selectItem itemLabel="----- Selecione -----" itemValue="#{null}"/>
+                                <f:selectItems value="#{itensAjaxBean.distritoList}" var="dist"
+                                               itemLabel="#{dist.descricao}" itemValue="#{dist.pkIdDistrito}"/>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="Bairro*:"/>
+                            <p:inputText value="#{rhPessoaBean.pessoa.fkIdEndereco.bairro}" style="width: 290px"
+                                         required="true" requiredMessage="Indique o bairro"/>
+                            <p:outputLabel value="Rua:"/>
+                            <p:inputText value="#{rhPessoaBean.pessoa.fkIdEndereco.rua}" style="width: 290px"/>
+                            <p:outputLabel value="Nº Casa:"/>
+                            <p:inputText value="#{rhPessoaBean.pessoa.fkIdEndereco.numeroCasa}" style="width: 290px"/>
+                            <p:outputLabel value="Código Postal:"/>
+                            <p:inputText value="#{rhPessoaBean.pessoa.fkIdEndereco.codigoPostal}" style="width: 290px"/>
+                        </h:panelGrid>
+                    </p:tab>
+                    <p:tab title="Outros">
+                        <h:panelGrid columns="2" cellpadding="3" width="100%">
+                            <p:outputLabel value="Religião:"/>
+                            <h:selectOneMenu style="width: 300px; text-align: center" value="#{rhPessoaBean.pessoa.fkIdReligiao.pkIdReligiao}">
+                                <f:selectItem itemValue="#{null}" itemLabel="-------- Selecione --------"/>
+                                <f:selectItems value="#{itensAjaxBean.religiaoList}" var="rel"
+                                               itemLabel="#{rel.descricao}" itemValue="#{rel.pkIdReligiao}"/>
+                            </h:selectOneMenu>
+                        </h:panelGrid>
+                    </p:tab>
+                </p:tabView>
+            </f:validateBean>
+        </center>
+
+    </h:body>
+</html>

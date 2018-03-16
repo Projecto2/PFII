@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagCandidatoDadorBean.temMensagemPendente == true}">
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Erro'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+        </c:if>
+
+        <p:growl sticky="true" id="ms" autoUpdate="true"/>
+
+        <h2>Laboratório -> Hemoterápia -> Candidatos à Dadores de Sangue -> Registo de Triagem</h2>
+        
+        <center>
+
+            
+
+            <br/>
+
+            <h:panelGrid columns="2">
+
+                <h3>Nome: </h3>
+                <h:panelGrid columns="1">
+                    #{diagCandidatoDadorBean.diagCandidatoDador.fkIdPessoa.nome} 
+                    #{diagCandidatoDadorBean.diagCandidatoDador.fkIdPessoa.nomeDoMeio}
+                    #{diagCandidatoDadorBean.diagCandidatoDador.fkIdPessoa.sobreNome}
+                </h:panelGrid>
+
+            </h:panelGrid>
+
+            <h:form>
+
+                <p:fieldset legend="Questões da Triagem" style="width: 50%">
+                    <h:panelGrid columns="2" width="100%"  cellpadding="2" >
+
+                        <h:outputLabel value="1 - Tem peso superior a 50 kg? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.peso}" required="true" requiredMessage="Deve Selecionar a Opção Nº 1">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="2 - Fez a última doação há mais de 90 dias? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.ultimaDoacao}" required="true" requiredMessage="Deve Selecionar a Opção Nº 2">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio >
+
+                        <h:outputLabel value="3 - Teve mais de dois parceiros nos últimos 3 meses? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.parceiros}" required="true" requiredMessage="Deve Selecionar a Opção Nº 3">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="4 - Teve Hepatite após os 10 anos de idade? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.hepatite}" required="true" requiredMessage="Deve Selecionar a Opção Nº 4">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="5 - Teve Malária nos últimos 6 meses? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.gravida}" required="true" requiredMessage="Deve Selecionar a Opção Nº 5">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="6 - Sofre de Epilepsia? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.epilepsia}" required="true" requiredMessage="Deve Selecionar a Opção Nº 6">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="7 - Tem ou já teve alguma DST? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.sifilis}" required="true" requiredMessage="Deve Selecionar a Opção Nº 7">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="8 - Tem tatuagem recente (menos de 1 ano)? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.tatuagem}" required="true" requiredMessage="Deve Selecionar a Opção Nº 8">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="9 - Recebeu alguma transfusão nos últimos 10 anos? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.transfusao}" required="true" requiredMessage="Deve Selecionar a Opção Nº 9">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="10 - Faz consumo de bebidas alcoólicas? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.toxicoDependente}" 
+                                          required="true" requiredMessage="Deve Selecionar a Opção Nº 10">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="11 - Alimentou-se nas últimas 2 horas? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.alimentacao}" required="true" requiredMessage="Deve Selecionar a Opção Nº 11">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                        <h:outputLabel value="12 - Dormiu mais de 6 horas nas últimas 24hs? "/>
+                        <p:selectOneRadio value="#{diagCandidatoDadorBean.diagTriagem.sono}" required="true" requiredMessage="Deve Selecionar a Opção Nº 12">
+                            <f:selectItem itemLabel="Sim" itemValue="#{true}" />
+                            <f:selectItem itemLabel="Não" itemValue="#{false}" />
+                        </p:selectOneRadio>
+
+                    </h:panelGrid>
+
+                    <br/>
+
+                    <h:panelGrid columns="2" cellspacing="8" cellpadding="4" style=" float: left">                
+
+                        <h:outputLabel value="Resultado Triagem: "/>
+                        <p:selectOneMenu value="#{diagCandidatoDadorBean.diagResultadoTriagem.pkIdResultadoTriagem}" >
+
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{diagCandidatoDadorBean.getListaResultadoTriagems()}" var="resultado"
+                                           itemLabel="#{resultado.descricaoResultadoTriagem}" itemValue="#{resultado.pkIdResultadoTriagem}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+
+                    <br/>
+                    <br/>
+                    
+                    <h:panelGrid style="width: 50%">
+                        <h:panelGroup style=" float: right">
+                            <p:commandButton icon="ui-icon-disk" value="Registar" action="#{diagCandidatoDadorBean.validarTriagem()}"/>
+                            <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagCandidatoDadorBean.limparPesquisa()}"/>
+                        </h:panelGroup>
+                    </h:panelGrid>
+
+                </p:fieldset>
+
+            </h:form>
+        </center>
+
+        <br/>
+
+    </ui:define>
+
+</ui:composition>

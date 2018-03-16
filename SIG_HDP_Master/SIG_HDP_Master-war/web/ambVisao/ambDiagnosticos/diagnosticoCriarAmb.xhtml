@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAmb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAmb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <p:messages autoUpdate="true" closable="true"/>
+                <p:growl autoUpdate="true"/>
+
+                <h:form acceptcharset="ISO-8859-1" id="frmDiag">
+
+                    <div class="ui-fluid">
+
+                        <h2>Consultas Externas -> Atendimento -> Diagnósticos</h2>
+
+                        <p:tabView id="ptv">
+
+                            <p:tab title="Diagnósticos">
+
+                                <p:fieldset style="margin-top: 7px" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="1" styleClass="ui-noborder" width="100%">
+
+                                        <h:panelGrid columns="3" styleClass="ui-noborder">
+                                            <p:poll listener="#{ambDiagnosticoListarBean.findConsultasExame()}" update="pacientes" interval="5"/>
+                                            <p:outputLabel for="pacientes" value="Pacientes:"/>
+                                            <p:selectOneListbox id="pacientes" style="width: 310px ; height: 225px; margin-left: 133px" value="#{ambDiagnosticoListarBean.codigoExameRealizado}" filter="true" filterMatchMode="contains">
+                                                <f:selectItems value="#{ambDiagnosticoListarBean.findConsultasExame()}" var="pacientes" itemLabel="#{pacientes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                                      #{pacientes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                                      #{pacientes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                                     (#{ambTriagemListarBean.dateToString(pacientes.data)})
+                                                                         " itemValue="#{pacientes.pkIdExameRealizado}"/>
+                                                 <p:ajax update="dadosVitaisPessoais, exame, obs" listener="#{ambDiagnosticoListarBean.atualizarDadosPacientesConsulta()}" />
+                                            </p:selectOneListbox>
+                                        </h:panelGrid>
+
+                                        <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                            <h:outputLabel value="#{msgs.centroHospitalar} #{msgs.proveniencia}: *" for="centroHospitalar"/>
+                                            <p:selectOneMenu  id="centroHospitalar" style="margin-left: 35px" value="#{ambDiagnosticoListarBean.codigoCentroHospitalar}" filter="true" filterMatchMode="contains">
+                                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                <f:selectItems value="#{grlCentroHospitalarBean.findAll()}" var="listCentroHospitalar" itemLabel="#{listCentroHospitalar.fkIdInstituicao.descricao}" itemValue="#{listCentroHospitalar.pkIdCentro}"/> 
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="Resultado do Exame:" for="exame"/>
+                                            <h:outputLabel id="exame" style="margin-left: 35px;" value="#{ambDiagnosticoListarBean.diagExameRealizado.resultados}"/>
+
+                                            <h:outputLabel value="Observações:" for="obs" />
+                                            <p:inputTextarea id="obs" disabled="true" style="margin-left: 35px;" cols="30" rows="5" value="#{ambDiagnosticoListarBean.diagExameRealizado.observacoes}" autoResize="false"/>
+
+                                            <h:outputLabel value="Data:" for="data"/>
+                                            <h:outputLabel id="data" style="margin-left: 35px;" value="#{ambTriagemListarBean.dataSistema()}"/>
+
+                                        </h:panelGrid>
+
+                                        <h:panelGrid columns="1" id="dadosVitaisPessoais" width="65%">
+
+                                            <p:fieldset legend="Dados Pessoais" toggleable="true">
+
+                                                <h:panelGrid columns="6" id="dadosPess" styleClass="ui-noborder">
+
+                                                    <h:outputLabel value="Nome:" for="nome"/>
+                                                    <h:outputLabel id="nome" value="#{ambDiagnosticoListarBean.diagExameRealizado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                                                    #{ambDiagnosticoListarBean.diagExameRealizado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                                                    #{ambDiagnosticoListarBean.diagExameRealizado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}"/>
+
+                                                    <h:outputLabel value="Data de Nascimento:" for="dna" style="margin-left: 70px"/>
+                                                    <h:outputLabel id="dna" value="#{ambDiagnosticoListarBean.diagExameRealizado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.dataNascimento}"> 
+                                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                    </h:outputLabel>
+
+                                                    <h:outputLabel value="Género:" for="genero" style="margin-left: 70px"/>
+                                                    <h:outputLabel id="genero" value="#{ambDiagnosticoListarBean.diagExameRealizado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdSexo.descricao}"/>
+
+                                                    <h:outputLabel value="Residência:" for="residencia"/>
+                                                    <h:outputLabel id="residencia" value="#{ambDiagnosticoListarBean.diagExameRealizado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdMunicipio.nomeMunicipio}"/>
+
+                                                    <h:outputLabel value="Contacto:" for="contacto" style="margin-left: 70px"/>
+                                                    <h:outputLabel id="contacto" value="#{ambDiagnosticoListarBean.diagExameRealizado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.telefone1}"/>
+
+                                                    <h:outputLabel value="Naturalidade:" for="naturalidade" style="margin-left: 70px"/>
+                                                    <h:outputLabel id="naturalidade" value="#{ambDiagnosticoListarBean.diagExameRealizado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdMunicipio.fkIdProvincia.nomeProvincia}"/>
+
+                                                </h:panelGrid>
+
+                                            </p:fieldset>
+
+                                            <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+
+                                        </h:panelGrid>
+
+                                    </h:panelGrid>
+
+                                </p:fieldset>
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder" width="100%">
+
+                                    #{ambDiagnosticoBean.init()}
+                                    <ui:include src="diagnosticoAmb.xhtml"/>
+
+                                    <p:fieldset styleClass="ui-noborder">
+                                        <h:panelGrid columns="6" styleClass="ui-noborder" width="100%">
+                                            <h:outputLabel value="Outros:" for="outros"/>
+                                            <p:inputText id="outros" style="margin-left: 5px; margin-right: 60px" value="#{ambDiagnosticoListarBean.ambDiagnosticoHasDoenca.outros}"/>
+
+                                            <h:outputLabel value="Observações:" for="observacoes" style="margin-left: 45px"/>
+                                            <p:inputTextarea id="observacoes" value="#{ambDiagnosticoListarBean.ambDiagnostico.observacoes}" autoResize="false"/>
+
+                                            <h:outputLabel value="Alta/Internado? *" for="observacoesMedicas" style="margin-left: 20px"/>
+                                            <p:selectOneMenu id="observacoesMedicas" style="margin-right: 45px" value="#{ambDiagnosticoListarBean.codigoObservacoesMedicas}">
+                                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                <f:selectItems value="#{ambDiagnosticoListarBean.listarObservacoesMedicas()}" var="om" itemLabel="#{om.descricao}" itemValue="#{om.pkIdObservacoesMedicas}"/> 
+                                            </p:selectOneMenu>
+                                        </h:panelGrid>
+                                    </p:fieldset>                           
+
+                                </h:panelGrid>
+
+                                <p:panelGrid columns="2" style="margin-left: 600px;" styleClass="ui-noborder">
+                                    <p:commandButton value="Guardar" ajax="false" icon="ui-icon-disk" process="@this" 
+                                                     action="#{ambDiagnosticoCriarBean.criarRegisto()}"
+                                                     />
+                                    <p:commandButton value="Cancelar" action="#{ambDiagnosticoCriarBean.fechar()}" type="reset" icon="ui-icon-cancel"/>
+                                </p:panelGrid> 
+
+                            </p:tab>
+
+                            <p:tab title="Histórico Geral">
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="De:" for="data1"/>
+                                        <p:calendar id="data1" value="#{ambDiagnosticoListarBean.dataInicio}" locale="pt"/>
+
+                                        <h:outputLabel value="Até:" for="data2"/>
+                                        <p:calendar id="data2" value="#{ambDiagnosticoListarBean.dataFinal}" locale="pt"/>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="data1" value="Insira a Data Inicial"/>
+                                    <p:tooltip for="data2" value="Insira a Data Final"/>
+
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true" 
+                                                     actionListener="#{ambDiagnosticoListarBean.pesquisarDiagnosticos()}"
+                                                     update="tabelaHistoricoGeralDiagnostico" style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="diagnosticoHistoricoGeralAmb.xhtml"/>
+
+                                </h:panelGrid>
+                            </p:tab>
+
+                            <p:tab title="Histórico do Paciente">
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Processo:" for="numProcessoDiagnostico"/>
+
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="numProcessoDiagnostico" value="#{ambDiagnosticoCriarBean.admsPaciente.numeroPaciente}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="numProcessoDiagnostico" value="Insira o Nº de Processo"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoPacienteDiagnostico" ajax="true"
+                                                     actionListener="#{ambDiagnosticoListarBean.pesquisaDePacienteDiagnosticado(ambDiagnosticoCriarBean.admsPaciente.numeroPaciente)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="diagnosticoHistoricoPacienteAmb.xhtml"/>
+
+                                </h:panelGrid>
+                            </p:tab>
+
+                        </p:tabView>
+
+                    </div>
+
+                </h:form>
+                
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogListarDiagnostico" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="listarDetalhesDiagnosticoAmb.xhtml"/>
+                    </p:dialog>
+                </center> 
+
+                <center>
+                    <p:dialog header="Editar Resultados" closable="true" showEffect="fade" width="70%" height="600px" 
+                              widgetVar="dialogEditarDiagnostico" modal="true" closeOnEscape="true" 
+                              resizable="false" position="center">
+                        <ui:include src="diagnosticoEditarAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+                
+                <center>
+                    <p:dialog header="Prescrição Médica" closable="true" showEffect="fade" width="70%" height="600px"
+                              widgetVar="dialogPrescricaoMedicaDiagnostico" modal="true" closeOnEscape="true" position="center">
+                        <ui:include src="../ambReceitas/prescricaoMedicaDiagnosticoCriarAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+
+</html>
+

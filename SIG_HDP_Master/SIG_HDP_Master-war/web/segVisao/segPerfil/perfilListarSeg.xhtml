@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSeg.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSeg.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <p:messages id="msg" autoUpdate="true" closable="true" />
+                <p:growl autoUpdate="true"/>
+                <h2>Segurança -> Perfis</h2>
+                <p:fieldset>
+                    <p:separator/>
+                    <h:form id="formPrincipal"> 
+                        <f:event type="javax.faces.event.PreRenderViewEvent" listener="#{segPerfilListarBean.preRenderView()}" />            
+                        <p:fieldset>
+                            <h:panelGrid columns="2" cellpadding="3" id="gridCamposPesquisa">
+
+                                <p:outputLabel value="Descrição"/>
+                                <f:validateBean disabled="true">
+                                    <p:inputText value="#{segPerfilListarBean.perfilPesquisa.descricao}"/>
+                                </f:validateBean>
+                                <p></p><p></p>
+                                <h:panelGrid columns="3">
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true"
+                                                     action="#{segPerfilListarBean.pesquisarPerfils()}" update="resultado"
+                                                     process="gridCamposPesquisa" />
+
+                                    <p:commandButton value="Novo"  icon="ui-icon-plus" process="@this" update="resultado"
+                                                     onclick="PF('dialogNovo').show()" />
+
+                                    <p:commandButton value="Limpar" action="#{segPerfilListarBean.limparCampos()}"
+                                                     process="@this" style="width: 100%" icon="ui-icon-close"/>
+
+                                </h:panelGrid>                                                      
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:dataTable id="resultado" var="item" value="#{segPerfilListarBean.perfilsPesquisados}"
+                                     rows="12" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+                                     {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                                     {RowsPerPageDropdown}" rowsPerPageTemplate="12,16,20" 
+                                     emptyMessage="Nenhuma Perfil encontrada de momento. Aguardando pesquisa.">
+                            <f:facet name="header">
+                                Resultados Encontrados
+                            </f:facet>                   
+                            <p:column headerText="Descrição" sortBy="#{item.descricao}">
+                                <center>
+                                    <p:outputLabel value="#{item.descricao}" />                         
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="------">
+                                <center>
+                                    <p:menuButton value="Opções">
+                                        <p:menuitem value="Editar" partialSubmit="true"
+                                                    onclick="PF('dialogEditar').show()" 
+                                                    update=":formEditar:painelEditar" 
+                                                    process="@this" icon="ui-icon-pencil"
+                                                    actionListener="#{segPerfilListarBean.setPerfilEditar(item)}">
+                                        </p:menuitem>
+                                        <p:menuitem value="Eliminar" partialSubmit="true"
+                                                    onclick="PF('dialogEliminar').show()" 
+                                                    update=":formEditar:painelEditar" 
+                                                    process="@this" icon="ui-icon-trash"
+                                                    actionListener="#{segPerfilListarBean.setPerfilEditar(item)}">
+                                        </p:menuitem>
+                                        <p:menuitem value="Atribuir Permissao" partialSubmit="true"
+                                                    update=":formEditar:painelEditar" 
+                                                    process="@this" icon="ui-icon-zomm-in"
+                                                    actionListener="#{segPerfilListarBean.setPerfilEditar(item)}"
+                                                    action="/faces/segVisao/segPermissao/permissaoSeg.xhtml?faces-redirect=true">
+                                        </p:menuitem>
+
+                                    </p:menuButton>
+                                </center>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+                    <p:dialog header="Novo Perfil" closable="false" showEffect="fade"
+                              widgetVar="dialogNovo" modal="true" closeOnEscape="true"
+                              width="35%" >
+                        <h:form id="formNovo">
+                            <center>
+                                <h:panelGrid  columns="1" rendered="#{segPerfilListarBean.perfilEditar != null}">
+                                    <h:panelGrid columns="2" cellpadding="3" id="gridCamposPesquisa">
+                                        <p:outputLabel value="Descrição"/>
+                                        <p:inputText required="true" requiredMessage="Por favor, descreva a Perfil." 
+                                                     value="#{segPerfilListarBean.descricao}"/>
+                                    </h:panelGrid>
+
+                                    <h:panelGroup>
+                                        <h:panelGrid columns="2">
+                                            <h:outputLabel value="Associar funcionalidade ?" style="font-weight: bold"   />
+                                            <h:selectOneRadio id="respostas" value="#{segPerfilListarBean.resposta1}">  
+                                                <f:selectItem itemLabel="Não" itemValue="false" id="labelObrigatoria1" /> 
+                                                <f:selectItem itemLabel="Sim" itemValue="true" id="labelObrigatoria2" /> 
+                                                <f:ajax  event="change"  render="@form myPickList1" 
+                                                         listener="#{segPerfilListarBean.updatepicklist()}" />
+                                            </h:selectOneRadio>   
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{segPerfilListarBean.resposta1}">
+                                        <h:panelGrid columns="1">
+                                            <legend>Funcionalidades</legend>
+                                            <p:pickList id="myPickList1" value="#{segPerfilListarBean.recursos}"
+                                                        var="recursos" converter="pickListConverter"
+                                                        itemValue="#{recursos}" itemLabel="#{recursos.nome}"
+                                                        >
+                                                <f:facet name="sourceCaption">Disponíveis</f:facet>
+                                                <f:facet name="targetCaption">Selecionados</f:facet>
+                                            </p:pickList>   
+                                        </h:panelGrid>
+                                    </h:panelGroup>  
+
+                                </h:panelGrid>
+
+                                <p:commandButton value="Guardar" process="@form" update=":formPrincipal:resultado"
+                                                 icon="ui-icon-disk" onclick="PF('dialogNovo').hide()"
+                                                 action="#{segPerfilListarBean.criarPeril()}" ajax="true"/>
+
+                                <p:commandButton value="Fechar" icon="ui-icon-close"
+                                                 onclick="PF('dialogNovo').hide()"
+                                                 action="#{segPerfilListarBean.setPerfilEditar(null)}"/>
+
+                            </center>
+                        </h:form>
+                    </p:dialog>
+
+                    <p:dialog header="Editar Perfil" closable="false" showEffect="fade"
+                              widgetVar="dialogEditar" modal="true" closeOnEscape="true"
+                              width="35%" >
+                        <h:form id="formEditar">
+                            <center>
+                                <h:panelGrid  columns="1" rendered="#{segPerfilListarBean.perfilEditar != null}">
+                                    <h:panelGrid columns="2" cellpadding="3" id="painelEditar">
+                                        <p:outputLabel value="Descrição"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="descricao" value="#{segPerfilListarBean.perfilEditar.descricao}"/>
+                                        </f:validateBean>
+                                    </h:panelGrid>
+                                    <h:panelGroup>
+                                        <h:panelGrid columns="2">
+                                            <h:outputLabel value="Ver modulos associado ao Perfil?" style="font-weight: bold"   />
+                                            <h:selectOneRadio id="respostas" value="#{segPerfilListarBean.resposta}">  
+                                                <f:selectItem itemLabel="Não" itemValue="false" id="labelObrigatoria1" /> 
+                                                <f:selectItem itemLabel="Sim" itemValue="true" id="labelObrigatoria2" /> 
+                                                <f:ajax  event="change"  render="@form myPickList" 
+                                                         listener="#{segPerfilListarBean.updatepicklist()}" />
+                                            </h:selectOneRadio>   
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{segPerfilListarBean.resposta}">
+                                        <p:pickList id="myPickList" value="#{segPerfilListarBean.recursos}" 
+                                                    var="recursos" converter="pickListConverter"
+                                                    itemValue="#{recursos}" itemLabel="#{recursos.nome}">
+                                            <p:ajax event="transfer" listener="#{segPerfilListarBean.onTransfer}"  />
+                                            <f:facet name="sourceCaption">Disponíveis</f:facet>
+                                            <f:facet name="targetCaption">Selecionados</f:facet>
+
+                                        </p:pickList>   
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                                <p:commandButton value="Guardar" process="@form descricao"
+                                                 update="formPrincipal:resultado"
+                                                 icon="ui-icon-check" onclick="PF('dialogEditar').hide()"
+                                                 action="#{segPerfilListarBean.editar()}"/>
+
+                                <p:commandButton value="Fechar" icon="ui-icon-close"
+                                                 onclick="PF('dialogEditar').hide();" type="button"
+                                                 action="#{segPerfilListarBean.setPerfilEditar(null)}"/>
+                            </center></h:form>
+                    </p:dialog> 
+
+                    <center>
+                        <h:form id="formEliminar">
+                            <p:confirmDialog message="Deseja eliminar a perfil? Pode estar a ser utilizada... "
+                                             header="Eliminar Perfil" severity="alert"
+                                             widgetVar="dialogEliminar">
+
+                                <p:commandButton value="Sim" actionListener="#{segPerfilListarBean.eliminar()}"
+                                                 update=":formPrincipal:resultado" ajax="true"
+                                                 oncomplete="PF('dialogEliminar').hide();"/>
+
+                                <p:commandButton value="Não" onclick="PF('dialogEliminar').hide();" type="button" />
+                            </p:confirmDialog>
+                        </h:form>
+                    </center>
+                </p:fieldset>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,313 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Candidatos</title>
+          <h:outputScript name="JS/previewImagem.js"/>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Candidatos (Pesquisar)</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+                    <p:growl id="ms2" autoUpdate="true"/>
+
+                    <h:form id="formPesquisa">
+                         <br/>
+                         <center>
+                              <p:fieldset style="width: 97%">
+                                   <h:panelGrid columns="2" width="100%">
+                                        <f:validateBean disabled="true">
+                                             <h:panelGrid columns="2" cellpadding="3" id="gridPesquisarCandidato">
+                                                  <h:panelGrid columns="2" cellpadding="3">
+                                                       <p:outputLabel value="Nome:"/>
+                                                       <p:inputText value="#{rhCandidatoPesquisarBean.candidatoPesquisa.fkIdPessoa.nome}" style="width: 150px"/>
+                                                       <p:outputLabel value="Nome do Meio:"/>
+                                                       <p:inputText value="#{rhCandidatoPesquisarBean.candidatoPesquisa.fkIdPessoa.nomeDoMeio}" style="width: 150px"/>
+                                                       <p:outputLabel value="Sobrenome:"/>
+                                                       <p:inputText value="#{rhCandidatoPesquisarBean.candidatoPesquisa.fkIdPessoa.sobreNome}" style="width: 150px"/>
+                                                  </h:panelGrid>
+                                                  <h:panelGrid columns="2" cellpadding="3">
+                                                       <p:outputLabel value="Nº Bilhete Identidade:"/>
+                                                       <p:inputText value="#{rhCandidatoPesquisarBean.candidatoPesquisa.numeroBi}" style="width: 200px"/>
+                                                       <p:outputLabel value="Estado Candidato:"/>
+                                                       <h:selectOneMenu style="width: 210px; text-align: center" value="#{rhCandidatoPesquisarBean.candidatoPesquisa.fkIdEstadoCandidato.pkIdEstadoCandidato}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.estadoCandidatoList}" var="estado"
+                                                                           itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoCandidato}"/>
+                                                       </h:selectOneMenu>
+                                                       <p:outputLabel value="Categoria Pretendida:"/>
+                                                       <h:selectOneMenu style="width: 210px; text-align: center" value="#{rhCandidatoPesquisarBean.candidatoPesquisa.fkIdCategoriaPretendida.pkIdCategoriaProfissional}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{itensAjaxBean.categoriaProfissionalList}" var="categ"
+                                                                           itemLabel="#{categ.descricao}" itemValue="#{categ.pkIdCategoriaProfissional}"/>
+                                                       </h:selectOneMenu>
+                                                  </h:panelGrid>
+                                                  <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                                   action="#{rhCandidatoPesquisarBean.pesquisarCandidatos()}" 
+                                                                   process="gridPesquisarCandidato" update="dataTable"/>
+                                                  <p:commandButton value="Limpar" action="#{rhCandidatoPesquisarBean.limparPesquisa()}"
+                                                                   process="@this" style="width: 100%"/>
+                                             </h:panelGrid>
+                                        </f:validateBean>
+
+                                        <h:panelGrid style="text-align: center; float: right">
+                                             <p:commandButton style="width: 160px" value="Novo Candidato" icon="ui-icon-plus" process="@this"
+                                                              action="#{rhCandidatoNovoBean.limpar()}" actionListener="#{rhPessoaBean.setPessoa(null)}"/>
+                                        </h:panelGrid>
+                                   </h:panelGrid>
+                              </p:fieldset>
+                              <p:dataTable id="dataTable" rows="10" paginator="true" paginatorPosition="bottom" style="width: 100%"
+                                           var="candidato" value="#{rhCandidatoPesquisarBean.candidatosPesquisados}" emptyMessage="Nenhum registro de candidato encontrado">
+                                   <p:column headerText="Nome Completo">
+                                        <p:outputLabel value="#{candidato.fkIdPessoa.nome} #{candidato.fkIdPessoa.nomeDoMeio} #{candidato.fkIdPessoa.sobreNome}"/>
+                                   </p:column>
+                                   <p:column headerText="Nº Bilhete Identidade">
+                                        #{candidato.numeroBi}
+                                   </p:column>
+                                   <p:column headerText="Profissão" sortBy="prof" filterBy="#{candidato.fkIdProfissao.descricao}">
+                                        #{candidato.fkIdProfissao.descricao}
+                                   </p:column>
+                                   <p:column headerText="Categoria Pretendida">
+                                        #{candidato.fkIdCategoriaPretendida.descricao}
+                                   </p:column>
+                                   <p:column headerText="Estado">
+                                        #{candidato.fkIdEstadoCandidato.descricao}
+                                   </p:column>
+                                   <p:column headerText="-----------------------------">
+                                        <center>
+                                             <p:menuButton value="Opções">
+                                                  <p:menuitem value="Visualizar" action="#{rhCandidatoPesquisarBean.setCandidatoVisualizar(candidato)}" 
+                                                              actionListener="#{rhPessoaBean.setPessoaVisualizar(candidato.fkIdPessoa)}" icon="ui-icon-info"
+                                                              onclick="PF('dialogVisualizar').show()" process="@this" update=":formVisual:tabVisualizar"/>
+                                                  <p:menuitem value="Editar" icon="ui-icon-pencil" action="#{rhCandidatoEditarBean.prepararEditar(candidato)}" 
+                                                              actionListener="#{rhPessoaBean.setPessoa(candidato.fkIdPessoa)}"/>
+                                                  <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                                              action="#{rhCandidatoPesquisarBean.setCandidatoVisualizar(candidato)}"/>
+                                                  <p:separator/>
+                                                  <p:menuitem value="Alterar Estado" action="#{rhCandidatoPesquisarBean.setCandidatoVisualizar(candidato)}"  icon="ui-icon-pencil"
+                                                              onclick="PF('dialogEstadoCand').show()" process="@this" update=":formEstadoCand:panelFoto :formEstadoCand:gridEstadoCand"/>
+                                             </p:menuButton>
+                                        </center>
+                                   </p:column>
+                              </p:dataTable>
+
+                              <p:confirmDialog message="Tem certeza que pretende remover o candidato selecionado ?"
+                                               header="Remover Candidato" severity="alert" widgetVar="confirmDialogRemover">
+                                   <p:commandButton value="Sim" actionListener="#{rhCandidatoPesquisarBean.remove(rhCandidatoPesquisarBean.candidatoVisualizar)}" process="@this"
+                                                    update="dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                                   <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                              </p:confirmDialog>
+
+                         </center>
+                    </h:form>
+                    <center>
+                         <p:dialog header="Visualizar Candidato" closable="false" showEffect="fade" 
+                                   widgetVar="dialogVisualizar" modal="true" width="70%" height="530px"
+                                   resizable="false">
+                              <h:form id="formVisual">
+                                   <h:panelGrid width="100%">
+                                        <h:panelGrid columns="1" class="float-right">
+                                             <p:commandButton value="Fechar" onclick="PF('dialogVisualizar').hide()"
+                                                              action="#{rhCandidatoPesquisarBean.setCandidatoVisualizar(null)}" 
+                                                              actionListener="#{rhPessoaBean.setPessoaVisualizar(null)}"
+                                                              process="@this" style="width: 130px"/>
+                                        </h:panelGrid>
+
+                                        <p:tabView id="tabVisualizar" style="height: 460px">
+                                             <p:tab title="Generalidades de Pessoa">
+                                                  <ui:include src="./../rhPessoa/pessoaVisualizarTabViewRh.xhtml"/>
+                                             </p:tab>
+
+                                             <p:tab title="Generalidades de Candidato">
+                                                  <p:tabView>
+                                                       <p:tab title="Dados Iniciais">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Nº Bilhete de Identidade: "/>
+                                                                 <p:outputLabel value="#{rhCandidatoPesquisarBean.candidatoVisualizar.numeroBi}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Estado do Candidato: "/>
+                                                                 <p:outputLabel value="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdEstadoCandidato.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Nível Acadêmico: "/>
+                                                                 <p:outputLabel value="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdNivelAcademico.descricaoNivelAcademico}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Categoria Pretendida: "/>
+                                                                 <p:outputLabel value="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdCategoriaPretendida.descricao}"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Profissão e Especialidades">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Profissão: "/>
+                                                                 <p:outputLabel value="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdProfissao.descricao}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Especialidades: "/>
+                                                                 <p:panelGrid columns="2">
+                                                                      <p:outputLabel value="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdEspecialidade1.descricao}"/>
+                                                                      <p:outputLabel value="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdEspecialidade2.descricao}"/>
+                                                                 </p:panelGrid>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Outras Informações">
+                                                            <h:panelGrid columns="2" cellpadding="7">
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Cadastro: "/>
+                                                                 <h:inputText value="#{rhCandidatoPesquisarBean.candidatoVisualizar.dataCadastro}" 
+                                                                              style="border: none; background: none" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Data de Admissão: "/>
+                                                                 <h:inputText value="#{rhCandidatoPesquisarBean.candidatoVisualizar.dataAdmissao}" 
+                                                                              style="border: none; background: none" readonly="true">
+                                                                      <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                                 </h:inputText>
+                                                                 <p:outputLabel style="font-size: 15px" value="Referências para Contacto: "/>
+                                                                 <p:outputLabel value="#{rhCandidatoPesquisarBean.candidatoVisualizar.referenciaParaContacto}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Último Emprego: "/>
+                                                                 <p:outputLabel value="#{rhCandidatoPesquisarBean.candidatoVisualizar.ultimoEmprego}"/>
+                                                                 <p:outputLabel style="font-size: 15px" value="Observações: "/>
+                                                                 <h:inputTextarea value="#{rhCandidatoPesquisarBean.candidatoVisualizar.observacoes}" readonly="true"
+                                                                                  style="width: 140px; height: 100px; border: none; overflow-y: scroll;"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Anexos">
+                                                            <center>
+                                                                 <p:accordionPanel multiple="false" id="accordPanelAnexos" style="width: 55%">
+                                                                      <p:tab title="Bilhete de Identidade">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdBi.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoPesquisarBean.candidatoVisualizar.fkIdBi)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+
+                                                                      <p:tab title="Curriculum Vitae">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdCurriculum.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoPesquisarBean.candidatoVisualizar.fkIdCurriculum)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                      <p:tab title="Certificado de Habilitações Literárias/Profissionais">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdCertificadoDeHabilitacoes.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoPesquisarBean.candidatoVisualizar.fkIdCertificadoDeHabilitacoes)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                      <p:tab title="Equivalência do/s Certificado/s (Candidatos Formados no Exterior)">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdEquivalenciaDoCertificado.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoPesquisarBean.candidatoVisualizar.fkIdEquivalenciaDoCertificado)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                      <p:tab title="Comprovativo de Inscrição na Ordem dos Médicos/Enfermeiros e outras">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdComprovativoOrdemMedicosEnfermeiros.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoPesquisarBean.candidatoVisualizar.fkIdComprovativoOrdemMedicosEnfermeiros)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                      <p:tab title="Cédula/Carteira Profissional">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdCedulaCarteiraProfissional.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoPesquisarBean.candidatoVisualizar.fkIdCedulaCarteiraProfissional)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                      <p:tab title="Atestado Médico">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdAtestadoMedico.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoPesquisarBean.candidatoVisualizar.fkIdAtestadoMedico)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                      <p:tab title="Registo Criminal">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdRegistoCriminal.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoPesquisarBean.candidatoVisualizar.fkIdRegistoCriminal)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                      <p:tab title="Documento Militar - p/Homens">
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                          rendered="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdDocumentoMilitarHomens.ficheiro != null}" process="@this" 
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoPesquisarBean.candidatoVisualizar.fkIdDocumentoMilitarHomens)}" 
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </p:tab>
+                                                                 </p:accordionPanel>
+                                                            </center>
+                                                       </p:tab>
+                                                  </p:tabView>
+                                             </p:tab>
+                                        </p:tabView>
+                                   </h:panelGrid>
+                              </h:form>
+                         </p:dialog>
+
+                         <p:dialog widgetVar="dialogPrevisualizar" header="Previsualizar"
+                                   width="75%" height="510px" showEffect="fade" closable="true"
+                                   hideEffect="fade" modal="true" position="top">
+                              <h:form id="formPrevisualizar">
+                                   <div class="float-right">
+                                        <h:commandButton value="Fechar" type="button" onclick="PF('dialogPrevisualizar').hide()"/>
+                                   </div>
+                                   <center>
+                                        <p:panel id="painel" style="height: 490px">
+                                             <iframe src="#{rhFicheiroAnexadoBean.previsualizarAnexoCandidato()}"
+                                                     width="100%" height="450px"/>
+                                        </p:panel>
+                                   </center>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+                    <center>
+                         <p:dialog header="Estado do Candidato" closable="false" showEffect="fade" width="45%"
+                                   widgetVar="dialogEstadoCand" modal="true" closeOnEscape="true">
+                              <h:form id="formEstadoCand">
+                                   <center>
+                                        <p:panel id="panelFoto" style="width:310px; height:250px">
+                                             <center>
+                                                  <h:graphicImage width="240px" height="180px"
+                                                                  url="#{rhPessoaBean.pastaFoto}#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdPessoa.fkIdFoto.ficheiro}"/>
+                                                  <br/>
+                                                  <br/>
+                                                  <p:outputLabel value="Candidato #{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdPessoa.nome} #{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdPessoa.nomeDoMeio} 
+                                                                 #{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdPessoa.sobreNome}"/>
+                                                  <br/>
+                                                  <h:outputLabel value="Nº Bilhete Identidade: #{rhCandidatoPesquisarBean.candidatoVisualizar.numeroBi}"/>
+                                             </center>
+                                        </p:panel>
+                                        <br/>
+
+                                        <h:panelGrid columns="2" cellpadding="5" id="gridEstadoCand">
+                                             <p:outputLabel value="Estado do Candidato:"/>
+                                             <h:selectOneMenu id="comboEstadoCand" style="text-align: center; width: 100%" 
+                                                              value="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdEstadoCandidato.pkIdEstadoCandidato}"
+                                                              required="true" requiredMessage="Indique o estado do candidato"
+                                                              disabled="#{rhCandidatoPesquisarBean.candidatoVisualizar.fkIdEstadoCandidato.descricao == 'Contratado'}">
+                                                  <f:selectItems value="#{itensAjaxBean.estadoCandidatoList}" var="estCand" itemDisabled="#{estCand.descricao == 'Contratado'}"
+                                                                 itemLabel="#{estCand.descricao}" itemValue="#{estCand.pkIdEstadoCandidato}"/>
+                                             </h:selectOneMenu>
+
+                                             <p:commandButton value="Guardar Alteração" action="#{rhCandidatoPesquisarBean.alterarEstado()}" 
+                                                              process="@form" partialSubmit="true" style="width: 150px"
+                                                              onclick="PF('dialogEstadoCand').hide()" update=":formPesquisa:dataTable"/>
+                                             <p:commandButton value="Fechar" onclick="PF('dialogEstadoCand').hide()" style="width: 150px" process="@this" 
+                                                              actionListener="#{rhCandidatoPesquisarBean.setCandidatoVisualizar(null)}"/>
+                                        </h:panelGrid>
+                                   </center>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

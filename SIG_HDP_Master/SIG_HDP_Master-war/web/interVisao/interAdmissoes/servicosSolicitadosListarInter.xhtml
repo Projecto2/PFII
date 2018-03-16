@@ -1,0 +1,298 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>#{interObjetosSessaoBean.menuTitulo} -> Pacientes -> Internados -> #{msgs.servicosSolicitados}</h2>
+                <p:growl autoUpdate="true" id="messages"/>
+                <h:form id="formProcuraSolicitacoes">
+                    <p:button value="Voltar" styleClass="float-right" style="width: 130px;" outcome="/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+                    #{detetorAtualizacaoPagina.checkAtualizacao("pesquisaServicosSolicitados")}
+                    <center>
+                        <span style="font-size: 16pt">
+                            <p:commandLink style="color: #0088cc" value="#{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{admsAgendamentoPacienteBean.getPaciente().fkIdPessoa.nome} #{admsAgendamentoPacienteBean.getPaciente().fkIdPessoa.nomeDoMeio} #{admsAgendamentoPacienteBean.getPaciente().fkIdPessoa.sobreNome}" 
+                                           ajax="true" partialSubmit="true" process="@this" 
+                                           actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(admsAgendamentoPacienteBean.getPaciente())}" 
+                                           update=":formPacienteVisualizar" 
+                                           onclick="PF('dialogMaisDetalhes').show();"/>
+                            <br/>
+                            #{msgs.subProcesso}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                            #{msgs.dataDaSolicitacao}: 
+                            <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </p:outputLabel>
+                        </span>
+                    </center>
+
+                    <p:fieldset>
+                        <div class="ui-fluid"> 
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <p:outputLabel for="intervaloDeDatas" value="#{msgs.dataDaSolicitacao}: *"/>
+                                    <p:panelGrid id="intervaloDeDatas" columns="2">
+                                        <p:calendar required="true" requiredMessage="Data de Início do Intervalo da Solicitação Obrigatória" id="dataInicial" locale="pt"
+                                                    navigator="true" maxdate="#{admsAgendamentoPacienteBean.getMomentoActual()}" 
+                                                    value="#{admsAgendamentoPacienteBean.dataInicial}"/>
+
+                                        <p:calendar required="true" requiredMessage="Data de Final do Intervalo da Solicitação Obrigatória" id="dataFinal" locale="pt" 
+                                                    navigator="true" maxdate="#{admsAgendamentoPacienteBean.getMomentoActual()}" 
+                                                    value="#{admsAgendamentoPacienteBean.dataFinal}"/>
+                                    </p:panelGrid>
+
+
+                                    <p:outputLabel for="estadoAgendamento" value="#{msgs.estadoAgendamentoServico}: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:selectOneMenu id="estadoAgendamento" 
+                                                         value="#{admsAgendamentoPacienteBean.estadoAgendamento.pkIdEstadoAgendamento}"
+                                                         filter="true" filterMatchMode="contains" 
+                                                         valueChangeListener="#{admsAgendamentoPacienteBean.changeEstadoAgendamento}">
+                                            <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                            <f:selectItem itemValue="#{-1}" itemLabel="Sem Agendamento"/>
+                                            <f:selectItems value="#{admsEstadoAgendamentoBean.findEstadosAgendamentoSemCancelado()}" 
+                                                           var="estadoAgendamento" 
+                                                           itemLabel="#{estadoAgendamento.descricaoEstadoAgendamento}" 
+                                                           itemValue="#{estadoAgendamento.pkIdEstadoAgendamento}"/>
+                                        </p:selectOneMenu>
+                                    </f:validateBean>
+
+                                    <p:outputLabel for="dataAgendada" value="#{msgs.dataAgendada}: "/>
+                                    <p:panelGrid id="dataAgendada" columns="2">
+                                        <p:calendar id="dataAgendadaInicial" locale="pt"
+                                                    navigator="true" 
+                                                    value="#{admsAgendamentoPacienteBean.dataAgendadaInicial}"/>
+
+                                        <p:calendar id="dataAgendadaFinal" locale="pt" 
+                                                    navigator="true" 
+                                                    value="#{admsAgendamentoPacienteBean.dataAgendadaFinal}"/>
+                                    </p:panelGrid>
+
+                                    <p:outputLabel for="medico" value="#{msgs.marcadoParoOMedico}: "/>
+                                    <p:selectOneMenu id="medico" filter="true" filterMatchMode="contains"
+                                                     value="#{admsAgendamentoPacienteBean.funcionario.pkIdFuncionario}"
+                                                     valueChangeListener="#{admsAgendamentoPacienteBean.changeMedico}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{rhFuncionarioPesquisarBean.getTodosMedicos()}" 
+                                                       var="medico" 
+                                                       itemLabel="#{medico.fkIdPessoa.nome} #{medico.fkIdPessoa.sobreNome}" 
+                                                       itemValue="#{medico.pkIdFuncionario}"/>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+
+
+                                    <p:outputLabel for="servico" value="#{msgs.servico}: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:selectOneMenu id="servico"
+                                                         value="#{admsAgendamentoPacienteBean.servicoSolicitadoPesquisar.fkIdServico.pkIdServico}" 
+                                                         filter="true" filterMatchMode="contains" 
+                                                         valueChangeListener="#{admsAgendamentoPacienteBean.changeServico}">
+                                            <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                            <f:selectItems value="#{admsServicoBean.findAll()}" 
+                                                           var="servico" 
+                                                           itemLabel="#{servico.nomeServico}" 
+                                                           itemValue="#{servico.pkIdServico}"/>
+                                        </p:selectOneMenu>
+                                    </f:validateBean>
+
+                                    <p:outputLabel for="tipoSolicitacao" value="#{msgs.tipoSolicitacao}: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:selectOneMenu id="tipoSolicitacao" 
+                                                         value="#{admsAgendamentoPacienteBean.servicoSolicitadoPesquisar.fkIdTipoSolicitacao.pkIdTipoSolicitacao}" 
+                                                         filter="true" filterMatchMode="contains" 
+                                                         valueChangeListener="#{admsAgendamentoPacienteBean.changeTipoSolicitacao}">
+                                            <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                            <f:selectItems value="#{admsTipoSolicitacaoBean.findAll()}" 
+                                                           var="tipo" 
+                                                           itemLabel="#{tipo.descricaoTipoSolicitacaoServico}" 
+                                                           itemValue="#{tipo.pkIdTipoSolicitacao}"/>
+                                        </p:selectOneMenu>
+                                    </f:validateBean>
+
+                                    <p:outputLabel for="classificacaoServico" value="#{msgs.classificacaoServicoSolicitado}: "/>
+                                    <p:selectOneMenu id="classificacaoServico"
+                                                     value="#{admsAgendamentoPacienteBean.servicoSolicitadoPesquisar.fkIdClassificacaoServicoSolicitado.pkIdClassificacaoServicoSolicitado}"
+                                                     filter="true" filterMatchMode="contains" 
+                                                     valueChangeListener="#{admsAgendamentoPacienteBean.changeClassificacao}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{admsClassificacaoServicoSolicitadoBean.findAll()}" 
+                                                       var="classificacao" 
+                                                       itemLabel="#{classificacao.descricaoClassificacaoServicoSolicitado}" 
+                                                       itemValue="#{classificacao.pkIdClassificacaoServicoSolicitado}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="estadoPagamento" value="#{msgs.estadoPagamento}: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:selectOneMenu id="estadoPagamento"
+                                                         value="#{admsAgendamentoPacienteBean.servicoSolicitadoPesquisar.fkIdEstadoPagamento.pkIdEstadoPagamento}"
+                                                         filter="true" filterMatchMode="contains" 
+                                                         valueChangeListener="#{admsAgendamentoPacienteBean.changeEstadoPagamento}">
+                                            <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                            <f:selectItems value="#{admsEstadoPagamentoBean.findAll()}" 
+                                                           var="estadoPagamento" 
+                                                           itemLabel="#{estadoPagamento.descricaoEstadoPagamento}" 
+                                                           itemValue="#{estadoPagamento.pkIdEstadoPagamento}"/>
+                                        </p:selectOneMenu>
+                                    </f:validateBean>
+                                </p:panelGrid>
+                            </p:panelGrid>
+                        </div>
+
+                        <h:panelGrid columns="2" width="50%">
+                            <p:commandButton value="#{msgs.pesquisar}" id="pesquisar" icon="ui-icon-search" 
+                                             actionListener="#{admsAgendamentoPacienteBean.pesquisar()}" 
+                                             partialSubmit="true" process="@this dataInicial dataFinal dataAgendada servico tipoSolicitacao classificacaoServico estadoAgendamento estadoPagamento medico" 
+                                             update="dataTable" 
+                                             style="width: 100%"/>
+                            <p:commandButton value="Solicitar Novo Serviço" id="adicionar" icon="ui-icon-plus"
+                                             partialSubmit="true" process="@this" update="@this"
+                                             actionListener="#{admsSolicitacaoMedicaInternamentoBean.setServicoEfetuado(interRegistoInternamentoBean.getServicoEfetuado(interControloDiarioBean.registoInternamento.pkIdRegistoInternamento))}" action="solicitacaoMedicaNovoInter.xhtml?faces-redirect=true" style="width: 97%">
+                                <p:tooltip id="toolTipAdicionar" for="adicionar" value="Solicitar um Novo Serviço para o Paciente" />
+                            </p:commandButton>
+
+                        </h:panelGrid>
+
+                    </p:fieldset>
+
+                    <p:watermark for="dataInicial" value="#{msgs.aPartirDe}"/>
+                    <p:watermark for="dataFinal" value="#{msgs.ate}"/>
+                    <p:tooltip for="dataInicial" position="top" value="#{msgs.aPartirDe}"/>
+                    <p:tooltip for="dataFinal" position="top" value="#{msgs.ate}"/>
+
+
+                    <center>
+                        <p:panel style="border: none; height: 40px">
+                            <h:panelGrid class="float-right" columns="2">
+                                <p:commandButton value="#{msgs.imprimir} #{msgs.resultados}" style="margin-right: 5px;" disabled="true" ajax="false" onclick="this.form.target = '_blank'" actionListener="#{admsPacientePesquisarBean.exportPDF}"/>
+
+                                <p:commandButton value="#{msgs.limpar} #{msgs.resultados}" id="limparResultadoLista"
+                                                 partialSubmit="true" process="@this" update="@this dataTable" 
+                                                 actionListener="#{admsAgendamentoPacienteBean.limparResultadosLista()}" onclick="#{admsAgendamentoPacienteBean.getAssaoDoConfirmDialog()}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </center>
+
+                    <h:panelGrid width="100%">
+                        <p:scrollPanel style="width: 100%" mode="native">
+                        <p:dataTable reflow="true" id="dataTable" var="servicoSolicitado" value="#{admsAgendamentoPacienteBean.getListaServicosSolicitados()}"
+                                     style="width: 125%" emptyMessage="Não Existem Serviços"
+                                     paginator="true" paginatorPosition="bottom" rows="10">
+                            <p:column filterBy="#{servicoSolicitado.fkIdServico.nomeServico}" headerText="#{msgs.servico}">
+                                <center>     
+                                    #{servicoSolicitado.fkIdServico.nomeServico}
+                                </center>
+                            </p:column>
+                            <p:column filterBy="#{servicoSolicitado.fkIdPrecoCategoriaServico.fkIdCategoriaServico.descricaoCategoriaServico}" headerText="#{msgs.categoriaDoServico}">
+                                <center>     
+                                    #{servicoSolicitado.fkIdPrecoCategoriaServico.fkIdCategoriaServico.descricaoCategoriaServico}
+                                </center>
+                            </p:column>
+                            <p:column filterBy="#{servicoSolicitado.fkIdSolicitacao.data}" headerText="#{msgs.dataSolicitada}">
+                                <center>    
+                                    <h:outputText value="#{servicoSolicitado.fkIdSolicitacao.data}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.dataHoraInicio}">
+                                <center>   
+                                    #{admsAgendamentoPacienteBean.definirDataHoraAgendada(servicoSolicitado)}
+                                    <h:outputText style="color: #{admsAgendamentoPacienteBean.getCorAgendamento()}" 
+                                                  value="#{admsAgendamentoPacienteBean.agendamentoMarcado.dataHoraInicio}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.dataHoraFim}">
+                                <center> 
+                                    <h:outputText style="color: #{admsAgendamentoPacienteBean.getCorAgendamento()}" 
+                                                  value="#{admsAgendamentoPacienteBean.agendamentoMarcado.dataHoraFim}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.estadoDoAgendamento}">
+                                <center> 
+                                    <h:outputText style="color: #{admsAgendamentoPacienteBean.getCorAgendamento()}" 
+                                                  value="#{admsAgendamentoPacienteBean.getEstadoAgendamentoString()}"/>
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.medico}">
+                                <center>                                        
+                                    #{admsAgendamentoPacienteBean.agendamentoMedicoMarcado.fkIdMedico.fkIdPessoa.nome}
+                                    #{admsAgendamentoPacienteBean.agendamentoMedicoMarcado.fkIdMedico.fkIdPessoa.sobreNome}
+                                </center>
+                            </p:column>
+
+                            <p:column filterBy="#{servicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}" headerText="#{msgs.tipo}">
+                                <center>   
+                                    #{servicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}
+                                </center>
+                            </p:column>
+                            <p:column filterBy="#{servicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}" headerText="#{msgs.classificacao}">
+                                <center>   
+                                    #{servicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}
+                                </center>
+                            </p:column>
+                            <p:column filterBy="#{servicoSolicitado.fkIdEstadoPagamento.descricaoEstadoPagamento}" headerText="#{msgs.pagamento}">
+                                <center>      
+                                    #{servicoSolicitado.fkIdEstadoPagamento.descricaoEstadoPagamento}
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.preco}">
+                                <center> 
+                                    #{servicoSolicitado.fkIdPrecoCategoriaServico.valor}
+                                </center>
+                            </p:column>
+                        </p:dataTable>
+                        </p:scrollPanel>
+                    </h:panelGrid>
+
+                    <!--<center>
+                        <p:dialog width="85%" height="600px" header="Agendar" closable="true" showEffect="fade" widgetVar="dialogAgendamento" modal="true" closeOnEscape="true">
+                            <ui:include src="./../../admsVisao/agendamento/agendaServicoSolicitadoPacienteAdms.xhtml"/>
+                        </p:dialog>
+                    </center> -->
+
+                    <center style="padding: 10px;">
+                        <p:commandButton id="editarSolicitacao" style="margin: 5px;" rendered="false" 
+                                         value="#{msgs.gravarEdicoesEfetuadas}" update="@this dataTable"
+                                         disabled="#{admsAgendamentoPacienteBean.abilitaGravar()}" 
+                                         actionListener="#{admsAgendamentoPacienteBean.create()}" 
+                                         icon="ui-icon-disk">
+                        </p:commandButton>
+                    </center>
+
+                    <!-- <p:poll immediate="true" partialSubmit="true" process="@this" listener="# {admsAgendamentoPacienteBean.pesquisar('pool')}" update="dataTable" interval="5"/> -->
+
+                </h:form>
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

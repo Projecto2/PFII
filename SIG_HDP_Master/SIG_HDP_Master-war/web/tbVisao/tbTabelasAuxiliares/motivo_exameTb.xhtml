@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title> #{msn_tb.lb_mexame} </title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menu_horizontalTb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menu_lateralTb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <p:growl autoUpdate="true"/>
+                <h:form styleClass="ui-fluid">
+                    <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" 
+                                 columnClasses="ui-grid-col-12">
+                        <p:fieldset legend="#{msn_tb.pesquisa}">
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" 
+                                         columnClasses="ui-grid-col-2,ui-grid-col-10">
+                                <p:outputLabel value="#{msn_tb.lb_mexame}: "/>
+                                <f:validateBean disabled="true">
+                                    <p:inputText style="width: 100%" value="#{tbMotivoExameBean.instanciaTbMotivoExame.descricao}"/>
+                                </f:validateBean>
+                            </p:panelGrid> 
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" 
+                                         columnClasses="ui-grid-col-6,ui-grid-col-6">
+                                <p:commandButton value="#{msn_tb.bt_pesquisar}" icon="ui-icon-search" update="tabelaDados"
+                                                 actionListener="#{tbMotivoExameBean.pesquisarMotivoExame()}"/>
+                                <p:commandButton value="#{msn_tb.bt_a_tabela}" partialSubmit="true" process="@this" update="@this tabelaDados" 
+                                                 actionListener="#{tbMotivoExameExcelBean.carregarMotivoExameTabela()}" icon="ui-icon-refresh"/>    
+                            </p:panelGrid>
+                        </p:fieldset>
+                        <p:fieldset legend="#{msn_tb.dados_existente}">
+                            <p:dataTable value="#{tbMotivoExameBean.listaMotivoExame}" var="me" rowKey="#{me.pkMotivoExame}" selectionMode="single" paginator="true" 
+                                         rows="6" id="tabelaDados" paginatorPosition="bottom" reflow="true"> 
+                                <p:column headerText="#{msn_tb.lb_mexame}"> <center> #{me.descricao} </center></p:column>
+                            </p:dataTable >
+                        </p:fieldset>
+                    </p:panelGrid>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+    </h:body>
+</html>

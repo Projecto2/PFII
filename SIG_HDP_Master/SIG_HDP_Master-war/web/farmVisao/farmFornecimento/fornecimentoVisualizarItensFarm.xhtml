@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalFarm.xhtml"/>
+            </ui:define>
+            
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralFarm.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>Farmácia -> Pedidos -> Fornecimentos -> Visualizar itens</h2>
+                <h:form id="formSolicitacao">
+                   <p:messages id="msg" autoUpdate="true" closable="true"/>
+                   <p:fieldset id="tabVisualizar">
+                   <p></p><p></p>
+                   <center><h1 style="background-color: #FFF" >FORNECIMENTO</h1></center>
+                   <p></p>
+                   <center><h2 style="background-color: #FFF" >Por: #{farmFornecimentoVerItensBean.fornecimento.fkIdFornecedor.fkIdInstituicao.descricao}</h2></center>
+                   <p></p>
+                   <h:panelGrid columns="2" style="margin: auto">
+                      <p:outputLabel><h3>Data: </h3></p:outputLabel>
+                      <h:outputText style="color: #002142;font-size: 15px" value="#{farmFornecimentoVerItensBean.fornecimento.dataFornecimento}">
+                         <f:convertDateTime pattern="dd-MM-yyyy - HH:mm" />
+                      </h:outputText>
+
+                   </h:panelGrid>
+                   <p></p>
+                   <p:fieldset style="width: 95%; margin: auto; border: none">
+                      <p:dataTable id="tabela" var="item" rows="12" 
+                                   value="#{farmFornecimentoVerItensBean.itensFornecimento}"
+                                   emptyMessage="Nenhum item encontrado.">
+                         
+                         <f:facet name="header">
+                            Itens Fornecidos
+                         </f:facet>
+                         
+                         <p:column headerText="Descrição">
+                            <center>
+                               <p:outputLabel value="#{item.fkIdLoteProduto.fkIdProduto.descricao} 
+                                           #{item.fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao} 
+                                           #{item.fkIdLoteProduto.fkIdProduto.dosagem} 
+                                           #{item.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/>
+                            </center>
+                         </p:column>
+                         
+                         <p:column headerText="Nº de Lote">
+                            <center><p:outputLabel value="#{item.fkIdLoteProduto.numeroLote}"/></center>
+                         </p:column>
+                         
+                         <p:column headerText="Data de Validade">
+                            <center><h:outputText value="#{item.fkIdLoteProduto.dataValidade}">
+                               <f:convertDateTime pattern="dd-MM-yyyy"/>
+                               </h:outputText></center>
+                         </p:column>
+                         
+                         <p:column headerText="Quantidade">
+                            <center><p:outputLabel value="#{item.quantidade}"/></center>
+                         </p:column>
+                         
+                         <p:column headerText="Custo/Unidade">
+                            <center><p:outputLabel value="#{item.custoPorUnidade}"/></center>
+                         </p:column>
+                         
+                         <p:column headerText="Custo Total">
+                            <center><p:outputLabel value="#{item.custoTotal}"/></center>
+                         </p:column>
+                         
+                         <p:column headerText="Destino">
+                            <center><p:outputLabel value="#{item.fkIdLocalArmazenamento.descricao}"/></center>
+                         </p:column>
+                         
+                      </p:dataTable>
+                   </p:fieldset>
+                   <h:panelGrid columns="10" width="80%" style="margin: auto" cellspacing="100">
+                                            
+                      <h:panelGrid columns="1" class="float-right">
+                         <center><p:outputLabel><h3 style="text-align: center;">Responsável</h3></p:outputLabel></center>
+                         <p></p>
+                         <center><p:separator style="width: 150px"/></center>
+                         <center>
+                            <p style="text-align: center; font-size: 14px" >
+                               #{farmFornecimentoVerItensBean.fornecimento.fkIdFuncionarioCadastrou.fkIdPessoa.nome} 
+                               #{farmFornecimentoVerItensBean.fornecimento.fkIdFuncionarioCadastrou.fkIdPessoa.sobreNome}
+                            </p>
+                         </center>
+                      </h:panelGrid>
+                   </h:panelGrid>
+                   
+                   </p:fieldset>
+                   <center>
+                      <p:commandButton value="Imprimir" icon="ui-icon-print">
+                         <p:printer target="tabVisualizar" />
+                      </p:commandButton>
+                   </center>
+                   <p></p><p></p><p></p>
+                </h:form> 
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

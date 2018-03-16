@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form id="formEditarTriagem">
+            <p:messages id="ms3" autoUpdate="true" closable="true"/>
+            <p:growl id="ms4" autoUpdate="true"/>
+            <br/>
+            <center>
+                <p:panel id="panelEditarTriagem" styleClass="ui-noborder">
+                    <h:panelGrid id="gridEditarTriagem" styleClass="ui-noborder">
+                        <p:panel styleClass="ui-noborder">
+
+                            <center>
+                                <span style="font-size: 16pt">
+
+                                    <p:outputLabel value="#{ambTriagemListarBean.atAux.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                   #{ambTriagemListarBean.atAux.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                   #{ambTriagemListarBean.atAux.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                   "
+                                                   style="color: #0088cc"/>
+
+                                    <br/>
+                                    #{msgs.subProcesso}:
+                                    <p:outputLabel value="#{ambTriagemListarBean.atAux.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // " id="numeroSupProcesso"/>
+                                    <p:outputLabel value="#{ambTriagemListarBean.atAux.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+
+                                </span>
+                            </center>
+
+                            <center>
+                                <h:panelGrid columns="6" cellpadding="3" styleClass="ui-noborder">
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <p:outputLabel value="Funcionário:"/>
+                                        <p:outputLabel value="#{ambTriagemCriarBean.obterFuncionario().fkIdPessoa.nome} #{ambTriagemCriarBean.obterFuncionario().fkIdPessoa.nomeDoMeio} #{ambTriagemCriarBean.obterFuncionario().fkIdPessoa.sobreNome}"/>
+
+                                        <p:outputLabel value="Temperatura:"/>
+                                        <p:inputText   value="#{ambTriagemListarBean.atAux.temperatura}"/>
+
+                                        <h:outputLabel value="Pulso (bpm):" for="pulso"/>
+                                        <p:inputText id="pulso" value="#{ambTriagemListarBean.atAux.pulso}"/>
+
+                                        <h:outputLabel value="Local da dor:" for="local"/>                            
+                                        <p:inputTextarea id="local" disabled="#{ambTriagemListarBean.atAux.localDaDor}" value="#{ambTriagemListarBean.atAux.localDaDor}"/>
+
+                                        <h:outputLabel value="Peso (kg):" for="peso"/>
+                                        <p:inputText id="peso" value="#{ambTriagemListarBean.atAux.peso}"/>
+
+                                        <h:outputLabel value="Altura (m):" for="altura"/>
+                                        <p:inputText id="altura" value="#{ambTriagemListarBean.atAux.altura}"/>
+
+                                        <h:outputLabel value="Glicêmia (mg/dL):" for="glicemia"/>
+                                        <p:inputText id="glicemia" value="#{ambTriagemListarBean.atAux.glicemia}" />
+
+                                        <h:outputLabel value="Observações:" for="obs"/>
+                                        <p:inputTextarea id="obs" value="#{ambTriagemListarBean.atAux.observacoes}" />
+
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>
+
+                        <p:panel styleClass="ui-noborder">
+                            <center>
+                                <p:commandButton icon="ui-icon-pencil" value="Editar" 
+                                                 action="#{ambTriagemEditarBean.editarRegisto(ambTriagemListarBean.atAux)}" 
+                                                 process="gridEditarTriagem" update="ms3 ms4"/>
+                                <p:commandButton action="#{ambTriagemEditarBean.limpar(ambTriagemListarBean.atAux)}"
+                                                 process="@this" value="Limpar" update="panelEditarTriagem"/>
+                                <p:commandButton actionListener="#{ambTriagemCriarBean.fechar()}" value="Fechar" 
+                                                 type="button" icon="ui-icon-close" onclick="PF('dialogEditarTriagem').hide()"/>
+                            </center>
+                        </p:panel>
+
+                    </h:panelGrid>
+
+                </p:panel>
+            </center>
+        </h:form>
+    </h:body>
+</html>
+

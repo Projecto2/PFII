@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Doações</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Informações de Stock -> Doações</h2>
+            <p:messages id="msg" autoUpdate="true" closable="true"/>
+            <p:growl autoUpdate="true"/>
+            <h:form id="formulario">
+               <p:fieldset>
+                  <h:panelGrid columns="2" cellpadding="3" id="gridCamposPesquisa">
+                     <p:outputLabel value="Datas entre"/>
+                     <h:panelGrid columns="5">
+                        <p:calendar id="dataInicio" value="#{farmDoacaoListarBean.dataInicio}" /> 
+                        <p:outputLabel value="e"/> 
+                        <p:calendar id="dataFim" value="#{farmDoacaoListarBean.dataFim}"
+                                    maxdate="#{farmDoacaoListarBean.hoje}"/>
+                        <p:watermark for="dataInicio" value="Data Inicial"/>
+                        <p:watermark for="dataFim" value="Data Final"/>
+                     </h:panelGrid>
+                     <p></p>
+                     <p></p><p></p>
+                     <h:panelGrid columns="3">
+
+
+                        <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true"
+                                         action="#{farmDoacaoListarBean.pesquisarDoacoes()}"
+                                         update="resultado"
+                                         process="gridCamposPesquisa" />
+                     </h:panelGrid>                                                      
+                  </h:panelGrid>
+               </p:fieldset>
+               
+               <p:panel style="height: 50px; border: none">
+                  <h:panelGrid class="float-right">
+                     <p:commandButton value="Imprimir" icon="ui-icon-print" id="botaoImprimir" 
+                                      ajax="false"
+                                      actionListener="#{farmDoacaoListarBean.imprimirRelatorio}" 
+                                      onclick="this.form.target = '_blank'">
+                     </p:commandButton>
+                  </h:panelGrid>
+               </p:panel>
+               
+               <p:dataTable id="resultado" var="item" value="#{farmDoacaoListarBean.listaItensDoados}"
+                            rows="12" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+                            {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                            {RowsPerPageDropdown}" rowsPerPageTemplate="12,16,20" paginatorPosition="bottom"
+                            emptyMessage="Nenhum Fornecimento encontrado de momento. Tente pesquisar.">
+
+
+
+                  <p:column headerText="Data" sortBy="#{item.fkIdDoacao.dataCadastro}">
+                     <center>
+                        <h:outputText value="#{item.fkIdDoacao.dataCadastro}" >
+                           <f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+                        </h:outputText>
+                     </center>
+                  </p:column>
+
+                  <p:column headerText="Descricao" sortBy="#{item.fkIdLoteProduto.fkIdProduto.descricao}">
+                     <center><p:outputLabel value="#{item.fkIdLoteProduto.fkIdProduto.descricao} 
+                                            #{item.fkIdLoteProduto.fkIdProduto.dosagem} 
+                                            #{item.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}" /></center>
+                  </p:column>   
+
+                  <p:column headerText="Forma">
+                     <center><p:outputLabel value="#{item.fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao}" /></center>
+                  </p:column>       
+                  
+                  <p:column headerText="Nº de Lote" sortBy="#{item.fkIdLoteProduto.numeroLote}">
+                     <center>
+                        <p:outputLabel value="#{item.fkIdLoteProduto.numeroLote}" />                         
+                     </center>
+                  </p:column>
+                  
+                  <p:column headerText="Data de Validade" sortBy="#{item.fkIdLoteProduto.dataValidade}">
+                     <center>
+                        <h:outputText value="#{item.fkIdLoteProduto.dataValidade}"
+                                      style="color: #{farmStockValidadeProdutosBean.getValidadeItemColor(item.fkIdLoteProduto)}">
+                           <f:convertDateTime pattern="dd-MM-yyyy"/>
+                        </h:outputText>
+                     </center>
+                  </p:column>
+
+                  <p:column headerText="Local de Origem" sortBy="#{item.fkIdDoacao.fkIdLocalArmazenamento.descricao}">
+                     <center>
+                        <p:outputLabel value="#{item.fkIdDoacao.fkIdLocalArmazenamento.descricao}" />
+                     </center>
+                  </p:column>
+
+                  <p:column headerText="Quant. Doada" sortBy="#{item.quantidade}">
+                     <center>
+                        <h:outputText value="#{item.quantidade} Unidades"/>
+                     </center>
+                  </p:column>
+                  
+                  <p:column headerText="Instituição de Destino" sortBy="#{item.fkIdDoacao.fkIdInstituicao.descricao}">
+                     <center>
+                        <h:outputText value="#{item.fkIdDoacao.fkIdInstituicao.descricao}"/>
+                     </center>
+                  </p:column>
+
+                  <p:column headerText="Responsável" sortBy="#{item.fkIdDoacao.fkIdFuncionario.fkIdPessoa.nome}">
+                     <center><p:outputLabel value="#{item.fkIdDoacao.fkIdFuncionario.fkIdPessoa.nome} 
+                                            #{item.fkIdDoacao.fkIdFuncionario.fkIdPessoa.sobreNome}" /></center>
+                  </p:column>
+               </p:dataTable>
+            </h:form>
+         </ui:define>            
+      </ui:composition>
+   </h:body>
+</html>

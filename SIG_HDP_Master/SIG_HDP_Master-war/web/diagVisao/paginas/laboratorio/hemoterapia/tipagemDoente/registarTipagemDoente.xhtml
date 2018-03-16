@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+        
+        <h2>Laboratório -> Hemoterápia -> Tipagem à Pacientes -> Realizar Tipagem Sanguínea</h2>
+        
+        <center>
+
+            <br/>
+
+            <h:form>
+                <p:growl sticky="true" id="ms" autoUpdate="true"/>
+                <h:panelGrid columns="2">
+
+                    <h3>Paciente - #{diagTipagemDoenteBean.diagSolicitacaoTipagemDoente.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente} : </h3>
+                    <h:panelGrid columns="1">
+                        #{diagTipagemDoenteBean.diagSolicitacaoTipagemDoente.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                        #{diagTipagemDoenteBean.diagSolicitacaoTipagemDoente.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                        #{diagTipagemDoenteBean.diagSolicitacaoTipagemDoente.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                    </h:panelGrid>
+
+                </h:panelGrid>
+
+                <p:fieldset style="width: 50%">
+                    <h:panelGrid columns="4" cellpadding="15" >
+                        <h:outputLabel value="Anti-A: "/>
+                        <p:inputText maxlength="45" value="#{diagTipagemDoenteBean.diagTipagemDoente.antiA}"/>
+
+                        <h:outputLabel value="Anti-B: "/>
+                        <p:inputText maxlength="45" value="#{diagTipagemDoenteBean.diagTipagemDoente.antiB}"/>
+
+                        <h:outputLabel value="Anti-AB: "/>
+                        <p:inputText maxlength="45" value="#{diagTipagemDoenteBean.diagTipagemDoente.antiAb}"/>
+
+                        <h:outputLabel value="Anti-D: "/>
+                        <p:inputText maxlength="45" value="#{diagTipagemDoenteBean.diagTipagemDoente.antiD}"/>
+
+                        <h:outputLabel value="Du (D fraco): "/>
+                        <p:inputText maxlength="45" value="#{diagTipagemDoenteBean.diagTipagemDoente.du}"/>
+
+                        <h:outputLabel value="A1: "/>
+                        <p:inputText maxlength="45" value="#{diagTipagemDoenteBean.diagTipagemDoente.a1}"/>
+
+                        <h:outputLabel value="B: "/>
+                        <p:inputText maxlength="45" value="#{diagTipagemDoenteBean.diagTipagemDoente.b}"/>
+
+                        <h:outputLabel value="O: "/>
+                        <p:inputText maxlength="45" value="#{diagTipagemDoenteBean.diagTipagemDoente.o}"/>                             
+
+                        <h:outputLabel value="Conclusão * : "/>
+
+                        <p:selectOneMenu style="width: 90%" value="#{diagTipagemDoenteBean.diagGrupoSanguineo.pkIdGrupoSanguineo}" filter="true"
+                                         required="true" requiredMessage="É necessário informar o Grupo do Sanguineo" >  
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{diagTipagemDoenteBean.getListaDiagGrupoSanguineo()}"
+                                           var="grupo"
+                                           itemLabel="#{grupo.descricaoGrupoSanguineo}" itemValue="#{grupo.pkIdGrupoSanguineo}" />
+                        </p:selectOneMenu>
+
+                    </h:panelGrid>
+
+                    <br/>
+
+                    <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                    <p:separator/>
+
+                    <h:panelGroup style=" float: right">
+                        <p:commandButton icon="ui-icon-disk" value="Registar Tipagem" action="#{diagTipagemDoenteBean.create()}"/> 
+
+                        <p:commandButton process="@this" value="Voltar" icon="ui-icon-arrowreturnthick-1-w" 
+                                         action="#{diagTipagemDoenteBean.voltarParaSolicitacoes()}"/>
+
+                    </h:panelGroup>
+
+                </p:fieldset>
+
+            </h:form>
+            <br/>
+        </center>
+    </ui:define>
+
+</ui:composition>

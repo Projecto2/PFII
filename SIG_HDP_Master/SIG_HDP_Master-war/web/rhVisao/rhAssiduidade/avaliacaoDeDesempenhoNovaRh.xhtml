@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:body>
+          <center>
+               <h:form id="formularioNovaAvaliacao">
+                    <br/>
+                    <center>
+                         <h:panelGrid width="800px" id="panelGridPrincipal">
+                              <p:panel id="panelFoto" style="width:790px; height:200px" header="Dados do Funcionário">
+                                   <p:panel style="height:130px; width: 240px; float: left; border-bottom: none; border-right: none">
+                                        <h:graphicImage id="imgFotografia" width="180px" height="130px"
+                                                        url="#{rhPessoaBean.pastaFoto}#{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.fkIdFuncionario.fkIdPessoa.fkIdFoto.ficheiro}"/>
+                                   </p:panel>
+                                   <h:panelGrid cellpadding="5" >
+                                        <h:outputLabel value="Nome Completo:  #{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.fkIdFuncionario.fkIdPessoa.nome} 
+                                                       #{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.fkIdFuncionario.fkIdPessoa.nomeDoMeio} 
+                                                       #{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                        <h:outputLabel value="Nº Cartão Identidade: #{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.fkIdFuncionario.numeroCartao}"/>
+                                        <h:outputLabel id="faltasNaoJustificadas" value="Faltas Não Justificadas no Ano Selecionado: #{rhFaltasRegistarBean.contarFaltasNaoJustificadas(rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.fkIdFuncionario)}"/>
+                                        <h:outputLabel value="Categoria: #{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.fkIdFuncionario.fkIdCategoria.descricao}"/>
+                                   </h:panelGrid>
+                                   <p:commandButton style="width: 200px" process="@this ano" value="Pesquisar Funcionário" 
+                                                    action="#{rhAvaliacaoDeDesempenhoNovaBean.limparPesquisaFuncionarios()}" icon="ui-icon-search"
+                                                    update=":formFuncionarioPesquisar:panelPesquisar" onclick="PF('dialogPesquisaFuncionario').show()"/>
+                              </p:panel>
+
+                              <p:panel>
+                                   <p:panelGrid columns="3" style=" width:100%" >
+                                        <p:outputLabel value="Ano de Avaliação*:"/>
+                                        <p:inputNumber id="ano" value="#{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.ano}" size="27" inputStyle="text-align:right"
+                                                       decimalPlaces="0" minValue="0" maxValue="#{rhValidarBean.anoActual()}" thousandSeparator="" 
+                                                       required="true" requiredMessage="Indique o ano de avaliação">
+                                             <p:ajax process="@this" update="faltasNaoJustificadas" event="blur" listener="#{rhAvaliacaoDeDesempenhoNovaBean.actualizarFaltasDoFuncionarioNoAnoSelecionado()}"/>
+                                        </p:inputNumber>
+                                        <br/>
+                                        <p:outputLabel value="Valor da Classificação Geral*:"/>
+                                        <p:inputNumber value="#{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.classificacao}"
+                                                       id="valorClassificacaoGeralDaAvaliacao" size="27" inputStyle="text-align:right" disabled="true"/>
+                                        <h:inputText style="text-align: center; width: 90%; color: #{rhAvaliacaoDeDesempenhoNovaBean.corDaClassificacaoGeral()}; font-weight: bold" 
+                                                     readonly="true" id="descricaoClassificacaoGeralDaAvaliacao" 
+                                                     value="#{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.descricaoDaClassificacao}"/>
+                                   </p:panelGrid>
+
+                                   <p:dataTable id="dataTable" var="classificacaoNoCriterio" value="#{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.rhAvaliacaoDeDesempenhoHasRhCriterioDeAvaliacaoList}"
+                                                emptyMessage="Nenhum registro de critério de avaliação encontrado"
+                                                paginator="true" paginatorPosition="bottom">
+                                        <p:column headerText="Critério de Avaliação">
+                                             <center>
+                                                  <p:outputLabel value="#{classificacaoNoCriterio.fkIdCriterioAvaliacao.pkIdCriterioDeAvaliacao}. #{classificacaoNoCriterio.fkIdCriterioAvaliacao.descricao}"/>
+                                             </center>
+                                        </p:column>
+                                        <p:column headerText="Classificação">
+                                             <center>
+                                                  <p:commandButton style="border: none; background: none;" onclick="PF('dialogClassificacaoNoCriterio').show()" process="@this" 
+                                                                   value="#{classificacaoNoCriterio.descricaoClassificacao == null ? '----- Selecione -----':  classificacaoNoCriterio.descricaoClassificacao.concat(' : ').concat(classificacaoNoCriterio.classificacao)}"
+                                                                   update=":formClassificacaoNoCriterio:painelCampos" actionListener="#{rhAvaliacaoDeDesempenhoNovaBean.setClassificacaoNoCriterio(classificacaoNoCriterio)}"/>
+                                             </center>
+                                        </p:column>
+                                   </p:dataTable>
+
+                              </p:panel>
+                              <br/>
+                              <h:panelGrid columns="2" class="float-right">
+                                   <p:commandButton style="width: 170px" value="Guardar" update="panelGridPrincipal"
+                                                    action="#{rhAvaliacaoDeDesempenhoNovaBean.create()}"/>
+                                   <p:commandButton style="width: 170px" value="Cancelar" action="#{rhAvaliacaoDeDesempenhoHomeBean.selecionarNovaAvaliacao()}"/>
+                              </h:panelGrid>
+                         </h:panelGrid>
+                    </center>
+               </h:form>
+          </center>
+
+          <center>
+               <p:dialog header="Selecionar Funcionário" closable="true" showEffect="fade" width="900px" height="580px"
+                         widgetVar="dialogPesquisaFuncionario" modal="true" closeOnEscape="true" position="top">
+                    <h:form id="formFuncionarioPesquisar">
+                         <p:messages id="ms3" autoUpdate="true" closable="true"/>
+                         <br/>
+                         <center>
+                              <p:panel id="panelPesquisar">
+                                   <h:panelGrid id="gridPesquisar" width="600px">
+                                        <p:panel header="Os funcionários que já foram avaliados no ano #{rhAvaliacaoDeDesempenhoNovaBean.avaliacaoDeDesempenho.ano} não aparecerão nos resultados da pesquisa">
+                                             <center>
+                                                  <f:validateBean disabled="true">
+                                                       <h:panelGrid columns="2" cellpadding="3">
+                                                            <p:outputLabel value="Estado Funcionário"/>
+                                                            <h:selectOneMenu value="#{rhAvaliacaoDeDesempenhoNovaBean.funcionarioPesquisa.fkIdEstadoFuncionario.pkIdEstadoFuncionario}"
+                                                                             style="width: 260px; text-align: center">
+                                                                 <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                                 <f:selectItems value="#{itensAjaxBean.estadoFuncionarioList}" var="estado" 
+                                                                                itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoFuncionario}"
+                                                                                itemDisabled="#{estado.descricao == 'Reformado' or estado.descricao == 'Demitido'}"/>
+                                                            </h:selectOneMenu>
+                                                            <p:outputLabel value="Nome:"/>
+                                                            <p:inputText style="width: 250px" value="#{rhAvaliacaoDeDesempenhoNovaBean.funcionarioPesquisa.fkIdPessoa.nome}"/>
+                                                            <p:outputLabel value="Nome do Meio:"/>
+                                                            <p:inputText style="width: 250px" value="#{rhAvaliacaoDeDesempenhoNovaBean.funcionarioPesquisa.fkIdPessoa.nomeDoMeio}"/>
+                                                            <p:outputLabel value="Sobrenome:"/>
+                                                            <p:inputText style="width: 250px" value="#{rhAvaliacaoDeDesempenhoNovaBean.funcionarioPesquisa.fkIdPessoa.sobreNome}"/>
+                                                            <p:outputLabel value="Nº Cartão Identidade:"/>
+                                                            <p:inputNumber size="34" value="#{rhAvaliacaoDeDesempenhoNovaBean.funcionarioPesquisa.numeroCartao}" decimalPlaces="0" thousandSeparator="" minValue="0"/>
+                                                       </h:panelGrid>
+                                                  </f:validateBean>
+                                             </center>
+                                        </p:panel>
+                                        <p:panel>
+                                             <p:commandButton style="width: 170px" icon="ui-icon-search" value="Pesquisar" 
+                                                              action="#{rhAvaliacaoDeDesempenhoNovaBean.pesquisarFuncionarios()}" 
+                                                              process="gridPesquisar" update="dataTable"/>
+                                             <p:commandButton style="width: 170px" action="#{rhAvaliacaoDeDesempenhoNovaBean.limparPesquisaFuncionarios()}"
+                                                              process="@this" value="Limpar" update="panelPesquisar"/>
+                                             <p:commandButton style="width: 170px" value="Fechar" type="button"
+                                                              onclick="PF('dialogPesquisaFuncionario').hide()"/>
+                                        </p:panel>
+                                   </h:panelGrid>
+                                   <p:dataTable id="dataTable" rows="3" paginator="true" paginatorPosition="bottom" style="width: 100%"
+                                                var="funcionario" value="#{rhAvaliacaoDeDesempenhoNovaBean.funcionariosPesquisados}" 
+                                                emptyMessage="Nenhum registro de funcionário encontrado">
+                                        <p:column headerText="Nome Completo">
+                                             <p:outputLabel value="#{funcionario.fkIdPessoa.nome} 
+                                                            #{funcionario.fkIdPessoa.nomeDoMeio} 
+                                                            #{funcionario.fkIdPessoa.sobreNome}"/>
+                                        </p:column>
+                                        <p:column headerText="Nº Cartão Identidade">
+                                             #{funcionario.numeroCartao}
+                                        </p:column>
+                                        <p:column headerText="Centro Hospitalar">
+                                             #{funcionario.fkIdCentroHospitalar.fkIdInstituicao.descricao}
+                                        </p:column>
+                                        <p:column headerText="Categoria">
+                                             #{funcionario.fkIdCategoria.descricao}
+                                        </p:column>
+                                        <p:column headerText="Estado">
+                                             #{funcionario.fkIdEstadoFuncionario.descricao}
+                                        </p:column>
+                                        <p:column headerText="--------------">
+                                             <p:commandButton value="Selecionar" process="@this" update=":formularioNovaAvaliacao:panelFoto"
+                                                              onclick="PF('dialogPesquisaFuncionario').hide()"
+                                                              action="#{rhAvaliacaoDeDesempenhoNovaBean.selecionarFuncionario(funcionario)}"/>
+                                        </p:column>
+                                   </p:dataTable>
+                              </p:panel>
+                         </center>
+                    </h:form>
+               </p:dialog>
+          </center>
+          <center>
+               <p:dialog header="Alterar Classificação no Critério de Avaliação" closable="true" showEffect="fade" width="45%"
+                         widgetVar="dialogClassificacaoNoCriterio" modal="true" closeOnEscape="true">
+                    <h:form id="formClassificacaoNoCriterio">
+                         <p:panel id="painelCampos">
+                              <center>
+                                   <p:outputLabel style="font-size: 15px" value="Critério de Avaliação: "/>
+                                   <p:outputLabel style="font-size: 15px" value="#{rhAvaliacaoDeDesempenhoNovaBean.classificacaoNoCriterio.fkIdCriterioAvaliacao.descricao}"/>
+                                   <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+
+                                        <p:outputLabel value="Classificação: "/>
+                                        <h:selectOneMenu style="width: 300px; text-align: center" 
+                                                         value="#{rhAvaliacaoDeDesempenhoNovaBean.classificacaoNoCriterio.classificacao}">
+                                             <f:selectItems value="#{rhAvaliacaoDeDesempenhoNovaBean.classificacaoNoCriterio.fkIdCriterioAvaliacao.rhClassificacaoDoCriterioList}" 
+                                                            var="cnc" itemLabel="#{cnc.descricao} : #{cnc.classificacao}" itemValue="#{cnc.classificacao}"/>
+                                        </h:selectOneMenu>
+                                        <br/>
+                                        <p:commandButton value="Actualizar" action="#{rhAvaliacaoDeDesempenhoNovaBean.actualizarClassificacaoNoCriterio()}"
+                                                         update=":formularioNovaAvaliacao:dataTable :formularioNovaAvaliacao:valorClassificacaoGeralDaAvaliacao :formularioNovaAvaliacao:descricaoClassificacaoGeralDaAvaliacao"
+                                                         onclick="PF('dialogClassificacaoNoCriterio').hide()" style="width: 300px"/>
+                                        <br/>
+                                        <p:commandButton value="Limpar Classificação" action="#{rhAvaliacaoDeDesempenhoNovaBean.limparClassificacaoNoCriterio()}"
+                                                         update=":formularioNovaAvaliacao:dataTable :formularioNovaAvaliacao:valorClassificacaoGeralDaAvaliacao :formularioNovaAvaliacao:descricaoClassificacaoGeralDaAvaliacao"
+                                                         onclick="PF('dialogClassificacaoNoCriterio').hide()" style="width: 300px"/>
+                                   </h:panelGrid>
+                              </center>
+                         </p:panel>
+                    </h:form>
+               </p:dialog>
+          </center>
+     </h:body>
+</html>

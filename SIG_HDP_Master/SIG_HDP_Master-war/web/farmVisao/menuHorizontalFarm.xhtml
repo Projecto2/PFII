@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+   <h:head>
+      <title>Facelet Title</title>
+   </h:head>
+   <h:body>
+      <li class="ic-home">
+         <h:link outcome="/faces/farmVisao/homeFarm.xhtml">
+            <span>Página Inicial</span>
+         </h:link>
+      </li>
+      <li class="ic-grid-tables"><a href="javascript:"><span>Tabelas Auxiliares</span></a>
+         <ul>
+            <li><h:link value="Avisos" outcome="/farmVisao/farmTabelasAuxiliares/avisoListarFarm.xhtml"></h:link></li>
+            <!--<li><h:link value="Classific. de Medicamentos" outcome="/farmVisao/farmTabelasAuxiliares/categoriaMedicamentoListarFarm.xhtml"></h:link></li>-->
+            <li><h:link value="Classific. de Medicamentos" outcome="/farmVisao/farmTabelasAuxiliares/categoriaListarFarm.xhtml"></h:link></li>
+            <li><h:link value="Fármacos" outcome="/farmVisao/farmTabelasAuxiliares/farmacoListarFarm.xhtml"/></li>
+            <li><h:link value="Formas Farmacêuticas" outcome="/farmVisao/farmTabelasAuxiliares/formaFarmaceuticaFarm.xhtml"></h:link></li>
+            <li><h:link value="Fornecedores" outcome="/farmVisao/farmTabelasAuxiliares/fornecedorListarFarm.xhtml"/></li>
+            <li><h:link value="Efeitos Secundários" outcome="/farmVisao/farmTabelasAuxiliares/efeitoSecundarioListarFarm.xhtml"></h:link></li>
+            <!--<li><h:link value="Instituições" outcome="/farmVisao/farmTabelasAuxiliares/instituicaoListarFarm.xhtml"/></li>-->
+            <li><h:link value="Marcas (Laboratórios)" outcome="/farmVisao/farmTabelasAuxiliares/marcaProdutoListarFarm.xhtml"/></li>
+            <li><h:link value="Outros Componentes" outcome="/farmVisao/farmTabelasAuxiliares/outroComponenteListarFarm.xhtml"></h:link></li>
+            <li><h:link value="Unidades de Medida" outcome="/farmVisao/farmTabelasAuxiliares/unidadesDeMedidaListarFarm.xhtml"/></li>
+            <li><h:link value="Vias de Administração" outcome="/farmVisao/farmTabelasAuxiliares/viaAdministracaoListarFarm.xhtml"></h:link></li>
+            
+         </ul>
+      </li>
+      <!--
+      <li class="ic-grid-tables"><a href="javascript:"><span>Tabelas Auxiliares Gerais</span></a>
+         <ul>
+            <li><h:link value="Marcas (Laboratórios)" outcome="/farmVisao/farmTabelasAuxiliares/marcaProdutoListarFarm.xhtml"/></li>
+            <li><h:link value="Fornecedores" outcome="/farmVisao/farmTabelasAuxiliares/fornecedorListarFarm.xhtml"/></li>
+            <li><h:link value="Instituições" outcome="/farmVisao/farmTabelasAuxiliares/instituicaoListarFarm.xhtml"/></li>
+            <li><h:link value="Unidades de Medida" outcome="/farmVisao/farmTabelasAuxiliares/unidadesDeMedidaListarFarm.xhtml"/></li>
+         </ul>
+      </li>
+      -->
+      <li class="ic-dashboard"><a href="javascript:"><span>Relatórios</span></a>
+         <ul>
+            <li><h:link value="Ficha de Stock" outcome="/farmVisao/farmRelatorio/fichaDeStockFarm.xhtml"/></li>
+            <li><h:link value="Inventário" outcome="/farmVisao/farmRelatorio/inventarioFarm.xhtml"/></li>
+            <li><h:link value="Stock Geral" outcome="/farmVisao/farmRelatorio/stockGeralFarm.xhtml"/></li>
+            <li><h:link value="Stock Geral (Detalhado)" outcome="/farmVisao/farmRelatorio/stockGeralDetalhadoFarm.xhtml"/></li>
+         </ul>
+      </li>  
+      <li class="ic-charts">
+         <h:link><span>Estado de Produtos</span></h:link>
+         <ul>
+            <li><h:link value="Quantidade em Stock" outcome="/farmVisao/farmInfoStock/stockRupturaFarm.xhtml"/></li>
+            <li><h:link value="Data de Validade" outcome="/farmVisao/farmInfoStock/stockValidadeProdutosFarm.xhtml"/></li>
+            <li><h:link value="Quarentena" outcome="/farmVisao/farmInfoStock/quarentenaListarFarm.xhtml"/></li>
+            <li><h:link value="Doação" outcome="/farmVisao/farmInfoStock/doacaoListarFarm.xhtml"/></li>
+            <li><h:link value="Gráficos" outcome="/farmVisao/farmGrafico/graficosListarFarm.xhtml"/></li>
+         </ul>
+      </li>
+      <li class="ic-notifications" id="notificacao">
+         <a href="javascript:" onclick="PF('dialogVerNotificacoes').show()">
+            <span>
+               Notificações 
+               <strong 
+                  style="color: #{farmNotificacaoBean.getColorSize()}">
+                  (#{farmNotificacaoBean.listaNotificacoes.size()})
+               </strong>
+            </span>
+         </a>
+      </li>  
+      <ui:include src="./farmNotificacao/dialogsDeNotificacaoFarm.xhtml"/>
+   </h:body>
+</html>
+

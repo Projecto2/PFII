@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <h1>#{msgs.financas} -> #{msgs.formasDePagamento}</h1>
+        <p:messages id="msg" autoUpdate="true" closable="true"/>
+        <br/>
+        <center>
+            <h:panelGrid columns="1" width="70%">
+                <h:form id="formPesquisa">
+                    #{detetorAtualizacaoPagina.checkAtualizacao("")}
+
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3" style="width: 100%">
+                            <p:outputLabel value="#{msgs.descricaoDaFormaDePagamento}: "/>
+
+                            <f:validateBean disabled="true">
+                                <p:inputText id="formaPagamentoText" style="width: 100%" 
+                                             value="#{finFormaPagamentoBean.formaPagamentoPesquisa.descricaoFormaPagamento}">
+                                </p:inputText>
+
+                            </f:validateBean>
+
+                            <br/>
+                            <h:panelGrid columns="2" width="100%">
+                                <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{finFormaPagamentoBean.pesquisar()}" 
+                                                 icon="ui-icon-search" ajax="true" partialSubmit="true" update="formaPagamentoText dataTable"/>
+
+                                <!--<p:commandButton value="# {msgs.novo}" style="width: 100%" icon="ui-icon-plus" partialSubmit="true" process="@this" 
+                                                 onclick="PF('dialogNovo').show();"
+                                                 update="@this"/>-->
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+
+
+                    <p:dataTable id="dataTable" style="width: 100%" var="formaPagamento" value="#{finFormaPagamentoBean.getFormaPagamentoLista()}"
+                                 emptyMessage="Não Existe Nenhuma Forma de Pagamento"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+                        <p:column headerText="#{msgs.formasPagamentoMenu}">
+                            <center>                                        
+                                #{formaPagamento.descricaoFormaPagamento}
+                            </center>
+                        </p:column>
+                        <!--<p:column headerText="">
+                            <center>
+                                <p:commandButton value="Editar" icon="ui-icon-pencil" onclick="PF('dialogEditar').show();"
+                                                 action="# {finFormaPagamentoBean.setFormaPagamento(formaPagamento)}"
+                                                 partialSubmit="true" process="@this" update=":formEditar:editarFormPagamento"/>
+                            </center>
+                        </p:column>-->
+                    </p:dataTable>
+
+
+                </h:form>
+            </h:panelGrid>
+        </center>
+
+
+
+        <center>
+            <p:dialog header="#{msgs.nova} #{msgs.formaDePagamento}" closable="false" showEffect="fade"
+                      widgetVar="dialogNovo" modal="true" closeOnEscape="true" width="40%">
+                <h:form id="formNovaFormaPagamento">
+                    <p:growl autoUpdate="true"/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="4">
+                            <p:outputLabel value="#{msgs.descricaoDaFormaDePagamento}*: "/>
+                            <p:inputText id="editarFormaPagamento" style="width: 100%" value="#{finFormaPagamentoBean.formaPagamento.descricaoFormaPagamento}"
+                                         required="true" requiredMessage="Indique a Descrição da Forma Pagamento"/>
+
+                            <br/>
+                            <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                <p:commandButton value="#{msgs.gravar}" style="width: 100%" icon="ui-icon-disk" action="#{finFormaPagamentoBean.create()}"
+                                                 process="@this editarFormaPagamento"
+                                                 update="editarFormaPagamento :formPesquisa:dataTable"/>
+
+                                <p:commandButton value="#{msgs.fechar}" style="width: 100%" icon="ui-icon-close" action="#{grlAreaInternaBean.limpar()}" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"/>  
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+        </center>
+
+        <!--<center>
+            <p:dialog header="Editar Forma Pagamento" closable="false" showEffect="fade"
+                      widgetVar="dialogEditar" modal="true" closeOnEscape="true">
+                <h:form id="formEditar">
+                    <p:growl autoUpdate="true"/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3">
+                            <p:outputLabel value="Novo Forma Pagamento"/>
+                            <p:inputText id="editarFormPagamento" value="# {finFormaPagamentoBean.formaPagamento.descricaoFormaPagamento}"
+                                         required="true" requiredMessage="Indique o nome do Forma Pagamento"/>
+                            <p:commandButton value="Guardar Edição" action="# {finFormaPagamentoBean.edit()}"
+                                             onclick="PF('dialogEditar').hide()" update=":formPesquisa:dataTable"/>
+                            <p:commandButton value="Fechar" action="# {areaInternaBean.limpar()}" onclick="PF('dialogEditar').hide()" partialSubmit="true" process="@this"
+                                             />                                    
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+        </center>-->
+    </h:body>
+</html>
+

@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <p:dataTable  id="tabelaHistoricoProcesso" sortMode="multiple" var="item" paginator="true" paginatorPosition="bottom" 
+                      value="#{ambHistoricoBean.listar(ambHistoricoBean.admsPacienteHistoricoGeral.numeroPaciente)}"  
+                      reflow="true" emptyMessage="Nenhum registo encontrado."
+                      selectionMode="single" rowKey="#{item.pkIdServicoEfetuado}"
+                      >
+            <p:column headerText="Nº de Processo" sortBy="#{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"
+                      filterBy="#{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains">
+                <center>
+                    <h:outputText value="#{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Nº de Subprocesso" sortBy="#{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"
+                      filterBy="#{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}" filterMatchMode="contains">
+                <center>
+                    <h:outputText value="#{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Nome" sortBy="#{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                #{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                #{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}"
+                      filterBy="#{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                #{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                #{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" filterMatchMode="contains">
+                <h:outputText value="#{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                     #{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                     #{item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}"/>
+            </p:column>
+
+            <p:column headerText="Nº da Solicitação" sortBy="#{item.fkIdServicoSolicitado.fkIdSolicitacao.pkIdSolicitacao}"
+                      filterBy="#{item.fkIdServicoSolicitado.fkIdSolicitacao.pkIdSolicitacao}" filterMatchMode="contains">
+                <center>
+                    <h:outputText value="#{item.fkIdServicoSolicitado.fkIdSolicitacao.pkIdSolicitacao}"/>
+                </center>
+            </p:column>
+            
+            <p:column headerText="Data da Solicitação">
+                <center>
+                    <h:outputText value="#{item.fkIdServicoSolicitado.fkIdSolicitacao.data}" >
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt"/>
+                    </h:outputText>
+                </center>
+            </p:column>
+
+            <p:column headerText="Serviço">
+                <h:outputText value="#{item.fkIdServicoSolicitado.fkIdServico.fkIdTipoServico.descricaoTipoServico}"/>
+            </p:column>
+
+            <p:column headerText="Classificação Serviço Solicitado">
+                <h:outputText value="#{item.fkIdServicoSolicitado.fkIdClassificacaoServicoSolicitado.descricaoClassificacaoServicoSolicitado}"/>
+            </p:column>
+
+            <p:column headerText="Tipo de Solicitação">
+                <h:outputText value="#{item.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+            </p:column>
+
+            <p:column headerText="Data">
+                <center>
+                    <h:outputText value="#{item.dataEfetuada}" >
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt"/>
+                    </h:outputText>
+                </center>
+            </p:column>
+
+            <p:column headerText="------">
+                <center>
+                    <p:menuButton value="Opções">
+                        <p:separator/>
+                        <p:menuitem value="Dados Pessoais" icon="ui-icon-info" process="@this" partialSubmit="true" ajax="true" 
+                                    actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(item.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                    update=":formPacienteVisualizar" onclick="PF('dialogMaisDetalhes').show();"
+                                    />
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Ambulatório" icon="ui-icon-info" process="@this" partialSubmit="true"                                                            
+                                    actionListener="#{ambHistoricoMetodosUteisBean.seleccionarDetalhesServicoEfetuado(item)}"
+                                    ajax="true" update=":formListarHistoricoGeralConsulta" 
+                                    onclick="PF('dialogListarHistoricoGeralConsulta').show()" 
+                                    disabled="#{ambHistoricoBean.verificaAmbulatorio(item.fkIdServicoSolicitado.fkIdServico.fkIdTipoServico.descricaoTipoServico)}"
+                                    />
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Exame (Diagnóstico)" icon="ui-icon-info" process="@this" partialSubmit="true"                                                            
+                                    actionListener="#{ambHistoricoMetodosUteisBean.seleccionarDetalhesServicoEfetuado(item)}"
+                                    ajax="true" update=":formListarHistoricoGeralExame" 
+                                    onclick="PF('dialogListarHistoricoGeralExame').show()"
+                                    disabled="#{ambHistoricoBean.verificaDiagnostico(item.fkIdServicoSolicitado.fkIdServico.fkIdTipoServico.descricaoTipoServico)}"
+                                    />
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Internamento" icon="ui-icon-info" process="@this" partialSubmit="true"  
+                                    actionListener="#{ambHistoricoMetodosUteisBean.seleccionarDetalhesServicoEfetuado(item)}"
+                                    ajax="true" update=":formListarHistoricoGeralInternamento" 
+                                    onclick="PF('dialogListarHistoricoGeralInternamento').show()" 
+                                    disabled="#{ambHistoricoBean.verificaInternamento(item.fkIdServicoSolicitado.fkIdServico.fkIdTipoServico.descricaoTipoServico)}"
+                                    />
+                        <p:separator/>
+                    </p:menuButton>
+                </center>
+            </p:column>
+
+        </p:dataTable>
+    </h:body>
+</html>
+

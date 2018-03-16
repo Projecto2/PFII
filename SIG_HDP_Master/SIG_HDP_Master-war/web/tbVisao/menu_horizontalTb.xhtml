@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+   <h:head>
+      <title>Facelet Title</title>
+   </h:head>
+   <h:body>
+      <li class="ic-home">
+         <h:link outcome="/faces/tbVisao/homeTb.xhtml">
+            <span>Página Inicial</span>
+         </h:link>
+      </li>
+       
+      <li class="ic-grid-tables"><a href="javascript:"><span>Tabelas Auxiliares</span></a>
+         <ul>
+            <li><h:link value="Classificação da Doença" outcome="/tbVisao/tbTabelasAuxiliares/classificacao_doencaTb.xhtml"></h:link></li>            <!--<li><h:link value="Classific. de Medicamentos" outcome="/farmVisao/farmTabelasAuxiliares/categoriaMedicamentoListarFarm.xhtml"></h:link></li>-->
+            <li><h:link value="Fase de Tratamento" outcome="/tbVisao/tbTabelasAuxiliares/fase_tratamentoTb.xhtml"></h:link></li>
+            <li><h:link value="Grupo de Risco" outcome="/tbVisao/tbTabelasAuxiliares/grupo_riscoTb.xhtml"/></li>
+            <li><h:link value="Localização da Doença" outcome="/tbVisao/tbTabelasAuxiliares/localizacao_doencaTb.xhtml"></h:link></li>
+            <li><h:link value="Medicamento" outcome="/tbVisao/tbTabelasAuxiliares/medicamentoTb.xhtml"/></li>
+            <li><h:link value="Sintomas" outcome="/tbVisao/tbTabelasAuxiliares/sintomaTb.xhtml"></h:link></li>
+            <li><h:link value="Tipo de Doente" outcome="/tbVisao/tbTabelasAuxiliares/tipo_doenteTb.xhtml"/></li>
+            <li><h:link value="Tipo de Notificação" outcome="/tbVisao/tbTabelasAuxiliares/tipo_notificacaoTb.xhtml"></h:link></li>            
+         </ul>
+      </li>
+       
+       <li class="ic-notifications" id="notificacao">
+         <a href="javascript:" onclick="PF('dialogVerNotificacoes').show()">
+            <span>
+               Notificações
+            </span>
+         </a>
+      </li>
+      <ui:include src="./tbNotificacao/dialogsDeNotificacaoTb.xhtml"/>
+   </h:body>
+</html>
+

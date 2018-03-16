@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>Internamento -> Tabelas Auxiliares -> Enfermarias</h2>
+                <br/>
+                <p:growl id="ms" autoUpdate="true" />
+                <h:form id="enfermarias">
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="2">
+
+                            <p:outputLabel value="Nome da Enfermaria"/>
+                            <p:inputText value="#{interEnfermariaListarBean.enfermariaPesq}" style="width: 95%"/>
+                            <p:outputLabel value="Código da Enfermaria" rendered="false"/>
+                            <p:inputText value="#{interEnfermariaListarBean.codEnfermariaPesq}" style="width: 95%"  rendered="false"/>
+                            <p:outputLabel value="Serviço"/>
+                            <p:selectOneMenu style="width: 90%" value="#{interEnfermariaListarBean.servicoPesq}" filter="true">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{admsServicoBean.findServicosInternamento()}" 
+                                               var="sv"
+                                               itemLabel="#{sv.nomeServico}"
+                                               itemValue="#{sv.pkIdServico}" 
+                                               />
+                            </p:selectOneMenu>
+                            <p></p><p></p>
+                            <h:panelGrid columns="2" cellpadding="0">
+                                <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interEnfermariaListarBean.pesquisar()}" update="resultado" ajax="true"/>
+                                <p:commandButton value="Actualizar Enfermarias" icon="ui-icon-refresh"  process="@this" id="adicionar" actionListener="#{interEnfermariaExcelBean.carregarEnfermariaTabela()}" update="resultado">
+                                    <p:tooltip id="toolTipAdicionar" for="adicionar" value="Actualizar Enfermarias"/>
+                                </p:commandButton>
+                            </h:panelGrid> 
+                        </h:panelGrid>  
+                    </p:fieldset>
+                    <p:panel id="resultado" style="border: 0px;">
+                        <p:dataTable  id="datatable" var="enf"  scrollWidth="31%"  value="#{interEnfermariaListarBean.listaEnfermarias}" 
+                                      emptyMessage="Nenum registo de enfermaria encontrado" selectionMode="single" selection="#{interEnfermariaListarBean.enfermaria}"
+                                      rowKey="#{enf.pkIdEnfermaria}" paginator="true" paginatorPosition="bottom" rows="10" >
+                           
+                            <p:column headerText="Descrição">
+                                <h:outputText value="#{enf.descricao}"/>
+                            </p:column>
+
+                            <p:column headerText="Serviço">
+                                <h:outputText value="#{enf.fkIdServico.nomeServico}"/>
+                            </p:column> 
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

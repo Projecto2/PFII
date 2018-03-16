@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Plano de Férias(Pesquisar)</title>
+     </h:head>
+
+     <h:body>
+
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Plano de Férias (Pesquisar)</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+                    <p:growl id="ms2" autoUpdate="true"/>
+
+                    <h:form id="formulario">
+                         <br/>
+                         <p:fieldset id="fieldsetPrincipal" style="border: none;">
+                              <p:panel style="height: 170px">
+                                   <h:panelGrid columns="2" width="100%">
+                                        <h:panelGrid cellpadding="3" id="gridPesquisarEstagiario">
+                                             <h:panelGrid columns="2" cellpadding="3">
+                                                  <p:outputLabel value="Ano*:"/>
+                                                  <p:inputNumber value="#{rhFeriasPlanoBean.anoPesquisa}" size="40" thousandSeparator=""
+                                                                 minValue="0" maxValue="#{rhValidarBean.anoActualMais1()}" decimalPlaces="0" 
+                                                                 required="true" requiredMessage="Indique o ano !"/>
+                                                  <p:outputLabel value="Departamento:"/>
+                                                  <f:validateBean disabled="true">
+                                                       <h:selectOneMenu id="comboDepartamento" value="#{rhFeriasPlanoBean.seccaoTrabalho.fkIdDepartamento.pkIdDepartamento}"
+                                                                        valueChangeListener="#{rhFeriasPlanoBean.changeDepartamento}" style="width: 330px; text-align: center">
+                                                            <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                                            <f:selectItems value="#{itensAjaxBean.departamentoList}" var="depart"
+                                                                           itemLabel="#{depart.descricao}" itemValue="#{depart.pkIdDepartamento}"/>
+                                                            <f:ajax execute="@this" event="change" render="comboSeccao"/>
+                                                       </h:selectOneMenu>
+                                                  </f:validateBean>
+                                                  <p:outputLabel value="Secção de Trabalho:"/>
+                                                  <f:validateBean disabled="true">
+                                                       <h:selectOneMenu id="comboSeccao" style="width: 330px; text-align: center"
+                                                                        value="#{rhFeriasPlanoBean.seccaoTrabalho.pkIdSeccaoTrabalho}">
+                                                            <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                                            <f:selectItems value="#{rhFeriasPlanoBean.seccaoTrabalhoList}" var="sec"
+                                                                           itemLabel="#{sec.descricao}" itemValue="#{sec.pkIdSeccaoTrabalho}"/>
+                                                       </h:selectOneMenu>
+                                                  </f:validateBean>
+                                             </h:panelGrid>
+                                             <h:panelGrid columns="2" cellpadding="3">
+                                                  <p:commandButton style="width: 165px" value="Pesquisar" icon="ui-icon-search" 
+                                                                   action="#{rhFeriasPlanoBean.pesquisar()}" update="dataTable"/>
+                                                  <p:commandButton style="width: 165px" value="Limpar" process="@this" 
+                                                                   action="#{rhFeriasPlanoBean.limparPesquisa()}"/>
+                                             </h:panelGrid>
+                                             <h:panelGrid columns="2" cellpadding="3">
+                                             </h:panelGrid>
+                                        </h:panelGrid>
+
+                                        <h:panelGrid style="text-align: center; float: right">
+                                             <p:commandButton style="width: 200px" value="Novo Registo de Férias" icon="ui-icon-plus" process="@this"
+                                                              action="#{rhFeriasNovasBean.limpar()}"/>
+                                        </h:panelGrid>
+                                   </h:panelGrid>
+                              </p:panel>
+                              <br/>
+                              <p:commandButton style="width: 100%" value="Imprimir Plano de Féras" ajax="false" actionListener="#{rhFeriasPlanoBean.imprimirPlanoGlobalPDF}" oncomplete="windows.open(_blank)"/>
+                              <br/>
+                              <br/>
+                              <p:dataTable id="dataTable" rows="10" paginator="true" paginatorPosition="bottom" style="width: 100%"
+                                           var="ferias" value="#{rhFeriasPlanoBean.feriasPesquisadasList}" emptyMessage="Nenhum registro de férias encontrado">
+                                   <p:column headerText="Nome do Funcionário" filterBy="#{ferias.fkIdFuncionario.fkIdPessoa.nome}">
+                                        <center>
+                                             <p:outputLabel value="#{ferias.fkIdFuncionario.fkIdPessoa.nome} 
+                                                            #{ferias.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                            #{ferias.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                             <br/>
+                                             <p:outputLabel value="Nº Cartão de Identidade: #{ferias.fkIdFuncionario.numeroCartao}"/>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Mês">
+                                        <center>
+                                             <p:outputLabel style="font-size: 15px;" value="#{rhFeriasPlanoBean.obterMes(ferias.dataInicio)}"/>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Data de Início">
+                                        <center>
+                                             <h:inputText style="border: none; background: none; text-align: center" readonly="true" value="#{ferias.dataInicio}">
+                                                  <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                             </h:inputText>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Data de Término">
+                                        <center>
+                                             <h:inputText style="border: none; background: none; text-align: center" readonly="true" value="#{ferias.dataTermino}">
+                                                  <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                             </h:inputText>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Estado das Férias">
+                                        <center>
+                                             <p:outputLabel style="font-size: 15px;" value="#{ferias.fkIdEstadoFerias.descricao}"/>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="-----------------------">
+                                        <center>
+                                             <p:commandButton value="Visualizar" process="@this" update=":formVisualizar:panelGridVisualizar" icon="ui-icon-info"
+                                                              onclick="PF('dialogVisualizar').show()" action="#{rhFeriasPlanoBean.setFeriasVisualizar(ferias)}"/>
+                                        </center>
+                                   </p:column>
+                              </p:dataTable>
+                              <br/>
+                         </p:fieldset>
+                    </h:form>
+                    <center>
+                         <p:dialog header="Visualizar Férias" showEffect="fade" resizable="false"
+                                   widgetVar="dialogVisualizar" modal="true" width="50%" height="420px">
+                              <h:form id="formVisualizar">
+                                   <h:panelGrid width="100%" id="panelGridVisualizar">
+                                        <h:panelGrid columns="3" id="gridBotoes" class="float-right" style="text-align: center">
+                                             <p:commandButton value="Cancelar Férias" process="@this" style="width: 160px" icon="ui-icon-close"
+                                                              update=":formulario:fieldsetPrincipal :formulario:dataTable" onclick="PF('dialogVisualizar').hide()"
+                                                              action="#{rhFeriasPlanoBean.cancelarFerias()}"
+                                                              disabled="#{rhFeriasPlanoBean.disabledCancelarFerias()}"/>
+                                             <p:commandButton value="Fechar" onclick="PF('dialogVisualizar').hide()" process="@this" style="width: 160px"
+                                                              action="#{rhFeriasPlanoBean.setFeriasVisualizar(null)}"/>
+                                        </h:panelGrid>
+                                        <p:panel style="height: 70px">
+                                             <h:panelGrid columns="2" cellpadding="2">
+                                                  <p:outputLabel style="font-size: 15px" value="Nome do Funcionário: "/>
+                                                  <p:outputLabel value="#{rhFeriasPlanoBean.feriasVisualizar.fkIdFuncionario.fkIdPessoa.nome}
+                                                                 #{rhFeriasPlanoBean.feriasVisualizar.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                                 #{rhFeriasPlanoBean.feriasVisualizar.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                                  <p:outputLabel style="font-size: 15px" value="Nº Cartão Identidade: "/>
+                                                  <p:outputLabel value="#{rhFeriasPlanoBean.feriasVisualizar.fkIdFuncionario.numeroCartao}"/>
+                                             </h:panelGrid>
+                                        </p:panel>
+                                        <p:panel>
+                                             <h:panelGrid columns="2" cellpadding="6">
+                                                  <p:outputLabel style="font-size: 15px" value="Estado das Férias: "/>
+                                                  <p:outputLabel value="#{rhFeriasPlanoBean.feriasVisualizar.fkIdEstadoFerias.descricao}"/>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Data de Início: "/>
+                                                  <h:inputText value="#{rhFeriasPlanoBean.feriasVisualizar.dataInicio}"
+                                                               style="border: none; background: none; " readonly="true">
+                                                       <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                  </h:inputText>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Data de Término: "/>
+                                                  <h:inputText value="#{rhFeriasPlanoBean.feriasVisualizar.dataTermino}"
+                                                               style="border: none; background: none; " readonly="true">
+                                                       <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                                  </h:inputText>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Dias a Gozar: "/>
+                                                  <p:outputLabel value="#{rhFeriasPlanoBean.feriasVisualizar.diasGozar}"/>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Dias a Descontar: "/>
+                                                  <p:outputLabel value="#{rhFeriasPlanoBean.feriasVisualizar.diasDescontar}"/>
+
+                                                  <p:outputLabel style="font-size: 15px" value="Observações: "/>
+                                                  <h:inputTextarea style="width: 140px; height: 60px; border: none; overflow-y: scroll;" 
+                                                                   value="#{rhFeriasPlanoBean.feriasVisualizar.observacao}" readonly="true"/>
+                                             </h:panelGrid>
+                                        </p:panel>
+                                   </h:panelGrid>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+
+               </ui:define>
+
+          </ui:composition>
+
+     </h:body>
+</html>

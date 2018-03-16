@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Dependentes</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="./../../../template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Dependentes</h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:growl autoUpdate="true"/>
+                    <br/>
+                    <center>
+                         <h:form id="formData">
+                              <p:panel style="height: 310px">
+                                   <h:panelGrid cellpadding="5">
+                                        <p:panel style="width:400px; height:220px;">
+                                             <center>
+                                                  <h:graphicImage id="imgFotografia" width="215px" height="160px"
+                                                                  url="#{rhPessoaBean.pastaFoto}#{rhDependenteBean.funcionarioSelecionado.fkIdPessoa.fkIdFoto.ficheiro}"/>
+                                                  <br/>
+                                                  <p:outputLabel value="Funcionário: #{rhDependenteBean.funcionarioSelecionado.fkIdPessoa.nome} 
+                                                                 #{rhDependenteBean.funcionarioSelecionado.fkIdPessoa.nomeDoMeio} 
+                                                                 #{rhDependenteBean.funcionarioSelecionado.fkIdPessoa.sobreNome}"/>
+                                                  <br/>
+                                                  <p:outputLabel value="Nº Cartão Identidade: #{rhDependenteBean.funcionarioSelecionado.numeroCartao}"/>
+                                             </center>
+                                        </p:panel>
+
+                                        <h:panelGrid columns="2" cellpadding="2">
+                                             <p:commandButton style="width: 200px" value="Novo Dependente" onclick="PF('dialogDependente').show();"
+                                                              process="@this" update=":formulario:gridCampos :formulario:gridBotoes"
+                                                              action="#{rhDependenteBean.setDependente(null)}" icon="ui-icon-plus"/>
+                                             <p:commandButton style="width: 200px" value="Voltar" process="@this" action="#{rhDependenteBean.voltar()}"/>
+                                        </h:panelGrid>
+                                   </h:panelGrid>
+                              </p:panel>
+
+                              <p:dataTable id="dataTable" var="dependente" value="#{rhDependenteBean.pesquisaPorFuncionario()}"
+                                           emptyMessage="Nenhum registro de dependente encontrado para este funcionário"
+                                           paginator="true" paginatorPosition="bottom" rows="10">
+                                   <p:column headerText="Nome do Dependente">
+                                        <center>
+                                             <p:outputLabel value="#{dependente.nomeCompleto}"/>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Grau de Parentesco">
+                                        <center>
+                                             <p:outputLabel value="#{dependente.grauParentesco}"/>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Data de Nascimento">
+                                        <center>
+                                             <h:inputText value="#{dependente.dataNascimento}" readonly="true" 
+                                                          style="border: none; background: none; text-align: center">
+                                                  <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                             </h:inputText>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="-------------------------------">
+                                        <center>
+                                             <p:commandButton value="Editar" icon="ui-icon-pencil" onclick="PF('dialogDependente').show();"
+                                                              action="#{rhDependenteBean.setDependente(dependente)}" process="@this" 
+                                                              partialSubmit="true" update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                             <p:commandButton value="Remover" onclick="PF('confirmDialogRemover').show();"
+                                                              action="#{rhDependenteBean.setDependenteRemover(dependente)}" process="@this"/>
+                                        </center>
+                                   </p:column>
+                              </p:dataTable>
+
+                              <p:confirmDialog message="Tem certeza que pretende remover o dependente selecionado ?"
+                                               header="Remover Dependente do Funcionário" severity="alert" widgetVar="confirmDialogRemover">
+                                   <p:commandButton value="Sim" actionListener="#{rhDependenteBean.remove(rhDependenteBean.dependenteRemover)}" 
+                                                    process="@this" update="dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                                   <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                              </p:confirmDialog>
+                         </h:form>
+                    </center>
+
+                    <center>
+                         <p:dialog header="Dependente" closable="false" showEffect="fade" width="35%"
+                                   widgetVar="dialogDependente" modal="true" closeOnEscape="true">
+                              <h:form id="formulario">
+                                   <p:fieldset>
+                                        <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                                             <p:outputLabel value="Nome Completo"/>
+                                             <p:inputText id="nome" value="#{rhDependenteBean.dependente.nomeCompleto}" 
+                                                          required="true" requiredMessage="Indique o nome completo"/>
+                                             <p:outputLabel value="Grau de Parentesco"/>
+                                             <p:inputText id="grauParentesco" value="#{rhDependenteBean.dependente.grauParentesco}"
+                                                          required="true" requiredMessage="Indique o grau de parentesco"/>
+                                             <p:outputLabel value="Data de Nascimento"/>
+                                             <p:calendar locale="pt" id="dataNascimento" navigator="true" yearRange="c-100:c"
+                                                         value="#{rhDependenteBean.dependente.dataNascimento}"
+                                                         required="true" requiredMessage="Indique a data de nascimento"/>
+                                        </h:panelGrid>
+
+                                        <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                                             <p:commandButton value="Guardar" action="#{rhDependenteBean.create()}" style="width: 150px"
+                                                              rendered="#{rhDependenteBean.dependente.pkIdDependente == null}" process="@form" partialSubmit="true"
+                                                              onclick="PF('dialogDependente').hide()" update=":formData:dataTable"/>
+                                             <p:commandButton value="Guardar Edição" action="#{rhDependenteBean.edit()}" style="width: 150px"
+                                                              rendered="#{rhDependenteBean.dependente.pkIdDependente != null}"  process="@form" partialSubmit="true"
+                                                              onclick="PF('dialogDependente').hide()" update=":formData:dataTable"/>
+                                             <p:commandButton value="Fechar" onclick="PF('dialogDependente').hide()" style="width: 150px" process="@this" 
+                                                              actionListener="#{rhDependenteBean.setDependente(null)}"/>
+                                        </h:panelGrid>
+                                   </p:fieldset>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

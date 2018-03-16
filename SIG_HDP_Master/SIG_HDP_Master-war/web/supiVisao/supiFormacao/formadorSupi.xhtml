@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form  acceptcharset="ISO-8859-1">
+                    <p:messages id="messagens" closable="true"/>
+                    <p:panel header="Gestão de Formação"> 
+
+                        <h:panelGrid columns="2" cellpadding="3">
+
+                            <p:outputLabel value="Tipo de Formador:" />
+                            <p:selectOneMenu  id="tipoformador" value="#{supiFormadorBean.idSupiFormadorAux}" filter="true"
+                                              required="true" requiredMessage="Deve selecionar o tipo de formador">
+                                <f:selectItem itemLabel="Selecione"/>
+
+                                <f:selectItems value="#{supiFormadorBean.listarTipoFormador()}"
+                                               var="form"
+                                               itemLabel="#{form.descricao}"
+                                               itemValue="#{form.pkIdTipoFormador}"/>
+                                
+                                <p:ajax event="change"  update="@form" listener="#{supiFormadorBean.botaoCategoria()}" ></p:ajax>
+
+                            </p:selectOneMenu>  
+
+                            <p:outputLabel rendered="#{supiFormadorBean.btnCategoriaformador}"  value="Entidade Formadora:" />
+                            <p:selectOneMenu rendered="#{supiFormadorBean.btnCategoriaformador}" id="categoriaformador" value="#{supiFormadorBean.supiFormadorAux.fkIdCategoriaFormador.pkIdCategoriaFormador}" filter="true"
+                                              required="true" requiredMessage="Deve selecionar a Categoria">
+                                <f:selectItem itemLabel="Selecione"/>
+
+                                <f:selectItems value="#{supiFormadorBean.listarCategoriaFormador()}"
+                                               var="categoria"
+                                               itemLabel="#{categoria.descricao}"
+                                               itemValue="#{categoria.pkIdCategoriaFormador}"/>
+                                <p:ajax event="change"  update="@form" listener="#{supiFormadorBean.botaoInstituicao()}" ></p:ajax>
+                            </p:selectOneMenu> 
+
+
+                        </h:panelGrid>
+
+                        <h:panelGrid columns="2" cellpadding="3">
+                            
+                            <p:outputLabel value="Formador:" />
+                                <p:selectOneMenu  id="forma" value="#{supiFormadorBean.rhFuncionario.pkIdFuncionario}" filter="true"
+                                                  required="true" requiredMessage="Deve selecionar o Formador">
+                                    <f:selectItem itemLabel="Selecione"/>
+
+                                    <f:selectItems value="#{supiFormadorBean.listarFuncionario()}"
+                                                   var="prof"
+                                                   itemLabel="#{prof.fkIdPessoa.nome} #{prof.fkIdPessoa.sobreNome}"
+                                                   itemValue="#{prof.pkIdFuncionario}"/>
+
+                                </p:selectOneMenu> 
+                           
+                        </h:panelGrid>
+                        
+                        
+                            
+                        <p:tab  rendered="false"  id="dadospessoais" title="Dados Pessoais Formador" >
+                                <h:panelGrid columns="2" cellpadding="3">
+                                
+                                <p:outputLabel value="Nome *: "/>
+                             <p:inputText style="width: 290px" value="#{supiFormadorBean.supiFormadorAux.fkIdPessoa.nome}"
+                                           required="true" requiredMessage="Indique o nome"/>
+                              <p:outputLabel value="Nome do Meio :"/>
+                              <p:inputText style="width: 290px" value="#{supiFormadorBean.supiFormadorAux.fkIdPessoa.nomeDoMeio}"/>
+                              <p:outputLabel value="Último Nome *:"/>
+                              <p:inputText style="width: 290px" value="#{supiFormadorBean.supiFormadorAux.fkIdPessoa.sobreNome}"
+                                           required="true" requiredMessage="Indique o último nome"/>
+                              
+                               <p:outputLabel value="Sexo *:"/>
+                              <h:selectOneMenu style="width: 300px; text-align: center" value="#{supiFormadorBean.supiFormadorAux.fkIdPessoa.fkIdSexo.pkIdSexo}">
+                                   <f:selectItems value="#{itensAjaxBean.sexoList}" var="sex"
+                                                  itemLabel="#{sex.descricao}" itemValue="#{sex.pkIdSexo}"/>
+                              </h:selectOneMenu>
+                               
+                               <p:outputLabel value="Estado Civil *:"/>
+                              <h:selectOneMenu style="width: 300px; text-align: center" required="true" requiredMessage="Indique o estado civil"
+                                               value="#{supiFormadorBean.supiFormadorAux.fkIdPessoa.fkIdEstadoCivil.pkIdEstadoCivil}">
+                                   <f:selectItems value="#{itensAjaxBean.estadoCivilList}" var="estado"
+                                                  itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoCivil}"/>
+                              </h:selectOneMenu>
+                                </h:panelGrid>
+                            </p:tab>
+                            
+                            <p:tab id="confirm" title="Dados Pessoais Formador" >
+                                <h:panelGrid columns="2" cellpadding="3">
+                                 <p:outputLabel value="Area de Formação:" />
+                                 <p:selectOneMenu  id="dadp" value="#{supiFormadorBean.supiFormadorAux.fkIdAreaFormacao.pkIdAreaFormacao}" filter="true"
+                                                  required="true" requiredMessage="Deve selecionar a área de formação">
+                                    <f:selectItem itemLabel="Selecione"/>
+
+                                    <f:selectItems value="#{supiFormadorBean.listarAreaFormacao()}"
+                                                   var="areaFormacao"
+                                                   itemLabel="#{areaFormacao.descricao}"
+                                                   itemValue="#{areaFormacao.pkIdAreaFormacao}"/>
+
+                                </p:selectOneMenu>
+                                 
+                                 <p:outputLabel value="Profissão:" />
+                                 <p:selectOneMenu  id="prof" value="#{supiFormadorBean.supiFormadorAux.fkIdProfissao.pkIdProfissao}" filter="true"
+                                                  required="true" requiredMessage="Deve selecionar a profissão">
+                                    <f:selectItem itemLabel="Selecione"/>
+
+                                    <f:selectItems value="#{supiFormadorBean.listarProfissao()}"
+                                                   var="profissao"
+                                                   itemLabel="#{profissao.descricao}"
+                                                   itemValue="#{profissao.pkIdProfissao}"/>
+
+                                </p:selectOneMenu>
+                                 
+                                 <p:outputLabel rendered="#{supiFormadorBean.btninstituicao}" value="Instituição de Proveniência:" />
+                                 <p:selectOneMenu rendered="#{supiFormadorBean.btninstituicao}" id="instituicao" value="#{supiFormadorBean.supiFormadorAux.fkIdInstituicaoProveniencia.pkIdInstituicaoProveniencia}" filter="true"
+                                                  required="true" requiredMessage="Deve selecionar a instituição">
+                                    <f:selectItem itemLabel="Selecione"/>
+
+                                    <f:selectItems value="#{supiFormadorBean.listarInstituicao()}"
+                                                   var="inst"
+                                                   itemLabel="#{inst.descricao}"
+                                                   itemValue="#{inst.pkIdInstituicaoProveniencia}"/>
+
+                                </p:selectOneMenu>
+                                 
+                                </h:panelGrid>
+                            </p:tab>
+                             
+                            
+                        
+                        
+
+                    </p:panel> 
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

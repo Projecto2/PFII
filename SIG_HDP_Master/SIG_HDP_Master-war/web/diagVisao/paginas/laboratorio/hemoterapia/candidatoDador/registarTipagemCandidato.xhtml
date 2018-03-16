@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagCandidatoDadorBean.temMensagemPendente == true}">
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Erro'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+        </c:if>
+
+        <h2>Laboratório -> Hemoterápia -> Candidatos à Dadores de Sangue -> Registo de Tipagem Sanguínea</h2>
+
+        <center>
+
+            <br/>
+
+            <h:form>
+                <p:growl sticky="true" id="messagens"/>
+
+                <h:panelGrid columns="2">
+
+                    <h3>Candidato à Dador - #{diagCandidatoDadorBean.diagCandidatoDador.codigoCandidatoDador} : 
+
+                        #{diagCandidatoDadorBean.diagCandidatoDador.fkIdPessoa.nome} 
+                        #{diagCandidatoDadorBdiagCandidatoDadorador.fkIdPessoa.nomeDoMeio}
+                        #{diagCandidatoDadorBean.diagCandidatoDador.fkIdPessoa.sobreNome}
+                    </h3>
+
+                </h:panelGrid>
+
+                <p:fieldset style="width: 50%">
+                    <h:panelGrid columns="4" cellpadding="15" >
+                        <h:outputLabel value="Anti-A: "/>
+                        <p:inputText value="#{diagCandidatoDadorBean.diagTipagemDador.antiA}" maxlength="45"/>
+
+                        <h:outputLabel value="Anti-B: "/>
+                        <p:inputText value="#{diagCandidatoDadorBean.diagTipagemDador.antiB}" maxlength="45"/>
+
+                        <h:outputLabel value="Anti-AB: "/>
+                        <p:inputText value="#{diagCandidatoDadorBean.diagTipagemDador.antiAb}" maxlength="45"/>
+
+                        <h:outputLabel value="Anti-D: "/>
+                        <p:inputText value="#{diagCandidatoDadorBean.diagTipagemDador.antiD}" maxlength="45"/>
+
+                        <h:outputLabel value="Du (D fraco): "/>
+                        <p:inputText value="#{diagCandidatoDadorBean.diagTipagemDador.du}" maxlength="45"/>
+
+                        <h:outputLabel value="A1: "/>
+                        <p:inputText value="#{diagCandidatoDadorBean.diagTipagemDador.a1}" maxlength="45"/>
+
+                        <h:outputLabel value="B: "/>
+                        <p:inputText value="#{diagCandidatoDadorBean.diagTipagemDador.b}" maxlength="45"/>
+
+                        <h:outputLabel value="O: "/>
+                        <p:inputText value="#{diagCandidatoDadorBean.diagTipagemDador.o}" maxlength="45"/>                             
+
+                        <h:outputLabel value="Conclusão * : "/>
+
+                        <p:selectOneMenu style="width: 90%" value="#{diagCandidatoDadorBean.diagGrupoSanguineo.pkIdGrupoSanguineo}" 
+                                         required="true" requiredMessage="É necessário informar o Grupo do Sanguineo" >  
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{diagCandidatoDadorBean.getListaDiagGrupoSanguineo()}"
+                                           var="grupo"
+                                           itemLabel="#{grupo.descricaoGrupoSanguineo}" itemValue="#{grupo.pkIdGrupoSanguineo}" />
+                        </p:selectOneMenu>
+
+                    </h:panelGrid>
+
+                    <br/>
+
+                    <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                    <p:separator/>
+
+                    <h:panelGroup style=" float: right">
+                        <p:commandButton icon="ui-icon-disk" value="Registar Tipagem" action="#{diagCandidatoDadorBean.registarTipagemCandidato()}"/> 
+                        <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagCandidatoDadorBean.redirecionarVisualizarCandidato()}"/>
+                    </h:panelGroup>
+
+                </p:fieldset>
+
+            </h:form>
+
+            <br/>
+        </center>
+    </ui:define>
+
+</ui:composition>

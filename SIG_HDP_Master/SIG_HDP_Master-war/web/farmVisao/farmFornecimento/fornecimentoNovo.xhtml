@@ -1,0 +1,200 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Novo Fornecimento</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Novo Fornecimento</h2>
+            <p:messages id="msg" autoUpdate="true" closable="true"/>
+            <p:growl autoUpdate="true"/>
+            <p:fieldset style="width: 95%; margin: auto">
+               <h:form id="formPrincipal">
+                  <center>
+                     <h:panelGrid columns="2" width="70%" >
+
+                        <p:outputLabel value="Origem do Fornecimento"/>
+                        <p:selectOneMenu id="tipoFornecimento" style="width: 60%" rendered="true"
+                                         requiredMessage="Defina o tipo de Fornecimento." 
+                                         value="#{farmFornecimentoNovoBean.fornecimento.fkIdTipoFornecimento.pkIdTipoFornecimento}">
+                           <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                           <f:selectItems value="#{farmListasUteisBean.todosTipoFornecimento}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Fornecedor"/>
+                        <p:selectOneMenu id="tipoFornecedor" style="width: 60%" rendered="true"
+                                         requiredMessage="Defina o Fornecedor." 
+                                         value="#{farmFornecimentoNovoBean.fornecimento.fkIdFornecedor.pkIdFornecedor}">
+                           <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                           <f:selectItems value="#{farmListasUteisBean.todosFornecedores}"/>
+                        </p:selectOneMenu>
+                        <p></p><p></p>
+
+                     </h:panelGrid>
+                  </center>
+
+                  <p:fieldset id="produtosDisponiveis" legend="Produtos Disponiveis" >
+                     <h:panelGrid columns="5" cellspacing="3" cellpadding="5" id="painelPesquisa">
+                        <p:outputLabel value="Lote"/>
+                        <f:validateBean disabled="true">
+                           <p:inputText value="#{farmFornecimentoNovoBean.loteProdutoPesquisa.numeroLote}"/>
+                        </f:validateBean>
+
+                        <p:outputLabel value="Descrição"/>
+                        <f:validateBean disabled="true">
+                           <p:inputText value="#{farmFornecimentoNovoBean.loteProdutoPesquisa.fkIdProduto.descricao}"/>
+                        </f:validateBean>
+
+                        <p:commandButton value="Pesquisar" icon="ui-icon-search"
+                                         action="#{farmFornecimentoNovoBean.pesquisarLotesProduto()}"
+                                         update="tabelaItensDisponiveis" process="painelPesquisa"
+                                         />
+                     </h:panelGrid>
+                     <p:dataTable id="tabelaItensDisponiveis" var="itemDisponivel" rows="6"
+                                  paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+                                  {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                                  {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16"
+                                  value="#{farmFornecimentoNovoBean.disponiveis}" paginatorPosition="bottom"
+                                  emptyMessage="Aguardando pesquisa...">
+
+
+                        <p:column headerText="Descrição" sortBy="#{itemDisponivel.fkIdProduto.descricao}">
+                           <center>
+                              <p:outputLabel value="#{itemDisponivel.fkIdProduto.descricao} 
+                                             #{itemDisponivel.fkIdProduto.dosagem}
+                                             #{itemDisponivel.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Forma" sortBy="#{itemDisponivel.fkIdProduto.fkIdFormaFarmaceutica.descricao}">
+                           <center>
+                              <p:outputLabel value="#{itemDisponivel.fkIdProduto.fkIdFormaFarmaceutica.descricao}"/>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Lote" sortBy="#{itemDisponivel.numeroLote}">
+                           <center>
+                              <p:outputLabel value="#{itemDisponivel.numeroLote}"/>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Data de Validade">
+                           <center><h:outputText value="#{itemDisponivel.dataValidade}"
+                                                 style="color: #{farmStockValidadeProdutosBean.getValidadeItemColor(itemDisponivel)}" >
+                                 <f:convertDateTime pattern="dd-MM-yyyy" />
+                              </h:outputText></center>
+                        </p:column>
+                        <p:column headerText='-------'>
+                           <center>
+                              <p:commandButton value="Adicionar" icon="ui-icon-transferthick-e-w" partialSubmit="true"
+                                               process="@this" update="@this tabelaItensDisponiveis :formPrincipal:seleccionados"
+                                               actionListener="#{farmFornecimentoNovoBean.setLoteProdutoPesquisa(itemDisponivel)}"
+                                               action="#{farmFornecimentoNovoBean.adicionar}"
+                                               />
+                           </center>
+                        </p:column>
+                     </p:dataTable>
+                  </p:fieldset>
+
+                  <p:fieldset id="seleccionados" legend="Produtos Seleccionados" >
+                     <p:dataTable id="tabelaItensSeleccionados" var="itemSeleccionado" 
+                                  value="#{farmFornecimentoNovoBean.seleccionados}"
+                                  emptyMessage="Aguardando Selecção...">
+                        <p:column headerText="Lote">
+                           <center>
+                              <p:outputLabel value="#{itemSeleccionado.fkIdLoteProduto.numeroLote}"/>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Descrição">
+                           <center>
+                              <p:outputLabel value="#{itemSeleccionado.fkIdLoteProduto.fkIdProduto.descricao} 
+                                             #{itemSeleccionado.fkIdLoteProduto.fkIdProduto.dosagem}
+                                             #{itemSeleccionado.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Custo por Unidade (AKZ)">
+                           <center>
+                              <p:inputText  style="width: 80%" value="#{itemSeleccionado.custoPorUnidade}">
+                                 <f:ajax event="change" execute="@this" render="tabelaItensSeleccionados"/>
+                              </p:inputText>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Quantidade">
+                           <center>
+                              <p:inputText type="number" style="width: 80%" value="#{itemSeleccionado.quantidade}" >
+                                 <f:ajax event="change" execute="@this" render="tabelaItensSeleccionados"/>
+                              </p:inputText>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Armazém de Destino">
+                           <center>
+                              <h:selectOneMenu id="localDestino" style="width: 120px" required="true"
+                                               requiredMessage="Defina o Armazem de Destino para 
+                                               #{itemSeleccionado.fkIdLoteProduto.fkIdProduto.descricao} 
+                                               #{itemSeleccionado.fkIdLoteProduto.fkIdProduto.dosagem}
+                                               #{itemSeleccionado.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}" 
+                                               value="#{itemSeleccionado.fkIdLocalArmazenamento.pkIdLocalArmazenamento}">
+                                 <f:selectItem itemLabel="---- Selecione ----" itemValue="#{null}"/>
+                                 <f:selectItems value="#{farmFichaDeStockNoLocalBean.locaisArmazenamento}"/>
+                                 <f:ajax event="change" execute="@this" render="tabelaItensSeleccionados"/>
+                              </h:selectOneMenu> 
+                           </center>
+                        </p:column>
+                        <p:column headerText='-------'>
+                           <center>
+                              <p:commandButton value="Remover" icon="ui-icon-transferthick-e-w" partialSubmit="true"
+                                               process="@this" update="@this :formPrincipal:custoTotal :formPrincipal:tabelaItensDisponiveis tabelaItensSeleccionados"
+                                               action="#{farmFornecimentoNovoBean.remover(itemSeleccionado)}"
+                                               />
+                           </center>
+                        </p:column>
+                     </p:dataTable>                       
+                  </p:fieldset>
+
+                  <h:panelGrid columns="2">
+                     <p:outputLabel value="Custo total: "/>
+                     <h:outputText id="custoTotal" value="#{farmFornecimentoNovoBean.fornecimento.custoTotal} AKZ"/>
+                     <p:commandButton icon="ui-icon-calculator" process="@this custoTotal" update="custoTotal" value="Calcular"
+                                      action="#{farmFornecimentoNovoBean.calcularCustoTotal()}"/>
+                  </h:panelGrid>
+
+                  <center>
+                     <p:dialog  widgetVar="w_dlgLoading" header="A processar" modal="true" closable="false" resizable="false">
+                        <center>
+                           <img src="../../resources/Imagens/loading.gif" style="margin: auto" width="128" height="128" alt="loading"/>
+                        </center>
+                        <br/>
+                        <p>Pode demorar alguns segundos. Por favor aguarde....</p>
+                     </p:dialog>
+                     <p:commandButton value="Guardar" action="#{farmFornecimentoNovoBean.criar()}"
+                                      onstart="PF('w_dlgLoading').show()" oncomplete="PF('w_dlgLoading').hide()"
+                                      update="@form" icon="ui-icon-disk"/>
+                  </center>
+
+               </h:form>
+            </p:fieldset>
+         </ui:define>
+      </ui:composition>
+   </h:body>
+</html>

@@ -1,0 +1,298 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form id="cadastro">
+                    <h2>#{interObjetosSessaoBean.menuTitulo} -> Pacientes -> Internados -> Registar Parâmetros Vitais do Paciente</h2>
+                    <br/>
+                    <p:panel header="Ficha Terapeutica - Parametros Vitais" id="bb">
+                        <p:growl id="ms" autoUpdate="true" />
+                        <br/>
+                        <p:commandButton value="Voltar" style="width: 130px;" styleClass="float-right" action="#{interControloParametrosVitaisNovoBean.voltar()}" partialSubmit="true" process="@this" icon="ui-icon-arrowreturnthick-1-w"/>
+                        <center>
+                            <span style="font-size: 16pt">
+                                <p:commandLink style="color: #0088cc" value="#{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                               ajax="true" partialSubmit="true" process="@this" 
+                                               actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                               update=":formPacienteVisualizar" 
+                                               onclick="PF('dialogMaisDetalhes').show();"/>
+                            </span>
+                            <br/>
+                            #{msgs.subProcesso}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                            #{msgs.dataDaSolicitacao}: 
+                            <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </p:outputLabel>
+                        </center>
+                        <br/>
+                        <p:panel id="resultadoO" style="border: 0px;">  
+                            <p:dataTable var="var" scrollWidth="31%" emptyMessage="Nenhum parametro vital encontrado"
+                                         value="#{interRegistoInternamentoParametroVitalListarBean.pesquisar(interControloDiarioBean.registoInternamento.pkIdRegistoInternamento, 0, 1)}" editable="true" id="tableEdit1" selectionMode="single" rowKey="#{var.pkIdRegistoInternamentoHasParametroVital}" paginator="true"  paginatorPosition="bottom" rows="10" >
+
+                                <f:facet name="header">
+                                    Lista de Parâmetros
+                                </f:facet>
+
+                                <p:ajax event="rowEdit" listener="#{interControloParametrosVitaisNovoBean.onRowEdit}" update="tableEdit1" />
+
+                                <p:column headerText="Parametros" width="150">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{var.fkIdParametroVital.descricao}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText value="#{var.fkIdParametroVital.descricao}" readonly="true"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Hora">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{var.fkIdHoraMedicacao.descricao}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText value="#{var.fkIdHoraMedicacao.descricao}" readonly="true"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="#{interControloParametrosVitaisNovoBean.hora()}">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{interControloParametrosVitaisListarBean.pesquisarPorParametro(var.fkIdParametroVital.descricao)} #{interParametroVitalListarBean.unidadeParametro(var.fkIdParametroVital.descricao, interControloDiarioBean.registoInternamento.pkIdRegistoInternamento)}" rendered="#{var.fkIdParametroVital.descricao != 'Tensão Arterial'}"/>
+                                            <h:outputText value="#{interControloParametrosVitaisListarBean.findTensaoArterial()} #{interParametroVitalListarBean.unidadeParametro(var.fkIdParametroVital.descricao, interControloDiarioBean.registoInternamento.pkIdRegistoInternamento)}" rendered="#{var.fkIdParametroVital.descricao == 'Tensão Arterial'}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <center>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.ta1}" id="ta1" validatorMessage="Digite um valor válido para a Tensão Alta. Exemplo: De 0 a 400" minValue="0" maxValue="400" 
+                                                               required="true" requiredMessage="Por favor introduza a Tensão Alta." size="12" rendered="#{var.fkIdParametroVital.descricao == 'Tensão Arterial'}" readonly="#{interControloParametrosVitaisListarBean.findTensaoArterial() != null}">
+                                                </p:inputNumber>
+                                                <p:watermark for="ta1" value="Alta" />    
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.ta2}" id="ta2" validatorMessage="Digite um valor válido para a Tensão Baixa. Exemplo: De 0 a 200" minValue="0" maxValue="200" 
+                                                               required="true" requiredMessage="Por favor introduza a Tensão Baixa." size="12" rendered="#{var.fkIdParametroVital.descricao == 'Tensão Arterial'}" readonly="#{interControloParametrosVitaisListarBean.findTensaoArterial() != null}">
+                                                </p:inputNumber>   
+                                                <p:watermark for="ta2" value="Baixa" />                                                
+
+                                                <p:inputNumber id="pulso" value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" validatorMessage="Digite um valor válido para o pulso. Exemplo: De 0 a 300"
+                                                               minValue="0" maxValue="300" required="true" requiredMessage="Por favor introduza o Pulso." size="12" rendered="#{var.fkIdParametroVital.descricao == 'Pulso'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Pulso') != 0}">
+                                                </p:inputNumber>
+                                                <h:selectOneMenu id="unidadePulso" value="#{interControloParametrosVitaisNovoBean.interControloParametros.fkIdPulsoUnidade.pkIdPulsoUnidade}" style="border-radius:10%;font-weight:500;" rendered="#{var.fkIdParametroVital.descricao == 'Pulso'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Pulso') != 0}">
+                                                    <f:selectItems value="#{interPulsoUnidadeListarBean.lerTodos}" 
+                                                                   var="pu"
+                                                                   itemLabel="#{pu.descricao}"
+                                                                   itemValue="#{pu.pkIdPulsoUnidade}" 
+                                                                   />
+                                                </h:selectOneMenu>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0" maxValue="100" validatorMessage="Digite um valor válido para a Saturação. Exemplo: De 0 a 100"
+                                                               symbol=" %" symbolPosition="s" required="true" requiredMessage="Por favor introduza a Saturação."  rendered="#{var.fkIdParametroVital.descricao == 'Saturação'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Saturação') != 0}"/>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0" maxValue="90" validatorMessage="Digite um valor válido para a Frequência Respiratória. Exemplo: De 0 a 90"
+                                                               required="true" requiredMessage="Por favor introduza a Frequência Respiratória."  rendered="#{var.fkIdParametroVital.descricao == 'Frequência Respiratória'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Frequência Respiratória') != 0}"/>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0.0" maxValue="50.0"  validatorMessage="Digite um valor válido para a Temperatura. Exemplo: De 0 a 50" 
+                                                               symbol=" ºc" symbolPosition="s" required="true" requiredMessage="Por favor introduza a Temperatura."  rendered="#{var.fkIdParametroVital.descricao == 'Temperatura'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Temperatura') != 0}">
+
+                                                </p:inputNumber>    
+
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" minValue="0" maxValue="1000.0"
+                                                               symbol=" kg" symbolPosition="s" required="true" requiredMessage="Por favor introduza o Peso."  rendered="#{var.fkIdParametroVital.descricao == 'Peso'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Peso') != 0}" size="12">
+                                                </p:inputNumber>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0" maxValue="15000" validatorMessage="Digite um valor válido para a Diuresi. Exemplo: De 0 a 15000"
+                                                               symbol=" ml" symbolPosition="s" required="true" requiredMessage="Por favor introduza a Diuresi." rendered="#{var.fkIdParametroVital.descricao == 'Diuresi'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Diuresi') != 0}"/>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0" maxValue="1000"  validatorMessage="Digite um valor válido para a Glicemia. Exemplo: De 0 a 1000"
+                                                               symbol=" mg/dl" symbolPosition="s" required="true" requiredMessage="Por favor introduza a Glicemia." rendered="#{var.fkIdParametroVital.descricao == 'Glicemia'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Glicemia') != 0}"/>
+                                            </center>  
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Data registada no paciente * ">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{interControloParametrosVitaisNovoBean.dataRegistada}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <center>
+                                                <p:calendar id="hora"
+                                                            value="#{interControloParametrosVitaisNovoBean.dataRegistada}"
+                                                            size="16"
+                                                            required="true"
+                                                            requiredMessage="É necessário informar a data registada no paciente"
+                                                            converterMessage="Data no formato inválido. utilize dd/MM/yyyy"
+                                                            pattern="dd/MM/yyyy">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                </p:calendar>
+                                            </center>    
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column>
+                                    <p:rowEditor />
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                        <br/>
+                        <p:panel id="resultadoOtrs" style="border: 0px;" rendered="#{interRegistoInternamentoParametroVitalListarBean.findAllOutrosParametrosHorarios(interControloDiarioBean.registoInternamento.pkIdRegistoInternamento).size() > 0}">  
+                            <p:dataTable var="varOtrs" scrollWidth="31%" emptyMessage="Nenhum parametro vital encontrado"
+                                         value="#{interRegistoInternamentoParametroVitalListarBean.findAllOutrosParametrosHorarios(interControloDiarioBean.registoInternamento.pkIdRegistoInternamento)}" editable="true" id="tableEdit1Otrs" selectionMode="single" rowKey="#{varOtrs.pkIdRegistoInternamentoHasParametroVital}"  paginator="true" rows="10" >
+
+                                <f:facet name="header">
+                                    Outros Parametros
+                                </f:facet>
+
+                                <p:ajax event="rowEdit" listener="#{interControloParametrosVitaisNovoBean.onRowEdit}" update="tableEdit1Otrs" />
+
+                                <p:column headerText="Parametros" width="150">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{varOtrs.fkIdParametroVital.descricao}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText value="#{varOtrs.fkIdParametroVital.descricao}" readonly="true"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Hora">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{varOtrs.fkIdHoraMedicacao.descricao}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:inputText value="#{varOtrs.fkIdHoraMedicacao.descricao}" readonly="true"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="#{interControloParametrosVitaisNovoBean.hora()}">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{interControloParametrosVitaisListarBean.pesquisarPorParametro(varOtrs.fkIdParametroVital.descricao)} #{interParametroVitalListarBean.unidadeParametro(varOtrs.fkIdParametroVital.descricao, interControloDiarioBean.registoInternamento.pkIdRegistoInternamento)}" rendered="#{varOtrs.fkIdParametroVital.descricao != 'Tensão Arterial'}"/>
+                                            <h:outputText value="#{interControloParametrosVitaisListarBean.findTensaoArterial()} #{interParametroVitalListarBean.unidadeParametro(varOtrs.fkIdParametroVital.descricao, interControloDiarioBean.registoInternamento.pkIdRegistoInternamento)}" rendered="#{varOtrs.fkIdParametroVital.descricao == 'Tensão Arterial'}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <center>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.ta1}" id="ta1" validatorMessage="Digite um valor válido para a Tensão Alta. Exemplo: De 0 a 400" minValue="0" maxValue="400" 
+                                                               required="true" requiredMessage="Por favor introduza a Tensão Alta." size="12" rendered="#{varOtrs.fkIdParametroVital.descricao == 'Tensão Arterial'}" readonly="#{interControloParametrosVitaisListarBean.findTensaoArterial() != null}">
+                                                </p:inputNumber>
+                                                <p:watermark for="ta1" value="Alta" />    
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.ta2}" id="ta2" validatorMessage="Digite um valor válido para a Tensão Baixa. Exemplo: De 0 a 200" minValue="0" maxValue="200" 
+                                                               required="true" requiredMessage="Por favor introduza a Tensão Baixa." size="12" rendered="#{varOtrs.fkIdParametroVital.descricao == 'Tensão Arterial'}" readonly="#{interControloParametrosVitaisListarBean.findTensaoArterial() != null}">
+                                                </p:inputNumber>   
+                                                <p:watermark for="ta2" value="Baixa" />                                                
+
+                                                <p:inputNumber id="pulso" value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" validatorMessage="Digite um valor válido para o pulso. Exemplo: De 0 a 300"
+                                                               minValue="0" maxValue="300" required="true" requiredMessage="Por favor introduza o Pulso." size="12" rendered="#{varOtrs.fkIdParametroVital.descricao == 'Pulso'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Pulso') != 0}">
+                                                </p:inputNumber>
+                                                <h:selectOneMenu id="unidadePulso" value="#{interControloParametrosVitaisNovoBean.interControloParametros.fkIdPulsoUnidade.pkIdPulsoUnidade}" style="border-radius:10%;font-weight:500;" rendered="#{varOtrs.fkIdParametroVital.descricao == 'Pulso'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Pulso') != 0}">
+                                                    <f:selectItems value="#{interPulsoUnidadeListarBean.lerTodos}" 
+                                                                   var="pu"
+                                                                   itemLabel="#{pu.descricao}"
+                                                                   itemValue="#{pu.pkIdPulsoUnidade}" 
+                                                                   />
+                                                </h:selectOneMenu>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0" maxValue="100" validatorMessage="Digite um valor válido para a Saturação. Exemplo: De 0 a 100"
+                                                               symbol=" %" symbolPosition="s" required="true" requiredMessage="Por favor introduza a Saturação."  rendered="#{varOtrs.fkIdParametroVital.descricao == 'Saturação'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Saturação') != 0}"/>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0" maxValue="90" validatorMessage="Digite um valor válido para a Frequência Respiratória. Exemplo: De 0 a 90"
+                                                               required="true" requiredMessage="Por favor introduza a Frequência Respiratória."  rendered="#{varOtrs.fkIdParametroVital.descricao == 'Frequência Respiratória'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Frequência Respiratória') != 0}"/>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0.0" maxValue="50.0"  validatorMessage="Digite um valor válido para a Temperatura. Exemplo: De 0 a 50" 
+                                                               symbol=" ºc" symbolPosition="s" required="true" requiredMessage="Por favor introduza a Temperatura."  rendered="#{varOtrs.fkIdParametroVital.descricao == 'Temperatura'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Temperatura') != 0}">
+
+                                                </p:inputNumber>    
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" minValue="0" maxValue="1000.0"
+                                                               symbol=" kg" symbolPosition="s" required="true" requiredMessage="Por favor introduza o Peso."  rendered="#{varOtrs.fkIdParametroVital.descricao == 'Peso'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Peso') != 0}" size="12">
+                                                </p:inputNumber>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0" maxValue="15000" validatorMessage="Digite um valor válido para a Diuresi. Exemplo: De 0 a 15000"
+                                                               symbol=" ml" symbolPosition="s" required="true" requiredMessage="Por favor introduza a Diuresi." rendered="#{varOtrs.fkIdParametroVital.descricao == 'Diuresi'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Diuresi') != 0}"/>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" size="12" minValue="0" maxValue="1000"  validatorMessage="Digite um valor válido para a Glicemia. Exemplo: De 0 a 1000"
+                                                               symbol=" mg/dl" symbolPosition="s" required="true" requiredMessage="Por favor introduza a Glicemia." rendered="#{varOtrs.fkIdParametroVital.descricao == 'Glicemia'}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro('Glicemia') != 0}"/>
+
+                                                <p:inputNumber value="#{interControloParametrosVitaisNovoBean.interControloParametros.valor}" minValue="0" 
+                                                               rendered="#{interRegistoInternamentoParametroVitalListarBean.findOutrosParametrosVitais(interControloDiarioBean.registoInternamento.pkIdRegistoInternamento)}" readonly="#{interControloParametrosVitaisListarBean.pesquisarPorParametro(varOtrs.fkIdParametroVital.descricao) != 0}" size="12">
+                                                </p:inputNumber>
+
+                                            </center>  
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="Data registada no paciente * ">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{interControloParametrosVitaisNovoBean.dataRegistada}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <center>
+                                                <p:calendar id="horaOtrs"
+                                                            value="#{interControloParametrosVitaisNovoBean.dataRegistada}"
+                                                            size="16"
+                                                            required="true"
+                                                            requiredMessage="É necessário informar a data registada no paciente"
+                                                            converterMessage="Data no formato inválido. utilize dd/MM/yyyy"
+                                                            pattern="dd/MM/yyyy">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                </p:calendar>
+                                            </center>    
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column>
+                                    <p:rowEditor />
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+                        <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+                        <p:separator />
+                        <p:separator />    
+                        <br/>
+                    </p:panel>
+                </h:form>     
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

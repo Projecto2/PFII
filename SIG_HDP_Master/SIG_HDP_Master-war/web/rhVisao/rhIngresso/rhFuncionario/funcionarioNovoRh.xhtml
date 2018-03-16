@@ -1,0 +1,314 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Novo Funcionário</title>
+          <h:outputScript name="JS/previewImagem.js"/>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Novo Funcionário</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+
+                    <h:form id="formularioPrincipal">
+                         <br/>
+                         <p:tabView id="tabPrincipal" style="height: 500px">
+                              <p:tab title="Generalidades de Pessoa">
+                                   <ui:include src="./../rhPessoa/pessoaNovaTabViewRh.xhtml"/>
+                              </p:tab>
+
+                              <p:tab title="Generalidades de Funcionário">
+                                   <center>
+                                        <h:panelGrid columns="1" width="70%">
+                                             <f:validateBean disabled="true">
+                                                  <p:tabView id="tabFuncionario">
+                                                       <p:tab title="Dados Iniciais">
+                                                            <h:panelGrid columns="2" width="100%" cellpadding="5" id="gridTipoFuncionario">
+                                                                 <p:outputLabel value="Data de Admissão*:"/>
+                                                                 <p:calendar locale="pt" navigator="true" size="40" value="#{rhFuncionarioNovoBean.funcionario.dataAdmissao}" 
+                                                                             yearRange= "c-100:c" required="true" requiredMessage="Indique a data de admissão"
+                                                                             maxdate="#{rhValidarBean.dataDeHoje}" pattern="dd-MM-yyyy">
+                                                                 </p:calendar>
+                                                                 <p:outputLabel value="Data de Demissão:"/>
+                                                                 <p:calendar locale="pt" id="dataDemissao" navigator="true" size="40" value="#{rhFuncionarioNovoBean.funcionario.dataDemissao}" 
+                                                                             yearRange= "c-100:c" maxdate="#{rhValidarBean.dataDeHoje}" required="true"
+                                                                             requiredMessage="Indique a data de demissão" pattern="dd-MM-yyyy"
+                                                                             disabled="#{rhFuncionarioNovoBean.funcionario.fkIdEstadoFuncionario.descricao != 'Demitido'}">
+                                                                 </p:calendar>
+                                                                 <p:outputLabel value="Data de Reforma:"/>
+                                                                 <p:calendar locale="pt" id="dataReforma" navigator="true" size="40" value="#{rhFuncionarioNovoBean.funcionario.dataReforma}" 
+                                                                             yearRange= "c-100:c" maxdate="#{rhValidarBean.dataDeHoje}" required="true"
+                                                                             requiredMessage="Indique a data de reforma" pattern="dd-MM-yyyy"
+                                                                             disabled="#{rhFuncionarioNovoBean.funcionario.fkIdEstadoFuncionario.descricao != 'Reformado'}">
+                                                                 </p:calendar>
+                                                                 <p:outputLabel value="Nível Acadêmico*:"/>
+                                                                 <h:selectOneMenu style="text-align: center; width: 300px" required="true" 
+                                                                                  requiredMessage="Indique o nivel acadêmico"
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdNivelAcademico.pkIdNivelAcademico}">
+                                                                      <f:selectItems value="#{itensAjaxBean.nivelAcademicoList}" var="niv"
+                                                                                     itemLabel="#{niv.descricaoNivelAcademico}" itemValue="#{niv.pkIdNivelAcademico}"/>
+                                                                 </h:selectOneMenu>
+                                                                 <p:outputLabel value="Estado do Funcionário*:"/>
+                                                                 <h:selectOneMenu id="comboEstadoFuncionario" style="width: 300px; text-align: center" 
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdEstadoFuncionario.pkIdEstadoFuncionario}"
+                                                                                  valueChangeListener="#{rhFuncionarioNovoBean.changeEstadoFuncionario}"
+                                                                                  required="true" requiredMessage="Indique o estado do funcionário">
+                                                                      <f:selectItems value="#{itensAjaxBean.estadoFuncionarioList}" var="estFunc"
+                                                                                     itemLabel="#{estFunc.descricao}" itemValue="#{estFunc.pkIdEstadoFuncionario}"/>
+                                                                      <f:ajax execute="@this" render="dataDemissao dataReforma" event="change"/>
+                                                                 </h:selectOneMenu>
+                                                                 <p:outputLabel value="Tipo de Funcionário*:"/>
+                                                                 <h:selectOneMenu style="text-align: center; width: 300px" required="true"
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdTipoFuncionario.pkIdTipoFuncionario}"
+                                                                                  valueChangeListener="#{rhFuncionarioNovoBean.changeTipoFuncionario}"
+                                                                                  requiredMessage="Indique o tipo de funcionário">
+                                                                      <f:selectItems value="#{itensAjaxBean.tipoFuncionarioList}" var="tipFun"
+                                                                                     itemLabel="#{tipFun.descricao}" itemValue="#{tipFun.pkIdTipoFuncionario}"/>
+                                                                      <f:ajax execute="@this" event="change" render="gridGuiaTransferencia"/>
+                                                                 </h:selectOneMenu>
+                                                                 <p:outputLabel value="Tipo de Horário de Trabalho*:"/>
+                                                                 <h:selectOneMenu style="text-align: center; width: 300px" required="true"
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdTipoDeHorarioTrabalho.pkIdTipoDeHorarioTrabalho}"
+                                                                                  requiredMessage="Indique o regime de trabalho">
+                                                                      <f:selectItems value="#{itensAjaxBean.tipoDeHorarioTrabalhoList}" var="tipoDeHorTrab"
+                                                                                     itemLabel="#{tipoDeHorTrab.descricao}" itemValue="#{tipoDeHorTrab.pkIdTipoDeHorarioTrabalho}"/>
+                                                                 </h:selectOneMenu>
+                                                            </h:panelGrid>
+                                                            <h:panelGrid id="gridGuiaTransferencia" width="100%">
+                                                                 <p:panel rendered="#{rhFuncionarioNovoBean.renderizarTransferencia()}" style="height: 50px">
+                                                                      <h:panelGrid columns="7" cellpadding="12">
+                                                                           <p:outputLabel value="Nº Guia de Transferência:" style="width: 100%"/>
+                                                                           <p:inputText value="#{rhFuncionarioNovoBean.funcionario.numeroGuiaTransferencia}" style="width: 98%"/>
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                          onclick="PF('dialogAnexo').show()" process="@this"/>
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                          update="gridGuiaTransferencia"
+                                                                                          rendered="#{rhFuncionarioNovoBean.funcionario.fkIdAnexoGuiaTransferencia.ficheiro != null}"
+                                                                                          action="#{rhFuncionarioNovoBean.removerAnexo(rhFuncionarioNovoBean.funcionario.fkIdAnexoGuiaTransferencia, true)}"/>
+                                                                           <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" process="@this" value="Previsualizar"
+                                                                                          rendered="#{rhFuncionarioNovoBean.funcionario.fkIdAnexoGuiaTransferencia.ficheiro != null}"
+                                                                                          actionListener="#{rhFicheiroAnexadoBean.setAnexoFuncionario(rhFuncionarioNovoBean.funcionario.fkIdAnexoGuiaTransferencia)}"
+                                                                                          onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                      </h:panelGrid>
+
+                                                                 </p:panel>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Dados de Identicação">
+                                                            <h:panelGrid columns="2" width="100%" cellpadding="5" id="gridDadosIdentificacao">
+                                                                 <p:outputLabel value="Nº Cartão de Identidade*:"/>
+                                                                 <p:inputNumber size="37" value="#{rhFuncionarioNovoBean.funcionario.numeroCartao}"
+                                                                              required="true" requiredMessage="Indique o número do cartão de identidade"
+                                                                              decimalPlaces="0" thousandSeparator="" minValue="0"/>
+                                                                 <p:outputLabel value="Nº Bilhete de Identidade*:"/>
+                                                                 <p:inputText style="width: 300px" value="#{rhFuncionarioNovoBean.funcionario.numeroBi}"
+                                                                              required="true" requiredMessage="Indique o número do bilhete de identidade"/>
+                                                                 <p:outputLabel value="Nº Segurança Social:"/>
+                                                                 <p:inputText style="width: 300px" value="#{rhFuncionarioNovoBean.funcionario.numeroSegurancaSocial}"/>
+                                                                 <p:outputLabel value="Nº de Contribuinte :"/>
+                                                                 <p:inputText style="width: 300px" value="#{rhFuncionarioNovoBean.funcionario.numeroContribuinte}"/>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Profissão e Especialidades">
+                                                            <h:panelGrid columns="2" id="gridProfissaoEspecialidades" cellpadding="3" width="100%">
+                                                                 <p:outputLabel value="Profissão*:"/>
+                                                                 <p:selectOneMenu style="text-align: center; width: 340px" value="#{rhFuncionarioNovoBean.funcionario.fkIdProfissao.pkIdProfissao}" 
+                                                                                  valueChangeListener="#{itensAjaxBean.changeProfissao}" filter="true" filterMatchMode="contains" autoWidth="false">
+                                                                      <f:selectItems value="#{itensAjaxBean.profissaoList}" var="prof"
+                                                                                     itemLabel="#{prof.descricao}" itemValue="#{prof.pkIdProfissao}"/>
+                                                                      <f:ajax execute="@this" listener="#{rhFuncionarioNovoBean.limparEspecialidadesChange}" event="change" render="gridProfissaoEspecialidades"/>
+                                                                 </p:selectOneMenu>
+                                                                 <p:outputLabel value="Especialidade1:"/>
+                                                                 <f:validateBean disabled="true">
+                                                                      <p:selectOneMenu id="comboEspecialidade1" style="text-align: center; width: 340px" filter="true" filterMatchMode="contains" autoWidth="false"
+                                                                                       value="#{rhFuncionarioNovoBean.funcionario.fkIdEspecialidade1.pkIdEspecialidade}">
+                                                                           <f:selectItem itemLabel="------- Selecione -------" itemValue="#{null}"/>
+                                                                           <f:selectItems value="#{itensAjaxBean.especialidadeList}" var="esp"
+                                                                                          itemLabel="#{esp.descricao}" itemValue="#{esp.pkIdEspecialidade}"
+                                                                                          itemDisabled="#{esp.pkIdEspecialidade == rhFuncionarioNovoBean.funcionario.fkIdEspecialidade2.pkIdEspecialidade}"/>
+                                                                           <f:ajax execute="@this" listener="#{rhFuncionarioNovoBean.limparEspecialidade2Change}" render="gridProfissaoEspecialidades" event="change"/>
+                                                                      </p:selectOneMenu>
+                                                                 </f:validateBean>
+                                                                 <p:outputLabel value="Especialidade2:" rendered="#{rhFuncionarioNovoBean.funcionario.fkIdEspecialidade1.pkIdEspecialidade != null}"/>
+                                                                 <p:selectOneMenu id="comboEspecialidade2" rendered="#{rhFuncionarioNovoBean.funcionario.fkIdEspecialidade1.pkIdEspecialidade != null}"
+                                                                                  style="text-align: center; width: 340px" filter="true" filterMatchMode="contains" autoWidth="false"
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdEspecialidade2.pkIdEspecialidade}">
+                                                                      <f:selectItem itemLabel="------- Selecione -------" itemValue="#{null}"/>
+                                                                      <f:selectItems value="#{itensAjaxBean.especialidadeList}" var="esp"
+                                                                                     itemLabel="#{esp.descricao}" itemValue="#{esp.pkIdEspecialidade}"
+                                                                                     itemDisabled="#{esp.pkIdEspecialidade == rhFuncionarioNovoBean.funcionario.fkIdEspecialidade1.pkIdEspecialidade}"/>
+                                                                      <f:ajax execute="@this" render="comboEspecialidade1" event="change"/>
+                                                                 </p:selectOneMenu>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Categoria e Remuneração">
+                                                            <h:panelGrid columns="2" id="gridCategoriaRemuneracao" cellpadding="3" width="100%">
+                                                                 <p:outputLabel value="Categoria*:"/>
+                                                                 <p:selectOneMenu id="comboCategoria" style="text-align: center; width: 335px" autoWidth="false" filter="true" filterMatchMode="contains"
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdCategoria.pkIdCategoriaProfissional}"
+                                                                                  valueChangeListener="#{rhFuncionarioNovoBean.changeCategoria}"
+                                                                                  required="true" requiredMessage="Indique a categoria">
+                                                                      <f:selectItems value="#{itensAjaxBean.categoriaProfissionalList}" var="categ"
+                                                                                     itemLabel="#{categ.descricao}" itemValue="#{categ.pkIdCategoriaProfissional}"/>
+                                                                      <f:ajax execute="@this" render="gridCategoriaRemuneracao" event="change"/>
+                                                                 </p:selectOneMenu>
+                                                                 <p:outputLabel value="Salário Base (AKZ):"/>
+                                                                 <p:inputNumber size="49" readonly="true" disabled="true" thousandSeparator=","
+                                                                                value="#{rhFuncionarioNovoBean.funcionario.fkIdCategoria.salarioBase}"/>
+                                                                 <p:outputLabel value="Despesas de Representação (AKZ):"/>
+                                                                 <p:inputNumber size="49" readonly="true" disabled="true" thousandSeparator=","
+                                                                                value="#{rhFuncionarioNovoBean.funcionario.fkIdCategoria.despesasDeRepresentacao}"/>
+                                                                 <p:outputLabel value="Remuneração Total (AKZ):"/>
+                                                                 <p:inputNumber size="49" readonly="true" disabled="true" thousandSeparator=","
+                                                                                value="#{rhFuncionarioNovoBean.funcionario.fkIdCategoria.remuneracaoTotal}"/>
+                                                                 <p:outputLabel value="Salário do Funcionário (AKZ)*:"/>
+                                                                 <p:inputNumber id="salarioFuncionario" minValue="0" size="49"
+                                                                                value="#{rhFuncionarioNovoBean.salarioFuncionario.salario}"
+                                                                                requiredMessage="Indique o salário do funcionário" converterMessage="Salário inválido"/>                                                       
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Área de Trabalho">
+                                                            <h:panelGrid columns="2" width="100%" cellpadding="5" id="gridAreaTrabalho">
+                                                                 <p:outputLabel value="Unidade Hospitalar*:"/>
+                                                                 <h:selectOneMenu id="comboCentro" style="width: 360px; text-align: center"
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdCentroHospitalar.pkIdCentro}"
+                                                                                  valueChangeListener="#{itensAjaxBean.changeCentroHospitalar}">
+                                                                      <f:selectItems value="#{itensAjaxBean.centroHospitalarList}" var="centro"
+                                                                                     itemLabel="#{centro.fkIdInstituicao.descricao}" itemValue="#{centro.pkIdCentro}"/>
+                                                                      <p:ajax process="@this" event="change" update="gridAreaTrabalho"/>
+                                                                 </h:selectOneMenu>
+                                                                 <p:outputLabel value="Departamento*:" rendered="#{itensAjaxBean.renderCentroDepartamentoSeccaoFuncionario()}"/>
+                                                                 <h:selectOneMenu id="comboDepartamento" style="width: 360px; text-align: center" value="#{itensAjaxBean.departamento}"
+                                                                                  valueChangeListener="#{itensAjaxBean.changeDepartamento}"
+                                                                                  rendered="#{itensAjaxBean.renderCentroDepartamentoSeccaoFuncionario()}">
+                                                                      <f:selectItems value="#{itensAjaxBean.departamentoList}" var="depart"
+                                                                                     itemLabel="#{depart.descricao}" itemValue="#{depart.pkIdDepartamento}"/>
+                                                                      <f:ajax execute="@this" event="change" render="comboSeccao"/>
+                                                                 </h:selectOneMenu>
+                                                                 <p:outputLabel value="Secção de Trabalho*:"/>
+                                                                 <h:selectOneMenu id="comboSeccao" style="width: 360px; text-align: center"
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdSeccaoTrabalho.pkIdSeccaoTrabalho}"
+                                                                                  rendered="#{itensAjaxBean.renderCentroDepartamentoSeccaoFuncionario()}"
+                                                                                  required="true" requiredMessage="Indique a secção de trabalho">
+                                                                      <f:selectItems value="#{itensAjaxBean.seccaoTrabalhoList}" var="sec"
+                                                                                     itemLabel="#{sec.descricao}" itemValue="#{sec.pkIdSeccaoTrabalho}"/>
+                                                                 </h:selectOneMenu>
+                                                                 <h:selectOneMenu id="comboSeccaoTodas" style="width: 360px; text-align: center"
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdSeccaoTrabalho.pkIdSeccaoTrabalho}"
+                                                                                  rendered="#{!itensAjaxBean.renderCentroDepartamentoSeccaoFuncionario()}"
+                                                                                  required="true" requiredMessage="Indique a secção de trabalho">
+                                                                      <f:selectItems value="#{rhSeccaoTrabalhoBean.findAllPorOrdemDeDepartamento()}" var="sec"
+                                                                                     itemLabel="#{sec.fkIdDepartamento.descricao} -> #{sec.descricao}" itemValue="#{sec.pkIdSeccaoTrabalho}"/>
+                                                                 </h:selectOneMenu>
+                                                                 <p:outputLabel value="Função/Cargo*:"/>
+                                                                 <h:selectOneMenu id="comboFuncao" style="width: 360px; text-align: center" 
+                                                                                  value="#{rhFuncionarioNovoBean.funcionario.fkIdFuncao.pkIdFuncao}"
+                                                                                  required="true" requiredMessage="Indique a função/cargo">
+                                                                      <f:selectItems value="#{itensAjaxBean.funcaoList}" var="funCargo"
+                                                                                     itemLabel="#{funCargo.descricao}" itemValue="#{funCargo.pkIdFuncao}"/>
+                                                                 </h:selectOneMenu>
+                                                            </h:panelGrid>
+                                                       </p:tab>
+                                                       <p:tab title="Subsídios">
+                                                            <center>
+                                                                 <p:outputLabel value="Selecione os Subsídios" style="font-weight: bold; font-size: medium"/><br/>
+                                                                 <p:selectManyMenu style="text-align: center; width: 400px; height: 110px; overflow-y: scroll" value="#{rhFuncionarioNovoBean.listaSubsidios}">
+                                                                      <f:selectItems value="#{itensAjaxBean.subsidioList}" var="subsidio" itemValue="#{subsidio.pkIdSubsidio}" 
+                                                                                     itemLabel="#{subsidio.descricaoSubsidio} -- #{subsidio.obrigatorio ? 'Obrigatório':'----'} -- Valor: #{subsidio.valor}%"/>
+                                                                 </p:selectManyMenu>
+                                                                 <br/>
+                                                                 <p:outputLabel value="Para selecionar vários ou desmarcar pressione CTRL + Clique" style="font-size: smaller"/>
+
+                                                            </center>
+                                                       </p:tab>
+                                                  </p:tabView>
+                                             </f:validateBean>
+                                        </h:panelGrid>
+                                   </center>
+                              </p:tab>
+                         </p:tabView>
+                         <h:panelGrid columns="3" cellpadding="5" class="float-right">
+                              <p:outputLabel value="Todos os campos com asterisco (*) são obrigatórios" style="font-size: small"/>
+                              <p:commandButton style="width: 170px" value="Guardar Funcionário" 
+                                               action="#{rhFuncionarioNovoBean.create()}" update="tabPrincipal"/>
+                              <p:commandButton style="width: 170px" value="Sair" 
+                                               onclick="PF('confirmDialogSair').show();" type="button"/>
+                         </h:panelGrid>
+
+                         <p:confirmDialog message="Tem certeza que pretende sair ? Todas alterações não guardadas serão perdidas"
+                                          header="Sair" severity="alert" widgetVar="confirmDialogSair">
+                              <p:commandButton value="Sim" action="#{rhFuncionarioNovoBean.sair()}" 
+                                               process="@this" oncomplete="PF('confirmDialogSair').hide()"/>
+                              <p:commandButton value="Não" onclick="PF('confirmDialogSair').hide();" type="button"/>
+                         </p:confirmDialog>
+
+                    </h:form>
+
+                    <ui:include src="./../rhPessoa/pessoaDialogsFotoDocumentoRh.xhtml"/>
+
+                    <p:dialog widgetVar="dialogPrevisualizar" header="Previsualizar"
+                              width="75%" height="510px" showEffect="fade" closable="true"
+                              hideEffect="fade" modal="true" position="top">
+                         <h:form id="formPrevisualizar">
+                              <div class="float-right">
+                                   <h:commandButton value="Fechar" type="button" onclick="PF('dialogPrevisualizar').hide()"/>
+                              </div>
+                              <center>
+                                   <p:panel id="painel" style="height: 490px">
+                                        <iframe src="#{rhFicheiroAnexadoBean.previsualizarAnexoFuncionario()}"
+                                                width="100%" height="450px"/>
+                                   </p:panel>
+                              </center>
+                         </h:form>
+                    </p:dialog>
+
+                    <p:dialog widgetVar="dialogAnexo" header="Carregamento de Ficheiros"
+                              width="45%" height="210px" showEffect="fade" closable="true"
+                              hideEffect="fade" modal="true" position="top">
+                         <h:form enctype="multipart/form-data" prependId="false" id="formAnexo">
+                              <p:growl id="msgAnexo" autoUpdate="true"/>
+                              <div class="float-right">
+                                   <h:commandButton value="Carregar" onclick="PF('dialogAnexo').hide()" 
+                                                    action="#{rhFuncionarioNovoBean.uploadAnexo()}">
+                                        <f:ajax execute="@form" event="action"
+                                                render=":formularioPrincipal:tabPrincipal:tabFuncionario:gridGuiaTransferencia"/>
+                                   </h:commandButton>
+                                   <h:commandButton value="Fechar" type="button" onclick="PF('dialogAnexo').hide()"/>
+                              </div>
+                              <center>
+                                   <br/>
+                                   <h:panelGrid columns="1" width="90%">
+                                        <p:tabView id="tabUploadAnexo">
+                                             <p:tab title="Escolher no Dispositivo">
+                                                  <h:inputFile id="inputAnexo" value="#{rhFuncionarioNovoBean.anexoCarregado}" 
+                                                               validator="#{rhValidarBean.validarAnexo}"/>
+                                             </p:tab>
+                                        </p:tabView>
+                                   </h:panelGrid>
+                              </center>
+                         </h:form>
+                    </p:dialog>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

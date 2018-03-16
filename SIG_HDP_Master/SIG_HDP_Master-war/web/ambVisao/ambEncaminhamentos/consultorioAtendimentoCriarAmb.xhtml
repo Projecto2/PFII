@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAmb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAmb.xhtml"/>
+            </ui:define>
+            <p:growl autoUpdate="true"/>
+
+
+            <ui:define name="center">
+
+                <p:messages autoUpdate="true" closable="true"/>
+                <h:form acceptcharset="ISO-8859-1" id="form">
+
+                    <div class="ui-fluid">
+
+                        <h2>Encaminhamentos -> Encaminhamentos para Consultórios</h2>
+
+                        <p:tabView>
+
+                            <p:tab title="Encaminhamentos">
+
+                                <p:fieldset legend="Encaminhamentos de Pacientes para Consultórios" style="margin-top: 15px">
+
+                                    <h:panelGrid columns="4" id="panelPrincipal" styleClass="ui-noborder">
+                                        <h:panelGrid columns="2" styleClass="ui-noborder">
+                                            <h:outputLabel value="Data:" for="data"/>
+                                            <h:outputLabel id="data" value="#{ambConsultorioAtendimentoListarBean.dataSistema()}"/>
+
+                                            <h:outputLabel value="Funcionário:" for="funcionario"/>
+                                            <h:outputLabel id="funcionario" value="#{ambConsultorioAtendimentoCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.nome} 
+                                                                                   #{ambConsultorioAtendimentoCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.nomeDoMeio} 
+                                                                                   #{ambConsultorioAtendimentoCriarBean.instanciaAmbTriagemCriarBean.obterFuncionario().fkIdPessoa.sobreNome}
+                                                                                  "/>
+
+                                            <h:outputLabel value="Paciente:" for="paciente"/>
+                                            <p:selectOneMenu id="paciente" value="#{ambConsultorioAtendimentoListarBean.codigoTriagem}" filter="true" filterMatchMode="contains">
+                                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                <f:selectItems value="#{ambConsultorioAtendimentoListarBean.listarDadosTriagens()}" var="ambConsultorioAtendimento" itemLabel=
+                                                                     "#{ambConsultorioAtendimento.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                                      #{ambConsultorioAtendimento.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                                      #{ambConsultorioAtendimento.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+
+                                                                     (#{ambConsultorioAtendimentoListarBean.dateToString(ambConsultorioAtendimento.dataHoraTriagem)})
+                                                                     " 
+                                                           itemValue="#{ambConsultorioAtendimento.pkIdTriagem}"/> 
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="Médico: " for="medico"/>
+                                            <p:selectOneMenu id="medico" value="#{ambConsultorioAtendimentoListarBean.codigoMedico}" filter="true" filterMatchMode="contains">
+                                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                <f:selectItems value="#{ambConsultorioAtendimentoListarBean.listarMedicosEscalados()}" var="sme" itemLabel=
+                                                                     "#{sme.fkIdMedico.fkIdPessoa.nome}
+                                                                      #{sme.fkIdMedico.fkIdPessoa.nomeDoMeio}
+                                                                      #{sme.fkIdMedico.fkIdPessoa.sobreNome}
+
+                                                                     (#{ambConsultorioAtendimentoListarBean.dateToString(sme.data)})
+
+                                                                     - (Consultório - #{sme.fkIdConsultorio.nome} )
+
+                                                                     " 
+                                                           itemValue="#{sme.pkIdMedicoEscala}"/>
+                                            </p:selectOneMenu>
+
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+
+                                </p:fieldset>
+
+                                <p:commandButton ajax="false" value="Guardar" icon="ui-icon-disk" 
+                                                 action="#{ambConsultorioAtendimentoCriarBean.criarRegisto()}"
+                                                 style="margin-bottom: 25px" update="tabela"/>
+
+                                <ui:include src="consultorioAtendimentoListarAmb.xhtml"/>
+
+                            </p:tab>
+
+                            <p:tab title="Histórico Geral">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder" id="teste">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="De:" for="data1"/>
+                                        <p:calendar id="data1" value="#{ambConsultorioAtendimentoListarBean.dataInicio}" locale="pt"/>
+
+                                        <h:outputLabel value="Até:" for="data2"/>
+                                        <p:calendar id="data2" value="#{ambConsultorioAtendimentoListarBean.dataFinal}" locale="pt"/>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="data1" value="Insira a Data Inicial"/>
+                                    <p:tooltip for="data2" value="Insira a Data Final"/>                                    
+
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true" 
+                                                     actionListener="#{ambConsultorioAtendimentoListarBean.pesquisarEncaminhamentos()}"
+                                                     update="tabelaHistoricoGeralEncaminhamento" style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="consultorioAtendimentoHistoricoGeralAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>
+
+                            <p:tab title="Histórico do Paciente">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Processo:" for="numProc"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="numProc" value="#{ambConsultorioAtendimentoListarBean.numeroPaciente}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="numProc" value="Insira o Nº de Processo"/>
+
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoPacienteEncaminhamento" ajax="true"
+                                                     actionListener="#{ambConsultorioAtendimentoListarBean.pesquisarPacienteEncaminhado(ambConsultorioAtendimentoListarBean.numeroPaciente)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="consultorioAtendimentoHistoricoPacienteAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>
+
+                        </p:tabView>
+
+                    </div>
+
+                </h:form>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogListarEncaminhamento" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="listarDetalhesEncaminhamentoAmb.xhtml"/>
+                    </p:dialog>
+                </center> 
+                
+                <center>
+                    <p:dialog header="Editar Encaminhamentos" closable="true" showEffect="fade" width="60%" height="530px" position="center"
+                              widgetVar="dialogEditarConsultorioAtendimento" modal="true" closeOnEscape="true" resizable="false">
+                        <ui:include src="consultorioAtendimentoEditarAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

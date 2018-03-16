@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fechoDoTurno" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e31668c1-8640-4ee0-99bb-ebc032527a1b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="111"/>
+	<parameter name="idTurnoDispensa" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="descricaoLocal" class="java.lang.String"/>
+	<parameter name="descricaoTurno" class="java.lang.String"/>
+	<parameter name="dataHoraAbertura" class="java.lang.String"/>
+	<parameter name="dataHoraFecho" class="java.lang.String"/>
+	<parameter name="funcionarioQueAbriu" class="java.lang.String"/>
+	<parameter name="funcionarioQueFechou" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+       farm_lote_produto.pk_id_lote_produto,
+       farm_produto.descricao as produto,
+       farm_produto.dosagem,
+       farm_unidade_medida.abreviatura as medida,
+       farm_forma_farmaceutica.descricao as forma,
+       SUM(quantidade) as quantidade,
+       farm_turno.descricao AS farm_turno_descricao,
+       farm_turno_dispensa.data_hora_fecho AS farm_turno_dispensa_data_hora_fecho,
+       farm_turno_dispensa.data_abertura AS farm_turno_dispensa_data_abertura
+
+  FROM farm_dispensa_has_lote_produto, farm_dispensa,
+	farm_lote_produto,
+	farm_unidade_medida,
+	farm_forma_farmaceutica,
+	farm_tipo_unidade_medida,
+	farm_turno_dispensa,
+	farm_produto,
+	farm_turno
+
+  where farm_dispensa_has_lote_produto.fk_id_dispensa = farm_dispensa.pk_id_dispensa
+  and farm_dispensa_has_lote_produto.fk_id_lote_produto = farm_lote_produto.pk_id_lote_produto
+  and farm_dispensa.fk_id_turno_dispensa = farm_turno_dispensa.pk_id_turno_dispensa
+  and farm_lote_produto.fk_id_produto = farm_produto.pk_id_produto
+  and farm_turno_dispensa.fk_id_turno = farm_turno.pk_id_turno
+  and farm_produto.fk_id_unidade_medida = farm_unidade_medida.pk_id_unidade_medida
+  and farm_produto.fk_id_forma_farmaceutica = farm_forma_farmaceutica.pk_id_forma_farmaceutica
+  and farm_unidade_medida.fk_id_tipo_unidade_medida = farm_tipo_unidade_medida.pk_id_tipo_unidade_medida
+  and farm_turno_dispensa.pk_id_turno_dispensa = $P{idTurnoDispensa}
+
+
+  GROUP BY farm_turno.descricao,
+	   farm_produto.descricao,
+	   farm_produto.dosagem,
+	   farm_forma_farmaceutica.descricao,
+	   farm_lote_produto.pk_id_lote_produto,
+	   farm_lote_produto.numero_lote,
+	   farm_unidade_medida.abreviatura,
+	   farm_turno.descricao,
+	   farm_turno_dispensa.data_hora_fecho,
+	   farm_turno_dispensa.data_abertura
+
+  ORDER BY farm_produto.descricao;]]>
+	</queryString>
+	<field name="pk_id_lote_produto" class="java.lang.Integer"/>
+	<field name="produto" class="java.lang.String"/>
+	<field name="dosagem" class="java.lang.String"/>
+	<field name="medida" class="java.lang.String"/>
+	<field name="forma" class="java.lang.String"/>
+	<field name="quantidade" class="java.lang.Long"/>
+	<field name="farm_turno_descricao" class="java.lang.String"/>
+	<field name="farm_turno_dispensa_data_hora_fecho" class="java.sql.Timestamp"/>
+	<field name="farm_turno_dispensa_data_abertura" class="java.sql.Timestamp"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="110" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="6" y="93" width="545" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="423686ec-860d-4020-9753-55c41bfca876"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Controlo do Golf - K. Kiaxi - LUANDA Tel-Fax(02) 470781 - 470507 E-mail:hospdp@ebonet.net]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="97" y="35" width="386" height="20" forecolor="#0000FF" uuid="df70d0d0-0af2-4898-a396-50411bbeae1a"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<text><![CDATA[GABINETE PROVINCIAL DE  DE LUANDA]]></text>
+			</staticText>
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="11" y="21" width="239" height="60" uuid="592824b8-9931-4da9-a481-efa21b78ac98"/>
+				<imageExpression><![CDATA["LogotipoDivina.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="97" y="55" width="386" height="25" forecolor="#0000FF" uuid="0c16b4c7-7d37-4117-bf22-6ca731141523"/>
+				<textElement textAlignment="Center">
+					<font fontName="Abyssinica SIL" size="18" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<image vAlign="Middle">
+				<reportElement x="492" y="23" width="65" height="60" uuid="c9dd2489-f648-4635-b4aa-eea448880276"/>
+				<imageExpression><![CDATA["insigniaAngola.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="97" y="10" width="386" height="25" forecolor="#0000FF" uuid="a49c9858-cc00-470a-a4b4-33be2787d570"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="15"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="126" splitType="Stretch">
+			<staticText>
+				<reportElement x="196" y="6" width="168" height="20" forecolor="#3677E7" uuid="7eaef19f-f5cd-4359-acb0-d27e47f82d89"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecho do Turno]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="151" y="53" width="253" height="20" uuid="ec23c0ff-75dc-4d81-9655-e28f2a7f8454"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{descricaoTurno}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="151" y="31" width="253" height="20" uuid="f06add42-3311-4168-aa83-168cae554a9a"/>
+				<textElement textAlignment="Center">
+					<font size="13" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{descricaoLocal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="5" y="106" width="258" height="20" uuid="fb764374-ea6b-4118-9b10-c5c4e106bb00"/>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Data/Hora de Abertura: " + $P{dataHoraAbertura}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="264" y="106" width="286" height="20" uuid="0b8b55cd-0456-42ef-b4bb-a39f84c4b875"/>
+				<textElement textAlignment="Right">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Data/Hora de Fecho: " + $P{dataHoraFecho}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="34" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="151" y="2" width="113" height="30" backcolor="#97CDEF" uuid="ce9b8e79-78da-4dea-b6de-3f3c4c5c5eab"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#0E32FA"/>
+					<topPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<leftPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<bottomPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<rightPen lineWidth="1.0" lineColor="#0E32FA"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[dosagem]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="410" y="2" width="141" height="30" backcolor="#97CDEF" uuid="87e8fd54-f453-4de1-9d20-7e9993fd7ca9"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#0E32FA"/>
+					<topPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<leftPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<bottomPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<rightPen lineWidth="1.0" lineColor="#0E32FA"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="6" y="2" width="145" height="30" backcolor="#97CDEF" uuid="b5b90430-008c-4c87-92f4-5c6d66195f72"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#0E32FA"/>
+					<topPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<leftPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<bottomPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<rightPen lineWidth="1.0" lineColor="#0E32FA"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Produto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="265" y="2" width="145" height="30" backcolor="#97CDEF" uuid="85b2c26a-5192-4aff-afb0-13c1e8d96200"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#0E32FA"/>
+					<topPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<leftPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<bottomPen lineWidth="1.0" lineColor="#0E32FA"/>
+					<rightPen lineWidth="1.0" lineColor="#0E32FA"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Forma]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement x="7" y="0" width="144" height="20" uuid="ae2d7fdb-8fa1-4099-a985-1788cc642c95"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{produto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="150" y="0" width="114" height="20" uuid="dffcc2e8-15ac-4733-8f9d-989d8b5ef3fb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dosagem} + " " +  $F{medida}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="410" y="0" width="141" height="20" uuid="4024da78-43c0-40d9-bd44-9a84a1d4cc01"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="264" y="0" width="146" height="20" isRemoveLineWhenBlank="true" uuid="8c65bc2d-b2fd-4bad-8fdb-f5e821ab048c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{forma}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="74">
+			<textField>
+				<reportElement x="5" y="54" width="200" height="20" uuid="87668658-8893-4556-ba62-12c6d8667163"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{funcionarioQueAbriu}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="351" y="54" width="200" height="20" uuid="b0693aa0-abbd-40fe-8c0f-b527344a8bb7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{funcionarioQueFechou}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="5" y="49" width="200" height="1" uuid="422bac31-d239-480a-9fb4-3037c8814925"/>
+			</line>
+			<line>
+				<reportElement x="351" y="48" width="200" height="1" uuid="c0d6ab20-43fe-4746-90cc-b79edaf84028"/>
+			</line>
+			<staticText>
+				<reportElement x="5" y="0" width="200" height="20" uuid="89a04798-c06f-4bc9-961a-96e528b0714b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Aberto Por]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="351" y="0" width="200" height="20" uuid="f2a42995-abf9-4a9f-84ae-54d3324c6ebc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fechado Por]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="36">
+			<staticText>
+				<reportElement mode="Opaque" x="5" y="3" width="545" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="5c9f93a0-8497-48c5-ba8c-475ae4a0ebb2"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Transparent" x="230" y="21" width="100" height="14" uuid="50d46229-389f-4067-9304-4e1c895d457d"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

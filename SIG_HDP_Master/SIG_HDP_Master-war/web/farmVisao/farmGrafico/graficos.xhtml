@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+   <h:body>
+      <h:form id="formulario">
+         <br/>
+         <center>
+            <p:outputLabel value="Gráficos para Análise do Estado dos Produtos"
+                           rendered="#{!farmGraficosBean.rendizarImagem()}"/>
+            
+            <p:panelGrid style="width: 100%" columns="2">
+               <p:commandLink id="graficoValidadeExpirado" rendered="#{farmGraficosBean.lotesVermelhos.size() > -1}" 
+                              actionListener="#{farmStockValidadeProdutosBean.pesquisarLotesProdutos()}"
+                              action="/farmVisao/farmInfoStock/stockValidadeProdutosFarm.xhtml?faces-redirect=true">
+
+                  <p:chart type="bar" model="#{farmGraficosBean.graficoDeBarrasLotesExpirados()}"
+                           style="height: 300px"/>
+                  <p:tooltip for="graficoValidadeExpirado" value="Clique Ver Detalhes de Validade" position="top"/>
+               </p:commandLink>
+              
+               <p:commandLink id="graficoStockPosRuptura" actionListener="#{farmStockGeralBean.pesquisar()}"
+                              rendered="#{farmGraficosBean.produtosVermelhos.size() > -1}"
+                              action="/farmVisao/farmRelatorio/stockGeralFarm.xhtml?faces-redirect=true">
+
+                  <p:chart type="bar" model="#{farmGraficosBean.graficoDeBarrasSockGeralPosRuptura()}"
+                           style="height: 300px"/>
+                  
+                  <p:tooltip for="graficoStockPosRuptura" value="Clique Ver Detalhes de Stock" position="top"/>
+               </p:commandLink> 
+               
+               <p:commandLink id="graficoValidadeQuaseExpirado" rendered="#{farmGraficosBean.lotesLaranjas.size() > -1}"
+                              actionListener="#{farmStockValidadeProdutosBean.pesquisarLotesProdutos()}"
+                              action="/farmVisao/farmInfoStock/stockValidadeProdutosFarm.xhtml?faces-redirect=true">
+
+                  <p:chart type="bar" model="#{farmGraficosBean.graficoDeBarrasLotesQuaseExpirados()}"
+                           style="height: 300px"/>
+                  <p:tooltip for="graficoValidadeQuaseExpirado" value="Clique Ver Detalhes de Validade" position="top"/>
+               </p:commandLink>
+               
+               <p:commandLink id="graficoStockPreRuptura" actionListener="#{farmStockGeralBean.pesquisar()}"
+                              rendered="#{farmGraficosBean.produtosLaranjas.size() > -1}"
+                              action="/farmVisao/farmRelatorio/stockGeralFarm.xhtml?faces-redirect=true">
+
+                  <p:chart type="bar" model="#{farmGraficosBean.graficoDeBarrasSockGeralPreRuptura()}"
+                           style="height: 300px"/>
+                  
+                  <p:tooltip for="graficoStockPreRuptura" value="Clique Ver Detalhes de Stock" position="top"/>
+               </p:commandLink> 
+            </p:panelGrid>
+         </center>
+
+      </h:form>
+   </h:body>
+</html>

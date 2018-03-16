@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <p:dataTable  id="tabelaHistoricoPacienteDiagnostico" sortMode="multiple" var="itemDiagnostico" rows="8" paginator="true" paginatorPosition="bottom" 
+                      value="#{ambDiagnosticoListarBean.pesquisaDePacienteDiagnosticado(ambDiagnosticoCriarBean.admsPaciente.numeroPaciente)}" 
+                      reflow="true" emptyMessage="Nenhum registo encontrado."
+                      selectionMode="single" rowKey="#{itemDiagnostico.pkIdDiagnosticoDoenca}">
+
+            <p:column headerText="Nº de Processo" sortBy="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"
+                      filterBy="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains">
+                <center>
+                    <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Nº de Subprocesso">
+                <center>
+                    <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Nome" sortBy="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                #{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                #{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}"
+                      filterBy="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                #{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                #{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" filterMatchMode="contains">
+                <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                     #{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                     #{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}"/>
+            </p:column>
+
+            <p:column headerText="Médico" >
+                <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdFuncionario.fkIdPessoa.nome} 
+                              #{itemDiagnostico.fkIdDiagnostico.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                              #{itemDiagnostico.fkIdDiagnostico.fkIdFuncionario.fkIdPessoa.sobreNome}
+                              "/>
+            </p:column>
+
+            <p:column headerText="Sintomas">
+                <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.sintoma}"/>
+            </p:column>
+
+            <p:column headerText="História Doença Actual">
+                <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.historiaDoencaActual}"/>
+            </p:column>
+
+            <p:column headerText="Classificação da Dor">
+                <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.fkIdClassificacaoDor.descricao}"/>
+            </p:column>
+
+            <p:column headerText="Medicação Anterior">
+                <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.medicacaoAnterior}"/>
+            </p:column>
+
+            <p:column headerText="Diagnóstico">
+                <h:outputText value="#{itemDiagnostico.fkIdSubcategorias.nome}"/>
+                <h:outputText value="#{itemDiagnostico.outros}"/>
+            </p:column>
+
+            <p:column headerText="Resultado do Exame">
+                <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdExameRealizado.resultados}"/>
+            </p:column>            
+
+            <p:column headerText="Observções do Exame">
+                <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.fkIdExameRealizado.observacoes}"/>
+            </p:column>             
+
+            <p:column headerText="Data">
+                <center>
+                    <h:outputText value="#{itemDiagnostico.fkIdDiagnostico.dataHoraDiagnostico}" >
+                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" locale="pt"/>
+                    </h:outputText>
+                </center>
+            </p:column>
+
+            <p:column headerText="------">
+                <center>
+                    <p:menuButton value="Opções">
+                        <p:separator/>
+                        <p:menuitem value="Mais detalhes" icon="ui-icon-info" process="@this" partialSubmit="true"  
+                                    actionListener="#{ambDiagnosticoListarBean.seleccionarDetalhesDiagnostico(item.fkIdDiagnostico)}"
+                                    ajax="true" update=":formListarDiagnostico" 
+                                    onclick="PF('dialogListarDiagnostico').show()" 
+                                    />
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Prescrição Médica" icon="ui-icon-disk" process="@this" partialSubmit="true"                                                            
+                                    actionListener="#{ambDiagnosticoListarBean.seleccionarDetalhesDiagnostico(itemDiagnostico.fkIdDiagnostico)}"
+                                    ajax="true" update=":formPrescricaoMedica:panelPrescricaoMedica" 
+                                    onclick="PF('dialogPrescricaoMedicaDiagnostico').show()"
+                                    disabled="#{ambPrescricaoMedicaListarBean.verifica(itemDiagnostico.fkIdDiagnostico.fkIdDiagnosticoHipotese.fkIdConsulta.pkIdConsulta)}"
+                                    />
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Editar" icon="ui-icon-pencil" process="@this" partialSubmit="true"
+                                    actionListener="#{ambDiagnosticoListarBean.seleccionarDetalhesDiagnostico(itemDiagnostico.fkIdDiagnostico)}" 
+                                    update=":formEditarDiagnostico:panelEditarDiagnostico" 
+                                    onclick="PF('dialogEditarDiagnostico').show()">
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Eliminar" icon="ui-icon-trash"
+                                    action="#{ambDiagnosticoEliminarBean.setAmbDiagnosticoEliminar(itemDiagnostico.fkIdDiagnostico)}" 
+                                    onclick="PF('confirmDialogDiagnosticoHP').show()"/>
+                        <p:separator/>
+                    </p:menuButton>
+                </center>
+            </p:column>
+
+        </p:dataTable>
+
+        <center>
+            <p:confirmDialog message="Tem certeza que pretende eliminar o item seleccionado?"
+                             header="Eliminar dados do Paciente" severity="alert" widgetVar="confirmDialogDiagnosticoHP">
+                <p:commandButton value="Sim" actionListener="#{ambDiagnosticoEliminarBean.EliminarDiagnostico(ambDiagnosticoEliminarBean.getAmbDiagnosticoEliminar())}"  
+                                 process="@this" update="tabelaHistoricoPacienteDiagnostico" oncomplete="PF('confirmDialogDiagnosticoHP').hide()"/>
+                <p:commandButton value="Não" onclick="PF('confirmDialogDiagnosticoHP').hide();" type="button" />
+            </p:confirmDialog>
+        </center>
+
+    </h:body>
+</html>
+

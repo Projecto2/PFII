@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menu_horizontalTb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menu_lateralTb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <p:growl autoUpdate="true"/>
+                <h:form styleClass="ui-fluid">
+                    <p:panelGrid columns="1" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" 
+                                 columnClasses="ui-grid-col-12">
+                        <p:fieldset legend="#{msn_tb.pesquisa}">
+                            <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank ui-fluid" 
+                                         columnClasses="ui-grid-col-2,ui-grid-col-8,ui-grid-col-2">
+                                <p:outputLabel value="#{msn_tb.lb_paciente}: "/>
+                                <p:autoComplete id="paciente" minQueryLength="3" style="width: 100%" value="a" completeMethod="#{tbTratamentoBean.completeText(query)}" effect="fade" />
+                                <p:commandButton value="#{msn_tb.bt_pesquisar}" icon="ui-icon-search" update="tabelaDados" actionListener="#{tbTratamentoBean.completeText(query)}"/>
+                            </p:panelGrid>
+                        </p:fieldset>
+                        <p:fieldset legend="#{msn_tb.dados_existente}">
+                            <p:dataTable value="" var="t" rowKey="" selectionMode="single" paginator="true" 
+                                         rows="8" id="tabelaDados" paginatorPosition="bottom" reflow="true"> 
+                                <p:column headerText="#{msn_tb.lb_paciente}"> <center> NA </center></p:column>
+                                <p:column headerText="#{msn_tb.lb_tipo_doente}"> <center> NA </center></p:column>
+                                <p:column headerText="#{msn_tb.lb_c_doenca}"> <center> NA </center></p:column>
+                                <p:column headerText="#{msn_tb.lb_localizacao}"> <center> NA </center></p:column>
+                                <p:column headerText="#{msgs.opcoes} #{msn_tb.lb_tratamento}">
+                                    <center>
+                                        <p:menuButton value="#{msgs.opcoes}" style="width: 50%">
+                                            <p:menuitem value="#{msn_tb.hPaciente}" icon="ui-icon-pencil" process="@this" partialSubmit="true"/>
+                                            <p:menuitem value="#{msn_tb.bt_medicacao}" icon="ui-icon-pencil" process="@this" partialSubmit="true"/>
+                                            <p:menuitem value="#{msgs.editar}" icon="ui-icon-pencil" process="@this" partialSubmit="true"/>
+                                        </p:menuButton>
+                                    </center>
+                                </p:column>
+                            </p:dataTable >
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank ui-fluid floatright" columnClasses="ui-grid-col-6,ui-grid-col-6">
+                                <p:commandButton id="dialog" value="#{msn_tb.bt_novo}" icon="ui-icon-extlink" onclick="PF('dlgtratamentoNovoTb').show()"/>
+                                <p:commandButton value="#{msn_tb.bt_imprimir}" />
+                            </p:panelGrid>
+                        </p:fieldset>
+                    </p:panelGrid>
+                </h:form>
+                <ui:include src="tratamentoNovoTb.xhtml" /> 
+                <ui:include src="medicacaoTb.xhtml" /> 
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

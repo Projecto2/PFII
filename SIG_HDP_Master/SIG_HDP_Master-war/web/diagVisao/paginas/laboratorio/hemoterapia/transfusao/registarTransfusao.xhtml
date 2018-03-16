@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+        <h2>Registo de Transusão</h2>
+        <br/>
+        <p:panel>
+            <h:form>
+                <p:fieldset legend="Dados do Dador" toggleable="true" >
+                    <h:panelGrid columns="2" width="60%"  cellpadding="2">
+                        <h:outputLabel value="Dador:" />
+                        <p:selectOneMenu style="width: 50%" filter="true" value="#{diagTransfusaoBean.diagTipagemDador.pkIdTipagemDador}">
+                            <p:ajax event="change" update="grupoSanguineo" listener="#{diagTransfusaoBean.definirGrupoSanguineoDador}" />
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{diagTransfusaoBean.findaAllTipagensDadores()}" var="dador" 
+                                           itemLabel="#{dador.fkIdBolsaSangue.fkIdDador.fkIdTriagem.fkIdCandidaturaDador.fkIdCandidatoDador.fkIdPessoa.nomeCompleto}" 
+                                           itemValue="#{dador.pkIdTipagemDador}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Grupo sanguíneo: "/>
+                        <p:inputText id="grupoSanguineo" value="" />
+                    </h:panelGrid>                    
+                </p:fieldset>
+
+                <p:fieldset legend="Dados do Receptor" toggleable="true" >
+                    <h:panelGrid columns="2" width="60%"  cellpadding="7">
+                        <h:outputLabel value="Paciente:" />
+                        <p:selectOneMenu style="width: 50%" filter="true" value="#{diagTransfusaoBean.diagTipagemDoente.pkIdTipagemDoente}" required="false" >
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{diagTransfusaoBean.findaAllTipagensDoentes()}" var="doente" 
+                                           itemLabel="#{doente.fkIdPaciente.fkIdPessoa.nomeCompleto}" 
+                                           itemValue="#{doente.pkIdTipagemDoente}"/>
+                        </p:selectOneMenu>
+
+                        <p:outputLabel value="Grupo sanguíneo: "/>
+                        <p:inputText />
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:fieldset legend="Dados da Transfusão">
+                    <h:panelGrid columns="2"  width="60%"  cellpadding="2">
+                        <p:outputLabel value="Teste de Coombs: "/>
+                        <p:inputText value=""/>
+                        <p:outputLabel value="Prova de Soro Fisiológico: "/>
+                        <p:inputText value=""/>
+
+                        <h:outputLabel value="Realizado por:"/>
+                        <p:selectOneMenu style="width: 50%" value="#{diagTransfusaoBean.rhRealizador.pkIdFuncionario}" 
+                                         required="true" requiredMessage="É necessário informar o funcionário que realizou">
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{diagTransfusaoBean.findaAllFuncionarios()}" var="real" itemLabel="#{real.fkIdPessoa.nomeCompleto}" 
+                                           itemValue="#{real.pkIdFuncionario}"/>
+                        </p:selectOneMenu>
+
+                        <h:outputLabel value="Verificado por:"/>
+                        <p:selectOneMenu style="width: 50%" value="#{diagTransfusaoBean.rhVerificador.pkIdFuncionario}" 
+                                         required="true" requiredMessage="É necessário informar o funcionário que verificou">
+                            <f:selectItem itemLabel="Selecione"/>
+                            <f:selectItems value="#{diagTransfusaoBean.findaAllFuncionarios()}" var="veri" itemLabel="#{veri.fkIdPessoa.nomeCompleto}" 
+                                           itemValue="#{veri.pkIdFuncionario}"/>
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:separator/>
+
+                <h:outputLabel value="Todos os campos desta secção são de preenchimento obrigatório."/>
+                <br/>
+                <br/>
+
+                <p:commandButton ajax="false" icon="ui-icon-disk"  value="Registar Transfusão"/>
+            </h:form>
+        </p:panel>
+        <br/>
+    </ui:define>
+
+</ui:composition>

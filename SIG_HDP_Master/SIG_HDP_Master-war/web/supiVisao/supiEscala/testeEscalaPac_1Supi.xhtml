@@ -1,0 +1,615 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1> Nova Escala de Supervisores</h1>
+                <p:messages autoUpdate="true" closable="true"/>
+                <p:growl autoUpdate="true"/>
+                <h:form id="formNovo">
+                    <center>
+                        <br/>
+                        <p:fieldset>
+                            <h:panelGrid columns="5" cellpadding="7">
+
+                                <p:outputLabel value="Ano: *"/>
+                                <p:inputText id="ano" style="width: 190px" required="true" readonly="true" requiredMessage="Indique o Ano" 
+                                             value="#{supiEscalaTesteBean.ano}" converterMessage="Ano Inválido"/>
+                                <p:outputLabel value="Mês: *"/>
+                                <h:selectOneMenu id="comboMes" style="width: 200px" value="#{supiEscalaTesteBean.mes}">
+                                    <f:selectItems value="#{supiEscalaTesteBean.selectMeses()}"/>
+                                    <p:ajax event="change" update="painelEscala" />
+                                </h:selectOneMenu>
+
+                                <p:commandButton value="Actualizar Dias" process="@this ano comboMes" update="painelEscala"
+                                                 action="#{supiEscalaTesteBean.prepararEscalaMensal()}"/>
+
+
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:panel id="painelEscala">
+                            <p:dataTable var="funcionarios" value="#{supiEscalaTesteBean.escalaMensalList}" editable="true">
+                                <f:facet name="header">
+                                    <h:outputText value="#{supiEscalaTesteBean.mesString} #{supiEscalaTesteBean.ano}" style="color: red"/>
+                                </f:facet>
+
+                                <p:column headerText="Supervisores" width="150">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.nome} #{funcionarios.fkIdPessoa.nomeDoMeio} #{funcionarios.fkIdPessoa.sobreNome}"/>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.nome} #{funcionarios.fkIdPessoa.nomeDoMeio} #{funcionarios.fkIdPessoa.sobreNome}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+
+                                <p:column headerText="1">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno1" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="2">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno2" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="3">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno3" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="4">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno4" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="5">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno5" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="6">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno6" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="7">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno7" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="8">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno8" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="9">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno9" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="10">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno10" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="11">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno11" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="12">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno12" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="13">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno13" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="14">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno14" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="15">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno15" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="16">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno16" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="17">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno17" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="18">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno18" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="19">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno19" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="20">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno20" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="21">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno21" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="22">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno22" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="23">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno23" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="24">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno24" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="25">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno25" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="26">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno26" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="27">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno27" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="28">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno28" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="29" rendered="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes) > 28}">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno29" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="30" rendered="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes) == 30 || supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes) == 31}">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno30" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column headerText="31" rendered="#{supiEscalaTesteBean.numeroDias(supiEscalaTesteBean.mes) == 31}">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:selectOneMenu id="comboTurno31" style="width: 250px"
+                                                             value="#{supiEscalaTesteBean.escalaSupervisor.fkIdTurno.pkIdTurno}">
+                                                <f:selectItem itemLabel="Selecione o turno" itemValue="#{null}"/>
+                                                <f:selectItems value="#{supiTurnoSupiBean.findall()}" var="turno" 
+                                                               itemLabel="#{turno.sigla}" 
+                                                               itemValue="#{turno.pkIdTurno}"/>
+                                            </p:selectOneMenu>
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                                <p:column>
+                                    <p:rowEditor />
+                                </p:column>
+
+                                <p:column headerText="Carga Horária" width="50">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <h:outputText value="#{funcionarios.fkIdPessoa.pkIdPessoa}" />
+                                        </f:facet>
+                                    </p:cellEditor>
+                                </p:column>
+
+                            </p:dataTable>
+
+                        </p:panel>
+                    </center>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

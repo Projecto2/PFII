@@ -1,0 +1,289 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h1>#{msgs.admissoes} -> #{msgs.servicos}</h1>
+                <p:growl autoUpdate="true"/>
+                <!--<p:messages id="msg" autoUpdate="true" closable="true"/>-->
+                <br/>
+                <center>
+                    <h:panelGrid columns="1" width="90%">
+                        <h:form id="formPesquisar">
+                            #{detetorAtualizacaoPagina.checkAtualizacao("")}
+                            <p:fieldset collapsed="false" legend="Pesquisar" toggleable="true">
+                                <h:panelGrid columns="2" cellpadding="3" width="85%">
+                                    
+                                    <f:validateBean disabled="true">
+                                    <p:outputLabel value="#{msgs.grupoServicos}: "/>
+                                    <p:selectOneMenu id="comboGrupoServico" value="#{admsServicoBean.servicoPesquisa.fkIdGrupoServico.pkIdGrupoServico}"                                                
+                                                     style="width: 94%" filter="true">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{admsGrupoServicoBean.findAll()}" var="grupoServico" 
+                                                       itemLabel="#{grupoServico.descricaoGrupoServico}" itemValue="#{grupoServico.pkIdGrupoServico}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="#{msgs.tiposServicoSing}: "/>
+                                    <p:selectOneMenu id="comboTipoServ" value="#{admsServicoBean.servicoPesquisa.fkIdTipoServico.pkIdTipoServico}"                        
+                                                     style="width: 94%">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{admsTipoServicoBean.findAll()}" var="tipoServico" 
+                                                       itemLabel="#{tipoServico.descricaoTipoServico}" itemValue="#{tipoServico.pkIdTipoServico}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="#{msgs.areaPrestaServico}: "/>
+                                    <p:selectOneMenu id="comboArea" value="#{admsServicoBean.servicoPesquisa.fkIdArea.pkIdAreaInterna}"                                                    
+                                                     style="width: 94%">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{grlAreaInternaBean.findAll()}" var="areaInterna" 
+                                                       itemLabel="#{areaInterna.descricaoAreaInterna}" itemValue="#{areaInterna.pkIdAreaInterna}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="#{msgs.especialidade}: "/>
+                                    <p:selectOneMenu id="comboEsp" value="#{admsServicoBean.servicoPesquisa.fkIdEspecialidade.pkIdEspecialidade}" 
+                                                     style="width: 94%">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{grlEspecialidadeBean.pesquisaPorEspecialidadeMedica()}" var="especialidade" 
+                                                       itemLabel="#{especialidade.descricao}" itemValue="#{especialidade.pkIdEspecialidade}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="#{msgs.nomeDoServico}: "/>
+                                    <p:inputText id="nomeServPesquisa" style="width: 97%" value="#{admsServicoBean.servicoPesquisa.nomeServico}"/>
+                                    
+                                    <p:outputLabel value="#{msgs.codigoDoServico}: "/>
+                                    <p:inputText id="codServPesquisa" style="width: 97%" value="#{admsServicoBean.servicoPesquisa.codServico}"/>
+                                    </f:validateBean>
+                                    
+                                    <br/>
+                                    <h:panelGrid columns="2" cellpadding="2" width="100%">
+                                        <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{admsServicoBean.pesquisar()}" 
+                                                         icon="ui-icon-search"
+                                                         ajax="true" partialSubmit="true" 
+                                                         update="comboGrupoServico comboTipoServ comboArea comboEsp nomeServPesquisa codServPesquisa dataTable"
+                                                         />
+                                        <p:commandButton value="#{msgs.carregar}" style="width: 100%" icon="ui-icon-refresh" 
+                                                         partialSubmit="true" process="@this" update="@this dataTable" 
+                                                         actionListener="#{admsServicoBean.carregar()}"/>
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            
+                            
+                            <p:dataTable id="dataTable" var="servico" value="#{admsServicoBean.getAdmsServicoLista()}"
+                                         style="width: 100%" emptyMessage="Não Existem Serviços"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.servico}" filterBy="#{servico.nomeServico}" filterMatchMode="contains">
+                                    <center>                                        
+                                        #{servico.nomeServico}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.codigo}" filterBy="#{servico.codServico}" filterMatchMode="contains">
+                                    <center>                                        
+                                        #{servico.codServico}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.tiposServicoSing}" filterBy="#{servico.fkIdTipoServico.descricaoTipoServico}" filterMatchMode="contains">
+                                    <center>                                        
+                                        #{servico.fkIdTipoServico.descricaoTipoServico}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.areaQuePresta}" filterBy="#{servico.fkIdArea.descricaoAreaInterna}" filterMatchMode="contains">
+                                    <center>                                        
+                                        #{servico.fkIdArea.descricaoAreaInterna}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.especialidade}" filterBy="#{servico.fkIdEspecialidade.descricao}" filterMatchMode="contains">
+                                    <center>                                        
+                                        #{servico.fkIdEspecialidade.descricao}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.agendamentoMedico}">
+                                    <center>                          
+                                        #{admsServicoBean.podeTerMedicoOuNao(servico.podeTerMedico)}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.categoriaDoServico}">
+                                    <center>                          
+                                        #{admsServicoBean.verificarCategoria(servico)}
+                                    </center>
+                                </p:column>
+                                
+                                <p:column headerText="--------------------">
+                                    <center>                                        
+                                        <p:menuButton value="#{msgs.opcoes}">
+                                            <p:menuitem value="Categorias - Preços" actionListener="#{admsCategoriaServicoBean.definirServico(servico)}" action="/admsVisao/auxiliares/categoriaPrecoMenuAdms.xhtml?faces-redirect=true" icon="ui-icon-extlink"/>
+                                        </p:menuButton>
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </h:panelGrid>
+                </center>
+                
+                <!--<p:menuitem value="# {msgs.editar}" actionListener="# {admsServicoBean.setServicoEditar(servico)}" icon="ui-icon-arrowrefresh-1-w" 
+                    onclick="PF('dialogEditar').show();" process="@this" partialSubmit="true"
+                    />
+                <p:separator />-->
+
+                <!-- <center>
+                    <p:dialog header="# {msgs.editar} # {msgs.servico}" closable="false" showEffect="fade"
+                              widgetVar="dialogEditar" modal="true" closeOnEscape="true" width="50%">
+                        <h:form id="formEditar">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                    
+                                    <p:outputLabel value="# {msgs.grupoDoservico}: "/>
+                                    <p:selectOneMenu id="comboGrupoServEdit" filter="true" value="# {admsServicoBean.servicoEditar.fkIdGrupoServico.pkIdGrupoServico}"                                         
+                                                     style="width: 94%">
+                                        <f:selectItem itemValue="# {null}" itemLabel=""/>
+                                        <f:selectItems value="# {admsGrupoServicoBean.findAll()}" var="grupoServico" 
+                                                       itemLabel="# {grupoServico.descricaoGrupoServico}" itemValue="# {grupoServico.pkIdGrupoServico}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.tipoDoServico}: "/>
+                                    <p:selectOneMenu id="comboTipoServEdit" filter="true" value="# {admsServicoBean.servicoEditar.fkIdTipoServico.pkIdTipoServico}"                                                    
+                                                     style="width: 94%">
+                                        <f:selectItems value="# {admsTipoServicoBean.findAll()}" var="tipoServico" 
+                                                       itemLabel="# {tipoServico.descricaoTipoServico}" itemValue="# {tipoServico.pkIdTipoServico}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.areaPrestaServico}: "/>
+                                    <p:selectOneMenu id="comboAreaEdit" value="# {admsServicoBean.servicoEditar.fkIdArea.pkIdAreaInterna}"                                                  
+                                                     style="width: 94%" filter="true">
+                                        <f:selectItems value="# {areaInternaBean.findAll()}" var="areaInterna" 
+                                                       itemLabel="# {areaInterna.descricaoAreaInterna}" itemValue="# {areaInterna.pkIdAreaInterna}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.especialidade}: "/>
+                                    <p:selectOneMenu id="comboEspecialidadeEdit" value="# {admsServicoBean.servicoEditar.fkIdEspecialidade.pkIdEspecialidade}"                                                    
+                                                     style="width: 94%" filter="true">
+                                        <f:selectItem itemLabel="" itemValue="# {null}"/>
+                                        <f:selectItems value="# {grlEspecialidadeBean.pesquisaPorEspecialidadeMedica()}" var="especialidade" 
+                                                       itemLabel="# {especialidade.descricao}" itemValue="# {especialidade.pkIdEspecialidade}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.nomeDoServico}*: "/>
+                                    <p:inputText id="nomeServEdit" style="width: 94%" value="# {admsServicoBean.servicoEditar.nomeServico}" required="true" requiredMessage="Indique o nome do serviço"/>
+                                    
+                                    <p:outputLabel value="# {msgs.codigoDoServico}: "/>
+                                    <p:inputText id="codServEdit" style="width: 94%" value="# {admsServicoBean.servicoEditar.codServico}"/>
+                                    
+                                    
+                                    <p:outputLabel value="# {msgs.podeTerAgendamnetoMedico}: "/>
+                                    <p:selectOneRadio id="podeTerMedicoEdit" value="# {admsServicoBean.servicoEditar.podeTerMedico}" 
+                                                     required="true" requiredMessage="Indique Se Pode Ser Agendado Para Um Médico Ou Não"                                                     
+                                                     style="width: 94%">
+                                        <f:selectItem itemLabel="Sim" itemValue="# {true}"/>
+                                        <f:selectItem itemLabel="Não" itemValue="# {false}"/>
+                                        
+                                    </p:selectOneRadio>
+                                    
+                                    <br/>
+                                    <h:panelGrid cellpadding="3" columns="2" width="100%">
+                                        <p:commandButton value="# {msgs.gravarEdicao}" style="width: 100%" action="# {admsServicoBean.editarPesquisar()}"
+                                                         partialSubmit="true" process="@this comboGrupoServEdit comboTipoServEdit comboAreaEdit comboEspecialidadeEdit nomeServEdit codServEdit podeTerMedicoEdit" 
+                                                         update="@this comboGrupoServEdit comboTipoServEdit comboAreaEdit comboEspecialidadeEdit nomeServEdit codServEdit podeTerMedicoEdit :formPesquisar:dataTable"/>
+
+                                        <p:commandButton value="# {msgs.fechar}" style="width: 100%" onclick="PF('dialogEditar').hide()" partialSubmit="true" process="@this"
+                                                         actionListener="# {admsServicoBean.limpar()}"/>   
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center> -->
+                
+                
+                <!-- <center>
+                    <p:dialog header="# {msgs.novo} # {msgs.servico}" closable="false" showEffect="fade"
+                              widgetVar="dialogNovo" modal="true" closeOnEscape="true" width="50%">
+                        <h:form id="formNovo">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                    
+                                    <p:outputLabel value="# {msgs.grupoDoservico}: "/>
+                                    <p:selectOneMenu id="comboGrupoServNovo" value="# {admsServicoBean.servico.fkIdGrupoServico.pkIdGrupoServico}"                           
+                                                     style="width: 94%" filter="true">
+                                        <f:selectItem itemLabel="" itemValue="# {null}"/>
+                                        <f:selectItems value="# {admsGrupoServicoBean.findAll()}" var="grupoServico" 
+                                                       itemLabel="# {grupoServico.descricaoGrupoServico}" itemValue="# {grupoServico.pkIdGrupoServico}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.tipoDoServico}: "/>
+                                    <p:selectOneMenu id="comboTipoServNovo" value="# {admsServicoBean.servico.fkIdTipoServico.pkIdTipoServico}"                        
+                                                     style="width: 94%" filter="true">
+                                        <f:selectItem itemLabel="" itemValue="# {null}"/>
+                                        <f:selectItems value="# {admsTipoServicoBean.findAll()}" var="tipoServico" 
+                                                       itemLabel="# {tipoServico.descricaoTipoServico}" itemValue="# {tipoServico.pkIdTipoServico}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.areaPrestaServico}: "/>
+                                    <p:selectOneMenu id="comboAreaNovo" value="# {admsServicoBean.servico.fkIdArea.pkIdAreaInterna}"                                                  
+                                                     style="width: 94%" filter="true">
+                                        <f:selectItem itemLabel="" itemValue="# {null}"/>
+                                        <f:selectItems value="# {areaInternaBean.findAll()}" var="areaInterna" 
+                                                       itemLabel="# {areaInterna.descricaoAreaInterna}" itemValue="# {areaInterna.pkIdAreaInterna}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.especialidade}: "/>
+                                    <p:selectOneMenu id="comboEspecialidadeNovo" value="# {admsServicoBean.servico.fkIdEspecialidade.pkIdEspecialidade}"                                                    
+                                                     style="width: 94%" filter="true">
+                                        <f:selectItem itemLabel="" itemValue="# {null}"/>
+                                        <f:selectItems value="# {grlEspecialidadeBean.pesquisaPorEspecialidadeMedica()}" var="especialidade" 
+                                                       itemLabel="# {especialidade.descricao}" itemValue="# {especialidade.pkIdEspecialidade}"/>
+                                    </p:selectOneMenu>
+                                    
+                                    <p:outputLabel value="# {msgs.nomeDoServico}*: "/>
+                                    <p:inputText id="nomeServNovo" style="width: 97%" value="# {admsServicoBean.servico.nomeServico}" 
+                                                 required="true" requiredMessage="Indique O Nome Do Serviço" />
+                                    
+                                    <p:outputLabel value="# {msgs.codigoDoServico}: "/>
+                                    <p:inputText id="codServNovo" style="width: 97%" value="# {admsServicoBean.servico.codServico}"/>
+                                    
+                                    <p:outputLabel value="# {msgs.podeTerAgendamnetoMedico}: "/>
+                                    <p:selectOneRadio id="podeTerMedico" value="# {admsServicoBean.servico.podeTerMedico}" 
+                                                     required="true" requiredMessage="Indique se pode ter médico ou não"                                                      
+                                                     style="width: 94%">
+                                        <f:selectItem itemLabel="Sim" itemValue="# {true}"/>
+                                        <f:selectItem itemLabel="Não" itemValue="# {false}"/>
+                                    </p:selectOneRadio>
+                                    
+                                    <br/>
+                                    <h:panelGrid columns="2" cellpadding="3" width="100%">
+                                        <p:commandButton value="# {msgs.gravar}" style="width: 100%" action="# {admsServicoBean.create()}" icon="ui-icon-disk"
+                                                         update="comboGrupoServNovo comboTipoServNovo comboAreaNovo comboEspecialidadeNovo nomeServNovo podeTerMedico codServNovo :formPesquisar:dataTable"/>
+                                        <p:commandButton value="# {msgs.fechar}" style="width: 100%" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"
+                                                         actionListener="# {admsServicoBean.limpar()}"/>                                    
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center> -->
+                
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

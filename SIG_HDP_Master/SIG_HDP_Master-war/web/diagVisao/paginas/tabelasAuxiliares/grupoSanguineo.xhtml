@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagGrupoSanguineoBean.temMensagemPendente == true}">
+            <c:if test="${diagGrupoSanguineoBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagGrupoSanguineoBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagGrupoSanguineoBean.tipoMensagemPendente == 'Erro'}">
+                #{diagGrupoSanguineoBean.getMensagem()}
+            </c:if>
+        </c:if>
+
+        <h2>Grupos Sanguíneos</h2>
+
+        <center>
+
+            <h:panelGrid columns="1">
+                <h:form prependId="false">
+                    <p:growl sticky="true" id="msg" autoUpdate="true" />
+
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" width="100%">
+                            <h:panelGrid columns="2" cellpadding="10" id="gridCamposPesquisa">
+
+                                <h:panelGrid columns="2" cellpadding="3">
+                                    <p:outputLabel value="Descrição: "/>
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="descricao" style="width: 100%" value="#{diagGrupoSanguineoBean.diagGrupoSanguineoPesquisar.descricaoGrupoSanguineo}"/>
+                                    </f:validateBean>
+
+                                    <br/>
+                                    <h:panelGrid columns="3" width="100%">
+                                        <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                         action="#{diagGrupoSanguineoBean.pesquisarGruposSanguineos()}" 
+                                                         partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                        <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagGrupoSanguineoBean.limparPesquisa()}" 
+                                                         partialSubmit="true" process="@this" style="width: 100%"/>
+                                        <p:commandButton style="width: 100%" value="Actualizar Grupos Sanguíneos" icon="ui-icon-refresh"  process="@this" id="adicionar" actionListener="#{diagGrupoSanguineoExcelBean.carregarGrupoSanguineoTabela()}" update="dataTable">
+                                            <p:tooltip id="toolTipAdicionar" for="adicionar" value="Actualizar Grupos Sanguíneos"/>
+                                        </p:commandButton> 
+
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+
+                    <p:dataTable id="dataTable" var="grupoSanguineo" value="#{diagGrupoSanguineoBean.itens}"
+                                 rowKey="#{grupoSanguineo.pkIdGrupoSanguineo}" selectionMode="single"
+                                 emptyMessage="Não Existem Grupos Sanguíneos Cadastrados"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+                        <p:column headerText="Grupo Sanguíneo">
+                            <center>                                        
+                                #{grupoSanguineo.descricaoGrupoSanguineo}
+                            </center>
+                        </p:column>
+                        
+                    </p:dataTable>
+
+                </h:form>
+            </h:panelGrid>
+        </center>
+
+        <center>
+
+            <p:dialog header="Registar Grupo Sanguineo" closable="false" showEffect="fade"
+                      widgetVar="dialogRegistarGrupoSanguineo" modal="true" closeOnEscape="true">
+                <h:form id="formRegistarGrupoSanguineo">
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3">
+                            <p:outputLabel value="Nome do Grupo Sanguíneo * : "/>
+                            <p:inputText id="novoGrupo" value="#{diagGrupoSanguineoBean.diagGrupoSanguineo.descricaoGrupoSanguineo}" 
+                                         required="true" requiredMessage="Indique o nome do grupo sanguíneo."/>
+
+                        </h:panelGrid>
+
+                        <br/>
+
+                        <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                        <p:separator/>
+
+                        <h:panelGroup style=" float: right">
+                            <p:commandButton value="Registar" icon="ui-icon-disk" action="#{diagGrupoSanguineoBean.create()}" update="novoGrupo dataTable"/>
+                            <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagGrupoSanguineoBean.limpar()}"/>
+                        </h:panelGroup>
+
+                    </p:fieldset>
+
+                </h:form>
+            </p:dialog>
+        </center>
+
+        <center>
+            <p:dialog header="Editar Grupo Sanguíneo" closable="false" showEffect="fade"
+                      widgetVar="dialogEditar" modal="true" closeOnEscape="true">
+                <h:form id="formEditar">
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3">
+                            <p:outputLabel value="Novo Nome do Grupo Sanguíneo"/>
+                            <p:inputText id="editarGrupo" style="width: 100%" value="#{diagGrupoSanguineoBean.diagGrupoSanguineo.descricaoGrupoSanguineo}"
+                                         required="true" requiredMessage="Indique o nome do grupo sanguíneo."/>
+
+                            <p:outputLabel value=""/>
+
+                            <h:panelGrid style=" float: right; width: 100%" columns="2">
+                                <p:commandButton value="Guardar Edição" action="#{diagGrupoSanguineoBean.edit()}" icon="ui-icon-disk"
+                                                 onclick="dialogEditar.hide()" update=":dataTable"/>
+                                <p:commandButton value="Cancelar" onclick="dialogEditar.hide()" partialSubmit="true" process="@this"
+                                                 icon="ui-icon-arrowreturnthick-1-w" action="#{diagGrupoSanguineoBean.limpar()}"/>     
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+        </center>
+    </ui:define>
+
+</ui:composition>

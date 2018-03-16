@@ -1,0 +1,248 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalFin.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralFin.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>#{msgs.pagamentos}</h1>
+                <p:messages id="messages" autoUpdate="true" closable="true"/>
+                <p:growl autoUpdate="true"/>
+                <h:form id="formProcuraPagamentos">
+
+                    #{detetorAtualizacaoPagina.checkAtualizacao("pesquisaPagamentos")}
+                    <center>    
+                        
+                        <p:commandLink style="color: #0088cc" value="#{finPagamentosListagemPacienteBean.pacienteApresentarDadosAssociadoPagamento.numeroPaciente} 
+                                       #{finPagamentosListagemPacienteBean.pacienteApresentarDadosAssociadoPagamento.fkIdPessoa.nome}  
+                                       #{finPagamentosListagemPacienteBean.pacienteApresentarDadosAssociadoPagamento.fkIdPessoa.sobreNome}  
+                                       #{finPagamentosListagemPacienteBean.pacienteApresentarDadosAssociadoPagamento.fkIdPessoa.sobreNome} " 
+                                       ajax="true" partialSubmit="true" process="@this" 
+                                       actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(finPagamentosListagemPacienteBean.pacienteApresentarDadosAssociadoPagamento)}" 
+                                       update=":formPacienteVisualizar" 
+                                       onclick="PF('dialogMaisDetalhes').show();"/>
+                    </center>
+                    <br/>    
+                    <p:fieldset>
+                        <div class="ui-fluid"> 
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+
+
+
+                                    <p:outputLabel for="intervaloDeDatas" value="#{msgs.dataDaSolicitacao}:  *"/>
+                                    <p:panelGrid id="intervaloDeDatas" columns="2">
+                                        <p:calendar id="dataInicial" 
+                                                    navigator="true" locale="pt"
+                                                    value="#{finPagamentosListagemPacienteBean.dataInicial}" maxdate="#{finPagamentosListagemPacienteBean.getDataAtual()}"/>
+
+                                        <p:calendar id="dataFinal" 
+                                                    navigator="true" locale="pt"
+                                                    value="#{finPagamentosListagemPacienteBean.dataFinal}" maxdate="#{finPagamentosListagemPacienteBean.getDataAtual()}"/>
+                                    </p:panelGrid>
+
+                                    <p:outputLabel for="formaPagamento" value="#{msgs.formaDePagamento}: "/>
+                                    <p:selectOneMenu id="formaPagamento" 
+                                                     value="#{finPagamentosListagemPacienteBean.pagamento.fkIdFormaPagamento.pkIdFormaPagamento}" 
+                                                     filter="true" filterMatchMode="contains" disabled="#{!finPagamentosListagemPacienteBean.isFormasDePagamento()}" 
+                                                     valueChangeListener="#{finPagamentosListagemPacienteBean.changeFormaDePagamento}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{finFormaPagamentoBean.findAll()}" 
+                                                       var="formaPagamento" 
+                                                       itemLabel="#{formaPagamento.descricaoFormaPagamento}" 
+                                                       itemValue="#{formaPagamento.pkIdFormaPagamento}"/>
+                                        <f:ajax execute="@this" render="banco contaBancaria convenio projetoConvenio"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="banco" value="#{msgs.banco}: "/>
+                                    <p:selectOneMenu id="banco"
+                                                     value="#{finPagamentosListagemPacienteBean.pagamentoViaBanco.fkIdContaBancaria.fkIdBanco.pkIdBanco}"
+                                                     filter="true" filterMatchMode="contains" disabled="#{!finPagamentosListagemPacienteBean.isPagamentoBancario()}" 
+                                                     valueChangeListener="#{finPagamentosListagemPacienteBean.changeBanco}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{finBancoBean.findAll()}" 
+                                                       var="banco" 
+                                                       itemLabel="#{banco.nomeBanco}" 
+                                                       itemValue="#{banco.pkIdBanco}"/>
+                                        <f:ajax execute="@this" render="contaBancaria"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="contaBancaria" value="#{msgs.contaBancaria}: "/>
+                                    <p:selectOneMenu id="contaBancaria" 
+                                                     value="#{finPagamentosListagemPacienteBean.pagamentoViaBanco.fkIdContaBancaria.pkIdContaBancaria}"
+                                                     filter="true" filterMatchMode="contains" disabled="#{!finPagamentosListagemPacienteBean.isPagamentoBancario()}"
+                                                     valueChangeListener="#{finPagamentosListagemPacienteBean.changeContaBancaria}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{finPagamentosListagemPacienteBean.getContaBancariaLista()}" 
+                                                       var="contaBancaria" 
+                                                       itemLabel="#{contaBancaria.numeroConta}" 
+                                                       itemValue="#{contaBancaria.pkIdContaBancaria}"/>
+                                    </p:selectOneMenu>
+                                </p:panelGrid> 
+
+
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <p:outputLabel for="convenio" value="#{msgs.convenio}: "/>
+                                    <p:selectOneMenu id="convenio"
+                                                     value="#{finPagamentosListagemPacienteBean.finPagamentoConvenio.fkIdConvenio.pkIdConvenio}"
+                                                     filter="true" filterMatchMode="contains" disabled="#{!finPagamentosListagemPacienteBean.isPagamentoConvenio()}" 
+                                                     valueChangeListener="#{finPagamentosListagemPacienteBean.changeConvenio}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{grlConvenioBean.findAll()}" 
+                                                       var="convenio" 
+                                                       itemLabel="#{convenio.nomeConvenio}" 
+                                                       itemValue="#{convenio.pkIdConvenio}"/>
+                                        <f:ajax execute="@this" render="projetoConvenio"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="projetoConvenio" value="#{msgs.projetoConvenio}: "/>
+                                    <p:selectOneMenu id="projetoConvenio" filter="true" filterMatchMode="contains" 
+                                                     value="#{finPagamentosListagemPacienteBean.finPagamentoConvenio.fkIdProjetoConvenio.pkIdProjetoConvenio}"
+                                                     disabled="#{!finPagamentosListagemPacienteBean.isPagamentoConvenio()}">
+                                        <f:selectItem itemValue="#{null}" itemLabel=""/>
+                                        <f:selectItems value="#{finPagamentosListagemPacienteBean.getProjetoConvenioLista()}" 
+                                                       var="projetoConvenio" 
+                                                       itemLabel="#{projetoConvenio.descricaoProjeto}" 
+                                                       itemValue="#{projetoConvenio.pkIdProjetoConvenio}"/>
+                                    </p:selectOneMenu>
+                                </p:panelGrid>
+                            </p:panelGrid>
+                            <p:panelGrid columns="4" layout="grid" styleClass="ui-noborder">
+                                <p:commandButton value="#{msgs.pesquisar}" id="pesquisar" 
+                                                 actionListener="#{finPagamentosListagemPacienteBean.pesquisar()}" 
+                                                 partialSubmit="true" process="@this dataInicial dataFinal formaPagamento banco contaBancaria convenio projetoConvenio" 
+                                                 update="dataTable"/>
+                            </p:panelGrid>
+                        </div>
+                    </p:fieldset>
+
+                    <p:watermark for="dataInicial" value="#{msgs.aPartirDe}"/>
+                    <p:watermark for="dataFinal" value="#{msgs.ate}"/>
+                    <p:tooltip for="dataInicial" position="top" value="#{msgs.aPartirDe}"/>
+                    <p:tooltip for="dataFinal" position="top" value="#{msgs.ate}"/>
+
+                    <center>
+                        <p:panel style="border: none; height: 40px">
+                            <h:panelGrid class="float-right" columns="2">
+                                <p:commandButton value="#{msgs.limpar} #{msgs.resultados}" id="limparResultadoLista"
+                                                 partialSubmit="true" process="@this" update="@this dataTable" 
+                                                 actionListener="#{finPagamentosListagemPacienteBean.limparResultadosLista()}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </center>
+
+                    <h:panelGrid width="100%">
+                        <p:dataTable id="dataTable" var="pagamento" value="#{finPagamentosListagemPacienteBean.getPagamentoLista()}"
+                                     style="width: 100%" emptyMessage="Sem Pagamentos"
+                                     paginator="true" paginatorPosition="bottom" rows="10">
+
+                            <p:column headerText="#{msgs.dataPagamento}">
+                                <center>    
+                                    <h:outputText value="#{pagamento.dataPagamento}">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.registadoPor}">
+                                <center>        
+                                    <p:commandLink style="color: #0088cc" value="#{pagamento.fkIdRecepcionista.codigoFuncionario}
+                                                   #{pagamento.fkIdRecepcionista.fkIdPessoa.nome} 
+                                                   #{pagamento.fkIdRecepcionista.fkIdPessoa.sobreNome}"/>
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.valorPago}">
+                                <center>    
+                                    #{pagamento.valorPago}
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.formaDePagamento}">
+                                <center>   
+                                    #{pagamento.fkIdFormaPagamento.descricaoFormaPagamento}
+                                </center>
+                            </p:column>
+                            <p:column headerText="-----------------">
+                                <center> 
+                                    #{finPagamentosListagemPacienteBean.getFormaQueFoiPago(pagamento)}
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.opcoes}">
+                                <center>                         
+                                    <p:menuButton id="opcoesPagamento" value="#{msgs.opcoes}">
+                                        <p:menuitem value="#{msgs.maisDetalhes}" 
+                                                    actionListener="#{finPagamentoEncargoDevidoAbrirBean.carregarPagamentosEncargosDevidos(pagamento, 'pagaListagemPaciente', finPagamentosListagemPacienteBean.pacienteApresentarDadosAssociadoPagamento)}" 
+                                                    partialSubmit="true" process="@this"
+                                                    update=":formPagamentoServicoSolicitado:dataPagamento :formPagamentoServicoSolicitado:recepcionista 
+                                                    :formPagamentoServicoSolicitado:formaPagamento 
+                                                    :formPagamentoServicoSolicitado:valorPago :formPagamentoServicoSolicitado:dataTablePagamentoSolicitacao 
+                                                    :formPagamentoServicoSolicitado:formaPagamentoDesc"
+                                                    onclick="PF('dialogPagamento').show();"/>
+                                    </p:menuButton>
+                                </center>
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:panelGrid>
+
+                    <br/> <br/>
+
+                    <!-- <p:poll immediate="true" partialSubmit="true" process="@this" listener="# {finPagamentosListagemPacienteBean.pesquisar('pool')}"  update="dataTable" interval="10"/>-->
+                </h:form>
+
+                <p:dialog header="#{msgs.pagamento}" closable="true" showEffect="fade"
+                          widgetVar="dialogPagamento" modal="true" closeOnEscape="false" width="70%" height="600px">
+                    <ui:include src="./pagamentoAbrirFin.xhtml"/>
+                </p:dialog>
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+
+
+                <!-- <p:column headerText="# {msgs.paciente}">
+                     <center>        
+                         <p:commandLink style="color: #0088cc" value="# {pagamento.getFinPagamentoEncargoDevidoList().get(0).} # {pagamento.fkIdTipoPagamentoSolicitacao.fkIdSolicitacao.fkIdPaciente.numeroPaciente} # {pagamento.fkIdTipoPagamentoSolicitacao.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} # {pagamento.fkIdTipoPagamentoSolicitacao.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                        ajax="true" partialSubmit="true" process="@this" 
+                                        actionListener="# {admsPacienteVisualizarBean.setAdmsPaciente(pagamento.fkIdTipoPagamentoSolicitacao.fkIdSolicitacao.fkIdPaciente)}" 
+                                        update=":formPacienteVisualizar" 
+                                        onclick="PF('dialogMaisDetalhes').show();"/>
+                     </center>
+                 </p:column>-->
+
+
+
+                <!--                 <p:column headerText="# {msgs.paciente}">
+                   <center>        
+                       <p:commandLink style="color: #0088cc" value="# {pagamento.getFinPagamentoEncargoDevidoList().get(0).getFkIdEncargoDevido().getFkIdSubprocesso().getFkIdPaciente().getNumeroPaciente()} 
+                           # {pagamento.getFinPagamentoEncargoDevidoList().get(0).getFkIdEncargoDevido().getFkIdSubprocesso().getFkIdPaciente().getFkIdPessoa().getNome()} 
+                           # {pagamento.getFinPagamentoEncargoDevidoList().get(0).getFkIdEncargoDevido().getFkIdSubprocesso().getFkIdPaciente().getFkIdPessoa().getNomeDoMeio()} 
+                           # {pagamento.getFinPagamentoEncargoDevidoList().get(0).getFkIdEncargoDevido().getFkIdSubprocesso().getFkIdPaciente().getFkIdPessoa().getSobreNome()}" 
+                           ajax="true" partialSubmit="true" process="@this" 
+                           actionListener="# {admsPacienteVisualizarBean.setAdmsPaciente(pagamento.getFinPagamentoEncargoDevidoList().get(0).getFkIdEncargoDevido().getFkIdSubprocesso().getFkIdPaciente())}" 
+                           update=":formPacienteVisualizar" 
+                           onclick="PF('dialogMaisDetalhes').show();"/>
+                   </center>
+               </p:column>-->
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

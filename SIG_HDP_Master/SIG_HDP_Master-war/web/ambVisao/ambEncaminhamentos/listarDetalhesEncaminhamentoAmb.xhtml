@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form id="formListarEncaminhamento">
+            <div class="ui-fluid">
+                <br/>
+                <p:tabView id="tvListarEncaminhamento" styleClass="ui-noborder" style="height: 550px; width: 950px">
+
+                    <p:tab title="Triagem">
+
+                        <center>
+                            <span style="font-size: 16pt">
+
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                     "
+                                               style="color: #0088cc"/>
+
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <br/>
+                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                            </span>
+                        </center>
+
+                        <p:fieldset style="height: 385px">
+
+                            <h:panelGrid id="gridTriagem" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                <p:outputLabel value="Data:"/>
+                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.dataHoraTriagem)}"/>
+
+                                <p:outputLabel value="Funcionário:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdFuncionario.fkIdPessoa.nome}
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                     "/>
+
+                                <p:outputLabel value="Frequência Cardíaca:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.frequenciaCardiaca}"/>
+
+                                <p:outputLabel value="Frequência Respiratória:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.frequenciaRespiratoria}"/> 
+
+                                <p:outputLabel value="Glicemia:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.glicemia}"/>
+
+                                <p:outputLabel value="Local da dor:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.localDaDor}"/>
+
+                                <p:outputLabel value="Observações:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.observacoes}"/>
+
+                                <p:outputLabel value="Pulso:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.pulso}"/>
+
+                                <p:outputLabel value="Tensão Arterial Máxima:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.tensaoArterialMaxima}"/>
+
+                                <p:outputLabel value="Tensão Arterial Mínima:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.tensaoArterialMinima}"/>
+
+                                <p:outputLabel value="Altura:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.altura}"/>
+
+                                <p:outputLabel value="Peso:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.peso}"/>
+
+                                <p:outputLabel value="Temperatura:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.temperatura}"/>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+                    </p:tab>
+
+                    <p:tab title="Encaminhamento">
+
+                        <center>
+                            <span style="font-size: 16pt">
+
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                     "
+                                               style="color: #0088cc"/>
+
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <br/>
+                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                            </span>
+                        </center>
+
+                        <p:fieldset style="height: 385px">
+
+                            <h:panelGrid id="gridEncaminhamento" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                <p:outputLabel value="Data:"/>
+                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.dataHoraCadastro)}"/>
+
+                                <p:outputLabel value="Funcionário:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdFuncionario.fkIdPessoa.nome}
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                     "/>
+
+                                <p:outputLabel value="Médico Escalado:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.nome}
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.nomeDoMeio}
+                                                      #{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.sobreNome}
+                                                     "/>
+                                
+                                <p:outputLabel value="Consultório Médico:"/>
+                                <p:outputLabel value="#{ambConsultorioAtendimentoListarBean.ambConsultorioAtendimentoAux.fkIdMedicoHasEscala.fkIdConsultorio.nome}"/>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+                    </p:tab>
+
+                </p:tabView>
+                <br/>
+                <center>
+                    <p:commandButton value="#{msgs.fechar}" icon="ui-icon-close" onclick="PF('dialogListarEncaminhamento').hide()" partialSubmit="true" process="@this" style="margin-bottom: 15px;" styleClass="ui-noborder"/>
+                </center>
+            </div>
+        </h:form>
+    </h:body>
+</html>

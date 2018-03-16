@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h:form prependId="false">
+
+                    <h:panelGrid columns="2" width="100%">
+
+                        <p:tabView>
+                            <p:tab title="Escala Enfermeiros">
+
+
+
+                                <h:panelGrid width="100%">
+
+                                    <p:fieldset>
+                                        <p:commandButton ajax="false" action="#{supiTesteBean.gravar()}"/>
+                                    </p:fieldset>
+
+                                </h:panelGrid>
+                            </p:tab>
+                            <p:tab title="Listar Municipios">
+                                <h:panelGrid columns="5" cellpadding="7">
+                                    <h:form>
+                                        <h:outputLabel value="Ano: "/> 
+                                        <p:calendar value="#{escalaBean.data}"
+                                                    locale="pt" navigator="true" yearRange="c:c+1"
+                                                    pattern="yyyy">
+                                        </p:calendar>
+
+                                        <p:outputLabel value="MêS: *"/>
+                                        <p:selectOneMenu id="combo1" style="width: 250px" value="#{escalaBean.mes}">
+                                            <f:selectItem itemLabel="Selecione" noSelectionOption="true"/>
+                                            <f:selectItem itemLabel="Janeiro" itemValue="1" />
+                                            <f:selectItem itemLabel="Fevereiro" itemValue="2" />
+                                            <f:selectItem itemLabel="Março" itemValue="3" />
+                                            <f:selectItem itemLabel="Abril" itemValue="4" />
+                                            <f:selectItem itemLabel="Maio" itemValue="5" />
+                                            <f:selectItem itemLabel="Junho" itemValue="6" />
+                                            <f:selectItem itemLabel="Julho" itemValue="7" />
+                                            <f:selectItem itemLabel="Agosto" itemValue="8" />
+                                            <f:selectItem itemLabel="Setembro" itemValue="9" />
+                                            <f:selectItem itemLabel="Outubro" itemValue="10" />
+                                            <f:selectItem itemLabel="Novembro" itemValue="11" />
+                                            <f:selectItem itemLabel="Dezembro" itemValue="12" />
+
+                                        </p:selectOneMenu> 
+                                        <p:commandButton value="Pesquisar" ajax="false" update="tabela" actionListener="#{escalaBean.listarEscala()}"/>
+                                    </h:form>
+
+                                </h:panelGrid>
+
+
+                                <p:dataTable id="tabela" var="item" value="#{escalaBean.listarEscala()}" sortMode="multiple"  paginator="true" rows="3"
+                                             >
+
+
+
+                                    <p:column headerText="Supervisores">
+                                        <h:outputText value="#{item.supervisores}"/>
+                                    </p:column> 
+                                    <p:column  headerText="1">
+                                        <h:outputText value="#{item.a1}"/>
+                                    </p:column>     
+
+                                    <p:column  headerText="2">
+                                        <h:outputText value="#{item.a2}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="3">
+                                        <h:outputText value="#{item.a3}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="4">
+                                        <h:outputText value="#{item.a4}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="5">
+                                        <h:outputText value="#{item.a5}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="6">
+                                        <h:outputText value="#{item.a6}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="7">
+                                        <h:outputText value="#{item.a7}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="8">
+                                        <h:outputText value="#{item.a8}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="9">
+                                        <h:outputText value="#{item.a9}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="10">
+                                        <h:outputText value="#{item.a10}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="11">
+                                        <h:outputText value="#{item.a11}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="12">
+                                        <h:outputText value="#{item.a12}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="13">
+                                        <h:outputText value="#{item.a13}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="14">
+                                        <h:outputText value="#{item.a14}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="15">
+                                        <h:outputText value="#{item.a15}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="16">
+                                        <h:outputText value="#{item.a16}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="17">
+                                        <h:outputText value="#{item.a17}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="18">
+                                        <h:outputText value="#{item.a18}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="19">
+                                        <h:outputText value="#{item.a19}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="20">
+                                        <h:outputText value="#{item.a20}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="21">
+                                        <h:outputText value="#{item.a21}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="22">
+                                        <h:outputText value="#{item.a22}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="23">
+                                        <h:outputText value="#{item.a23}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="24">
+                                        <h:outputText value="#{item.a24}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="25">
+                                        <h:outputText value="#{item.a25}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="26">
+                                        <h:outputText value="#{item.a26}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="27">
+                                        <h:outputText value="#{item.a27}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="28">
+                                        <h:outputText value="#{item.a28}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="29">
+                                        <h:outputText value="#{item.a29}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="30">
+                                        <h:outputText value="#{item.a30}"/>
+                                    </p:column>                  
+                                    <p:column  headerText="31">
+                                        <h:outputText value="#{item.a31}"/>
+                                    </p:column>                  
+
+
+
+
+                                </p:dataTable> 
+
+                            </p:tab>
+
+
+
+                        </p:tabView>
+
+
+                    </h:panelGrid>
+
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

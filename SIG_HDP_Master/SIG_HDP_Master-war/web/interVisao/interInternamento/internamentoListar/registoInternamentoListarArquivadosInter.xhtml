@@ -1,0 +1,432 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>#{interObjetosSessaoBean.menuTitulo} -> Listagem de Pacientes Arquivados</h2>
+                <br/>
+                <h:form id="internamento" >
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="1">
+
+                            <p:outputLabel value="Número do Processo"/>
+                            <p:inputText style="width: 100%" value="#{interRegistoInternamentoArquivadosBean.numeroPacientePesq}"/>
+
+                            <p:outputLabel value="Número de Inscrição"/>
+                            <p:inputText style="width: 100%" value="#{interRegistoInternamentoArquivadosBean.numeroInscricaoPesq}"/>
+
+                            <p:outputLabel value="Primeiro Nome"/>
+                            <p:inputText style="width: 100%" value="#{interRegistoInternamentoArquivadosBean.nomePacientePesq}"/>
+
+                            <p:outputLabel value="Nome do Meio"/>
+                            <p:inputText style="width: 100%" value="#{interRegistoInternamentoArquivadosBean.nomeMeioPacientePesq}"/>
+
+                            <p:outputLabel value="Sobrenome"/>
+                            <p:inputText style="width: 100%" value="#{interRegistoInternamentoArquivadosBean.sobreNomePacientePesq}"/>
+
+                            <p:outputLabel value="Sexo"/>
+                            <p:selectOneMenu value="#{interRegistoInternamentoArquivadosBean.sexoPacientePesq}"  style="width: 91%" id="sexo">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{interSolicitacoesInterBean.sexoPesq}" 
+                                               var="sx"
+                                               itemLabel="#{sx.descricao}"
+                                               itemValue="#{sx.descricao}" 
+                                               />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Enfermaria"/>
+                            <p:selectOneMenu style="width: 91%" value="#{interCamaListarBean.enfermaria}" id="cboEnfermaria">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{interEnfermariaListarBean.listarTodas()}" 
+                                               var="enf"
+                                               itemLabel="#{enf.descricao}"
+                                               itemValue="#{enf.pkIdEnfermaria}" 
+                                               />
+                                <p:ajax event="change" update="cboQuarto" />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Sala"/>
+                            <p:selectOneMenu style="width: 91%;" value="#{interCamaListarBean.fk_id_sala}" id="cboQuarto" filter="true">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{interSalaListarBean.listarTodosDaEnfermaria(interCamaListarBean.enfermaria)}" 
+                                               var="s"
+                                               itemLabel="#{s.nomeSala}"
+                                               itemValue="#{s.pkIdSalaInternamento}" 
+                                               />
+                                <p:ajax event="change" update="cboCama" />
+                            </p:selectOneMenu>   
+
+                            <p:outputLabel value="Cama"/>
+                            <p:selectOneMenu style="width: 91%;" value="#{interRegistoInternamentoArquivadosBean.cama}" id="cboCama" filter="true">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{interCamaListarBean.listarTodasDaSala()}" 
+                                               var="c"
+                                               itemLabel="#{c.descricaoCamaInternamento}"
+                                               itemValue="#{c.pkIdCamaInternamento}" 
+                                               />
+                            </p:selectOneMenu> 
+
+                            <h:outputLabel value="Tipo de Alta" for="talta"/>
+                            <p:selectOneMenu id="talta" value="#{interRegistoInternamentoArquivadosBean.tituloAlta}" style=" border-radius:10%;font-weight:500;width:260px;">
+                                <f:selectItem itemLabel="" itemValue="" />
+                                <f:selectItems value="#{interTipoAltaListarBean.listarTodos}" 
+                                               var="t"
+                                               itemLabel="#{t.descricao}"
+                                               itemValue="#{t.pkIdTipoAlta}" 
+                                               />
+                            </p:selectOneMenu>  
+
+                            <p></p><p></p>
+                            <h:panelGrid columns="1" cellpadding="0">
+                                <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interRegistoInternamentoArquivadosBean.pesquisarArquivados()}" update="resultado" ajax="true"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:panel id="resultado" style="border: 0px;">
+                        <p:dataTable  id="datatable" var="paciente"  scrollWidth="31%"  value="#{interRegistoInternamentoArquivadosBean.listaRegistos}" 
+                                      emptyMessage="Nenhum registo de internamento encontrado" selectionMode="single" rowKey="#{paciente.pkIdRegistoInternamento}" paginator="true" rows="10" >
+
+                            <p:column headerText="Nº Processo Geral">
+                                <h:outputText value="#{paciente.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                            </p:column>
+
+                            <p:column headerText="Nº Inscrição Internamento">
+                                <h:outputText value="#{paciente.fkIdInscricaoInternamento.numeroInscricao}"/>
+                            </p:column>
+
+                            <p:column headerText="Nome Completo">
+                                <h:outputText value="#{paciente.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{paciente.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{paciente.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}"/>
+                            </p:column>
+
+                            <p:column headerText="SubProcesso">
+                                <p:selectOneMenu style="width: 91%;" value="#" id="cboSub" filter="true">
+                                    <f:selectItem itemLabel="" itemValue="" />
+                                </p:selectOneMenu>    
+                            </p:column>                                                   
+
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+
+                <!--FICHA DO PACIENTE-->
+                <center>
+                    <p:dialog header="Detalhes Do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+
+                        <h:form id="formMaisDetallhes">
+                            <p:tabView id="tabPessoa" style="height: 250px">
+
+                                <p:tab title="Dados do Paciente">
+                                    <h:panelGrid columns="2">
+                                        <p:outputLabel value="Numero do paciente: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().numeroPaciente}
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="Dados Pessoais">
+                                    <h:panelGrid columns="2" width="100%">
+                                        <p:outputLabel value="Nome completo: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.nome} #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.nomeDoMeio} #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.sobreNome} 
+
+                                        <p:outputLabel value="Data de nascimento: "/>
+                                        <h:outputText value="#{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.dataNascimento}">
+                                            <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                        </h:outputText>
+
+                                        <p:outputLabel value="Nacionalidade: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdNacionalidade.nomePais}
+
+                                        <p:outputLabel value="Documentos De Identificação "/>
+                                        <span>#{admsPacienteBean.getDocumentosIdentificacao()}</span>
+
+                                        <p:outputLabel value="Sexo: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdSexo.descricao}
+
+                                        <p:outputLabel value="Estado Civil: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdEstadoCivil.descricao}
+                                    </h:panelGrid>
+                                </p:tab>
+
+
+                                <p:tab title="Filiacao">
+                                    <h:panelGrid columns="2" width="100%">
+                                        <p:outputLabel value="Nome do pai: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.nomePai}
+
+                                        <p:outputLabel value="Nome da mae: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.nomeMae}
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="Contatos">      
+                                    <h:panelGrid columns="2" width="100%">
+                                        <p:outputLabel value="Telefone 1: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdContacto.telefone1}
+
+                                        <p:outputLabel value="Telefone 2: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdContacto.telefone2}
+
+                                        <p:outputLabel value="Email 1: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdContacto.email1}
+
+                                        <p:outputLabel value="Email 2: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdContacto.email2}
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="Endereco"> 
+                                    <h:panelGrid columns="2" width="100%">
+                                        <p:outputLabel value="País "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdEndereco.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}
+
+                                        <p:outputLabel value="Província "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdEndereco.fkIdMunicipio.fkIdProvincia.nomeProvincia}
+
+                                        <p:outputLabel value="Distrito "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdEndereco.fkIdDistrito.descricao}
+
+                                        <p:outputLabel value="Comuna: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdEndereco.fkIdComuna.descricaoComuna}
+
+                                        <p:outputLabel value="Bairro: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdEndereco.bairro}
+
+                                        <p:outputLabel value="Rua: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdEndereco.rua}
+
+                                        <p:outputLabel value="Numero da casa: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdEndereco.numeroCasa}
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="Outros">
+                                    <h:panelGrid columns="2" width="100%">
+                                        <p:outputLabel value="Religiao: "/>
+                                        #{admsPacienteBean.getPacienteVisualizar().fkIdPessoa.fkIdReligiao.descricao}
+                                    </h:panelGrid>
+                                </p:tab>
+
+                            </p:tabView>
+                            <br/>
+                            <p:commandButton value="Fechar" onclick="PF('dialogMaisDetalhes').hide()" partialSubmit="true" process="@this"
+                                             actionListener="#{admsPacienteBean.limpar()}"/> 
+                        </h:form>
+                    </p:dialog>
+                </center>                
+
+                <!--FORMULÁRIO PARA VISUALIZAR HISTORICO DO PACIENTE-->
+                <h:form id="formVisuali">
+                    <p:dialog header="História Clínica e Exames"  id="digVisualizar" widgetVar="digVisualizar" closable="false"  
+                              modal="true" showEffect="fade" hideEffect="fade" >
+                        <h:panelGrid columns="6" cellpadding="5">
+                            <p:outputLabel value="De "/>
+                            <p:calendar navigator="true" size="30"/>
+                            <p:outputLabel value="a "/>
+                            <p:calendar navigator="true" size="30"/>
+                            <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#" ajax="true"/>
+                            <p:commandButton value="Fechar" onclick="digVisualizar.hide()"
+                                             action="#{interRegistoInternamentoBean.limparCampos()}" process="@this" style="width: 130px"/>             
+                        </h:panelGrid> 
+
+                        <p:tabView  style="width: 825px; height: 490px" >
+
+                            <p:tab title="PACIENTE">
+                                <p:fieldset legend="DADOS DO PACIENTE" >
+                                    <h:panelGrid columns="1" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <p:outputLabel value="Nº de Processo"/>dlg
+                                        <p:outputLabel value="Nome"/>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>  
+                            <p:tab title="INTERNAMENTO">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab> 
+
+                            <p:tab title="ADMISSÕES">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                            <p:tab title="AMBULATÓRIO">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                            <p:tab title="EMERGÊNICAS">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                            <p:tab title="DIAGNÓSTICOS">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                            <p:tab title="FARMÁCIA">
+                                <p:fieldset legend="HISTÓRIA CLÍNICA E EXAMES" >
+                                    <h:panelGrid columns="4" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                        <h:panelGrid columns="2" width="103%" cellspacing="10" cellpadding="5" style=" font-family: cursive; alignment-adjust: central; ">                    
+                                            <p:outputLabel value="Data"/>
+                                            <p:outputLabel value="Atividade"/>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                            </p:tab>
+
+                        </p:tabView>
+
+
+
+                        <p:separator/>
+
+                    </p:dialog>
+
+                </h:form>
+
+                <!--FORMULARIO PARA HISTORICO DE ALTAS-->
+                <h:form id="historico">
+                    <p:dialog id="historicoAlta" widgetVar="historicoAlta" closable="false"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="900" height="630">
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Histórico de Títulos de Alta</h2>
+                        <p:separator/>
+
+                        <p:outputLabel id="pac" value="Paciente: #{interTituloAltaBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao} - #{interTituloAltaBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interTituloAltaBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interTituloAltaBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" style="font-weight: bold; font-size: 16px; text-decoration: underline; margin-left: 20%"/>
+                        <h:panelGrid columns="2" class="float-right">
+                            <p:commandButton value="Fechar" onclick="PF('historicoAlta').hide()"
+                                             action="#{interTituloAltaBean.limparCampos()}" process="@this" style="width: 130px"/>
+                        </h:panelGrid>
+                        <br/>
+                        <p:growl id="ms" autoUpdate="true" />
+                        <br/>
+
+                        <p:panel header="HISTÓRICO DE TÍTULOS DE ALTA DO PACIENTE">
+                            <p:fieldset legend="Pesquisar Título de Alta">
+                                <h:panelGrid columns="2" cellpadding="1">
+                                    <p:outputLabel value="Nº Título de Alta"/>
+                                    <p:inputText size="30" value="#{interTituloAltaBean.numeroTituloPesq}"/>
+                                    <p:outputLabel value="Tipo de Alta"/>   
+                                    <p:selectOneMenu id="talta" value="#{interTituloAltaBean.tipoAltaPesq}" 
+                                                     style=" border-radius:10%;font-weight:500;width:90%;">
+                                        <f:selectItem itemLabel="" itemValue="" />
+                                    </p:selectOneMenu> 
+                                </h:panelGrid>
+                                <h:panelGrid columns="4" cellpadding="1">
+                                    <p:outputLabel value="De"/>
+                                    <p:calendar navigator="true" size="30" value="#{interTituloAltaBean.dataAltaPesq1}" style="position: relative; left: 73px"/> 
+
+                                    <p:outputLabel value="a" style="margin-left: 100px"/>
+                                    <p:calendar navigator="true" size="30" value="#{interTituloAltaBean.dataAltaPesq2}" style="margin-left: 15px"/> 
+                                </h:panelGrid>
+                                <h:panelGrid columns="2" width="100%" cellpadding="0" style="position: relative; left: 92px">
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interTituloAltaBean.pesquisar}" update="resultado" ajax="true"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <p:separator />
+                            <p:panel id="resultado" style="border: 0px;">
+                                <p:dataTable  id="datatable" var="alta"  scrollWidth="31%"  value="#{interTituloAltaBean.listaTituloAlta}" 
+                                              emptyMessage="Nenhum registo de título de alta encontrado" selectionMode="single" rowKey="#{alta.pkIdTituloAlta}" paginator="true" rows="5">
+
+
+                                    <p:column headerText="Data Título de Alta">
+                                        <h:outputText value="#{alta.dataAlta}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy hh:mm:ss"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Nº Título de Alta">
+                                        <h:outputText value="#{alta.numeroTituloAlta}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Resumo Clínico">
+                                        <h:outputText value="#{alta.resumoClinico}"/>
+                                    </p:column>  
+
+
+                                    <p:column headerText="Diagnóstico de Alta">
+                                        <h:outputText value="#{alta.diagnosticoAlta}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Tipo de Alta">
+                                        <h:outputText value="#{alta.fkIdTipoAlta.descricao}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Obs">
+                                        <h:outputText value="#{alta.obs}"/>
+                                    </p:column>
+
+                                    <p:column>
+                                        <p:commandButton value="Imprimir"/>
+                                    </p:column>      
+
+                                </p:dataTable>
+
+                            </p:panel>
+
+                            <p:separator />
+                            <p:separator />    
+
+                        </p:panel>
+                        <br/> 
+                    </p:dialog>
+                </h:form>
+
+            </ui:define>
+
+            <center>
+                <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                          widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                    <ui:include src="./../../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                </p:dialog>
+            </center>
+
+        </ui:composition>
+
+    </body>
+</html>

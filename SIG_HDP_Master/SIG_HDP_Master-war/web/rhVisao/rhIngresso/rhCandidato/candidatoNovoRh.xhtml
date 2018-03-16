@@ -1,0 +1,334 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Novo Candidato</title>
+        <h:outputScript name="JS/previewImagem.js"/>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="/template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../../menuHorizontalRh.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../../menuLateralRh.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>Recursos Humanos -> Novo Candidato</h2>
+                <p:messages id="ms" autoUpdate="true" closable="true"/>
+
+                <h:form id="formularioPrincipal">
+                    <br/>
+                    <p:tabView id="tabPrincipal" style="height: 520px">
+                        <p:tab title="Generalidades de Pessoa">
+                            <ui:include src="./../rhPessoa/pessoaNovaTabViewRh.xhtml"/>
+                        </p:tab>
+
+                        <p:tab title="Generalidades de Candidato">
+                            <center>
+                                <h:panelGrid columns="1" width="65%">
+                                    <f:validateBean disabled="true">
+                                        <p:tabView id="tabCandidato">
+                                            <p:tab title="Dados Iniciais">
+                                                <h:panelGrid columns="2" width="100%" cellpadding="5" id="gridTipoCandidato">
+                                                    <p:outputLabel value="Nº Bilhete de Identidade*:"/>
+                                                    <p:inputText value="#{rhCandidatoNovoBean.candidato.numeroBi}" style="width: 360px"
+                                                                 required="true" requiredMessage="Indique o número do bilhete de identidade"/>
+                                                    <p:outputLabel value="Estado do Candidato*:"/>
+                                                    <h:selectOneMenu id="comboEstadoCandidato" style="text-align: center; width: 370px" 
+                                                                     value="#{rhCandidatoNovoBean.candidato.fkIdEstadoCandidato.pkIdEstadoCandidato}"
+                                                                     required="true" requiredMessage="Indique o estado do candidato">
+                                                        <f:selectItems value="#{itensAjaxBean.estadoCandidatoList}" var="estCand"
+                                                                       itemDisabled="#{estCand.descricao == 'Contratado'}"
+                                                                       itemLabel="#{estCand.descricao}" itemValue="#{estCand.pkIdEstadoCandidato}"/>
+                                                    </h:selectOneMenu>
+
+                                                    <p:outputLabel value="Nível Acadêmico*:"/>
+                                                    <h:selectOneMenu style="text-align: center; width: 370px" required="true" 
+                                                                     requiredMessage="Indique o nivel acadêmico"
+                                                                     value="#{rhCandidatoNovoBean.candidato.fkIdNivelAcademico.pkIdNivelAcademico}">
+                                                        <f:selectItems value="#{itensAjaxBean.nivelAcademicoList}" var="niv"
+                                                                       itemLabel="#{niv.descricaoNivelAcademico}" itemValue="#{niv.pkIdNivelAcademico}"/>
+                                                    </h:selectOneMenu>
+
+                                                    <p:outputLabel value="Categoria pretendida*:"/>
+                                                    <p:selectOneMenu id="comboCategoria" style="text-align: center; width: 345px" autoWidth="false" filter="true" filterMatchMode="contains"
+                                                                     value="#{rhCandidatoNovoBean.candidato.fkIdCategoriaPretendida.pkIdCategoriaProfissional}"
+                                                                     required="true" requiredMessage="Indique a categoria pretendida">
+                                                        <f:selectItems value="#{itensAjaxBean.categoriaProfissionalList}" var="categ"
+                                                                       itemLabel="#{categ.descricao}" itemValue="#{categ.pkIdCategoriaProfissional}"/>
+                                                    </p:selectOneMenu>
+                                                </h:panelGrid>
+                                            </p:tab>
+                                            <p:tab title="Profissão e Especialidades">
+                                                <h:panelGrid columns="2" id="gridProfissaoEspecialidades" cellpadding="3" width="100%">
+                                                    <p:outputLabel value="Profissão*:"/>
+                                                    <p:selectOneMenu style="text-align: center; width: 340px" value="#{rhCandidatoNovoBean.candidato.fkIdProfissao.pkIdProfissao}" 
+                                                                     valueChangeListener="#{itensAjaxBean.changeProfissao}" filter="true" filterMatchMode="contains" autoWidth="false">
+                                                        <f:selectItems value="#{itensAjaxBean.profissaoList}" var="prof"
+                                                                       itemLabel="#{prof.descricao}" itemValue="#{prof.pkIdProfissao}"/>
+                                                        <f:ajax execute="@this" listener="#{rhCandidatoNovoBean.limparEspecialidadesChange}" event="change" render="gridProfissaoEspecialidades"/>
+                                                    </p:selectOneMenu>
+                                                    <p:outputLabel value="Especialidade1:"/>
+                                                    <p:selectOneMenu id="comboEspecialidade1" style="text-align: center; width: 340px" filter="true" filterMatchMode="contains" autoWidth="false"
+                                                                     value="#{rhCandidatoNovoBean.candidato.fkIdEspecialidade1.pkIdEspecialidade}">
+                                                        <f:selectItem itemLabel="------- Selecione -------" itemValue="#{null}"/>
+                                                        <f:selectItems value="#{itensAjaxBean.especialidadeList}" var="esp"
+                                                                       itemLabel="#{esp.descricao}" itemValue="#{esp.pkIdEspecialidade}"
+                                                                       itemDisabled="#{esp.pkIdEspecialidade == rhCandidatoNovoBean.candidato.fkIdEspecialidade2.pkIdEspecialidade}"/>
+                                                        <f:ajax execute="@this" listener="#{rhCandidatoNovoBean.limparEspecialidade2Change}" render="gridProfissaoEspecialidades" event="change"/>
+                                                    </p:selectOneMenu>
+                                                    <p:outputLabel value="Especialidade2:" rendered="#{rhCandidatoNovoBean.candidato.fkIdEspecialidade1.pkIdEspecialidade != null}"/>
+                                                    <p:selectOneMenu id="comboEspecialidade2" rendered="#{rhCandidatoNovoBean.candidato.fkIdEspecialidade1.pkIdEspecialidade != null}"
+                                                                     style="text-align: center; width: 340px" filter="true" filterMatchMode="contains" autoWidth="false"
+                                                                     value="#{rhCandidatoNovoBean.candidato.fkIdEspecialidade2.pkIdEspecialidade}">
+                                                        <f:selectItem itemLabel="------- Selecione -------" itemValue="#{null}"/>
+                                                        <f:selectItems value="#{itensAjaxBean.especialidadeList}" var="esp"
+                                                                       itemLabel="#{esp.descricao}" itemValue="#{esp.pkIdEspecialidade}"
+                                                                       itemDisabled="#{esp.pkIdEspecialidade == rhCandidatoNovoBean.candidato.fkIdEspecialidade1.pkIdEspecialidade}"/>
+                                                        <f:ajax execute="@this" render="comboEspecialidade1" event="change"/>
+                                                    </p:selectOneMenu>
+                                                </h:panelGrid>
+                                            </p:tab>
+                                            <p:tab title="Outras Informações">
+                                                <h:panelGrid columns="2" width="100%" cellpadding="5" id="gridOutrasInformacoes">
+                                                    <p:outputLabel value="Data de Admissão*:"/>
+                                                    <p:calendar locale="pt" navigator="true" size="40" value="#{rhCandidatoNovoBean.candidato.dataAdmissao}"
+                                                                maxdate="#{rhValidarBean.dataDeHoje}" disabled="true" pattern="dd-MM-yyyy">
+                                                    </p:calendar>
+                                                    <p:outputLabel value="Referência Para Contacto"/>
+                                                    <p:inputText value="#{rhCandidatoNovoBean.candidato.referenciaParaContacto}" style="width: 290px;"/>
+                                                    <p:outputLabel value="Último Emprego"/>
+                                                    <p:inputText value="#{rhCandidatoNovoBean.candidato.ultimoEmprego}" style="width: 290px"/>
+                                                    <p:outputLabel value="Observações"/>
+                                                    <p:inputTextarea value="#{rhCandidatoNovoBean.candidato.observacoes}" autoResize="false"
+                                                                     style="width: 290px; height: 80px; overflow-y: scroll"/>
+                                                </h:panelGrid>
+                                            </p:tab>
+                                            <p:tab title="Anexos">
+                                                <center>
+                                                    <p:commandButton style="width: 170px" value="Activar Anexos" action="#{rhCandidatoNovoBean.activarAnexos()}" process="@form" update="accordPanelAnexos"/>
+                                                    <br/>
+                                                    <p:accordionPanel multiple="false" id="accordPanelAnexos" style="width: 75%">
+                                                        <p:tab title="Bilhete de Identidade" rendered="#{rhCandidatoNovoBean.anexosFlag}">
+                                                            <p:panel>
+                                                                <h:panelGrid columns="7" cellpadding="12" id="gridBI">
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                   onclick="PF('dialogAnexo').show()" process="@this" action="#{rhCandidatoNovoBean.setTipoAnexo('BI')}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                   update="gridBI" rendered="#{rhCandidatoNovoBean.candidato.fkIdBi.ficheiro != null}"
+                                                                                   action="#{rhCandidatoNovoBean.removerAnexo(rhCandidatoNovoBean.candidato.fkIdBi, true)}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                   rendered="#{rhCandidatoNovoBean.candidato.fkIdBi.ficheiro != null}" process="@this" 
+                                                                                   actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoNovoBean.candidato.fkIdBi)}" 
+                                                                                   onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:tab>
+
+                                                        <p:tab title="Curriculum Vitae" rendered="#{rhCandidatoNovoBean.anexosFlag}">
+                                                            <p:panel>
+                                                                <h:panelGrid columns="7" cellpadding="12" id="gridCurriculum">
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                   onclick="PF('dialogAnexo').show()" process="@this" action="#{rhCandidatoNovoBean.setTipoAnexo('CURRICULUM')}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                   update="gridCurriculum" rendered="#{rhCandidatoNovoBean.candidato.fkIdCurriculum.ficheiro != null}"
+                                                                                   action="#{rhCandidatoNovoBean.removerAnexo(rhCandidatoNovoBean.candidato.fkIdCurriculum, true)}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                   rendered="#{rhCandidatoNovoBean.candidato.fkIdCurriculum.ficheiro != null}" process="@this" 
+                                                                                   actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoNovoBean.candidato.fkIdCurriculum)}" 
+                                                                                   onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:tab>
+                                                        <p:tab title="Certificado de Habilitações Literárias/Profissionais" rendered="#{rhCandidatoNovoBean.anexosFlag}">
+                                                            <p:panel>
+                                                                <h:panelGrid columns="7" cellpadding="12" id="gridCertificadoHabilitacoes">
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                   onclick="PF('dialogAnexo').show()" process="@this" action="#{rhCandidatoNovoBean.setTipoAnexo('CERTIFICADO_DE_HABILITACOES')}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                   update="gridCertificadoHabilitacoes" rendered="#{rhCandidatoNovoBean.candidato.fkIdCertificadoDeHabilitacoes.ficheiro != null}"
+                                                                                   action="#{rhCandidatoNovoBean.removerAnexo(rhCandidatoNovoBean.candidato.fkIdCertificadoDeHabilitacoes, true)}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                   rendered="#{rhCandidatoNovoBean.candidato.fkIdCertificadoDeHabilitacoes.ficheiro != null}" process="@this" 
+                                                                                   actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoNovoBean.candidato.fkIdCertificadoDeHabilitacoes)}" 
+                                                                                   onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:tab>
+                                                        <p:tab title="Equivalência do/s Certificado/s (Candidatos Formados no Exterior)" rendered="#{rhCandidatoNovoBean.anexosFlag}">
+                                                            <p:panel>
+                                                                <h:panelGrid columns="7" cellpadding="12" id="gridEquivalenciaCertificado">
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                   onclick="PF('dialogAnexo').show()" process="@this" action="#{rhCandidatoNovoBean.setTipoAnexo('EQUIVALENCIA_DO_CERTIFICADO')}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                   update="gridEquivalenciaCertificado" rendered="#{rhCandidatoNovoBean.candidato.fkIdEquivalenciaDoCertificado.ficheiro != null}"
+                                                                                   action="#{rhCandidatoNovoBean.removerAnexo(rhCandidatoNovoBean.candidato.fkIdEquivalenciaDoCertificado, true)}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                   rendered="#{rhCandidatoNovoBean.candidato.fkIdEquivalenciaDoCertificado.ficheiro != null}" process="@this" 
+                                                                                   actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoNovoBean.candidato.fkIdEquivalenciaDoCertificado)}" 
+                                                                                   onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:tab>
+                                                        <p:tab title="Comprovativo de Inscrição na Ordem dos Médicos/Enfermeiros e outras" rendered="#{rhCandidatoNovoBean.anexosFlag}">
+                                                            <p:panel>
+                                                                <h:panelGrid columns="7" cellpadding="12" id="gridComprovativoOrdemMedicosEnfermeiros">
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                   onclick="PF('dialogAnexo').show()" process="@this" action="#{rhCandidatoNovoBean.setTipoAnexo('COMPROVATIVO_ORDEM_MEDICOS_ENFERMEIROS')}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                   update="gridComprovativoOrdemMedicosEnfermeiros" rendered="#{rhCandidatoNovoBean.candidato.fkIdComprovativoOrdemMedicosEnfermeiros.ficheiro != null}"
+                                                                                   action="#{rhCandidatoNovoBean.removerAnexo(rhCandidatoNovoBean.candidato.fkIdComprovativoOrdemMedicosEnfermeiros, true)}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                   rendered="#{rhCandidatoNovoBean.candidato.fkIdComprovativoOrdemMedicosEnfermeiros.ficheiro != null}" process="@this" 
+                                                                                   actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoNovoBean.candidato.fkIdComprovativoOrdemMedicosEnfermeiros)}" 
+                                                                                   onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:tab>
+                                                        <p:tab title="Cédula/Carteira Profissional" rendered="#{rhCandidatoNovoBean.anexosFlag}">
+                                                            <p:panel>
+                                                                <h:panelGrid columns="7" cellpadding="12" id="gridCedulaCarteiraProfissional">
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                   onclick="PF('dialogAnexo').show()" process="@this" action="#{rhCandidatoNovoBean.setTipoAnexo('CEDULA_CARTEIRA_PROFISSIONAL')}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                   update="gridCedulaCarteiraProfissional" rendered="#{rhCandidatoNovoBean.candidato.fkIdCedulaCarteiraProfissional.ficheiro != null}"
+                                                                                   action="#{rhCandidatoNovoBean.removerAnexo(rhCandidatoNovoBean.candidato.fkIdCedulaCarteiraProfissional, true)}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                   rendered="#{rhCandidatoNovoBean.candidato.fkIdCedulaCarteiraProfissional.ficheiro != null}" process="@this" 
+                                                                                   actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoNovoBean.candidato.fkIdCedulaCarteiraProfissional)}" 
+                                                                                   onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:tab>
+                                                        <p:tab title="Atestado Médico" rendered="#{rhCandidatoNovoBean.anexosFlag}">
+                                                            <p:panel>
+                                                                <h:panelGrid columns="7" cellpadding="12" id="gridAtestadoMedico">
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                   onclick="PF('dialogAnexo').show()" process="@this" action="#{rhCandidatoNovoBean.setTipoAnexo('ATESTADO_MEDICO')}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                   update="gridAtestadoMedico" rendered="#{rhCandidatoNovoBean.candidato.fkIdAtestadoMedico.ficheiro != null}"
+                                                                                   action="#{rhCandidatoNovoBean.removerAnexo(rhCandidatoNovoBean.candidato.fkIdAtestadoMedico, true)}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                   rendered="#{rhCandidatoNovoBean.candidato.fkIdAtestadoMedico.ficheiro != null}" process="@this" 
+                                                                                   actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoNovoBean.candidato.fkIdAtestadoMedico)}" 
+                                                                                   onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:tab>
+                                                        <p:tab title="Registo Criminal" rendered="#{rhCandidatoNovoBean.anexosFlag}">
+                                                            <p:panel>
+                                                                <h:panelGrid columns="7" cellpadding="12" id="gridRegistoCriminal">
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                   onclick="PF('dialogAnexo').show()" process="@this" action="#{rhCandidatoNovoBean.setTipoAnexo('REGISTO_CRIMINAL')}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                   update="gridRegistoCriminal" rendered="#{rhCandidatoNovoBean.candidato.fkIdRegistoCriminal.ficheiro != null}"
+                                                                                   action="#{rhCandidatoNovoBean.removerAnexo(rhCandidatoNovoBean.candidato.fkIdRegistoCriminal, true)}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                   rendered="#{rhCandidatoNovoBean.candidato.fkIdRegistoCriminal.ficheiro != null}" process="@this" 
+                                                                                   actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoNovoBean.candidato.fkIdRegistoCriminal)}" 
+                                                                                   onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:tab>
+                                                        <p:tab title="Documento Militar - p/Homens" rendered="#{rhCandidatoNovoBean.anexosFlag}">
+                                                            <p:panel>
+                                                                <h:panelGrid columns="7" cellpadding="12" id="gridDocumentoMilitarHomens">
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Carregar" 
+                                                                                   onclick="PF('dialogAnexo').show()" process="@this" action="#{rhCandidatoNovoBean.setTipoAnexo('DOCUMENTO_MILITAR_HOMENS')}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Remover" process="@this" 
+                                                                                   update="gridDocumentoMilitarHomens" rendered="#{rhCandidatoNovoBean.candidato.fkIdDocumentoMilitarHomens.ficheiro != null}"
+                                                                                   action="#{rhCandidatoNovoBean.removerAnexo(rhCandidatoNovoBean.candidato.fkIdDocumentoMilitarHomens, true)}"/>
+                                                                    <p:commandLink style="text-decoration-color: blue; text-decoration-line: underline" value="Previsualizar"
+                                                                                   rendered="#{rhCandidatoNovoBean.candidato.fkIdDocumentoMilitarHomens.ficheiro != null}" process="@this" 
+                                                                                   actionListener="#{rhFicheiroAnexadoBean.setAnexoCandidato(rhCandidatoNovoBean.candidato.fkIdDocumentoMilitarHomens)}" 
+                                                                                   onclick="PF('dialogPrevisualizar').show()" update=":formPrevisualizar:painel"/>
+                                                                </h:panelGrid>
+                                                            </p:panel>
+                                                        </p:tab>
+                                                    </p:accordionPanel>
+                                                </center>
+                                            </p:tab>
+                                        </p:tabView>
+                                    </f:validateBean>
+                                </h:panelGrid>
+                            </center>
+                        </p:tab>
+                    </p:tabView>
+
+                    <h:panelGrid columns="3" cellpadding="5" class="float-right">
+                        <p:outputLabel value="Todos os campos com asterisco (*) são obrigatórios" style="font-size: small"/>
+                        <p:commandButton style="width: 170px" value="Guardar Candidato" action="#{rhCandidatoNovoBean.create()}" update="tabPrincipal"/>
+                        <p:commandButton style="width: 170px" value="Sair" onclick="PF('confirmDialogSair').show();" type="button"/>
+                    </h:panelGrid>
+
+                    <p:confirmDialog message="Tem certeza que pretende sair ? Todas alterações não guardadas serão perdidas"
+                                     header="Sair" severity="alert" widgetVar="confirmDialogSair">
+                        <p:commandButton value="Sim" action="#{rhCandidatoNovoBean.sair()}" 
+                                         process="@this" oncomplete="PF('confirmDialogSair').hide()"/>
+                        <p:commandButton value="Não" onclick="PF('confirmDialogSair').hide();" type="button"/>
+                    </p:confirmDialog>
+
+                </h:form>
+
+                <ui:include src="./../rhPessoa/pessoaDialogsFotoDocumentoRh.xhtml"/>
+
+                <p:dialog widgetVar="dialogPrevisualizar" header="Previsualizar"
+                          width="75%" height="510px" showEffect="fade" closable="true"
+                          hideEffect="fade" modal="true" position="top">
+                    <h:form id="formPrevisualizar">
+                        <div class="float-right">
+                            <h:commandButton value="Fechar" type="button" onclick="PF('dialogPrevisualizar').hide()"/>
+                        </div>
+                        <center>
+                            <p:panel id="painel" style="height: 490px">
+                                <iframe src="#{rhFicheiroAnexadoBean.previsualizarAnexoCandidato()}"
+                                        width="100%" height="450px"/>
+                            </p:panel>
+                        </center>
+                    </h:form>
+                </p:dialog>
+
+                <p:dialog widgetVar="dialogAnexo" header="Carregamento de Ficheiros"
+                          width="45%" height="210px" showEffect="fade" closable="true"
+                          hideEffect="fade" modal="true" position="top">
+                    <h:form enctype="multipart/form-data" prependId="false" id="formAnexo">
+                        <p:growl autoUpdate="true"/>
+                        <div class="float-right">
+                            <h:commandButton value="Carregar" onclick="PF('dialogAnexo').hide()" 
+                                             action="#{rhCandidatoNovoBean.uploadAnexo()}">
+                                <f:ajax execute="@form" render=":formularioPrincipal:tabPrincipal:tabCandidato:accordPanelAnexos"/>
+                            </h:commandButton>
+                            <h:commandButton value="Fechar" type="button" onclick="PF('dialogAnexo').hide()"/>
+                        </div>
+                        <center>
+                            <br/>
+                            <h:panelGrid columns="1" width="90%">
+                                <p:tabView id="tabUploadAnexo">
+                                    <p:tab title="Escolher no Dispositivo">
+                                        <h:inputFile id="inputAnexo" value="#{rhCandidatoNovoBean.anexoCarregado}" 
+                                                     validator="#{rhValidarBean.validarAnexo}"/>
+                                    </p:tab>
+                                </p:tabView>
+                            </h:panelGrid>
+                        </center>
+                    </h:form>
+                </p:dialog>
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>Internamento -> Tabelas Auxiliares -> Estados Cama Internamento</h2>
+                <br/>
+                <p:growl id="ms" autoUpdate="true" />
+                <h:form id="estados">
+                    <p:fieldset>
+                        <center>
+                            <h:panelGrid columns="2" cellpadding="2">
+                                <p:outputLabel value="Descrição"/>
+                                <p:inputText value="#{interEstadoCamaListarBean.estadoPesq}" style="width: 95%"/>
+                                <p></p><p></p>
+                                <h:panelGrid columns="2" cellpadding="0">
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interEstadoCamaListarBean.findByDescricao()}" update="resultado" ajax="true"/>
+                                    <p:commandButton value="Actualizar Estados Cama" icon="ui-icon-refresh"  process="@this" id="adicionar" actionListener="#{interEstadoCamaExcelBean.carregarEstadoCamaTabela(1)}" update="resultado">
+                                        <p:tooltip id="toolTipAdicionar" for="adicionar" value="Actualizar Estados Cama"/>
+                                    </p:commandButton>
+                                </h:panelGrid> 
+                            </h:panelGrid>
+                        </center>   
+                    </p:fieldset>
+                    <p:panel id="resultado" style="border: 0px;">
+                        <p:dataTable  id="datatable" var="est"  scrollWidth="31%"  value="#{interEstadoCamaListarBean.listaEstadosCama}" 
+                                      emptyMessage="Nenum registo de estado de camas encontrado" selectionMode="single" selection="#{interEstadoCamaListarBean.interEstadoCama}"
+                                      rowKey="#{est.pkIdEstadoCama}" paginator="true" paginatorPosition="bottom" rows="10" >
+
+                            <p:column headerText="Descrição">
+                                <h:outputText value="#{est.descricao}"/>
+                            </p:column>
+                        </p:dataTable>    
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

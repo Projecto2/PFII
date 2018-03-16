@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>SuperIntendência-> Escalas -> Atribuir Consultórios</h1>
+
+                <p:messages autoUpdate="true" closable="true"/>
+                <p:growl id="msgs" autoUpdate="true"/>
+
+                <h:form acceptcharset="ISO-8859-1" id="form">
+
+                    <p:fieldset legend="Atribuição de Consultórios">
+
+                        <h:panelGrid columns="2" id="panelPrincipal">
+
+
+
+                            <h:outputLabel value="Mês da escala: " for="mesEscala"/>
+                            <p:selectOneMenu id="mesEscala" style="width:310px" value="#{supiMedicoHasEscalaHasConsultorioBean.idEscala}" >
+                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                <f:selectItems value="#{supiMedicoHasEscalaHasConsultorioBean.findallEscalas()}" var="escala" itemLabel="#{escala.mes} / #{escala.ano}" itemValue="#{escala.pkIdEscalaMedico}"/> 
+
+                                <f:ajax execute="@this" render="diaDoMes tabela" event="change" />
+                            </p:selectOneMenu>
+
+                            <h:outputLabel value="Dia do mês: " for="diaDoMes"/>
+                            <p:selectOneMenu id="diaDoMes" style="width:310px" value="#{supiMedicoHasEscalaHasConsultorioBean.diaDoMes}">
+                                <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                <f:selectItems value="#{supiMedicoHasEscalaHasConsultorioBean.diasDoMesSeleccionado()}"/> 
+                                <f:ajax execute="@this" render="tabela" event="change" />
+
+                            </p:selectOneMenu>
+                           
+
+                        </h:panelGrid>
+
+                        <p:panelGrid columns="3">
+                            <p:commandButton ajax="false" value="Adicionar" icon="ui-icon-check" 
+                                             actionListener="#{supiMedicoHasEscalaHasConsultorioBean.atribuirConsultorio()}"/>
+                            <p:commandButton value="Cancelar" type="reset"/>
+                        </p:panelGrid>
+
+                    </p:fieldset>
+
+
+                    <p:dataTable id="tabela" sortMode="multiple"  var="item" rows="8" paginator="true" paginatorPosition="bottom"
+                                 value="#{supiMedicoHasEscalaHasConsultorioBean.medicosEscaladosList()}" 
+                                 reflow="true" style="width: 100%" emptyMessage="Nenhum registo encontrado.">
+                        <f:facet name="header">Médicos Escalados para Consultórios</f:facet>
+
+                        <p:column headerText="Médico">
+                            <h:outputText value="#{item.fkIdMedico.fkIdPessoa.nome}
+                                          #{item.fkIdMedico.fkIdPessoa.nomeDoMeio}
+                                          #{item.fkIdMedico.fkIdPessoa.sobreNome}
+                                          "/>
+                        </p:column> 
+
+                        <p:column headerText="Data da Escala">
+                            <center>
+                                <h:outputText value="#{item.data}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                </h:outputText>
+                            </center>
+                        </p:column>
+
+
+                        <p:column headerText="Consultório">
+                            <h:outputText  value="#{item.fkIdConsultorio.nome}"/>
+                        </p:column>
+
+                        <p:column headerText="Supervisor">
+                            <h:outputText  value="#{item.fkIdMedico.fkIdPessoa.nome}
+                                           #{item.fkIdMedico.fkIdPessoa.nome}
+                                           #{item.fkIdMedico.fkIdPessoa.nome}
+                                           "/>
+                        </p:column>
+
+                        <p:column headerText="------" >
+                            <center>
+                                <p:menuButton value="Opções">
+                                    <p:separator/>
+                                    <p:menuitem value="Atribuir Consultório" icon="ui-icon-pencil" process="@this" partialSubmit="true"
+                                                actionListener="#{supiMedicoHasEscalaHasConsultorioBean.seleccionarDados(item)}" 
+                                                update=":formEditarConsultoriosAtribuidos:panelEditarConsultoriosAtribuidos" 
+                                                onclick="PF('dialogEditarConsultoriosAtribuidos').show()" >
+                                    </p:menuitem>
+                                    <p:separator/>
+                                </p:menuButton>
+                            </center>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </h:form>
+
+                <center>
+                    <p:dialog header="Editar Dados" closable="true" showEffect="fade" width="75%" height="530px"
+                              widgetVar="dialogEditarConsultoriosAtribuidos" modal="true" closeOnEscape="true" position="top">
+                        <h:form id="formEditarConsultoriosAtribuidos">
+                            <p:messages id="ms3" autoUpdate="true" closable="true"/>
+                            <p:growl id="ms4" autoUpdate="true"/>
+                            <br/>
+                            <center>
+                                <p:panel id="panelEditarConsultoriosAtribuidos">
+                                    <h:panelGrid id="gridEditarConsultoriosAtribuidos" width="555px">
+                                        <p:panel>
+                                            <center>
+
+                                                <h:panelGrid columns="6" cellpadding="3">
+
+                                                    <h:panelGrid columns="2">
+
+                                                        <p:outputLabel value="Data: "/> 
+                                                        <p:calendar value="#{supiMedicoHasEscalaHasConsultorioBean.supiMedicoHasEscala.data}"
+                                                                    required="true" requiredMessage="Preencha a Data da atribuição"
+                                                                    pattern="dd/MM/yyy" locale="pt" navigator="true">
+                                                        </p:calendar>
+                                                        
+
+                                                        <h:outputLabel value="Local da Consulta: " for="localConsulta"/>
+                                                        <p:selectOneMenu id="localConsulta" style="width:310px" value="#{supiMedicoHasEscalaHasConsultorioBean.supiMedicoHasEscala.fkIdLocalConsulta.pkIdLocalConsulta}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{supiMedicoHasEscalaHasConsultorioBean.listarLocal()}" var="local" itemLabel="#{local.descricao}" itemValue="#{local.pkIdLocalConsulta}"/> 
+                                                        </p:selectOneMenu>
+
+
+                                                        <p:outputLabel value="Turno *"/>
+                                                        <p:inputText id="turno" style="width: 190px" required="true" readonly="true" requiredMessage="Indique o turno" 
+                                                                     value="#{supiMedicoHasEscalaHasConsultorioBean.supiMedicoHasEscala.fkIdTurnoMedico.descricao}" converterMessage="Turno inválido"/>
+
+
+
+                                                        <h:outputLabel value="Número do consultório: " for="nomeConsultorio"/>
+                                                        <p:selectOneMenu id="nomeConsultorio" style="width:310px" value="#{supiMedicoHasEscalaHasConsultorioBean.supiMedicoHasEscala.fkIdConsultorio.pkIdConsultorio}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{supiMedicoHasEscalaHasConsultorioBean.listarConsultorios()}" var="consultorios" itemLabel="#{consultorios.nome}" itemValue="#{consultorios.pkIdConsultorio}"/> 
+                                                        </p:selectOneMenu>
+
+                                                    </h:panelGrid>
+
+                                                </h:panelGrid>
+
+                                            </center>
+                                        </p:panel>
+
+                                        <p:panel>
+                                            <center>
+                                                <p:commandButton style="width: 170px" icon="ui-icon-pencil" value="Editar" 
+                                                                 action="#{supiMedicoHasEscalaHasConsultorioBean.atribuirConsultorio()}" 
+                                                                 process="gridEditarConsultoriosAtribuidos" update=":form:tabela">
+                                                </p:commandButton>
+                                                <p:commandButton style="width: 170px" icon="ui-icon-close" actionListener="#{supiMedicoHasEscalaHasConsultorioBean.fechar()}" 
+                                                                 value="Fechar" type="button" onclick="PF('dialogEditarConsultoriosAtribuidos').hide()" >
+                                                </p:commandButton>
+                                            </center>
+                                        </p:panel>
+
+                                    </h:panelGrid>
+
+
+                                </p:panel>
+                            </center>
+
+                        </h:form>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+
+</html>
+

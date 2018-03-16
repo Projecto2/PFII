@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <script src="../../../../resources/JS/suCalendarioPortugues.js"></script>
+                <h:form id="formPrincipal" acceptcharset="ISO-8859-1">
+                    <p:messages id="messagens" closable="true"/>
+                    <p:growl autoUpdate="true"/>
+                     <h2>Superintendência-> Avaliações-> Avaliações-> Avaliação Medicina</h2>    
+                    <h:panelGrid columns="2" cellpadding="3">
+
+                        <p:outputLabel value="Nome: "/>
+                        <f:validateBean disabled="true">
+                            <p:inputText id="nomeEst" value="#{supiAvaliacaoNovaBean.pesquisaAvaliacaoDesempenho.fkIdEstagiario.fkIdPessoa.nome}" style="width: 250px"  />
+                        </f:validateBean>
+                        <p:outputLabel value="Sobrenome "/>
+                        <f:validateBean disabled="true">
+                            <p:inputText id="sobrenomeEst" value="#{supiAvaliacaoNovaBean.pesquisaAvaliacaoDesempenho.fkIdEstagiario.fkIdPessoa.sobreNome}" style="width: 250px"  />
+                        </f:validateBean> 
+                        <p:outputLabel value="Instituição "/>
+                        <p:selectOneMenu id="instituicaoEst" style="width: 100%" value="#{supiAvaliacaoNovaBean.pesquisaAvaliacaoDesempenho.fkIdEstagiario.fkIdEscolaUniversidade.pkIdEscolaUniversidade}" filter="true">
+                            <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>
+                            <f:selectItems value="#{supiAvaliacaoNovaBean.todasAreasUniversidades}"/>
+                        </p:selectOneMenu>
+
+                        
+                        <br> </br>
+                        <h:panelGrid columns="3">
+                            <p:commandButton value="Pesquisar" action="#{supiAvaliacaoNovaBean.pesquisarDesempenho()}" 
+                                             icon="ui-icon-search" update="tabela"/>
+                            <p:commandButton value="Nova avaliação" ajax="false" immediate="true" icon="ui-icon-plus" action="avaliacaoSupiMedicina?faces-redirect=true"/> 
+
+                            <p:commandButton value="Limpar" icon="ui-icon-close" ajax="true"
+                                            action="#{supiAvaliacaoNovaBean.limparPesquisas()}" update="tabela" />
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+                    <p:dataTable id="tabela" var="avaliacao" sortMode="multiple" paginator="true" rows="3" 
+                                 value="#{supiAvaliacaoNovaBean.listAvaliacaoDesempenho}"
+                                 selectionMode="single"  rowKey="#{avaliacao.pkIdAvaliacaoDesempenho}">
+
+                        <p:column headerText="Código">
+                            <h:outputText value="#{avaliacao.pkIdAvaliacaoDesempenho}"/>
+                        </p:column>
+
+                        <p:column headerText="Estagiário">
+                            <h:outputText value="#{avaliacao.fkIdEstagiario.fkIdPessoa.nome} #{avaliacao.fkIdEstagiario.fkIdPessoa.sobreNome}"/>
+                        </p:column> 
+
+                        <p:column headerText="Observação HDP">
+                            <h:outputText value="#{avaliacao.observacao}"/>
+                        </p:column>
+                        <p:column headerText="Observação Instituição">
+                            <h:outputText value="#{avaliacao.observacaoInstituicao}"/>
+                        </p:column>
+                        <p:column headerText="Instituição de Providencia">
+                            <h:outputText value="#{avaliacao.fkIdEstagiario.fkIdEscolaUniversidade.descricao}"/>
+                        </p:column>
+                        <p:column headerText="TotalAvaliação: ">
+                            <h:outputText value="#{avaliacao.totalMensal}"/>
+                        </p:column>
+                        <p:column headerText="Data de Avaliação">
+                            <h:outputText value="#{avaliacao.dataAvaliacao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputText>
+                        </p:column>
+
+                        <p:column headerText="-------">
+
+                            <center>
+                                <p:menuButton value="Opções">
+                                    <p:menuitem value="Ver Detalhes" partialSubmit="true" process="@this" icon="ui-icon-info"
+                                                action="#{supiAvaliacaoNovaBean.setPesquisaAvaliacaoDesempenho(avaliacao)}"
+                                                onclick="PF('visualizar').show()" update=":formVisualizar:pgVisualizar"/>
+                                    
+                                    <p:menuitem value="Eliminar" partialSubmit="true" process="@this" icon="ui-icon-trash"
+                                          actionListener="#{supiAvaliacaoNovaBean.setPesquisaAvaliacaoDesempenho(avaliacao)}"
+                                          onclick="PF('dialogEliminar').show()" update="tabela"/>
+                                </p:menuButton>
+                            </center>
+
+
+                        </p:column>
+
+
+                    </p:dataTable>
+
+                </h:form>
+
+                <h:form id="formVisualizar">
+                    <p:dialog id="visualizar" widgetVar="visualizar" closable="true" width="50%">
+                        <p:messages  showDetail="true" />
+
+                        <h2>Dados da Avaliação</h2>
+
+                        
+                        <h:panelGrid id="pgVisualizar" columns="1">
+                            <center> <h:panelGrid columns="1" >
+                                    <p:dataTable id="tabela" var="avalia" sortMode="multiple" paginator="true" rows="3" value="#{supiAvaliacaoNovaBean.listaItensCriterio}" 
+                                                 selectionMode="single" rowKey="#{avalia.pkIdItensAvaliacao}">
+                                        
+                                        <p:column headerText="Critério" resizable="true">
+                                            <h:outputText value="#{avalia.fkIdCriterioAvaliacao.descricaoCriterio}"/>
+                                        </p:column>
+
+                                        <p:column headerText="Pontuação">
+                                            <h:outputText value="#{avalia.pontuacao}">
+
+                                            </h:outputText>
+                                        </p:column>
+
+                                    </p:dataTable>
+                                </h:panelGrid></center>
+                            <h:panelGrid id="pg" columns="2" >
+                                <h:outputLabel value="Total Avaliação:" style=" font-family: cursive;" />
+                                <p:outputLabel id="vo" value="#{supiAvaliacaoNovaBean.pesquisaAvaliacaoDesempenho.totalMensal}" />
+                                <h:outputLabel value="Observação HDP:" style=" font-family: cursive;"/>
+                                <h:outputLabel  value="#{supiAvaliacaoNovaBean.pesquisaAvaliacaoDesempenho.observacao}" />
+                                <h:outputLabel value="Observação Instituição:" style=" font-family: cursive;"/>
+                                <h:outputLabel  value="#{supiAvaliacaoNovaBean.pesquisaAvaliacaoDesempenho.observacaoInstituicao}"/>
+                            </h:panelGrid> 
+                        </h:panelGrid>      
+
+                        <p:panel style=" font-family: cursive;">
+                            <p:commandButton style=" border-radius:10%;font-weight:700" value="Voltar"  ajax="true" 
+                                             onclick="PF('visualisar').hide;" />
+                        </p:panel>
+                    </p:dialog>
+                </h:form>
+                <center>
+                  <h:form id="formEliminar">
+                     <p:confirmDialog message="Deseja eliminar a avaliacao? Pode estar a ser utilizada... "
+                                      header="Eliminar Avaliacao" severity="alert"
+                                      widgetVar="dialogEliminar">
+
+                        <p:commandButton value="Sim" actionListener="#{supiAvaliacaoNovaBean.eliminar()}"
+                                         update=":formPrincipal:tabela" 
+                                         oncomplete="PF('dialogEliminar').hide();"/>
+
+                        <p:commandButton value="Não" onclick="PF('dialogEliminar').hide();" type="button" />
+                     </p:confirmDialog>
+                  </h:form>
+               </center>
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

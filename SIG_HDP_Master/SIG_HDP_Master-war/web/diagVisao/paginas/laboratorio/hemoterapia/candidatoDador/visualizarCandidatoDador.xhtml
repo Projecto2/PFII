@@ -1,0 +1,801 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <c:if test="${diagCandidatoDadorBean.temMensagemPendente == true}">
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Sucesso'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+
+            <c:if test="${diagCandidatoDadorBean.tipoMensagemPendente == 'Erro'}">
+                #{diagCandidatoDadorBean.getMensagem()}
+            </c:if>
+        </c:if>
+
+        <h2>Laboratório -> Hemoterápia -> Candidatos à Dadores de Sangue -> Visualizar</h2>
+
+        <br/>
+
+        <center><span style="font-size: 16px; font-weight: bolder; text-decoration: underline">
+                #{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.nome} 
+                #{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.nomeDoMeio}
+                #{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.sobreNome}</span>
+        </center>
+
+        <h:form id="formVisualizarGeral">
+            <center>
+                <p:growl id="ms" autoUpdate="true" sticky="true"/>
+            </center>
+
+            <br/>
+
+            <p:commandButton value="Editar" onclick="PF('dialogEditar').show();" icon="ui-icon-pencil" process="@this" update=":formEditar"
+                             actionListener="#{diagCandidatoDadorBean.selecionarCandidatoEditar(diagCandidatoDadorBean.diagCandidatoDadorVisualizar)}" />
+
+            <br/>
+            
+            <p:tabView id="tabVisualizar" style="height: 70%">
+
+                <p:tab title="Dados do Candidato à Dador">
+                    <p:tabView id="tabDadosCandidatos" style="height: 70%">
+                        <p:tab title="Dados de Dador">
+                            <h:panelGrid columns="2" cellpadding="4">
+
+                                <h3>Código de Dador: </h3>
+                                <h:panelGrid columns="1" cellpadding="4">
+                                    #{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.codigoCandidatoDador} 
+                                </h:panelGrid>
+
+                                <h3>Data de Cadastro </h3>
+                                <h:outputText style="border: none" value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.dataCadastro}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                </h:outputText>
+                                <h3>Tipo de Doacção: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdTipoDoacao.descricaoTipoDoacao}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Dados Pessoais">
+                            <h:panelGrid columns="2" cellpadding="4">
+
+                                <h3>Nome Completo: </h3>
+                                <h:panelGrid columns="1" cellpadding="4">
+                                    #{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.nome} 
+                                    #{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.nomeDoMeio}
+                                    #{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.sobreNome}
+                                </h:panelGrid>
+
+                                <h3>Data de Nascimento: </h3>
+                                <h:outputText style="border: none" value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.dataNascimento}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                </h:outputText>
+                                <h3>Sexo: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdSexo.descricao}"/>
+                                <h3>Nacionalidade: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdNacionalidade.nomePais}"/>
+                                <h3>Estado Civil: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEstadoCivil.descricao}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Filiação">
+                            <h:panelGrid columns="2" cellpadding="7">
+                                <h3>Nome do Pai: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.nomePai}"/>
+                                <h3>Nome da Mãe: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.nomeMae}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Contacto">
+                            <h:panelGrid columns="2" cellpadding="7">
+                                <h3>Telefone 1: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdContacto.telefone1}"/>
+                                <h3>Telefone 2: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdContacto.telefone2}"/>
+                                <h3>Email 1: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdContacto.email1}"/>
+                                <h3>Email 2: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdContacto.email2}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Endereço">
+                            <h:panelGrid columns="2" cellpadding="7">
+                                <h3>País: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}"/>
+                                <h3>Província: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.nomeProvincia}"/>
+                                <h3>Município: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.nomeMunicipio}"/>
+                                <h3>Distrito: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdDistrito.descricao}"/>
+                                <h3>Comuna: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.fkIdComuna.descricaoComuna}"/>
+                                <h3>Bairro: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.bairro}"/>
+                                <h3>Rua: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.rua}"/>
+                                <h3>Nº Casa: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdEndereco.numeroCasa}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                        <p:tab title="Outros Dados">
+                            <h:panelGrid columns="2" cellpadding="7">
+                                <h3>Religião: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa.fkIdReligiao.descricao}"/>
+                            </h:panelGrid>
+                        </p:tab>
+                    </p:tabView>
+                </p:tab>
+
+                <p:tab title="Histórico de Triagens">
+                    <h:panelGrid columns="2">
+                        <p:commandButton icon="ui-icon-plus" value="Adicionar Triagem" action="#{diagCandidatoDadorBean.redirecionarRegistarTriagemCandidatoExistente()}"/>
+                    </h:panelGrid>
+
+                    <p:dataTable id="datatableTriagens" var="triagem" 
+                                 rowKey="#{triagem.pkIdTriagem}" selectionMode="single"
+                                 value="#{diagCandidatoDadorBean.findTriagensByIdCandidato(diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa)}" 
+                                 rows="5" paginator="true" paginatorPosition="bottom"
+                                 emptyMessage="Não há registos de triagens.">
+
+                        <p:column headerText="Data de Triagem">
+                            <center>
+                                <h:outputText value="#{triagem.dataTriagem}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>
+                                </h:outputText>
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Resultado da Triagem" filterBy="#{triagem.fkIdResultadoTriagem.descricaoResultadoTriagem}">
+                            <center>
+                                <h:outputText value="#{triagem.fkIdResultadoTriagem.descricaoResultadoTriagem}"/>
+                            </center>
+                        </p:column>
+
+                        <p:column>
+                            <center>
+                                <p:commandButton value="Visualizar" action="#{diagCandidatoDadorBean.selecionarTriagemVisualizar(triagem)}" 
+                                                 onclick="PF('dialogVisualizar').show();" icon="ui-icon-info"
+                                                 process="@this" update=":formVisualizarTriagem"/>
+                            </center>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            #{diagCandidatoDadorBean.totalTriagens} Registo(s)
+                        </f:facet>
+
+                    </p:dataTable>
+                </p:tab>
+
+                <p:tab title="Histórico de Exames">
+
+                    <h:panelGrid columns="2">
+                        <p:commandButton icon="ui-icon-plus" value="Adicionar Exame" action="#{diagCandidatoDadorBean.redirecionarRegistarExameCandidatoDador()}"/>
+                    </h:panelGrid>
+
+                    <p:dataTable id="datatableExames" var="exame" 
+                                 rowKey="#{exame.pkIdExameDador}" selectionMode="single"
+                                 value="#{diagCandidatoDadorBean.findExamesByIdCandidato(diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa)}" 
+                                 rows="5" paginator="true" paginatorPosition="bottom" 
+                                 emptyMessage="Não há registos de exames.">
+
+                        <p:column headerText="Data do Exame">
+                            <center>
+                                <h:outputText value="#{exame.dataExame}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>
+                                </h:outputText>
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Estado Clínico" filterBy="#{exame.fkIdEstadoClinico.descricaoEstadoClinico}">
+                            <center>
+                                <h:outputText value="#{exame.fkIdEstadoClinico.descricaoEstadoClinico}"/>
+                            </center>
+                        </p:column>
+
+                        <p:column headerText="Conclusão" filterBy="#{exame.conclusao.descricaoResultadoTriagem}">
+                            <center>
+                                <h:outputText value="#{exame.conclusao.descricaoResultadoTriagem}"/>
+                            </center>
+                        </p:column>
+
+                        <p:column>
+                            <center>
+                                <p:commandButton value="Visualizar" action="#{diagCandidatoDadorBean.selecionarExameCandidatoVisualizar(exame)}" 
+                                                 onclick="PF('dialogVisualizarExames').show();" icon="ui-icon-info"
+                                                 process="@this" update=":formVisualizarExames"/>
+
+                            </center>
+                        </p:column>
+
+                        <f:facet name="footer">
+                            #{diagCandidatoDadorBean.totalExames} Registo(s)
+                        </f:facet>
+
+                    </p:dataTable>
+                </p:tab>
+
+                <p:tab title="Tipagem Sanguínea">
+
+
+                    <c:if test="${diagCandidatoDadorBean.candidatoDadorJaTipado(diagCandidatoDadorBean.diagCandidatoDadorVisualizar) == true}">
+
+                        <p:fieldset>
+
+                            <h:panelGrid columns="2" cellpadding="7">
+
+                                <h3>Data: 
+                                    <h:outputText value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.dataTipagem}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>
+                                    </h:outputText>
+
+                                </h3>
+
+                                <h3>Anti-A: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.antiA}"/>
+
+                                <h3>Anti-B: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.antiB}"/>
+
+                                <h3>Anti-AB: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.antiAb}"/>
+
+                                <h3>Anti-D: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.antiD}"/>
+
+                                <h3>Du (D fraco): </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.du}"/>
+
+                                <h3>A1: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.a1}"/>
+
+                                <h3>B: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.b}"/>
+
+                                <h3>O: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.o}"/>
+
+                                <h3>Grupo Sanguíneo: </h3>
+                                <p:outputLabel value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.conclusao.descricaoGrupoSanguineo}"/>
+
+                                <h3>Realizado Por: </h3>
+                                <h:panelGroup>
+                                    <h:outputText value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.fkRealizadoPor.fkIdPessoa.nome}"/>
+                                    #{" "}
+                                    <h:outputText value="#{diagCandidatoDadorBean.diagTipagemDadorVisualizar.fkRealizadoPor.fkIdPessoa.sobreNome}"/>
+                                </h:panelGroup>
+
+                            </h:panelGrid>
+                        </p:fieldset>
+
+                    </c:if>
+
+                    <c:if test="${diagCandidatoDadorBean.candidatoDadorJaTipado(diagCandidatoDadorBean.diagCandidatoDadorVisualizar) == false}">
+                        <center>
+
+                            <h2>Ainda não foi registada a tipagem sanguínea deste candidato.</h2>
+
+                            <h:panelGrid columns="2">
+                                <p:commandButton value="Registar Tipagem" action="#{diagCandidatoDadorBean.redirecionarRegistarTipagemCandidatoDador()}"/>
+                            </h:panelGrid>
+
+                        </center>
+                    </c:if>
+
+                </p:tab>
+
+                <p:tab title="Bolsas de Sangue">
+
+                    <c:if test="${diagCandidatoDadorBean.candidatoDadorJaTipado(diagCandidatoDadorBean.diagCandidatoDadorVisualizar) == true}">
+
+                        <h:panelGrid>
+                            <p:commandButton id="btAdicionarBolsa" icon="ui-icon-plus" value="Adicionar Bolsa de Sangue" actionListener="#{diagCandidatoDadorBean.redirecionarRegistarBolsaDeSangueCandidatoDador()}"
+                                             action="#{diagCandidatoDadorBean.mostrarDialogAdicionarBolsaDeSangue()}" partialSubmit="true"
+                                             process="@this" update=":formVisualizarGeral:ms"/>
+
+                        </h:panelGrid>
+
+                        <center>
+                            <p:dataTable id="datatableBolsas" var="bolsas" 
+                                         rowKey="#{bolsas.pkIdBolsaSangue}" selectionMode="single"
+                                         value="#{diagCandidatoDadorBean.findBolsasDeSangueByIdCandidato(diagCandidatoDadorBean.diagCandidatoDadorVisualizar.fkIdPessoa)}" 
+                                         rows="5" paginator="true" paginatorPosition="bottom" 
+                                         emptyMessage="Não há registos de bolsas de sangue.">
+
+                                <p:column headerText="Código da Bolsa" filterBy="#{bolsas.codigoColheita}">
+                                    <center>
+                                        <h:outputText value="#{bolsas.codigoColheita}"/>
+                                    </center>
+                                </p:column>
+
+                                <p:column headerText="Quantidade (ml)">
+                                    <center>
+                                        <h:outputText value="#{bolsas.quantidadeColhida}"/>
+                                    </center>
+                                </p:column>
+
+                                <p:column headerText="Data de Cadastro">
+                                    <center>
+                                        <h:outputText value="#{bolsas.dataCadastro}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>
+                                        </h:outputText>
+                                    </center>
+                                </p:column>
+
+                                <p:column headerText="Data de Expiração">
+                                    <center>
+                                        <h:outputText value="#{bolsas.dataExpiracao}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </h:outputText>
+                                    </center>
+                                </p:column>
+
+                                <f:facet name="footer">
+                                    #{diagCandidatoDadorBean.totalBolsasDeSangue} Registo(s)
+                                </f:facet>
+
+                            </p:dataTable>
+
+                        </center>
+                    </c:if>
+
+                    <c:if test="${diagCandidatoDadorBean.candidatoDadorJaTipado(diagCandidatoDadorBean.diagCandidatoDadorVisualizar) == false}">
+                        <center>
+
+                            <h2>Ainda não foi registada a tipagem sanguínea deste candidato. Deve registar a tipagem antes de ser adicionada qualquer bolsa de sangue.</h2>
+
+                            <h:panelGrid columns="2">
+                                <p:commandButton value="Registar Tipagem" action="#{diagCandidatoDadorBean.redirecionarRegistarTipagemCandidatoDador()}"/>
+                            </h:panelGrid>
+
+                        </center>
+                    </c:if>
+
+                </p:tab>
+            </p:tabView>
+
+            <br/>
+            <center>
+                <p:commandButton style=" font-size:medium" process="@this" value="Voltar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagCandidatoDadorBean.limparPesquisaRedirecionarPesquisaCandidato()}"/>
+            </center>
+            <br/>
+        </h:form>
+
+        <p:dialog header="Questões e Respostas da Triagem" closable="false" showEffect="fade"
+                  widgetVar="dialogVisualizar" modal="true"
+                  height="20%" width="35%"
+                  style="font-size: 15px; font-weight: bold">
+
+            <h:form id="formVisualizarTriagem">
+
+                <h:panelGrid columns="2" class="float-right">
+                    <p:commandButton value="Fechar" onclick="dialogVisualizar.hide()" process="@this" style="width: 130px"
+                                     action="#{diagCandidatoDadorBean.selecionarTriagemVisualizar(null)}" />
+                </h:panelGrid>
+
+                <p:fieldset style="width: 95%">
+
+                    <h:panelGrid columns="3" cellpadding="4">
+
+                        <h3>1 - Tem peso superior a 50 kg? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.peso)}"/>
+
+                        <h3>2 - Fez a ultima doação  há mais de 90 dias? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.ultimaDoacao)}"/>
+
+                        <h3>3 - Teve mais de dois parceiros nos últimos 3 meses? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.parceiros)}"/>
+
+                        <h3>4 - Teve Hepatite após os 10 anos de idade? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.hepatite)}"/>
+
+                        <h3>5 - Teve Malária nos últimos 6 meses? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.gravida)}"/>
+
+                        <h3>6 - Sofre de Epilepsia? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.epilepsia)}"/>
+
+                        <h3>7 - Tem ou já teve alguma DST? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.sifilis)}"/>
+
+                        <h3>8 - Tem tatuagem recente (menos de 1 ano)? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.tatuagem)}"/>
+
+                        <h3>9 - Recebeu alguma transfusão nos últimos 10 anos? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.transfusao)}"/>
+
+                        <h3>10 - Faz consumo de bebidas alcoólicas? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.toxicoDependente)}"/>
+
+                        <h3>11 - Alimentou-se nas últimas 2 horas? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.alimentacao)}"/>
+
+                        <h3>12 - Dormiu mais de 6 horas nas últimas 24hs? </h3>
+                        <p:outputLabel value="R: "/><p:outputLabel value="#{diagCandidatoDadorBean.respostaTriagem(diagCandidatoDadorBean.diagTriagemVisualizar.sono)}"/>
+
+                    </h:panelGrid>
+                </p:fieldset>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Timeline Triagens Candidato Dador" closable="false" showEffect="fade"
+                  widgetVar="dialogTimeLineTriagens" modal="true"
+                  height="30%" width="50%"
+                  style="font-size: 16px; font-weight: bold">
+
+            <h:form id="formTimeLineTriagens">
+
+                <h:panelGrid columns="2" class="float-right">
+                    <p:commandButton value="Fechar" onclick="dialogTimeLineTriagens.hide()" process="@this" style="width: 130px"/>
+                </h:panelGrid>
+
+                <c:if test="${diagCandidatoDadorBean.totalTriagens == 0}">
+                    <br/>
+                    <br/>
+                    <br/>
+
+                    <center>
+
+                        <h2>Ainda não foi feita nenhuma triagem para este candidato.</h2>
+                    </center>
+                </c:if>
+
+                <c:if test="${diagCandidatoDadorBean.totalTriagens != 0}">
+                    <p:timeline id="timelineTriagens" value="#{diagCandidatoDadorBean.modeloTimelineTriagens}" height="300px" locale="pt"/>
+
+                </c:if>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Resultados dos Exames" closable="false" showEffect="fade"
+                  widgetVar="dialogVisualizarExames" modal="true"
+                  height="30%" width="28%"
+                  style="font-size: 15px; font-weight: bold">
+
+            <h:form id="formVisualizarExames">
+                <h:panelGrid columns="2" class="float-right">
+                    <p:commandButton value="Fechar" onclick="dialogVisualizarExames.hide()" process="@this" style="width: 130px"
+                                     action="#{diagCandidatoDadorBean.selecionarExameCandidatoVisualizar(null)}" />
+                </h:panelGrid>
+
+                <p:fieldset style="width: 95%">
+
+                    <h:panelGrid columns="2" cellpadding="4">
+                        <h3>Peso: </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.peso} kg"/> 
+
+                        <h3>Tensão Arterial: </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.ta}"/> 
+
+                        <h3>Exame de Hemoglobina: </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.hb} g/dl"/> 
+
+                        <h3>Exame de Malária: </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.mal.descricaoResultadoExameCandidato}"/> 
+
+                        <h3>Exame VDRL: </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.vdrl.descricaoResultadoExameCandidato}"/> 
+
+                        <h3>Exame de HIV: </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.hiv.descricaoResultadoExameCandidato}"/> 
+
+                        <h3>Exame de Hepatite B (AGHBS): </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.aghbs.descricaoResultadoExameCandidato}"/> 
+
+                        <h3>Exame de Hepatite C (HCV): </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.hcv.descricaoResultadoExameCandidato}"/> 
+
+                        <h3>Estado Clínico: </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.fkIdEstadoClinico.descricaoEstadoClinico}"/> 
+
+                        <h3>Conclusão: </h3>
+                        <p:outputLabel value="#{diagCandidatoDadorBean.diagExameCandidatoVisualizar.conclusao.descricaoResultadoTriagem}"/> 
+
+                    </h:panelGrid>
+                </p:fieldset>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Timeline Exames Candidato Dador" closable="false" showEffect="fade"
+                  widgetVar="dialogTimeLineExames" modal="true"
+                  height="30%" width="50%"
+                  style="font-size: 16px; font-weight: bold">
+
+            <h:form id="formTimeLineExames">
+
+                <h:panelGrid columns="2" class="float-right">
+                    <p:commandButton value="Fechar" onclick="dialogTimeLineExames.hide()" process="@this" style="width: 130px"/>
+                </h:panelGrid>
+
+                <c:if test="${diagCandidatoDadorBean.totalExames == 0}">
+                    <br/>
+                    <br/>
+                    <br/>
+
+                    <center>
+                        <h2>Ainda não foi feito nenhum exame para este candidato.</h2>
+                    </center>
+                </c:if>
+
+                <c:if test="${diagCandidatoDadorBean.totalExames != 0}">
+                    <p:timeline id="timelineExames" value="#{diagCandidatoDadorBean.modeloTimelineExames}" height="300px"/>
+
+                </c:if>
+
+            </h:form>
+        </p:dialog>
+
+        <p:dialog header="Registar Bolsa de Sangue" closable="false" showEffect="fade"
+                  widgetVar="dialogRegistarBolsa" modal="true" closeOnEscape="true" style="font-size: 14px;">
+            <h:form id="formRegistarBolsa">
+                <p:fieldset>
+                    <h:panelGrid columns="2" cellpadding="7">
+                        <p:outputLabel value="Código da Bolsa de Sangue * : "/>
+                        <p:inputNumber id="codigoBolsa" style="width: 100%" value="#{diagCandidatoDadorBean.diagBolsaSangue.codigoColheita}" maxlength="45"
+                                       minValue="1" required="true" requiredMessage="Indique o código da bolsa" thousandSeparator="." decimalSeparator=","
+                                       decimalPlaces="0"/>
+
+                        <p:outputLabel value="Quantidade * : "/>
+                        <p:inputNumber id="quantidadeBolsa" style="width: 100%" value="#{diagCandidatoDadorBean.diagBolsaSangue.quantidadeColhida}" symbol=" ml"
+                                       symbolPosition="s" minValue="1" required="true" requiredMessage="Indique a quantidade colhida"/>
+
+                    </h:panelGrid>
+
+                    <p:tooltip for="codigoBolsa" value="Indicar o código da bolsa de sangue"/>
+                    <p:tooltip for="quantidadeBolsa" value="Indicar a quantidade de sangue"/>
+
+                    <br/>
+
+                    <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left"/>
+
+                    <p:separator/>
+
+                    <h:panelGroup style=" float: right">
+                        <p:commandButton icon="ui-icon-disk" value="Registar Bolsa" action="#{diagCandidatoDadorBean.registarBolsaDeSangueCandidato()}"/> 
+                        <p:commandButton process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagCandidatoDadorBean.redirecionarVisualizarCandidato()}"/>
+                    </h:panelGroup>
+
+                </p:fieldset>
+
+            </h:form>
+        </p:dialog>
+
+        <center>
+            <p:dialog header="Editar Dados Pessoais" closable="false" showEffect="fade" 
+                      widgetVar="dialogEditar" modal="true" width="50%" height="50%" position="top"
+                      resizable="false">
+                <h:form id="formEditar">
+                    <h:panelGrid width="100%">
+
+                        <p:tabView id="tabPessoa" style="height: 450px">
+                            <p:tab title="Dados Pessoais">
+                                <h:panelGrid width="100%">
+                                    <h:panelGrid columns="2" width="100%" cellpadding="3">
+                                        <h3>Nome *: </h3>
+                                        <p:inputText id="nome" style="width: 60%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.nome}" maxlength="75"
+                                                     required="true" requiredMessage="Indique o nome"/>
+
+                                        <h3>Nome do Meio: </h3>
+                                        <p:inputText id="nomeMeio" style="width: 60%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.nomeDoMeio}" maxlength="150"/>
+
+                                        <h3>Sobrenome *: </h3>
+                                        <p:inputText id="sobreNome" style="width: 60%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.sobreNome}" maxlength="75"
+                                                     required="true" requiredMessage="Indique o sobrenome"/>
+
+                                        <h3>Documento de identificacao: </h3>
+                                        <p:panelGrid style="width: 60%" columns="3">
+                                            <p:outputLabel value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.grlDocumentoIdentificacaoList.size()}" id="documentos"/>
+                                            <p:commandButton style="width: 100%" id="addDocumento" immediate="true" icon="ui-icon-plus" actionListener="#{diagCandidatoDadorBean.definirPessoaDocumentoId(diagCandidatoDgrlPessoaCandidatoEditaran.pessoa)}" 
+                                                             onclick="PF('dialogDocumentoId').show()"/>
+                                        </p:panelGrid>
+
+                                        <h3>Data de Nascimento *: </h3>
+                                        <p:calendar id="dataNascimento" navigator="true"  value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.dataNascimento}" locale="pt"
+                                                    required="true" requiredMessage="Indique a data de nascimento">
+                                        </p:calendar>
+
+                                        <h3>Sexo *: </h3>
+                                        <h:selectOneMenu id="sexo" style="width: 60%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdSexo.pkIdSexo}">
+                                            <f:selectItems value="#{itensAjaxBean.sexoList}" var="sex"
+                                                           itemLabel="#{sex.descricao}" itemValue="#{sex.pkIdSexo}"/>
+                                        </h:selectOneMenu>
+
+                                        <h3>Nacionalidade *: </h3>
+                                        <h:selectOneMenu id="nacionalidade" style="width: 60%" required="true"
+                                                         requiredMessage="Indique a nacionalidade"
+                                                         value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdNacionalidade.pkIdPais}">
+                                            <f:selectItems value="#{itensAjaxBean.paisList}" var="nacion"
+                                                           itemLabel="#{nacion.nomePais}" itemValue="#{nacion.pkIdPais}"/>
+                                        </h:selectOneMenu>
+
+                                        <h3>Estado Civil *: </h3>
+                                        <h:selectOneMenu id="estadoCivil" style="width: 60%" required="true" requiredMessage="Indique o estado civil"
+                                                         value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdEstadoCivil.pkIdEstadoCivil}">
+                                            <f:selectItems value="#{itensAjaxBean.estadoCivilList}" var="estado"
+                                                           itemLabel="#{estado.descricao}" itemValue="#{estado.pkIdEstadoCivil}"/>
+                                        </h:selectOneMenu>
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:tab>
+
+                            <p:tab title="Filiação">
+                                <h:panelGrid columns="2" width="100%" cellpadding="3">
+                                    <h3>Nome Completo do Pai: </h3>
+                                    <p:inputText id="nomePai" style="width: 70%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.nomePai}" maxlength="45"/>
+
+                                    <h3>Nome Completo da Mãe: </h3>
+                                    <p:inputText id="nomeMae" style="width: 70%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.nomeMae}" maxlength="45"/>
+                                </h:panelGrid>
+                            </p:tab>
+
+                            <p:tab title="Contacto">
+                                <h:panelGrid columns="2" cellpadding="2" width="100%">
+                                    <h3>Telefone 1 *: </h3>
+                                    <p:inputMask id="telefone1" style="width: 50%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdContacto.telefone1}" mask="(+244) 999-999-999"
+                                                 required="true" requiredMessage="Indique o telefone1"/>
+
+                                    <h3>Telefone 2: </h3>
+                                    <p:inputMask id="telefone2" style="width: 50%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdContacto.telefone2}" mask="(+244) 999-999-999"/>
+
+                                    <h3>Email 1: </h3>
+                                    <p:inputText id="email1" style="width: 50%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdContacto.email1}" maxlength="100">
+                                        <p:keyFilter mask="email"/>
+                                    </p:inputText>
+
+                                    <h3>Email 2: </h3>
+                                    <p:inputText id="email2" style="width: 50%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdContacto.email2}" maxlength="100">
+                                        <p:keyFilter mask="email"/>
+                                    </p:inputText>
+                                </h:panelGrid>
+                            </p:tab>
+
+                            <p:tab title="Endereço">
+                                <h:panelGrid columns="2" width="100%" cellpadding="5">
+
+                                    <h3>País *: </h3>
+                                    <h:selectOneMenu id="comboPais" style="width: 50%" value="#{itensAjaxBean.pais}"
+                                                     valueChangeListener="#{itensAjaxBean.changePais}">
+                                        <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                       itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                        <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio comboDistrito comboComuna"/>
+                                    </h:selectOneMenu>
+
+                                    <h3>Provícia *: </h3>
+                                    <h:selectOneMenu id="comboProvincia" style="width: 50%" 
+                                                     value="#{itensAjaxBean.provincia}"
+                                                     valueChangeListener="#{itensAjaxBean.changeProvincia}">
+                                        <f:selectItems value="#{itensAjaxBean.provinciaList}" var="prov"
+                                                       itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                                        <f:ajax execute="@this" event="change" render="comboMunicipio comboDistrito comboComuna"/>
+                                    </h:selectOneMenu>
+
+                                    <h3>Município *: </h3>
+                                    <h:selectOneMenu id="comboMunicipio" style="width: 50%" required="true" requiredMessage="Indique o município"
+                                                     value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdEndereco.fkIdMunicipio.pkIdMunicipio}" valueChangeListener="#{itensAjaxBean.changeMunicipio}">
+                                        <f:selectItems value="#{itensAjaxBean.municipioList}" var="mun"
+                                                       itemLabel="#{mun.nomeMunicipio}" itemValue="#{mun.pkIdMunicipio}"/>
+                                        <f:ajax execute="@this" event="change" render="comboDistrito comboComuna"/>
+                                    </h:selectOneMenu>
+
+                                    <h3>Distrito: </h3>
+                                    <h:selectOneMenu id="comboDistrito" style="width: 50%"
+                                                     value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdEndereco.fkIdDistrito.pkIdDistrito}">
+                                        <f:selectItems value="#{itensAjaxBean.distritoList}" var="dist"
+                                                       itemLabel="#{dist.descricao}" itemValue="#{dist.pkIdDistrito}"/>
+                                    </h:selectOneMenu>
+
+                                    <h3>Comuna *: </h3>
+                                    <h:selectOneMenu id="comboComuna" style="width: 50%" required="true" requiredMessage="Indique a comuna"
+                                                     value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdEndereco.fkIdComuna.pkIdComuna}">
+                                        <f:selectItems value="#{itensAjaxBean.comunaList}" var="com"
+                                                       itemLabel="#{com.descricaoComuna}" itemValue="#{com.pkIdComuna}"/>
+                                    </h:selectOneMenu>
+
+                                    <h3>Bairro *: </h3>
+                                    <p:inputText id="bairro" style="width: 50%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdEndereco.bairro}" maxlength="50"
+                                                 required="true" requiredMessage="Indique o bairro"/>
+
+                                    <h3>Rua: </h3>
+                                    <p:inputText id="rua" style="width: 50%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdEndereco.rua}" maxlength="50"/>
+
+                                    <h3>Nº Casa: </h3>
+                                    <p:inputText id="numeroCasa" style="width: 50%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdEndereco.numeroCasa}" maxlength="50"/>
+
+                                    <h3>Codigo Postal: </h3>
+                                    <p:inputText id="codPostal" style="width: 50%" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.fkIdEndereco.codigoPostal}" maxlength="100"/>
+                                </h:panelGrid>
+                            </p:tab>                           
+                        </p:tabView>
+
+                        <br/>
+                        <h:outputText value="Campos de preenchimento obrigatório (*)" style="font-size: small; float: left;"/>
+
+                        <br/>
+                        <h:panelGrid columns="2" style="float: right">
+                            <p:commandButton style="font-size: medium" value="Guardar Ediçao" icon="ui-icon-disk" action="#{diagCandidatoDadorBean.editarDadosPessoais()}"
+                                             update=":formEditar:tabPessoa:nome :formEditar:tabPessoa:nomeMeio :formEditar:tabPessoa:sobreNome 
+                                             :formEditar:tabPessoa:dataNascimento :formEditar:tabPessoa:sexo 
+                                             :formEditar:tabPessoa:estadoCivil :formEditar:tabPessoa:nacionalidade :formEditar:tabPessoa:nomePai 
+                                             :formEditar:tabPessoa:nomeMae :formEditar:tabPessoa:telefone1 :formEditar:tabPessoa:telefone2 
+                                             :formEditar:tabPessoa:email1 :formEditar:tabPessoa:email2 :formEditar:tabPessoa:comboPais :formEditar:tabPessoa:comboProvincia
+                                             :formEditar:tabPessoa:comboMunicipio :formEditar:tabPessoa:comboComuna :formEditar:tabPessoa:comboDistrito 
+                                             :formEditar:tabPessoa:bairro :formEditar:tabPessoa:rua :formEditar:tabPessoa:numeroCasa 
+                                             :formEditar:tabPessoa:codPostal :documentoId:tipoDocumento 
+                                             :documentoId:numeroDocumento :documentoId:dataTable"/>
+                            <p:commandButton style="font-size: medium" process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" 
+                                             action="#{diagCandidatoDadorBean.redirecionarVisualizarCandidato()}"/>
+                        </h:panelGrid>
+
+                    </h:panelGrid>
+                </h:form>
+            </p:dialog>
+        </center>
+
+        <h:form id="documentoId">
+            <p:dialog widgetVar="dialogDocumentoId" header="Documento de identificacao"
+                      width="45%" height="400px" showEffect="fade" closable="true"
+                      hideEffect="fade" modal="true" position="center">
+
+                <p:fieldset>
+                    <h:panelGrid width="80%" columns="2" cellpadding="4">
+
+                        <h3>Tipo de documento de identificacao *: </h3>
+                        <p:selectOneMenu style="width: 100%" value="#{diagCandidatoDadorBean.tipoDocumento}" id="tipoDocumento">
+                            <f:selectItems value="#{itensAjaxBean.tipoDocumentoIdentificacaoList}" var="tipo"
+                                           itemLabel="#{tipo.descricao}" itemValue="#{tipo.pkTipoDocumentoIdentificacao}"/>
+                        </p:selectOneMenu>
+
+                        <h3>Numero do documento: </h3>
+                        <p:inputText style="width: 97%" value="#{diagCandidatoDadorBean.numeroDocumento}" id="numeroDocumento"/>
+                        <br/>
+                        <p:commandButton style="width: 100%" icon="ui-icon-plus" value="Adicionar" 
+                                         actionListener="#{diagCandidatoDadorBean.adicionarDocumentoDeIdentificacao(diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa)}" 
+                                         partialSubmit="true" process="@this numeroDocumento tipoDocumento" 
+                                         update="dataTable :formEditar:tabPessoa:documentos"/>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable id="dataTable" value="#{diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa.getGrlDocumentoIdentificacaoList()}" 
+                             var="docId"
+                             style="width: 100%" emptyMessage="Não Existem Documentos"
+                             paginator="true" paginatorPosition="bottom" rows="4">
+                    <p:column headerText="Tipo documento">
+                        <center>                                        
+                            #{docId.fkTipoDocumentoIdentificacao.descricao}
+                        </center>
+                    </p:column>
+                    <p:column headerText="Numero do documento">
+                        <center>                                        
+                            #{docId.numeroDocumento}
+                        </center>
+                    </p:column>
+                    <p:column headerText="Remover">
+                        <center>                                        
+                            <p:commandButton style="width: 70%" icon="ui-icon-plus" value="Remover" partialSubmit="true" 
+                                             actionListener="#{diagCandidatoDadorBean.removerDocumentoIdentificacao(diagCandidatoDadorBean.diagCandidatoDadorEditar.fkIdPessoa, docId)}" process="@this" update="dataTable :formEditar:tabPessoa:documentos"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+</ui:composition>

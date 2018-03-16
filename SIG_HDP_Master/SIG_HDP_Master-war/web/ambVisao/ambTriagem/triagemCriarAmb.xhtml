@@ -1,0 +1,249 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAmb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAmb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <p:messages autoUpdate="true" closable="true"/>
+                <p:growl autoUpdate="true"/>
+
+                <h:form acceptcharset="ISO-8859-1" id="form">
+                    <div class="ui-fluid">
+                        <h2>Enfermagem -> Triagem</h2>
+
+                        <p:tabView>
+
+                            <p:tab title="Sinais">
+
+                                <center>
+
+                                    <h:panelGrid columns="4" styleClass="ui-noborder">
+
+                                        <p:panel styleClass="ui-noborder">
+
+                                            <h:panelGrid columns="3" styleClass="ui-noborder">
+                                                <p:poll listener="#{ambTriagemListarBean.findSolicitacoes()}" update="pacientes" interval="5"/>
+                                                <p:outputLabel value="Pacientes:" style="margin-left: -140px"/>
+                                                <p:selectOneListbox id="pacientes" style="width: 342px; height: 225px; margin-left: -77px;" value="#{ambTriagemListarBean.codigoPaciente}" filter="true" filterMatchMode="contains">
+                                                    <f:selectItems value="#{ambTriagemListarBean.findSolicitacoes()}" var="pacientes" itemLabel="#{pacientes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{pacientes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{pacientes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}      (#{ambTriagemListarBean.dateToString(pacientes.dataHoraCheckIn)})" itemValue="#{pacientes.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.pkIdPaciente}" />
+                                                    <p:ajax update="np,dna" listener="#{ambTriagemListarBean.listarTodosAgendamentos()}"/>
+                                                </p:selectOneListbox>
+                                                <h:outputLabel value="Data: #{ambTriagemListarBean.dataSistema()}"/>
+                                            </h:panelGrid>
+                                            
+                                            <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                                <p:fieldset legend="Dados Pessoais" toggleable="true">
+
+                                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+                                                        <h:outputLabel value="Nome do Paciente: " for="np"/>
+                                                        <h:outputLabel id="np" value="#{ambTriagemListarBean.admsAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{ambTriagemListarBean.admsAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{ambTriagemListarBean.admsAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}"/>
+                                                        <h:outputLabel value="Data de Nascimento: " for="dna"/>
+                                                        <h:outputLabel id="dna" value="#{ambTriagemListarBean.admsAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.dataNascimento}">
+                                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                                        </h:outputLabel>
+                                                    </h:panelGrid>
+
+                                                </p:fieldset>
+
+                                                <p:fieldset legend="Sinais Vitais" toggleable="true">
+                                                    <h:panelGrid columns="4" styleClass="ui-noborder">
+                                                        <h:outputLabel value="Temperatura (ºC):" for="temperatura"/>
+                                                        <p:inputNumber id="temperatura" value="#{ambTriagemCriarBean.ambTriagem.temperatura}" />
+
+                                                        <h:outputLabel value="Pulso (bpm):" for="pulso" style="margin-left: 13px;"/>
+                                                        <p:spinner id="pulso" suffix=" bpm"
+                                                                   value="#{ambTriagemCriarBean.ambTriagem.pulso}"
+                                                                   style="margin-left: 8px" 
+                                                                   />
+
+                                                        <h:outputLabel value="TA Sistólica (mmHg):" for="tensaoarterialMax"/>
+                                                        <p:spinner id="tensaoarterialMax" suffix=" mmHg"
+                                                                   value="#{ambTriagemCriarBean.ambTriagem.tensaoArterialMaxima}"
+                                                                   />
+
+                                                        <h:outputLabel value="TA Diastólica (mmHg):" for="tensaoarterialMin" style="margin-left: 13px;"/>
+                                                        <p:spinner id="tensaoarterialMin" suffix=" mmHg"
+                                                                   value="#{ambTriagemCriarBean.ambTriagem.tensaoArterialMinima}"
+                                                                   style="margin-left: 8px;"
+                                                                   />
+
+                                                        <h:outputLabel value="Frequencia Cardíaca (bpm):" for="fcard"/>
+                                                        <p:spinner id="fcard" suffix=" bpm"
+                                                                   value="#{ambTriagemCriarBean.ambTriagem.frequenciaCardiaca}"
+                                                                   />
+
+                                                        <h:outputLabel value="Frequencia Respiratória (rpm):" for="fr" style="margin-left: 14px;"/>
+                                                        <p:spinner id="fr" suffix=" rpm"
+                                                                   value="#{ambTriagemCriarBean.ambTriagem.frequenciaRespiratoria}"
+                                                                   style="margin-left: 8px;"
+                                                                   />
+
+                                                        <h:outputLabel value="Sente Dor?" for="dor"/>
+                                                        <p:selectOneRadio id="dor"  value="#{ambTriagemCriarBean.seleccionar}">
+                                                            <f:selectItem itemLabel="Não" itemValue="true" /> 
+                                                            <f:selectItem itemLabel="Sim" itemValue="false" /> 
+                                                            <p:ajax update="classificacao,local, menu" listener="#{ambTriagemCriarBean.seleccionarSinais()}" />
+                                                        </p:selectOneRadio>
+
+                                                        <h:outputLabel for="menu" value="Sinais/Sintomas:" style="margin-left: 15px;"/>
+                                                        <p:selectCheckboxMenu disabled="#{ambTriagemCriarBean.sinais}" value="#{ambTriagemListarBean.listaSinais}" id="menu" label="sinais" filter="true" filterMatchMode="startsWith" style="margin-left: 8px">
+                                                            <f:selectItems value="#{ambTriagemListarBean.listarSinais()}" var="listaSinais" itemLabel="#{listaSinais.descricao}" itemValue="#{listaSinais.pkIdSinal}" />
+                                                        </p:selectCheckboxMenu>
+
+                                                        <h:outputLabel value="Classificação da dor:" for="classificacao"/>   
+                                                        <p:selectOneMenu id="classificacao" disabled="#{ambTriagemCriarBean.classificacaoDaDor}" value="#{ambTriagemCriarBean.codigoClassificacaoDor}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{ambTriagemListarBean.listarAmbClassificacaoDor()}" var="cd" itemLabel="#{cd.descricao}" itemValue="#{cd.pkIdClassificacaoDor}"/> 
+                                                        </p:selectOneMenu>
+
+                                                        <h:outputLabel value="Local da dor:" for="local" style="margin-left: 15px;"/>                            
+                                                        <p:inputTextarea id="local" disabled="#{ambTriagemCriarBean.localDaDor}" value="#{ambTriagemCriarBean.ambTriagem.localDaDor}" style="margin-left: 8px" autoResize="false"/>
+
+                                                        <h:outputLabel value="Peso (kg):" for="peso" />
+                                                        <p:inputNumber id="peso" value="#{ambTriagemCriarBean.ambTriagem.peso}" />
+
+                                                        <h:outputLabel value="Altura (m):" for="altura" style="margin-left: 15px;"/>
+                                                        <p:inputNumber id="altura" value="#{ambTriagemCriarBean.ambTriagem.altura}" style="margin-left: 8px" />
+
+                                                        <h:outputLabel value="Glicêmia (mg/dl):" for="glicemia"/>
+                                                        <p:spinner id="glicemia" suffix=" mg/dl"
+                                                                   value="#{ambTriagemCriarBean.ambTriagem.glicemia}"
+                                                                   />
+
+                                                    </h:panelGrid>
+                                                </p:fieldset>
+
+                                                <p:fieldset legend="Outros" toggleable="true">
+
+                                                    <h:panelGrid columns="4" class="float-left" styleClass="ui-noborder">
+
+                                                        <h:outputLabel value="Estado do Paciente:" for="estadoPac"/>
+                                                        <p:selectOneMenu id="estadoPac" style="margin-left: 44px" value="#{ambTriagemCriarBean.codigoEstadoPaciente}">
+                                                            <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                                            <f:selectItems value="#{ambTriagemListarBean.listarEstadosPaciente()}" var="con" itemLabel="#{con.descricaoClassificacaoServicoSolicitado}" itemValue="#{con.pkIdClassificacaoServicoSolicitado}"/> 
+                                                        </p:selectOneMenu>
+
+                                                        <h:outputLabel value="Observações:" for="obs" style="margin-left: 58px"/>
+                                                        <p:inputTextarea id="obs" style="margin-left: 60px" value="#{ambTriagemCriarBean.ambTriagem.observacoes}" autoResize="false"/>
+
+                                                    </h:panelGrid>
+
+                                                </p:fieldset>
+
+                                            </h:panelGrid>
+
+                                        </p:panel>
+
+                                    </h:panelGrid>  
+
+                                </center>
+
+                                <center>
+
+                                    <p:panelGrid columns="2" styleClass="ui-noborder">
+                                        <p:commandButton ajax="false" value="Guardar" icon="ui-icon-disk" 
+                                                         action="#{ambTriagemCriarBean.criarAmbTriagem()}"
+                                                         />
+                                        <p:commandButton value="Cancelar" action="#{ambTriagemCriarBean.fechar()}" type="reset" icon="ui-icon-cancel"/>
+                                    </p:panelGrid>
+
+                                </center>
+
+                            </p:tab>
+
+                            <p:tab title="Histórico Geral">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder" id="teste">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="De:" for="data1"/>
+                                        <p:calendar id="data1" value="#{ambTriagemListarBean.dataInicio}" locale="pt"/>
+
+                                        <h:outputLabel value="Até:" for="data2"/>
+                                        <p:calendar id="data2" value="#{ambTriagemListarBean.dataFinal}" locale="pt"/>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="data1" value="Insira a Data Inicial"/>
+                                    <p:tooltip for="data2" value="Insira a Data Final"/>                                    
+                                    
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true" 
+                                                     actionListener="#{ambTriagemListarBean.pesquisarTriagens()}"
+                                                     update="tabelaHistoricoGeralTriagem" style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="triagemHistoricoGeralAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>
+
+                            <p:tab title="Histórico do Paciente">
+
+                                <h:panelGrid columns="1" styleClass="ui-noborder">
+
+                                    <h:panelGrid columns="2" styleClass="ui-noborder">
+
+                                        <h:outputLabel value="Número de Processo:" for="numProc"/>
+                                        <f:validateBean disabled="true">
+                                            <p:inputText id="numProc" value="#{ambTriagemCriarBean.admsPaciente.numeroPaciente}" />
+                                        </f:validateBean>
+
+                                    </h:panelGrid>
+
+                                    <p:watermark for="numProc" value="Insira o Nº de Processo"/>
+                                    
+                                    <p:commandButton value="Visualizar" update="tabelaHistoricoPacienteTriagem" ajax="true"
+                                                     actionListener="#{ambTriagemListarBean.pesquisaPacienteTriagem(ambTriagemCriarBean.admsPaciente.numeroPaciente)}" 
+                                                     style="height: 25px"/>
+
+                                    <br />
+
+                                    <ui:include src="triagemHistoricoPacienteAmb.xhtml"/>
+
+                                </h:panelGrid>
+
+                            </p:tab>
+
+                        </p:tabView>
+
+                    </div>
+
+                </h:form>
+
+                <center>
+                    <p:dialog header="Detalhes do Paciente" closable="true" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" 
+                              responsive="true" resizable="false" position="center">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+
+                <center>
+                    <p:dialog header="Editar Triagem" closable="true" showEffect="fade" responsive="true" position="center"
+                              widgetVar="dialogEditarTriagem" modal="true" closeOnEscape="true" resizable="false">
+                        <ui:include src="triagemEditarAmb.xhtml"/>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

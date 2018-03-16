@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                
+                <h1>#{msgs.admissoes} -> #{msgs.tipoSolicitacoServico}</h1>
+                <!--<p:messages id="msg" autoUpdate="true" closable="true"/>-->
+                <p:growl autoUpdate="true"/>
+                <br/>
+                <center>
+                    <h:panelGrid columns="1" width="70%">
+                        <h:form id="formPesquisa">
+                            
+                            #{detetorAtualizacaoPagina.checkAtualizacao("")}
+                            
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="3" style="width: 80%">
+                                    <!--<p:outputLabel value="# {msgs.descricaoTipoSolicitacao}: "/>-->
+                                    
+                                    <!--<f:validateBean disabled="true">
+                                        <p:inputText id="tipoSolicitacaoServicoText" style="width: 100%" 
+                                                     value="# {admsTipoSolicitacaoServicoBean.tipoSolicitacaoServicoPesquisa.descricaoTipoSolicitacaoServico}">
+                                        </p:inputText>
+                                    
+                                    </f:validateBean>-->
+
+                                    <br/>
+                                    <h:panelGrid columns="2" width="100%">
+                                        <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{admsTipoSolicitacaoServicoBean.pesquisar()}" 
+                                                         icon="ui-icon-search" ajax="true" partialSubmit="true" update="dataTable"/>
+                                        
+                                        <p:commandButton value="#{msgs.carregar}" icon="ui-icon-refresh" style="width: 100%" 
+                                                         partialSubmit="true" process="@this"
+                                                         update="@this dataTable"
+                                                         actionListener="#{admsTipoSolicitacaoServicoBean.carregar()}"/>
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            
+                            
+                            
+                            <p:dataTable id="dataTable" style="width: 100%" var="tipoSolicitacaoServico" value="#{admsTipoSolicitacaoServicoBean.getAdmsTipoSolicitacaoLista()}"
+                                         emptyMessage="Não Existem Tipos Solicitações"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="Tipos De Solicitação">
+                                    <center>                                        
+                                        #{tipoSolicitacaoServico.descricaoTipoSolicitacaoServico}
+                                    </center>
+                                </p:column>
+                                <!--<p:column headerText="">
+                                    <center>
+                                        <p:commandButton value="Editar" icon="ui-icon-pencil" onclick="PF('dialogEditar').show();"
+                                                         action="# {finTipoSolicitacaoServicoBean.setTipoSolicitacaoServico(tipoSolicitacaoServico)}"
+                                                         partialSubmit="true" process="@this" update=":formEditar:editarTServ"/>
+                                    </center>
+                                </p:column>-->
+                            </p:dataTable>
+                            
+                            
+                        </h:form>
+                    </h:panelGrid>
+                </center>
+
+                
+                
+               <!-- <center>
+                    <p:dialog header="# {msgs.novo} # {msgs.tipoSolicitacao}" closable="false" showEffect="fade"
+                              widgetVar="dialogNovo" modal="true" closeOnEscape="true">
+                        <h:form id="formPesquisaTipoSolicitacaoServico">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="2" cellpadding="3">
+                                    <p:outputLabel value="# {msgs.descricaoTipoSolicitacao}:  "/>
+                                    <p:inputText id="novoTipoSolicitacao" value="# {finTipoSolicitacaoServicoBean.tipoSolicitacaoServico.descricaoTipoSolicitacaoServico}"
+                                                 required="true" requiredMessage="Indique a Descrição do Tipo de Solicitação"/>
+                                    
+                                    <br/>
+                                    <h:panelGrid columns="2" width="100">
+                                        <p:commandButton value="# {msgs.gravar}" icon="ui-icon-disk" style="width: 100%" action="# {finTipoSolicitacaoServicoBean.create()}"
+                                                         process="@this novoTipoSolicitacao"
+                                                         update="novoTipoSolicitacao :formPesquisa:dataTable"/>
+                                        
+                                        <p:commandButton value="# {msgs.fechar}" icon="ui-icon-close" style="width: 100%" action="# {areaInternaBean.limpar()}" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"/>  
+                                    </h:panelGrid>
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center>-->
+                
+                
+                
+     <!--           <center>
+                    <p:dialog header="Editar tipo solicitacao servico" closable="false" showEffect="fade"
+                              widgetVar="dialogEditar" modal="true" closeOnEscape="true">
+                        <h:form id="formEditar">
+                            <p:growl autoUpdate="true"/>
+                            <p:fieldset>
+                                <h:panelGrid columns="4" cellpadding="3">
+                                    <p:outputLabel value="Novo tipo solicitacao servico"/>
+                                    <p:inputText id="editarTServ" value="# {finTipoSolicitacaoServicoBean.tipoSolicitacaoServico.descricaoTipoSolicitacaoServico}"
+                                                 required="true" requiredMessage="Indique o nome do tipo solicitacao servico"/>
+                                    <p:commandButton value="Guardar Edição" action="# {finTipoSolicitacaoServicoBean.edit()}"
+                                                     onclick="PF('dialogEditar').hide()" update=":formPesquisa:dataTable"/>
+                                    <p:commandButton value="Fechar" action="# {areaInternaBean.limpar()}" onclick="PF('dialogEditar').hide()" partialSubmit="true" process="@this"
+                                                     />                                    
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center> -->
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

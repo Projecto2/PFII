@@ -1,0 +1,235 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalFin.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralFin.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <style>
+                    .principal
+                    {
+                        width: 100%;
+                    }
+                    .esquerdo
+                    {
+                        width: 30%;
+                        float: left;
+                    }
+
+                    .direito
+                    {
+                        width: 70%;
+                        float: right;
+                    }
+                </style>
+                <h1>#{msgs.financas} -> #{msgs.pagamento}</h1>
+                #{mensagemArmazenadaBean.verificarMensagemArmazenada()}
+                <p:messages id="msg" autoUpdate="true" closable="true"/>
+                <p:growl autoUpdate="true"/>
+                <br/>
+
+                <center>
+                    <!--# {detetorAtualizacaoPagina.checkAtualizacao("pagamento")}-->
+                    <h:panelGrid columns="1" width="75%">
+                        <h:form id="form">
+                            <center>
+                                <span style="font-size: 16pt">
+                                    <p:commandLink style="color: #0088cc" value="#{finPagamentoBean.paciente.numeroPaciente}: #{finPagamentoBean.paciente.fkIdPessoa.nome} #{finPagamentoBean.paciente.fkIdPessoa.sobreNome}" 
+                                                   ajax="true" partialSubmit="true" process="@this" 
+                                                   actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(finPagamentoBean.paciente)}" 
+                                                   update=":formPacienteVisualizar" 
+                                                   onclick="PF('dialogMaisDetalhes').show();"/>
+                                </span>
+                            </center>
+
+                            <p:fieldset> 
+                                <div>
+
+                                    <div class="principal">
+                                        <div class="esquerdo">
+                                            <p:outputLabel value="#{msgs.valorTotalAPagar}: "/>
+                                        </div>
+                                        <div class="direito">
+                                            <p:outputLabel id="valorAPagar" value="#{finPagamentoBean.valorApagar}" style="width: 50%;"/>
+                                        </div>
+                                    </div>
+                                    <div style="clear: both"/>
+
+                                </div>
+
+
+                            </p:fieldset>
+
+                            <p:fieldset toggleable="true" legend="#{msgs.formasDePagamento}"> 
+                                <div>
+                                    <div class="principal">
+                                        <div class="esquerdo">
+                                            <p:outputLabel value="#{msgs.formaDePagamento}: "/>
+                                        </div>
+                                        <div class="direito">
+                                            <p:selectOneMenu id="comboFormaPagamento" value="#{finPagamentoBean.pagamento.fkIdFormaPagamento.pkIdFormaPagamento}"
+                                                             style="width: 70%;" valueChangeListener="#{finPagamentoBean.changeFormaDePagamento}">
+                                                <f:selectItem itemLabel="Selecione a Forma de Pagamento" itemValue="#{0}"/>
+                                                <f:selectItems value="#{finPagamentoBean.getFormaPagamentoLista()}" var="formaPagamento" 
+                                                               itemLabel="#{formaPagamento.descricaoFormaPagamento}" itemValue="#{formaPagamento.pkIdFormaPagamento}"/>
+                                                <f:ajax render="comboBanco comboContaBancaria comboConvenio comboProjetoConvenio botaoProjetos"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div style="clear: both"/>
+
+                                    <div class="principal">
+                                        <div class="esquerdo">
+                                            <p:outputLabel value="#{msgs.banco}: "/>
+                                        </div>
+                                        <div class="direito">
+                                            <p:selectOneMenu id="comboBanco"
+                                                             valueChangeListener="#{finPagamentoBean.changeBanco}" style="width: 70%;" disabled="#{!finPagamentoBean.pagamentoBancario()}">
+                                                <f:selectItems value="#{finPagamentoBean.getBancoLista()}" var="banco" 
+                                                               itemLabel="#{banco.nomeBanco}" itemValue="#{banco.pkIdBanco}"/>
+                                                <f:ajax execute="@this" event="change" render="comboContaBancaria"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div style="clear: both"/>
+
+                                    <div class="principal">
+                                        <div class="esquerdo">
+                                            <p:outputLabel value="#{msgs.contaBancaria}: "/>
+                                        </div>
+                                        <div class="direito">
+                                            <p:selectOneMenu id="comboContaBancaria" value="#{finPagamentoBean.pagamentoViaBanco.fkIdContaBancaria.pkIdContaBancaria}"
+                                                             style="width: 70%;" disabled="#{!finPagamentoBean.pagamentoBancario()}">
+                                                <f:selectItems value="#{finPagamentoBean.getContaBancariaLista()}" var="contaBancaria" 
+                                                               itemLabel="#{contaBancaria.numeroConta}" itemValue="#{contaBancaria.pkIdContaBancaria}"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div style="clear: both"/>
+
+                                    <div class="principal">
+                                        <div class="esquerdo">
+                                            <p:outputLabel value="#{msgs.convenio}: "/>
+                                        </div>
+                                        <div class="direito">
+                                            <p:selectOneMenu id="comboConvenio" value="#{finPagamentoBean.pagamentoConvenio.fkIdConvenio.pkIdConvenio}" 
+                                                             style="width: 70%;" disabled="#{!finPagamentoBean.pagamentoConvenio()}" 
+                                                             valueChangeListener="#{finPagamentoBean.changeConvenio}">
+                                                <f:selectItems value="#{finPagamentoBean.getConvenioLista()}" var="convenio" 
+                                                               itemLabel="#{convenio.nomeConvenio}" itemValue="#{convenio.pkIdConvenio}"/>
+                                                <f:ajax render="comboProjetoConvenio"/>
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+
+                                    <div style="clear: both"/>
+
+                                    <div class="principal">
+                                        <div class="esquerdo">
+                                            <p:outputLabel value="#{msgs.projetoConvenio}: "/>
+                                        </div>
+                                        <div class="direito">
+                                            <p:selectOneMenu id="comboProjetoConvenio" value="#{finPagamentoBean.pagamentoConvenio.fkIdProjetoConvenio.pkIdProjetoConvenio}"
+                                                             style="width: 45%;" disabled="#{!finPagamentoBean.isConveniosProjetos()}">
+                                                <f:selectItems value="#{finPagamentoBean.getProjetoConvenioLista()}" var="projetoConvenio" 
+                                                               itemLabel="#{projetoConvenio.descricaoProjeto}" itemValue="#{projetoConvenio.pkIdProjetoConvenio}"/>
+                                            </p:selectOneMenu>
+                                            <p:commandButton value="Projeto" id="botaoProjetos" disabled="#{!finPagamentoBean.pagamentoConvenio()}"
+                                                             partialSubmit="true" process="@this" update="comboProjetoConvenio" 
+                                                             actionListener="#{finPagamentoBean.conveniosProjetos()}" style="width: 20%; margin-left: 3px; margin-top: -10px"/>
+                                        </div>
+                                    </div>
+
+                                    <div style="clear: both"/>
+
+
+                                </div>
+                            </p:fieldset>
+
+
+                            <p:dataTable id="dataTable" var="encargoDevido" value="#{finPagamentoBean.getListaDeEncargosDevidosASerPagos()}"
+                                         style="width: 100%" emptyMessage="Não Existem Encargos Por Pagar!"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="#{msgs.descricao}">
+                                    <center>                                        
+                                        #{encargoDevido.descricaoEncargoDevido}
+                                    </center>
+                                </p:column>
+                                <p:column sortBy="#{encargoDevido.data}" headerText="Data de Criação do Encargo">
+                                    <center>    
+                                        <h:outputText value="#{encargoDevido.data}">
+                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                        </h:outputText>
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.quantidade}">
+                                    <center>                                        
+                                        #{encargoDevido.quantidade}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.valor}">
+                                    <center>                                        
+                                        #{encargoDevido.valor}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.servico}">
+                                    <center>                                   
+                                        #{encargoDevido.fkIdPrecoCategoriaServico.fkIdCategoriaServico.fkIdServico.nomeServico}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="#{msgs.opcoes}">
+                                    <center>                                        
+                                        <p:commandButton  value="Remover" icon="ui-icon-trash"
+                                                          action="#{finPagamentoBean.removerEncargoDevidoAserPago(encargoDevido)}" 
+                                                          process="@this" update="@this dataTable :form:valorAPagar"/>
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+
+                            <center>
+                                <p:commandButton value="#{msgs.gravarPagamento}" icon="ui-icon-disk" style="margin: 10px;" action="#{finPagamentoBean.gravarPagamento()}" 
+                                                 update=":form:dataTable :form:comboBanco
+                                                 :form:comboContaBancaria :form:comboConvenio :form:comboProjetoConvenio :form:botaoProjetos :form:comboFormaPagamento"/>
+                                <p:commandButton value="#{msgs.voltar}" style="margin: 10px;" partialSubmit="true" process="@this" action="/finVisao/encargosDevidos/encargoDevidoPacienteFin.xhtml?faces-redirect=true"/>
+                            </center>
+
+                            <p:poll immediate="true" partialSubmit="true" process="@this" 
+                                    listener="#{finPagamentoBean.carregarDadosPagamento()}" stop="#{finPagamentoBean.isPararAtualizacao()}"
+                                    update="@this valorAPagar comboFormaPagamento comboBanco comboContaBancaria comboConvenio comboProjetoConvenio" 
+                                    interval="1"/>
+
+
+                        </h:form>
+
+                        <center>
+                            <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                                      widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                                <ui:include src="/admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                            </p:dialog>
+                        </center>
+                    </h:panelGrid>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

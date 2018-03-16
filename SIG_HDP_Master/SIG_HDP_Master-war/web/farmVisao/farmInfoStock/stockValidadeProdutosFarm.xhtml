@@ -1,0 +1,267 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Informações de Stock -> Validade de Produtos</h2>
+            <h:form id="formPrincipal">
+               <p:growl autoUpdate="true"/>
+               <p:fieldset style="border: none">
+                  <p:fieldset>
+                     <h:panelGrid columns="6" cellspacing="3">
+                        <p:outputLabel value="Nº de Lote: "/>
+                        <f:validateBean disabled="true">
+                           <p:inputText value="#{farmStockValidadeProdutosBean.loteProdutoPesquisa.numeroLote}"/>
+                        </f:validateBean>
+
+                        <p:outputLabel value="Descrição: "/>
+                        <f:validateBean disabled="true">
+                           <p:inputText value="#{farmStockValidadeProdutosBean.loteProdutoPesquisa.fkIdProduto.descricao}"/>
+                        </f:validateBean>
+
+                        <p:outputLabel value="Lote Válido entre: "/>
+                        <h:panelGrid columns="5">
+                           <p:calendar id="datInicio" value="#{farmStockValidadeProdutosBean.dataValidadeInicio}" locale="pt"  /> 
+                           <p:outputLabel value="e"/> 
+                           <p:calendar id="dataFim" value="#{farmStockValidadeProdutosBean.dataValidadeFim}" locale="pt"  />  
+
+                           <p:watermark for="datInicio" value="Data Inicial"/>
+
+                           <p:watermark for="dataFim" value="Data Final"/>
+                        </h:panelGrid>
+                        <p></p>
+                        <h:panelGrid columns="2">
+                           <p:commandButton value="Pesquisar" icon="ui-icon-search" update="resultado"
+                                            action="#{farmStockValidadeProdutosBean.pesquisarLotesProdutos()}"/>
+                        </h:panelGrid>
+                     </h:panelGrid>
+                     <h:panelGrid columns="2" class="float-right">
+                        <div style="width: 25px; height: 10px; background-color: red; border-radius: 5px"></div>
+                        <p>Expirado.</p>
+
+                        <div style="width: 25px; height: 10px; background-color: orange; border-radius: 5px"></div>
+                        <p> Expira em 3 meses.</p>
+
+                        <div style="width: 25px; height: 10px; background-color: green; border-radius: 5px"></div>
+                        <p> Validade acima de 3 meses.</p>
+                     </h:panelGrid>
+                  </p:fieldset>
+                  <p:dataTable id="resultado" emptyMessage="Nenhum resultado encontrado. Aguardando Pesquisa."
+                               paginator="true" paginatorPosition="bottom" style="width: 100%" rows="10" rowsPerPageTemplate="5,10,20,50,100,150,200"
+                               value="#{farmStockValidadeProdutosBean.lotesDeProdutosPesquisados}" var="item" >
+
+                     <p:column headerText="Descrição do Produto" sortBy="#{item.fkIdProduto.descricao}">
+                        <center>
+                           <h:outputText value="#{item.fkIdProduto.descricao} 
+                                         #{item.fkIdProduto.fkIdFormaFarmaceutica.descricao} 
+                                         #{item.fkIdProduto.dosagem} 
+                                         #{item.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/>
+                        </center>
+                     </p:column>
+                     <p:column headerText="Lote" sortBy="#{item.numeroLote}">
+                        <center>
+                           <h:outputText value="#{item.numeroLote}"/>
+                        </center>
+                     </p:column>
+
+                     <p:column headerText="Data de Validade" sortBy="#{item.dataValidade}">
+                        <center>
+                           <strong>
+                              <h:outputText value="#{item.dataValidade}" 
+                                            style="color: #{farmStockValidadeProdutosBean.getValidadeItemColor(item)}">
+                                 <f:convertDateTime pattern="dd-MM-yyyy" />
+                              </h:outputText>
+                           </strong>
+                        </center>
+                     </p:column>
+
+                     <p:column headerText="Quantidade em Stock">
+                        <center>
+                           <p:dataList type="definition" emptyMessage="Sem Registo no stock." style="float: right"
+                                       value="#{farmStockValidadeProdutosBean.getQuantEmLocais(item)}" var="qtd">
+                              <strong>
+                                 <h3 style="color: #002142">#{qtd.fkIdLocalArmazenamento.abreviatura}:  #{qtd.quantidadeStock} Unidades</h3>
+                                 <p:outputLabel value="--"/>
+                              </strong>
+                           </p:dataList>
+                        </center>
+                     </p:column>
+
+                     <p:column headerText="------">
+                        <center>
+                           <p:menuButton value="Opções" disabled="#{!(farmStockValidadeProdutosBean.getQuantEmLocais(item).size() > 0)}">
+
+                              <p:menuitem id="quarentena" value="Quarentena" partialSubmit="true" process="@this" 
+                                          icon="ui-icon-cancel" onclick="PF('dialogMoverParaQuarentena').show()"
+                                          action="#{farmQuarentenaBean.definirLote(item)}" update=":formQuarentena">
+                              </p:menuitem>
+
+                              <p:menuitem id="doacao" value="Doação" partialSubmit="true" process="@this" 
+                                          action="#{farmDoacaoBean.definirLote(item)}" disabled="#{farmStockValidadeProdutosBean.loteExpirado(item)}"
+                                          icon="ui-icon-transferthick-e-w" update=":formDoacao"
+                                          onclick="PF('dialogFacultarParaDoacao').show()"
+                                          >
+                              </p:menuitem>
+                           </p:menuButton>
+                           <p:tooltip for="quarentena" value="Mover Item para a Quarentena"/>
+                           <p:tooltip for="doacao" value="Facultar Item para Doação"/>
+                        </center>
+                     </p:column> 
+                  </p:dataTable>
+               </p:fieldset>
+            </h:form>
+            <center>
+               <p:dialog header="Mover item para a Quarentena" closable="false" showEffect="fade" 
+                         widgetVar="dialogMoverParaQuarentena" modal="true" width="60%"
+                         resizable="false">
+                  <h:form id="formQuarentena">
+
+                     <p:outputLabel style="font-size: 17px; color: #00172F" 
+                                    value="#{farmQuarentenaBean.quarentena.fkIdLoteProduto.fkIdProduto.descricao} 
+                                    #{farmQuarentenaBean.quarentena.fkIdLoteProduto.fkIdProduto.dosagem} 
+                                    #{farmQuarentenaBean.quarentena.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}
+                                    - Lote nº #{farmQuarentenaBean.quarentena.fkIdLoteProduto.numeroLote}"/>
+
+                     <p></p>
+                     <p:dataTable id="resultado" emptyMessage="Nenhum item disponível para a quarentena."
+                                  paginator="true" paginatorPosition="bottom" style="width: 100%" rows="10" rowsPerPageTemplate="5,10,20,50,100,150,200"
+                                  value="#{farmStockValidadeProdutosBean.getQuantEmLocais(farmQuarentenaBean.quarentena.fkIdLoteProduto)}" var="itemNoLocal" >
+
+                        <p:column headerText="Local">
+                           <center>
+                              <p:outputLabel value="#{itemNoLocal.fkIdLocalArmazenamento.descricao} 
+                                             (#{itemNoLocal.fkIdLocalArmazenamento.abreviatura})"/>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Data de Validade">
+                           <center>
+                              <strong>
+                                 <h:outputText value="#{itemNoLocal.fkIdLoteProduto.dataValidade}" 
+                                               style="color: #{farmStockValidadeProdutosBean.getValidadeItemColor(itemNoLocal.fkIdLoteProduto)}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy" />
+                                 </h:outputText>
+                              </strong>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Quantidade">
+                           <center>
+                              <p:outputLabel value="#{itemNoLocal.quantidadeStock}"/>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Motivo">
+                           <center>
+                              <p:inputText value="#{farmQuarentenaBean.quarentena.motivo}"
+                                           required="true" requiredMessage="Por favor, informe o Motivo." />
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="------">
+                           <center>
+                              <p:commandButton value="Mover" icon="ui-icon-check" 
+                                               update="resultado :formPrincipal:resultado"
+                                               disabled="#{!(itemNoLocal.quantidadeStock > 0)}"
+                                               action="#{farmQuarentenaBean.criar(
+                                                         itemNoLocal.quantidadeStock,
+                                                         itemNoLocal.fkIdLocalArmazenamento)}"/>
+                           </center>
+                        </p:column>
+                     </p:dataTable>
+
+                     <p></p>
+                     <h:panelGrid columns="2" >
+                        <p:commandButton value="Fechar" icon="ui-icon-close"
+                                         onclick="PF('dialogMoverParaQuarentena').hide()"/>
+                     </h:panelGrid>
+                  </h:form>
+               </p:dialog>
+            </center>
+
+            <center>
+               <p:dialog header="Facultar item para Doação" closable="false" showEffect="fade" 
+                         widgetVar="dialogFacultarParaDoacao" modal="true" width="90%"
+                         resizable="false">
+                  <h:form id="formDoacao">
+
+                     <p:outputLabel style="font-size: 17px; color: #00172F" 
+                                    value="#{farmDoacaoBean.doacaoHasProduto.fkIdLoteProduto.fkIdProduto.descricao} 
+                                    #{farmDoacaoBean.doacaoHasProduto.fkIdLoteProduto.fkIdProduto.dosagem} 
+                                    #{farmDoacaoBean.doacaoHasProduto.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}
+                                    - Lote nº #{farmDoacaoBean.doacaoHasProduto.fkIdLoteProduto.numeroLote}"/>
+
+                     <p></p>
+                     <p:dataTable id="resultado" emptyMessage="Nenhum item disponível para Doação."
+                                  paginator="true" paginatorPosition="bottom" style="width: 100%" rows="10" rowsPerPageTemplate="5,10,20,50,100,150,200"
+                                  value="#{farmStockValidadeProdutosBean.getQuantEmLocais(farmDoacaoBean.doacaoHasProduto.fkIdLoteProduto)}" var="itemDoacao" >
+
+                        <p:column headerText="Local">
+                           <center>
+                              <p:outputLabel value="#{itemDoacao.fkIdLocalArmazenamento.descricao} 
+                                             (#{itemDoacao.fkIdLocalArmazenamento.abreviatura})"/>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Quantidade a Doar">
+                           <center>
+                              <p:panel>
+                                 <p:inputText value="#{farmDoacaoBean.doacaoHasProduto.quantidade}" onchange="#{farmDoacaoBean.validarQuantidade()}"
+                                              style="width: 60px" required="true" type="number"
+                                              requiredMessage="Por favor, defina a quantidade a doar.">
+                                    <f:ajax execute="@this" event="change" render="resultado" />
+                                 </p:inputText>
+                                 <p:outputLabel value=" de #{itemDoacao.quantidadeStock}"/>
+                              </p:panel>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="Instituição de Destino">
+                           <center>
+                              <p:selectOneMenu id="comboInstituicao" filter="true"
+                                               value="#{farmDoacaoBean.doacao.fkIdInstituicao.pkIdInstituicao}">
+                                 <f:selectItems value="#{itensAjaxBean.instituicaoList}" var="com"
+                                                itemLabel="#{com.descricao}" itemValue="#{com.pkIdInstituicao}"/>
+                                 <f:ajax event="change" execute="@this" render="resultado"/>
+                              </p:selectOneMenu>
+                           </center>
+                        </p:column>
+
+                        <p:column headerText="------">
+                           <center>
+                              <p:commandButton value="Doar" icon="ui-icon-check" 
+                                               update="resultado :formPrincipal:resultado"
+                                               disabled="#{!(itemDoacao.quantidadeStock > 0)}"
+                                               action="#{farmDoacaoBean.criar(
+                                                         itemDoacao.fkIdLocalArmazenamento)}"/>
+                           </center>
+                        </p:column>
+                     </p:dataTable>
+
+                     <p></p>
+                     <h:panelGrid columns="2" >
+                        <p:commandButton value="Fechar" icon="ui-icon-close"
+                                         onclick="PF('dialogFacultarParaDoacao').hide()"/>
+                     </h:panelGrid>
+                  </h:form>
+               </p:dialog>
+            </center>
+         </ui:define>
+      </ui:composition>
+
+   </body>
+</html>

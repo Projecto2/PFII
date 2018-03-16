@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <h1>#{msgs.financas} -> #{msgs.tiposPagamento}</h1>
+        <p:messages id="msg" autoUpdate="true" closable="true"/>
+        <br/>
+        <center>
+            <h:panelGrid columns="1" width="70%">
+                <h:form id="formPesquisa">
+                    #{detetorAtualizacaoPagina.checkAtualizacao("")}
+
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3" style="width: 100%">
+                            <p:outputLabel value="#{msgs.descricaoTipoPagamento}: "/>
+
+                            <f:validateBean disabled="true">
+                                <p:inputText id="tipoPagamentoText" style="width: 100%" 
+                                             value="#{finTipoPagamentoBean.tipoPagamentoPesquisa.descricaoTipoPagamento}">
+                                </p:inputText>
+
+                            </f:validateBean>
+
+                            <br/>
+                            <h:panelGrid columns="2" width="100%">
+                                <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{finTipoPagamentoBean.pesquisar()}" 
+                                                 icon="ui-icon-search" ajax="true" partialSubmit="true" update="tipoPagamentoText dataTable"/>
+
+                                <p:commandButton value="#{msgs.novo}" icon="ui-icon-plus" style="width: 100%" partialSubmit="true" process="@this" 
+                                                 onclick="PF('dialogNovo').show();"
+                                                 update="@this"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+
+
+
+                    <p:dataTable id="dataTable" style="width: 100%" var="tipoPagamento" value="#{finTipoPagamentoBean.getFinTipoPagamentoLista()}"
+                                 emptyMessage="Não Existe Nenhum Tipo de Pagamento"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+                        <p:column headerText="#{msgs.descricao}">
+                            <center>                                        
+                                #{tipoPagamento.descricaoTipoPagamento}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.fatorDeMultiplicacao}">
+                            <center>                                        
+                                #{tipoPagamento.fatorDeMultiplicacao}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.opcoes}">
+                            <center>
+                                <p:commandButton value="#{msgs.editar}" icon="ui-icon-pencil" onclick="PF('dialogEditar').show();"
+                                                 action="#{finTipoPagamentoBean.setTipoPagamentoEditar(tipoPagamento)}"
+                                                 partialSubmit="true" process="@this" update=":formEditar:editarFormPagamento :formEditar:editarFatorMultiplicacao"/>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+
+
+                </h:form>
+            </h:panelGrid>
+        </center>
+
+
+
+        <center>
+            <p:dialog header="#{msgs.novo} #{msgs.tipoPagamento}" closable="false" showEffect="fade"
+                      widgetVar="dialogNovo" modal="true" closeOnEscape="true" width="40%">
+                <h:form id="formNovoTipoPagamento">
+                    <p:growl autoUpdate="true"/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="4" width="100%">
+                            <p:outputLabel value="#{msgs.descricaoTipoPagamento}*: "/>
+                            <p:inputText id="novoTipoPagamento" style="width: 100%" value="#{finTipoPagamentoBean.tipoPagamento.descricaoTipoPagamento}"
+                                         required="true" requiredMessage="Indique Descrição do Tipo Pagamento"/>
+                            
+                            <p:outputLabel value="#{msgs.fatorDeMultiplicacao}*: "/>
+                            <p:inputNumber id="novoFatorMultiplicacao" style="width: 100%" minValue="#{0}" value="#{finTipoPagamentoBean.tipoPagamento.fatorDeMultiplicacao}"
+                                         required="true" requiredMessage="Indique o Fator de Multiplicaçao"/>
+
+                            <br/>
+                            <h:panelGrid columns="3" cellpadding="3" width="100%">
+                                <p:commandButton value="#{msgs.gravar}" style="width: 100%" icon="ui-icon-disk" action="#{finTipoPagamentoBean.create()}"
+                                                 process="@this novoTipoPagamento novoFatorMultiplicacao"
+                                                 update="novoTipoPagamento novoFatorMultiplicacao :formPesquisa:dataTable"/>
+
+                                <p:commandButton value="#{msgs.fechar}" style="width: 100%" icon="ui-icon-close" action="#{grlAreaInternaBean.limpar()}" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"/>  
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+        </center>
+
+
+
+        <center>
+            <p:dialog header="#{msgs.editar} #{msgs.tipoPagamento}" closable="false" showEffect="fade"
+                      widgetVar="dialogEditar" modal="true" closeOnEscape="true" width="40%">
+                <h:form id="formEditar">
+                    <p:growl autoUpdate="true"/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="4" width="100%">
+                            <p:outputLabel value="#{msgs.descricaoTipoPagamento}*: "/>
+                            <p:inputText id="editarFormPagamento" disabled="true" style="width: 100%" value="#{finTipoPagamentoBean.tipoPagamentoEditar.descricaoTipoPagamento}"
+                                         required="true" requiredMessage="Indique a Descrição do Tipo Pagamento"/>
+                            
+                            <p:outputLabel value="#{msgs.fatorDeMultiplicacao}*: "/>
+                            <p:inputNumber id="editarFatorMultiplicacao" style="width: 100%" minValue="#{0}" value="#{finTipoPagamentoBean.tipoPagamentoEditar.fatorDeMultiplicacao}"
+                                         required="true" requiredMessage="Indique o Fator de Multiplicação"/>
+                            
+                            <br/>
+                            <h:panelGrid columns="3" cellpadding="3"  width="100%">
+                                <p:commandButton value="#{msgs.gravarEdicao}" style="width: 100%" action="#{finTipoPagamentoBean.editarTipoPagamentoPesquisar()}"
+                                                 update="editarFatorMultiplicacao editarFormPagamento :formPesquisa:dataTable"
+                                                 icon="ui-icon-disk"/>
+                                <p:commandButton value="#{msgs.fechar}" style="width: 100%" actionListener="#{finTipoPagamentoBean.limparEditar()}" 
+                                                 onclick="PF('dialogEditar').hide()" partialSubmit="true" process="@this"
+                                                 icon="ui-icon-close"/>                                    
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+        </center>
+    </h:body>
+</html>
+

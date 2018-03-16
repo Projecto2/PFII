@@ -1,0 +1,35 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <!-- Definindo a cor da barra lateral-->
+    <h:form style="background-color: rgba(230,230,230,0.05); height: 620px">
+        <p:panelMenu style="width: 100%">
+            <p:submenu label="Hospital">
+                <p:menuitem value="Admissões"  url="/faces/admsVisao/homeAdms.xhtml" rendered="#{segLoginBean.renderedMenu('Admissões')}"/>
+                <p:menuitem value="Ambulatório" url="/faces/ambVisao/homeAmb.xhtml" rendered="#{segLoginBean.renderedMenu('Ambulatorio')}"/>
+                <p:menuitem value="Diagnósticos" url="/faces/diagVisao/homeDiag.xhtml" rendered="#{segLoginBean.renderedMenu('Diagnósticos')}" />
+                <p:menuitem value="Emergências" url="/faces/emgVisao/homeEmg.xhtml" rendered="#{segLoginBean.renderedMenu('Emergência')}"/>
+                <p:menuitem value="Farmácia" url="/faces/farmVisao/homeFarm.xhtml" rendered="#{segLoginBean.renderedMenu('Farmácia')}"/>
+                <p:menuitem value="Finanças" url="/faces/finVisao/homeFin.xhtml" rendered="#{segLoginBean.renderedMenu('Finanças')}"/>
+                <p:menuitem value="Internamento" url="/faces/interVisao/homeInter.xhtml" rendered="#{segLoginBean.renderedMenu('Internamento')}"/>
+                <p:menuitem value="Gerais" url="/faces/grlVisao/homeGrl.xhtml" rendered="true" />
+                <p:menuitem value="Morgue" url="/faces/morgueVisao/homeMorgue.xhtml" rendered="#{segLoginBean.renderedMenu('Morgue')}"/>
+                <p:menuitem value="Recursos Humanos" url="/faces/rhVisao/homeRh.xhtml" rendered="#{segLoginBean.renderedMenu('Recursos Humanos')}"/>
+                <p:menuitem value="Superintendência " url="/faces/supiVisao/homeSupi.xhtml" rendered="#{segLoginBean.renderedMenu('Superintendência')}"/>
+                <p:menuitem value="Tuberculose " url="/faces/tbVisao/homeTb.xhtml"/>
+            </p:submenu>
+            <p:submenu label="Segurança" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeSEG[0])}">
+                <p:menuitem value="Pagina Inicial" url="/faces/segVisao/homeSeg.xhtml" rendered="#{segLoginBean.renderedMenu('Segurança')}"/>
+            </p:submenu>
+        </p:panelMenu>
+    </h:form>
+    
+    <!--<p:menuitem value="Finanças" url="/faces/finVisao/homeFin.xhtml" rendered="# {segLoginBean.renderedMenu('Finanças')}"/>-->
+                <!--<p:submenu label="Entidades">
+                <p:menuitem value="Empresas"/>
+                <p:menuitem value="Fornecedores" url="/faces/farmVisao/farmFornecimento/fornecedorListarFarm.xhtml"/>
+                <p:menuitem value="Clientes"/>
+            </p:submenu>-->
+</ui:composition>

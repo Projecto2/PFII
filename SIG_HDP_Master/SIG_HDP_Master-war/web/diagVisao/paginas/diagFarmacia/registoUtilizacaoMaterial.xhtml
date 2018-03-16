@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h2>Laboratório -> Análises Clínicas -> Farmácia -> Registo de Utilização de Materiais</h2>
+
+        <center>
+
+            <br/>
+
+            <h:form id="formSolicitacao">
+                <p:growl sticky="true" id="messagens" autoUpdate="true"/>
+                <p:growl autoUpdate="true"/>
+
+                <p:fieldset style="width: 80%">
+                    <h:panelGrid cellpadding="15">                      
+                        <h:panelGrid id="painelEscolha" width="100%">
+                            <p:fieldset legend="Selecione os produtos" id="fieldsetSeleccionar">
+                                <fieldset style="border: 1px solid graytext">
+                                    <legend>Pesquisar</legend>
+                                    <h:panelGrid id="painelPesquisa" columns="5" width="100%">
+                                        <f:validateBean disabled="true">
+                                            <p:inputText value="#{diagRegistoUtilizacaoMaterialBean.produtoPesquisa.descricao}" 
+                                                         style="width: 85%" id="descricao"/>
+                                            <p:watermark for="descricao" value="Faça uma pesquisa"/>
+                                        </f:validateBean>
+                                        <p:commandButton value="Pesquisar" icon="ui-icon-search" process="@this descricao"
+                                                         action="#{diagRegistoUtilizacaoMaterialBean.pesquisarProdutos()}" ajax="true"
+                                                         partialSubmit="true" update="tabelaItensDisponiveis tabelaItensSeleccionados"/>
+                                    </h:panelGrid>
+                                </fieldset>
+                                <p:dataTable id="tabelaItensDisponiveis" var="item" rows="6" rowsPerPageTemplate="6,12,16"
+                                             value="#{diagRegistoUtilizacaoMaterialBean.listaProdutosPesquisados}" 
+                                             emptyMessage="Sem Produtos Disponíveis. Aguardando Pesquisa."
+                                             paginator="true"  paginatorPosition="bottom">
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Descrição do Material" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.descricao} #{item.dosagem} #{item.fkIdUnidadeMedida.abreviatura}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Quantidade Disponível" />
+                                        </f:facet>
+                                        <h:outputText value="#{farmVisualizarItensNoLocalBean.getQuantidadeItem(item)}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Forma" />
+                                        </f:facet>
+                                        <h:outputText value="#{item.fkIdFormaFarmaceutica.descricao}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <center>
+                                            <p:commandButton value="Adicionar" icon="ui-icon-transferthick-e-w" 
+                                                             style="width: 95%; margin: auto" 
+                                                             process="@this" ajax="true" update="tabelaItensDisponiveis :formSolicitacao:tabelaItensSeleccionados"
+                                                             actionListener="#{diagRegistoUtilizacaoMaterialBean.setProdutoAdicionarNaLista(item)}"
+                                                             action="#{diagRegistoUtilizacaoMaterialBean.adicionarProduto()}">
+                                                <f:ajax execute="@this" render=":formSolicitacao:tabelaItensSeleccionados"/>
+                                            </p:commandButton>
+                                        </center>
+                                    </p:column>
+
+                                </p:dataTable>                                          
+                            </p:fieldset>
+                            <p:separator/>
+                            <p:fieldset legend="Produtos Seleccionados" id="fieldsetSeleccionado">
+                                <p:dataTable id="tabelaItensSeleccionados" var="select" rows="6" rowsPerPageTemplate="6,12,16"
+                                             value="#{diagRegistoUtilizacaoMaterialBean.listaProdutosSelecionados}" 
+                                             emptyMessage="Sem Produtos Seleccionados. Aguardando Selecção."
+                                             paginator="true"  paginatorPosition="bottom">
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Produto" />
+                                        </f:facet>
+                                        <h:outputText value="#{select.fkIdMaterial.descricao} 
+                                                      (#{select.fkIdMaterial.fkIdFormaFarmaceutica.descricao})  
+                                                      #{select.fkIdMaterial.dosagem} 
+                                                      #{select.fkIdMaterial.fkIdUnidadeMedida.abreviatura}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Quantidade Disponível" />
+                                        </f:facet>
+                                        <h:outputText value="#{farmVisualizarItensNoLocalBean.getQuantidadeItem(farmVisualizarItensNoLocalBean.listaProdutos.get(farmVisualizarItensNoLocalBean.listaProdutos.indexOf(select.fkIdMaterial)))}" />
+                                    </p:column>
+                                    
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Quantidade Utilizada" />
+                                        </f:facet>
+
+                                        <center>
+                                            <p:spinner value="#{select.quantidade}" style="width: 100%" min="1" max="#{farmVisualizarItensNoLocalBean.getQuantidadeItem(farmVisualizarItensNoLocalBean.listaProdutos.get(farmVisualizarItensNoLocalBean.listaProdutos.indexOf(select.fkIdMaterial)))}">
+                                                <f:ajax event="change" execute="@this" render="tabelaItensSeleccionados"/>
+                                            </p:spinner>
+                                        </center>
+
+                                    </p:column>
+                                    <p:column>
+                                        <center>
+                                            <p:commandButton value="Remover" icon="ui-icon-transferthick-e-w" 
+                                                             style="width: 95%; margin: auto" 
+                                                             process="@this" ajax="true" update="tabelaItensSeleccionados :formSolicitacao:tabelaItensDisponiveis"
+                                                             actionListener="#{diagRegistoUtilizacaoMaterialBean.setProdutoAdicionarNaLista(select.fkIdMaterial)}"
+                                                             action="#{diagRegistoUtilizacaoMaterialBean.removerComponente()}">
+                                                <f:ajax execute="@this" render=":formSolicitacao:tabelaItensDisponiveis"/>
+                                            </p:commandButton>
+                                        </center>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </p:fieldset>
+                        </h:panelGrid>
+                    </h:panelGrid>
+
+                    <br/>
+
+                    <p:separator/>
+
+                    <h:panelGroup style=" float: right">
+                        <p:commandButton style=" font-size:medium" icon="ui-icon-disk" value="Registar" action="#{diagRegistoUtilizacaoMaterialBean.create()}"/> 
+                        <p:commandButton style=" font-size:medium" process="@this" value="Cancelar" icon="ui-icon-arrowreturnthick-1-w" action="#{diagRegistoUtilizacaoMaterialBean.cancelarRegisto()}"/>
+                    </h:panelGroup>
+
+                </p:fieldset>
+
+            </h:form>
+
+            <br/>
+        </center>
+
+    </ui:define>
+</ui:composition>

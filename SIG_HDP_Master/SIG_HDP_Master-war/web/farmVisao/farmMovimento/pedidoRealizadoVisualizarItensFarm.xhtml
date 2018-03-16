@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalFarm.xhtml"/>
+            </ui:define>
+            
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralFarm.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>Farmácia -> Pedidos -> Realizados-> Visualizar itens do pedido</h2>
+                <h:form id="formSolicitacao">
+                   <p:messages id="msg" autoUpdate="true" closable="true"/>
+                   <p:fieldset id="tabVisualizar">
+                   <p></p><p></p>
+                   <center><h1 style="background-color: #FFF" >HOSPITAL DIVINA PROVIDÊNCIA</h1></center>
+                   <p></p>
+                   <center><h2 style="background-color: #FFF" >MODELO DE PEDIDO</h2></center>
+                   <p></p>
+                   <h:panelGrid columns="10" width="80%" style="margin: auto">
+                        
+                      <p:outputLabel><h3>Origem: </h3></p:outputLabel>
+                      <p:outputLabel style="font-size: 14px" value="#{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkLocalOrigemPedido.descricao}" />
+                      <p:outputLabel><h3>Destino: </h3></p:outputLabel>
+                      <p:outputLabel style="font-size: 14px" value="#{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkLocalDestinoPedido.descricao}" />
+                      <p:outputLabel><h3>Data: </h3></p:outputLabel>
+                        
+                      <h:outputText style="color: #002142;font-size: 14px" value="#{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.dataMovimento}">
+                         <f:convertDateTime pattern="dd-MM-yyyy - HH:mm" />
+                      </h:outputText>
+
+                   </h:panelGrid>
+                   <p></p>
+                   
+                   <p:fieldset style="width: 90%; margin: auto; border: none">
+                      <p:dataTable style="" id="tabela" var="item" rows="12" 
+                                   value="#{farmPedidoRealizadoVisualizarItensBean.produtosMovimento}"
+                                   emptyMessage="Nenhum item encontrado.">
+                                                  
+                         <p:column headerText="Descrição">
+                            <center><p:outputLabel value="#{item.fkIdLoteProduto.fkIdProduto.descricao}"/></center>
+                         </p:column>
+                         
+                         <p:column headerText="Dosagem">
+                            <center><p:outputLabel value="#{item.fkIdLoteProduto.fkIdProduto.dosagem} 
+                                           #{item.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/></center>
+                         </p:column> 
+                         
+                         <p:column headerText="Forma">
+                            <center><p:outputLabel value="#{item.fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao}"/></center>
+                         </p:column>
+                         
+                         <p:column headerText="Nº de Lote">
+                            <center><p:outputLabel value="#{item.fkIdLoteProduto.numeroLote}"/></center>
+                         </p:column>
+                         
+                         <p:column headerText="Data de Validade">
+                            <center><h:outputText value="#{item.fkIdLoteProduto.dataValidade}">
+                               <f:convertDateTime pattern="dd-MM-yyyy"/>
+                               </h:outputText></center>
+                         </p:column>
+                         
+                         <p:column headerText="Quantidade Pedida">
+                            <center><p:outputLabel value="#{farmPedidoRealizadoVisualizarItensBean.getQuantidadePedida(item.fkIdMovimento.fkIdPedido, item.fkIdLoteProduto.fkIdProduto)}"/></center>
+                         </p:column>
+                         
+                         <p:column headerText="Quantidade Entregue">
+                            <center><p:outputLabel value="#{item.quantidadeMovimentada}"/></center>
+                         </p:column>
+                         
+                      </p:dataTable>
+                   </p:fieldset>
+                   <h:panelGrid columns="10" width="80%" style="margin: auto" cellspacing="100">
+                      
+                      <h:panelGrid columns="1" class="floatleft">
+                         <center><p:outputLabel><h3 style="text-align: center;">Solicitado Por </h3></p:outputLabel></center>
+                         <p></p>
+                         <center><p:separator style="width: 150px"/>
+                         </center>
+                               <center>
+                                  <p style="text-align: center; font-size: 14px" >
+                                     #{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkIdFuncionarioSolicitou.fkIdPessoa.nome} 
+                                     #{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkIdFuncionarioSolicitou.fkIdPessoa.sobreNome}
+                                  </p>
+                               </center>
+                      </h:panelGrid>
+                      
+                      <h:panelGrid columns="1" class="float-right">
+                         <center><p:outputLabel><h3 style="text-align: center;">Atendido Por </h3></p:outputLabel></center>
+                         <p></p>
+                         <center><p:separator style="width: 150px"/></center>
+                         <center>
+                            <p style="text-align: center; font-size: 14px" >
+                                     #{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkIdFuncionarioAtendeu.fkIdPessoa.nome} 
+                                     #{farmPedidoRealizadoVisualizarItensBean.movimentoRealizadoPesquisa.fkIdPedido.fkIdFuncionarioAtendeu.fkIdPessoa.sobreNome}
+                            </p>
+                         </center>
+                      </h:panelGrid>
+                   </h:panelGrid>
+                   
+                   </p:fieldset>
+                   <center>
+                     <p:commandButton value="Imprimir" icon="ui-icon-print" id="botaoImprimir" 
+                                      ajax="false" onclick="this.form.target = '_blank'"
+                                      actionListener="#{farmPedidoRealizadoVisualizarItensBean.imprimirRelatorio()}"/>
+                   </center>
+                   <p></p><p></p><p></p>
+                </h:form> 
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

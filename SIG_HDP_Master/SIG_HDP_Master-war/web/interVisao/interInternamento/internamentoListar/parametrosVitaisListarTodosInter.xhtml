@@ -1,0 +1,264 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>#{interObjetosSessaoBean.menuTitulo} -> Ficha de Controlo Terapeutica. Listagem de Parâmetros Vitais e Outros</h2>
+
+                <h:form id="ficha">
+                    <p:growl id="ms" autoUpdate="true" />
+                    <br/>
+                    <p:button value="Voltar" styleClass="float-right" style="width: 130px;" outcome="parametrosVitaisListarInter" icon="ui-icon-arrowreturnthick-1-w"/>
+                    <center>
+                        <span style="font-size: 16pt">
+                            <p:commandLink style="color: #0088cc" value="#{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                           ajax="true" partialSubmit="true" process="@this" 
+                                           actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                           update=":formPacienteVisualizar" 
+                                           onclick="PF('dialogMaisDetalhes').show();"/>
+                            <br/>
+                            #{msgs.subProcesso}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                            #{msgs.dataDaSolicitacao}: 
+                            <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </p:outputLabel>
+                        </span>
+                    </center>                
+                    <br/>
+                    <h:panelGrid columns="2">
+
+                        <p:outputLabel value="Data de Registo"/>
+                        <h:panelGrid columns="4">
+                            <p:calendar navigator="true" id="de" size="35" value="#{interControloParametrosVitaisListarBean.dataRegisto1}" /> 
+                            <p:watermark for="de" value="De" />
+                            <p:calendar navigator="true" id="a" size="35" value="#{interControloParametrosVitaisListarBean.dataRegisto2}" /> 
+                            <p:watermark for="a" value="A" />
+                        </h:panelGrid>
+
+                        <p:outputLabel value="Nome Enfermeiro"/>
+                        <p:inputText style="width: 98%" id="nome" value="#{interControloParametrosVitaisListarBean.nomeEnfermeiro}"/>
+
+                        <h:outputLabel value="Parâmetro" for="mediO"/>
+                        <p:selectOneMenu id="mediO" value="#{interControloParametrosVitaisListarBean.parametro}" style=" border-radius:10%;font-weight:500;width:95%;" filter="true">
+                            <f:selectItem itemLabel="" itemValue=""/>   
+                            <f:selectItems value="#{interParametroVitalListarBean.listarTodos()}" 
+                                           var="p"
+                                           itemLabel="#{p.fkIdParametroVital.descricao}"
+                                           itemValue="#{p.fkIdParametroVital.descricao}" 
+                                           />
+                        </p:selectOneMenu>
+
+                        <p></p><p></p>
+                        <h:panelGrid columns="3" cellpadding="0" width="100%">
+                            <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interControloParametrosVitaisListarBean.pesquisar()}" update="resultado" style="width: 180px"/>
+                            <p:commandButton value="Marcação dos Horários" icon="ui-icon-plus"  id="adicionarHorario" onclick="PF('addFicha').show();" update=":cadastro:pac :cadastro:datatableO  :cadastro:numeroSupProcesso :cadastro:dataSolicitacao" rendered="#{interControloDiarioBean.registoInternamento.ativo}" style="width: 100%" actionListener="#{interRegistoInternamentoParametroVitalListarBean.pesquisarTodos(interControloDiarioBean.registoInternamento.pkIdRegistoInternamento, 0)}">
+                                <p:tooltip id="toolTipAdicionarHorario" for="adicionarHorario" value="Registar Uma Nova Medicação" />
+                            </p:commandButton>
+                            <p:commandButton value="Novos Parametros" id="adicionar" icon="ui-icon-plus" action="#{interParametrosVitaisListarBean.novoParametrosVitais()}" rendered="#{interControloDiarioBean.registoInternamento.ativo}" style="width: 100%" disabled="#{interMedicacaoListarBean.verificarHorario()}">
+                                <p:tooltip id="toolTipAdicionar" for="adicionar" value="Preencher Ficha Terapeutica - Novos Parametros Vitais" />
+                            </p:commandButton>
+                        </h:panelGrid>       
+                    </h:panelGrid>
+                    <p:panel id="resultado" style="border: 0px;">                        
+                        <p:dataTable  id="datatable" var="registo"  scrollWidth="31%"  value="#{interControloParametrosVitaisListarBean.listaParametrosVitais}" 
+                                      emptyMessage="Nenhum registo de parâmetros encontrado" selectionMode="single" rowKey="#{registo.pkIdControloParametrosVitais}" paginator="true" paginatorPosition="bottom" rows="10" style="width: 100%" >
+
+                            <p:column headerText="Parâmetro" sortBy="#{registo.fkIdRegistoInternamentoHasParametroVital.fkIdParametroVital.descricao}" filterBy="#{registo.fkIdRegistoInternamentoHasParametroVital.fkIdParametroVital.descricao}" filterMatchMode="contains">
+                                <h:outputText value="#{registo.fkIdRegistoInternamentoHasParametroVital.fkIdParametroVital.descricao}"/>
+                            </p:column>   
+
+                            <p:column headerText="Valor">
+                                <h:outputText value="#{registo.valor} #{interParametroVitalListarBean.unidadeParametro(registo.fkIdRegistoInternamentoHasParametroVital.fkIdParametroVital.descricao, interControloDiarioBean.registoInternamento.pkIdRegistoInternamento)}" rendered="#{registo.fkIdRegistoInternamentoHasParametroVital.fkIdParametroVital.descricao != 'Tensão Arterial'}"/>
+                                <h:outputText value="#{registo.taValor1} / #{registo.taValor2}" rendered="#{registo.fkIdRegistoInternamentoHasParametroVital.fkIdParametroVital.descricao == 'Tensão Arterial'}"/>
+                            </p:column>
+
+
+                            <p:column headerText="Data / Hora Registada no Paciente" sortBy="#{registo.dataRegistadaNoPaciente}" filterBy="#{registo.dataRegistadaNoPaciente}" filterMatchMode="contains">
+                                <h:outputText value="#{registo.dataRegistadaNoPaciente}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>    
+                                <h:outputText value=" - #{registo.hora}h"/>
+                            </p:column> 
+
+                            <p:column headerText="Data / Hora Registada no Sistema" sortBy="#{registo.dataHoraGravadaNoSistema}" filterBy="#{registo.dataHoraGravadaNoSistema}" filterMatchMode="contains">
+                                <h:outputText value="#{registo.dataHoraGravadaNoSistema}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                                </h:outputText> 
+                            </p:column> 
+
+                            <p:column headerText="Registado Por" width="100" sortBy="#{registo.fkIdFuncionario.fkIdPessoa.nome} #{registo.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{registo.fkIdFuncionario.fkIdPessoa.sobreNome}" filterBy="#{registo.fkIdFuncionario.fkIdPessoa.nome} #{registo.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{registo.fkIdFuncionario.fkIdPessoa.sobreNome}" filterMatchMode="contains">
+                                <h:outputText value="#{registo.fkIdFuncionario.fkIdPessoa.nome} #{registo.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{registo.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                            </p:column> 
+
+                            <p:column headerText="------" width="100">
+                                <center>
+                                    <p:menuButton value="Opções">
+                                        <p:menuitem value="Outros" icon="ui-icon-search" action="#" rendered="false"/>
+                                        <p:menuitem value="Editar" icon="ui-icon-pencil" action="#" rendered="#{interControloDiarioBean.registoInternamento.ativo}"/>
+                                        <p:menuitem value="Visualizar" icon="ui-icon-search" action="#{interParametrosVitaisListarHistoricoBean.pesquisar(registo.fkIdRegistoInternamentoHasParametroVital.fkIdParametroVital.descricao)}" onclick="PF('verHistoricoParametro').show();" partialSubmit="true" process="@this" update=":verHistoricoParametro:pac :verHistoricoParametro:grafico"/>
+                                    </p:menuButton>  
+                                </center>    
+                            </p:column>    
+
+                        </p:dataTable>
+                    </p:panel>    
+
+                    <!--Por os botoes na tabela
+                    
+                    <p:commandButton value="Editar" icon="ui-icon-plus"  process="@this" type="button" id="editar" onclick="addFicha.show();"/>
+                    
+                    <p:commandButton value="Visualizar" icon="ui-icon-search"  process="@this" type="button" onclick="addMedicacao.show();"/>
+                    -->
+                </h:form>
+
+                <!--FORMULARIO PARA VISUALIZAR HISTORICO DE PARAMETROS VITAIS-->
+                <h:form id="verHistoricoParametro">
+                    <p:dialog id="verHistoricoParametro" widgetVar="verHistoricoParametro" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="1200" height="600">
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Histórico Parametros</h2>
+                        <br/>
+                        <center>
+                            <span style="font-size: 16pt">
+                                <p:commandLink style="color: #0088cc" id="pac" value="#{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                               ajax="true" partialSubmit="true" process="@this" 
+                                               actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                               update=":formPacienteVisualizar" 
+                                               onclick="PF('dialogMaisDetalhes').show();"/>
+                            </span>
+                        </center>
+                        <h:panelGrid columns="2" class="float-right">
+                            <p:commandButton value="Fechar" onclick="PF('verHistoricoParametro').hide()" style="width: 100%" ajax="false"/>
+                        </h:panelGrid>
+                        <p:separator />
+                        <h:panelGrid columns="5" cellpadding="2">
+
+                            <p:outputLabel value="De"/>
+                            <p:calendar navigator="true" value="#{interParametrosVitaisListarHistoricoBean.dataRegisto1}" id="data1"/>
+
+                            <p:outputLabel value="a"/>
+                            <p:calendar navigator="true" value="#{interParametrosVitaisListarHistoricoBean.dataRegisto2}" id="data2"/>
+
+                            <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interParametrosVitaisListarHistoricoBean.pesquisar(interParametrosVitaisListarHistoricoBean.parametroAtivo)}" update="resultado"/>
+
+                        </h:panelGrid>
+
+                        <p:panel id="resultado" style="border: 0px;">
+
+                            <p:chart type="line" model="#{interParametrosVitaisListarHistoricoBean.historico}" id="grafico" />
+
+                            <p:separator />
+                            <p:separator />    
+                            <br/>
+                        </p:panel>
+                    </p:dialog>   
+                </h:form>
+
+                <!--FORMULARIO PARA CADASTRO-->
+                <h:form id="cadastro">
+                    <p:dialog id="addFicha" widgetVar="addFicha" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="800" height="550">
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Parametros Vitais - Marcação dos Horários</h2>
+                        <p:panel header="Ficha Terapeutica - Parâmetros Vitais" id="bb">
+                            <p:growl id="ms" autoUpdate="true" />
+                            <br/>
+                            <center>
+                                <span style="font-size: 16pt">
+                                    <p:commandLink style="color: #0088cc" id="pac" value="#{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                                   ajax="true" partialSubmit="true" process="@this" 
+                                                   actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                                   update=":formPacienteVisualizar" 
+                                                   onclick="PF('dialogMaisDetalhes').show();"/>
+                                    <br/>
+                                    #{msgs.subProcesso}:
+                                    <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //" id="numeroSupProcesso"/>
+                                    #{msgs.dataDaSolicitacao}: 
+                                    <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+                                </span>
+                            </center>
+                            <br/>
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Parâmetro Vital" for="mediO"/>
+                                <p:selectOneMenu id="mediO" value="#{interRegistoInternamentoParametroVitalNovoBean.interRegistoInternamentoHasParametroVital.fkIdParametroVital.pkIdParametroVital}" style=" border-radius:10%;font-weight:500;width:60%;" filter="true" required="true" requiredMessage="O parametro vital é obrigatório!">
+                                    <f:selectItem itemLabel="" itemValue=""/>   
+                                    <f:selectItems value="#{interParametroVitalListarBean.findById(interControloDiarioBean.registoInternamento.pkIdRegistoInternamento)}" 
+                                                   var="p"
+                                                   itemLabel="#{p.descricao}"
+                                                   itemValue="#{p.pkIdParametroVital}" 
+                                                   />
+                                </p:selectOneMenu>
+                                <h:outputLabel value="Horario" for="horamedO"/>
+                                <p:selectOneMenu id="horamedO" value="#{interRegistoInternamentoParametroVitalNovoBean.interRegistoInternamentoHasParametroVital.fkIdHoraMedicacao.pkIdHoraMedicacao}" style=" border-radius:10%;font-weight:500;width:60%;" required="true" requiredMessage="O horário é obrigatório!">
+                                    <f:selectItem itemLabel="" itemValue=""/>                                        
+                                    <f:selectItems value="#{interHoraMedicacaoListarBean.listarTodas}" 
+                                                   var="hO"
+                                                   itemLabel="#{hO.descricao}"
+                                                   itemValue="#{hO.pkIdHoraMedicacao}" 
+                                                   />
+                                </p:selectOneMenu>                                    
+                            </h:panelGrid>
+                            <h:panelGrid style="margin-left: 84px; margin-top: -10px" columns="2">
+                                <p:commandButton value="Adicionar" action="#{interRegistoInternamentoParametroVitalNovoBean.salvar()}" update="resultadoO mediO :ficha:resultado" style="width: 130px" icon="ui-icon-plus"/>
+                                <p:commandButton value="Fechar" onclick="PF('addFicha').hide()" style="width: 100%"/>     
+                            </h:panelGrid>
+                            <p:panel id="resultadoO" style="border: 0px;">
+                                <p:dataTable  id="datatableO" var="var"  scrollWidth="31%"  value="#{interRegistoInternamentoParametroVitalListarBean.pesquisarTodos(interControloDiarioBean.registoInternamento.pkIdRegistoInternamento, 0)}" 
+                                              emptyMessage="Nenhum parametro adicionado" selectionMode="single" rowKey="#{var.pkIdRegistoInternamentoHasParametroVital}" paginator="true" rows="5" style="height: 10%">
+                                    <f:facet name="header">
+                                        Lista de Parametros Vitais
+                                    </f:facet>              
+
+                                    <p:column headerText="Parâmetro">
+                                        <h:outputText value="#{var.fkIdParametroVital.descricao}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Horario">
+                                        <h:outputText value="#{var.fkIdHoraMedicacao.descricao}"/>
+                                    </p:column>  
+
+                                    <p:column>
+                                        <p:commandButton value="Editar" icon="ui-icon-pencil" action="#" onclick="" process="@this" partialSubmit="true" update=""/>
+                                    </p:column>  
+
+                                    <p:column>
+                                        <p:commandButton action="#" value="Eliminar" update="datatableO" ajax="true" icon="ui-icon-delete"/>
+                                    </p:column>       
+
+                                </p:dataTable>
+
+                            </p:panel>
+                            <p:separator />
+                            <p:separator />    
+                        </p:panel>          
+                    </p:dialog>
+                </h:form> 
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,430 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form  acceptcharset="ISO-8859-1">
+                    <p:messages id="messagens" closable="true"/>
+                    <p:panel header="Listagem-> Formação e Formadores">   
+
+                        <h:panelGrid columns="2" cellpadding="3">
+
+                            <p:outputLabel value="Formador "/>
+                            <f:validateBean disabled="true">
+                                <p:inputText id="nomeFormador"  style="width: 250px"  />
+
+                            </f:validateBean>
+
+                            <p:outputLabel value="Província "/>
+                            <p:selectOneMenu id="comboPro"  style="width: 100%" filter="true">
+                                <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>
+                                <f:selectItems value="#{supiFormacaoBean.listaProvincias()} " var="prov" itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Municipio " />
+                            <p:selectOneMenu id="comboMuni"  style="width: 100%" filter="true">
+                                <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>
+                                <f:selectItems value="#{supiFormacaoBean.listaMunicipios()}" var="eee" itemLabel="#{eee.nomeMunicipio}" itemValue="#{eee.pkIdMunicipio}"/>
+                            </p:selectOneMenu>
+
+                            <br> </br>
+                            <h:panelGrid columns="3">
+                                <p:commandButton value="Pesquisar" ajax="false"  update="tabela"/>
+                                <p:commandButton value="Nova Formação" ajax="false" immediate="true" icon="ui-icon-plus" action="formacao"/>
+                                <p:commandButton value="Limpar" icon="ui-icon-close" ajax="true"
+                                                 update="tabela" />
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <center> <h2> Formações</h2> </center> 
+
+
+                        <!--   Inicio Listar       -->    
+
+                        <p:tabView >
+
+                            <p:tab title="Formador Interno/ Formação">
+                                <p:dataTable id="tabelainterno" value="#{formacaoBean.listarFormacoesFormadorInterno()}"  var="int" sortMode="multiple" paginator="true" rows="4"  
+                                             emptyMessage="Não Existem Dados Registados"
+                                             selectionMode="single"  rowKey="#{int.pkIdFormacao}">
+
+                                    <p:column headerText="Enfermeiros" style="width:60px">
+                                        <p:rowToggler></p:rowToggler>
+
+                                    </p:column>
+
+                                    <p:column headerText="Código">
+                                        <h:outputText value="#{int.pkIdFormacao}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Formador">
+                                        <h:outputText value="#{int.fkIdFormadorAux.fkIdFuncionario.fkIdPessoa.nome} #{int.fkIdFormadorAux.fkIdFuncionario.fkIdPessoa.sobreNome}">
+
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Tema">
+                                        <h:outputText value="#{int.tema}"/>
+                                    </p:column>
+                                    <p:column headerText="Duração (Hora)">
+                                        <h:outputText value="#{int.duracao}">
+                                            <f:convertDateTime locale="pt" timeZone="GMT+1" pattern="HH:mm" /> 
+                                        </h:outputText>
+                                    </p:column> 
+
+                                    <p:column headerText="Data Inicio">
+                                        <h:outputText value="#{int.dataInicio}">
+                                            <f:convertDateTime locale="pt" timeZone="GMT+1" pattern="dd-MM-yyyy" /> 
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Data Fim">
+                                        <h:outputText value="#{int.dataTermino}"><f:convertDateTime locale="pt" timeZone="GMT+1" pattern="dd-MM-yyyy" /> 
+                                        </h:outputText>
+                                    </p:column>
+                                    
+                                    <p:column headerText="Provincia">
+                                        <h:outputText value="#{int.fkIdEndereco.fkIdMunicipio.nomeMunicipio}">
+
+                                </h:outputText>
+
+                            </p:column>
+
+                                    <p:column headerText="-------">
+                                        <center>
+                                            <p:menuButton value="Opções">
+                                                <p:menuitem value="Ver Detalhes" partialSubmit="true" process="@this" icon="ui-icon-info"
+
+                                                            onclick="PF('visualizar').show();" />
+                                                <p:menuitem ajax="false" value="Remover" icon="ui-icon-trash"/>
+
+                                            </p:menuButton>
+                                        </center>
+                                    </p:column>
+                                    <p:rowExpansion>
+                                        <p:dataTable var="it" value="#{formacaoBean.listadeFormandos(int.pkIdFormacao)}">
+
+
+                                            <p:column headerText="Nome Completo">
+                                                <h:outputText value="#{it.fkIdFuncionario.fkIdPessoa.nome} #{it.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{it.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+
+
+                                    </p:rowExpansion>
+
+
+                                </p:dataTable>
+
+                            </p:tab>
+
+                            <p:tab title="Formador Externo Físico/ Formação">
+
+                                <p:dataTable id="tabelafisico" value="#{formacaoBean.listarFormacoesFormadorExternoFisico()}"  var="int" sortMode="multiple" paginator="true" rows="4"  
+                                             emptyMessage="Não Existem Dados Registados"
+                                             selectionMode="single"  rowKey="#{int.pkIdFormacao}">
+
+                                    <p:column headerText="Enfermeiros" style="with:60px">
+                                        <p:rowToggler></p:rowToggler>
+
+                                    </p:column>   
+
+                                    <p:column headerText="Código">
+                                        <h:outputText value="#{int.pkIdFormacao}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Formador">
+                                        <h:outputText value="#{int.fkIdFormadorAux.fkIdPessoa.nome} #{int.fkIdFormadorAux.fkIdPessoa.sobreNome}">
+
+                                        </h:outputText>
+                                    </p:column>
+
+
+                                    <p:column headerText="Tema Formação">
+                                        <h:outputText value="#{int.tema}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Duração (Hora)">
+                                        <h:outputText value="#{int.duracao}">
+                                            <f:convertDateTime locale="pt" timeZone="GMT+1" pattern="HH:mm" /> 
+                                        </h:outputText>
+                                    </p:column> 
+
+                                    <p:column headerText="Data Inicio">
+                                        <h:outputText value="#{int.dataInicio}">
+                                            <f:convertDateTime locale="pt" timeZone="GMT+1" pattern="dd-MM-yyyy" /> 
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Data Fim">
+                                        <h:outputText value="#{int.dataTermino}"><f:convertDateTime locale="pt" timeZone="GMT+1" pattern="dd-MM-yyyy" /> 
+                                        </h:outputText>
+                                    </p:column>
+                                    
+                                    <p:column headerText="Provincia">
+                                <h:outputText value="#{int.fkIdEndereco.fkIdMunicipio.nomeMunicipio}">
+
+                                </h:outputText>
+
+                            </p:column>
+
+                                    <p:column headerText="-------">
+                                        <center>
+                                            <p:menuButton value="Opções">
+                                                <p:menuitem value="Ver Detalhes" partialSubmit="true" process="@this" icon="ui-icon-info"
+
+                                                            onclick="PF('visualizar').show();" />
+                                                <p:menuitem ajax="false" value="Remover" icon="ui-icon-trash"/>
+
+                                            </p:menuButton>
+                                        </center>
+                                    </p:column>
+                                    <p:rowExpansion>
+                                        <p:dataTable var="it" value="#{formacaoBean.listadeFormandos(int.pkIdFormacao)}">
+
+
+                                            <p:column headerText="Nome Completo">
+                                                <h:outputText value="#{it.fkIdFuncionario.fkIdPessoa.nome} #{it.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{it.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </p:rowExpansion>
+
+
+
+                                </p:dataTable>
+
+                            </p:tab>
+
+                            <p:tab title="Formador Externo Jurídico/ Formação">
+
+                                <p:dataTable id="tabelajuridico" value="#{formacaoBean.listarFormacoesFormadorJuridico()}"  var="int" sortMode="multiple" paginator="true" rows="4"  
+                                             emptyMessage="Não Existem Dados Registados"
+                                             selectionMode="single"  rowKey="#{int.pkIdFormacao}">
+
+                                    <p:column headerText="Enfermeiros" style="width:60px">
+                                        <p:rowToggler></p:rowToggler>
+
+                                    </p:column>
+
+                                    <p:column headerText="Código">
+                                        <h:outputText value="#{int.pkIdFormacao}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Formador">
+                                        <h:outputText value="#{int.fkIdFormadorAux.fkIdInstituicaoProveniencia.descricao}">
+
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Tema da Formação">
+                                        <h:outputText value="#{int.tema}"/>
+                                    </p:column>
+
+                                    <p:column headerText="Duração (Hora)">
+                                        <h:outputText value="#{int.duracao}">
+                                            <f:convertDateTime locale="pt" timeZone="GMT+1" pattern="HH:mm" /> 
+                                        </h:outputText>
+                                    </p:column> 
+
+                                    <p:column headerText="Data Inicio">
+                                        <h:outputText value="#{int.dataInicio}">
+                                            <f:convertDateTime locale="pt" timeZone="GMT+1" pattern="dd-MM-yyyy" /> 
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Data Fim">
+                                        <h:outputText value="#{int.dataTermino}"><f:convertDateTime locale="pt" timeZone="GMT+1" pattern="dd-MM-yyyy" /> 
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Provincia">
+                                        <h:outputText value="#{int.fkIdEndereco.fkIdMunicipio.nomeMunicipio}">
+
+                                        </h:outputText>
+
+                                    </p:column>
+                                    <p:column headerText="-------">
+                                        <center>
+                                            <p:menuButton value="Opções">
+                                                <p:menuitem value="Ver Detalhes" partialSubmit="true" process="@this" icon="ui-icon-info"
+
+                                                            onclick="PF('visualizar').show();" />
+                                                <p:menuitem ajax="false" value="Remover" icon="ui-icon-trash"/>
+
+                                            </p:menuButton>
+                                        </center>
+                                    </p:column>
+
+                                    <p:rowExpansion>
+                                        <p:dataTable var="it" value="#{formacaoBean.listadeFormandos(int.pkIdFormacao)}">
+
+
+                                            <p:column headerText="Nome Completo">
+                                                <h:outputText value="#{it.fkIdFuncionario.fkIdPessoa.nome} #{it.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{it.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+
+
+                                    </p:rowExpansion>
+
+
+
+                                </p:dataTable>
+
+                            </p:tab>
+
+
+                        </p:tabView>
+
+
+
+
+
+
+
+
+
+
+                        <!-- Fim   Listar            -->
+
+
+
+                        <br></br>
+
+                        <br></br>
+
+
+
+
+                        <p:dataTable id="tabela" var="abertura" sortMode="multiple" paginator="true" rows="4"  
+                                     emptyMessage="Não Existem Dados Registados"
+                                     selectionMode="single"  rowKey="#{abertura.pkIdFormacao}">
+
+                            <p:column headerText="Código">
+                                <h:outputText value="#{abertura.pkIdFormacao}"/>
+                            </p:column>
+
+                            <p:column headerText="Formador">
+                                <h:outputText value="#{abertura.fkIdFormadorAux.fkIdPessoa.nome} #{abertura.fkIdFormadorAux.fkIdPessoa.sobreNome}">
+
+                                </h:outputText>
+                            </p:column>
+
+
+                            <p:column headerText="Duração (Hora)">
+                                <h:outputText value="#{abertura.duracao}"/>
+                            </p:column> 
+
+                            <p:column headerText="Provincia">
+                                <h:outputText value="#{abertura.local.fkIdProvincia.nomeProvincia}">
+
+                                </h:outputText>
+
+                            </p:column>
+
+                            <p:column headerText="Municipio">
+                                <h:outputText id="da" value="#{abertura.local.nomeMunicipio}">
+
+                                </h:outputText>
+
+                            </p:column>
+
+                            <p:column headerText="-------">
+                                <center>
+                                    <p:menuButton value="Opções">
+                                        <p:menuitem value="Ver Detalhes" partialSubmit="true" process="@this" icon="ui-icon-info"
+
+                                                    onclick="PF('visualizar').show();" />
+                                        <p:menuitem ajax="false" action="#{supiFormacaoBean.prepararEditarAbertura(supiFormacaoBean.supiFormacao.pkIdFormacao)}" value="Actualizar" icon="ui-icon-refresh"/>
+                                        <p:menuitem ajax="false" value="Remover" icon="ui-icon-trash"/>
+
+                                    </p:menuButton>
+                                </center>
+                            </p:column>
+
+                        </p:dataTable>
+                    </p:panel> 
+                </h:form>
+
+                <h:form id="formVisualizar">
+                    <p:dialog header="Visualizar Dados"  id="visualizar" widgetVar="visualizar">
+                        <p:growl id="growlVisualizar" sticky="true" />
+                        <h:panelGrid id="pgVisualizar" columns="2" width="100%" cellspacing="3" style=" font-family: cursive;alignment-adjust: central; ">
+
+                            <h:outputLabel value="Hora de Início:"/>
+                            <h:inputText  value="#{supiFormacaoBean.supiFormacao.dataInicio}" readonly="true">
+                                <f:convertDateTime  pattern="HH:mm" />
+                            </h:inputText>
+
+                            <h:outputLabel value="Hora de Término:"/>
+                            <h:inputText  value="#{supiFormacaoBean.supiFormacao.dataTermino}" readonly="true">
+                                <f:convertDateTime pattern="HH:mm"/>
+                            </h:inputText>
+
+                            <h:outputLabel value="Duração:" for="duracao" />
+                            <p:inputText  value="#{formacaoBean.supiFormacao.duracao}"
+                                          readonly="true"/>
+
+                            <h:outputLabel value="Assunto a ser abordado:"/>
+                            <p:inputText  readonly="true" value="#{supiFormacaoBean.supiFormacao.tema}" size="20"/>
+
+                            <h:outputLabel value="Formador:"/>
+
+                            <p:inputText  id="formador" value="#{supiFormacaoBean.supiFormacao.fkIdFormadorAux.fkIdPessoa.nome} #{supiFormacaoBean.supiFormacao.fkIdFormadorAux.fkIdPessoa.sobreNome}" readonly="true"/>
+
+                            <h:outputLabel value="Descrição:"/>
+                            <p:inputText id="descricao" value="#{supiFormacaoBean.supiFormacao.descricaoFormacao}" size="20"/>
+                            <p:outputLabel value="Data da Formação: "/> 
+                            <h:inputText  value="#{supiFormacaoBean.supiFormacao.dataInicio}" readonly="true">
+                                <f:convertDateTime pattern="dd/MM/yyy"/>
+                            </h:inputText>
+                            <h:inputText  value="#{supiFormacaoBean.supiFormacao.dataTermino}" readonly="true">
+                                <f:convertDateTime pattern="dd/MM/yyy"/>
+                            </h:inputText>
+
+                        </h:panelGrid>
+                        <h:outputLabel value="Local: " style="font-family: cursive,sans-serif;font-size:14px; color: black;"/>
+
+                        <h:panelGrid columns="6" cellpadding="5" style="font-family: cursive,sans-serif;font-size:14px; color: black;">
+
+                            <h:outputLabel value="Pais"/>
+                            <p:inputText  
+                                readonly="true"/>
+
+                            <p:outputLabel value="Provincia" />
+                            <p:inputText  
+                                readonly="true"/>
+
+                            <h:outputLabel value="Municipio" />
+                            <p:inputText /> 
+                        </h:panelGrid> 
+                        <p:commandButton style=" border-radius:10%;" ajax="true"  value="Voltar" onclick="PF('visualizar').hide();" />
+                    </p:dialog>
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Visualizar Faltas dos Funcionários</title>
+     </h:head>
+
+     <h:body>
+
+          <ui:composition template="/template/masterPage.xhtml">
+
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Visualizar Faltas de Funcionários (Pesquisar)</h2>
+                    <p:messages id="ms" autoUpdate="true" closable="true"/>
+                    <p:growl id="ms2" autoUpdate="true"/>
+
+                    <h:form id="formulario">
+                         <br/>
+                         <p:panel id="panelPrincipal" style="border: none;">
+                              <p:panel style="height: 160px">
+                                   <h:panelGrid columns="2" cellpadding="5" width="100%">
+
+                                        <h:panelGrid cellpadding="5">
+                                             <h:panelGrid columns="2" cellpadding="5">
+                                                  <p:outputLabel value="Ano*:"/>
+                                                  <p:inputNumber value="#{rhFaltasVisualizarBean.anoPesquisa}" size="37" thousandSeparator=""
+                                                                 minValue="0" maxValue="#{rhValidarBean.anoActual()}" required="true" requiredMessage="Indique o ano !"/>
+                                                  <p:outputLabel value="Mês*:"/>
+                                                  <h:selectOneMenu value="#{rhFaltasVisualizarBean.mesPesquisa}" style="width: 300px; text-align: center">
+                                                       <f:selectItems value="#{rhFaltasRegistarBean.selectMeses()}"/>
+                                                  </h:selectOneMenu>
+                                             </h:panelGrid>
+                                             <h:panelGrid columns="2">
+                                                  <p:commandButton style="width: 170px" value="Pesquisar" icon="ui-icon-search" 
+                                                                   action="#{rhFaltasVisualizarBean.pesquisar()}" update="dataTable"/>
+                                                  <p:commandButton style="width: 170px" value="Limpar" process="@this" 
+                                                                   action="#{rhFaltasVisualizarBean.limparPesquisa()}"/>
+                                             </h:panelGrid>
+                                        </h:panelGrid>
+
+                                        <h:panelGrid style="text-align: center; float: right">
+                                             <p:commandButton style="width: 230px" value="Registar/Remover Faltas" icon="ui-icon-pencil"
+                                                              process="@this" action="#{rhFaltasRegistarBean.limpar()}"/>
+                                        </h:panelGrid>
+                                   </h:panelGrid>
+                              </p:panel>
+                              <br/>
+                              <p:dataTable id="dataTable" var="funcionario" value="#{rhFaltasVisualizarBean.funcionariosList}" rows="3" 
+                                           paginator="true" paginatorPosition="bottom" emptyMessage="Nenhum registro de faltas encontrado">
+                                   <p:column headerText="Funcionário" filterBy="#{funcionario.fkIdPessoa.nome}">
+                                        <center>
+                                             <p:outputLabel value="#{funcionario.fkIdPessoa.nome}
+                                                            #{funcionario.fkIdPessoa.nomeDoMeio}
+                                                            #{funcionario.fkIdPessoa.sobreNome}"/>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Nº Cartão" filterBy="#{funcionario.numeroCartao}">
+                                        <center>
+                                             <p:outputLabel value="#{funcionario.numeroCartao}"/>
+                                        </center>
+                                   </p:column>
+                                   <p:column headerText="Dias do Mês com Faltas" colspan="2">
+                                        <p:dataGrid value="#{funcionario.rhFuncionarioHasRhTipoFaltaList}" var="falta"
+                                                    rows="1" columns="1" paginator="true" paginatorPosition="top">
+                                             <p:outputLabel style="color: #{rhFaltasRegistarBean.corDaFalta(falta.fkIdTipoFalta)}" value="#{falta.fkIdTipoFalta.descricao == null ? '-----------':falta.fkIdTipoFalta.descricao}"/>
+                                             <br/>
+                                             <p:outputLabel style="color: #{rhFaltasRegistarBean.corDaFalta(falta.fkIdTipoFalta)}" value="Observação: #{falta.observacao}" rendered="#{falta.observacao != null}"/>
+                                        </p:dataGrid>
+                                   </p:column>
+                                   <p:column headerText="Faltas Não Justificadas">
+                                        <center>
+                                             <p:outputLabel value="#{rhFaltasRegistarBean.contarFaltasNaoJustificadas(funcionario)}"/>
+                                        </center>
+                                   </p:column>
+                              </p:dataTable>
+                              <br/>
+                         </p:panel>
+                    </h:form>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+
+               </ui:define>
+
+          </ui:composition>
+
+     </h:body>
+</html>

@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form id="formListarHistoricoGeralExame">
+            <div class="ui-fluid">
+                <br/>
+                <p:tabView id="tvListarHistoricoGeralExame" styleClass="ui-noborder" style="height: 550px; width: 950px">
+
+                    <p:tab title="Exame">
+
+                        <center>
+                            <span style="font-size: 16pt">
+
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                     "
+                                               style="color: #0088cc"/>
+
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <br/>
+                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                            </span>
+                        </center>
+
+                        <p:fieldset style="height: 385px">
+
+                            <h:panelGrid id="gridExame" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                <p:outputLabel value="Data:"/>
+                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosDiagExameRealizado(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).data)}"/>
+                                
+                                <p:outputLabel value="Funcionário que realizou o Exame:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosDiagExameRealizado(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nome} 
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosDiagExameRealizado(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosDiagExameRealizado(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                     "/>
+
+                                <p:outputLabel value="Amostra:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosDiagExameRealizado(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdAmostra.fkIdTipoAmostra.descricaoTipoAmostra}"/>
+
+                                <p:outputLabel value="Resultado do Exame:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosDiagExameRealizado(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).resultados}"/>
+
+                                <p:outputLabel value="Observações do Exame:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosDiagExameRealizado(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).observacoes}"/>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+                    </p:tab>
+
+                </p:tabView>
+                <br/>
+                <center>
+                    <p:commandButton value="#{msgs.fechar}" icon="ui-icon-close" onclick="PF('dialogListarHistoricoGeralExame').hide()" partialSubmit="true" process="@this" style="margin-bottom: 15px;" styleClass="ui-noborder"/> 
+                </center>
+            </div>
+        </h:form>
+    </h:body>
+</html>

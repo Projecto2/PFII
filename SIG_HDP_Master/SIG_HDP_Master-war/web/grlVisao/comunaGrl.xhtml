@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Comunas</title>
+     </h:head>
+
+     <h:body>
+          <p:messages id="msg" autoUpdate="true" closable="true"/>
+          <p:growl id="msg2" autoUpdate="true"/>
+          <br/>
+          <center>
+               #{detetorAtualizacaoPagina.checkAtualizacao("")}
+               <h:panelGrid width="75%">
+                    <h:form id="formPesquisa">
+                         <p:fieldset style="width: 97%">
+
+                              <f:validateBean disabled="true">
+                                   <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder" style="width: 100%">
+                                        <p:outputLabel value="País:"/>
+                                        <p:selectOneMenu id="comboPais" style="width: 96%; text-align: center" filter="true" filterMatchMode="contains"
+                                                         value="#{grlComunaBean.comunaPesquisa.fkIdMunicipio.fkIdProvincia.fkIdPais.pkIdPais}"
+                                                         valueChangeListener="#{grlComunaBean.changePaisPesquisa}">
+                                             <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                             <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                            itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                             <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio"/>
+                                        </p:selectOneMenu>
+                                        <p:outputLabel value="Provícia:"/>
+                                        <p:selectOneMenu id="comboProvincia" style="width: 96%; text-align: center" filter="true" filterMatchMode="contains"
+                                                         value="#{grlComunaBean.comunaPesquisa.fkIdMunicipio.fkIdProvincia.pkIdProvincia}"
+                                                         valueChangeListener="#{grlComunaBean.changeProvinciaPesquisa}">
+                                             <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                             <f:selectItems value="#{grlComunaBean.provinciasPorPaisList}" var="prov"
+                                                            itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                                             <f:ajax execute="@this" event="change" render="comboMunicipio"/>
+                                        </p:selectOneMenu>
+                                        <p:outputLabel value="Município:"/>
+                                        <p:selectOneMenu id="comboMunicipio" style="width: 96%; text-align: center" filter="true" filterMatchMode="contains"
+                                                         value="#{grlComunaBean.comunaPesquisa.fkIdMunicipio.pkIdMunicipio}">
+                                             <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                             <f:selectItems value="#{grlComunaBean.municipiosPorProvinciaList}" var="mun"
+                                                            itemLabel="#{mun.nomeMunicipio}" itemValue="#{mun.pkIdMunicipio}"/>
+                                        </p:selectOneMenu>
+                                        <p:outputLabel value="Comuna:"/>
+                                        <p:inputText style="width: 100%" value="#{grlComunaBean.comunaPesquisa.descricaoComuna}"/>
+                                        <br/>
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder" style="width: 100%">
+                                             <p:commandButton value="Pesquisar" icon="ui-icon-search" style="width: 100%"
+                                                              process="@form" update="dataTable"
+                                                              action="#{grlComunaBean.pesquisarComunas()}"/>
+                                             <p:commandButton style="float: right; width: 100%" value="#{msgs.carregar}" icon="ui-icon-refresh" 
+                                                              action="comunasListarGrl?faces-redirect=true" 
+                                                              actionListener="#{grlComunaBean.carregarExcel()}"/>
+                                        </p:panelGrid>
+                                   </p:panelGrid>
+                              </f:validateBean>
+                         </p:fieldset>
+
+                         <p:dataTable id="dataTable" var="comuna" value="#{grlComunaBean.comunasPesquisadasList}"
+                                      emptyMessage="Nenhum registro de comuna encontrado"
+                                      paginator="true" paginatorPosition="bottom" rows="10">
+                              <p:column headerText="Comuna">
+                                   <center>
+                                        #{comuna.descricaoComuna}
+                                   </center>
+                              </p:column>
+                              <p:column headerText="Município">
+                                   <center>
+                                        #{comuna.fkIdMunicipio.nomeMunicipio}
+                                   </center>
+                              </p:column>
+                              <p:column headerText="Província">
+                                   <center>
+                                        #{comuna.fkIdMunicipio.fkIdProvincia.nomeProvincia}
+                                   </center>
+                              </p:column>
+                              <p:column headerText="País">
+                                   <center>
+                                        #{comuna.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}
+                                   </center>
+                              </p:column>
+
+                         </p:dataTable>
+                    </h:form>
+               </h:panelGrid>
+          </center>
+
+     </h:body>
+</html>

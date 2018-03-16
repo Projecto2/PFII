@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h2>SuperIntendência -> Turnos</h2>
+                <p:messages id="msg" autoUpdate="true" closable="true"/>
+                <p:growl id="msg2" autoUpdate="true"/>
+                <br/>
+                <center>
+                    <h:panelGrid columns="1" width="85%">
+                        <h:form id="formPesquisa">
+                           
+                                    <p:fieldset style="width: 97%">
+                                        <h:panelGrid columns="2" cellpadding="5" width="100%">
+                                             <br/>
+                                            <p:commandButton style="float: right" value="Carregar" process="@this" rendered="false" 
+                                                     actionListener="#{supiTurnoExcelBean.carregarTurnoTabela()}"/>
+                                        </h:panelGrid>
+                                   </p:fieldset> 
+                            
+                            
+                                    
+                               
+                            <p:dataTable id="dataTable" var="turno" value="#{supiTurnoSupiBean.findall()}"
+                                         emptyMessage="Nenhum registro de turno encontrado"
+                                         paginator="true" paginatorPosition="bottom" rows="10">
+                                <p:column headerText="Turno" sortBy="#{turno.descricao}" filterBy="#{turno.descricao}">
+                                    <center>
+                                        #{turno.descricao}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="Hora de Entrada">
+                                    <center>
+                                        #{turno.horaEntrada}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="Hora de Saída">
+                                    <center>
+                                        #{turno.horaSaida}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="Carga Horária">
+                                    <center>
+                                        #{turno.cargaHoraria}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="Sigla">
+                                    <center>
+                                        #{turno.sigla}
+                                    </center>
+                                </p:column>
+                                <p:column headerText="--------------------">
+                                    <center>
+                                        <p:menuButton value="Opções">
+
+                                            <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogTurno').show();"
+                                                        action="#{supiTurnoSupiBean.setSupiTurno1(supiTurno1)}" process="dataTable" 
+                                                        partialSubmit="true" update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                            <p:menuitem value="Remover"  icon="ui-icon-trash" action="#{supiTurnoSupiBean.eliminarTurno(supiTurnoSupiBean.supiTurno1.pkIdTurno)}"/>
+                                        </p:menuButton>
+                                    </center>
+                                </p:column>
+                            </p:dataTable>
+
+                        </h:form>
+                    </h:panelGrid>
+                </center>
+
+                <center>
+                    <p:dialog header="Turno" closable="false" showEffect="fade" width="35%"
+                              widgetVar="dialogTurno" modal="true" closeOnEscape="true">
+                        <h:form id="formulario">
+                            <p:fieldset>
+                                <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                                    <p:outputLabel value="Descrição"/>
+                                    <p:inputText value="#{supiTurnoSupiBean.supiTurno1.descricao}" style="width: 190px"
+                                                 required="true" requiredMessage="Indique a descrição do turno"/>
+                                    <p:outputLabel value="Sigla"/>
+                                    <p:inputText value="#{supiTurnoSupiBean.supiTurno1.sigla}" style="width: 190px"
+                                                 required="true" requiredMessage="Indique a sigla"/>
+
+                                    <h:outputLabel value="Hora de Entrada:"/>
+
+                                    <p:calendar id="dataInicio" size="20" value="#{supiTurnoSupiBean.supiTurno1.horaEntrada}" requiredMessage="Preencha a data Inicial"
+
+                                                pattern="HH:mm" timeOnly="true" locale="pt" navigator="true">
+                                        <p:ajax event="dateSelect" update="msg2"/>
+                                    </p:calendar>
+
+                                    <h:outputLabel value="Hora de Saída:"/>
+
+                                    <p:calendar id="dataTermino" size="20" value="#{supiTurnoSupiBean.supiTurno1.horaEntrada}" requiredMessage="Preencha a data Final"
+
+                                                pattern="HH:mm" timeOnly="true" locale="pt" navigator="true">
+                                        <p:ajax event="dateSelect" listener="#{supiTurnoSupiBean.mendagemDuracaoTurno1()}"
+                                                update="duracaoTurno"/>
+                                    </p:calendar>
+
+                                    <h:outputLabel value="Carga Horária" for="turno" />  
+                                    <p:inputText id="duracaoTurno" value="#{supiTurnoSupiBean.mostrarHora1}" />
+                                </h:panelGrid>
+
+                                <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                                    <p:commandButton value="Guardar" action="#{supiTurnoSupiBean.create()}" style="width: 150px"
+                                                     rendered="#{supiTurnoSupiBean.supiTurno1.pkIdTurno == null}" process="@form" partialSubmit="true"
+                                                     onclick="PF('dialogTurno').hide()" update=":formPesquisa:dataTable"/>
+                                    <p:commandButton value="Guardar Edição" action="#{supiTurnoSupiBean.edit()}" style="width: 150px"
+                                                     rendered="#{supiTurnoSupiBean.supiTurno1.pkIdTurno != null}"  process="@form" partialSubmit="true"
+                                                     onclick="PF('dialogTurno').hide()" update=":formPesquisa:dataTable" />
+                                    <p:commandButton value="Fechar" onclick="PF('dialogTurno').hide()" style="width: 150px" process="@this" 
+                                                     actionListener="#{supiTurnoSupiBean.setSupiTurno1(null)}"/>
+                                   
+                                </h:panelGrid>
+                            </p:fieldset>
+                        </h:form>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -1,0 +1,725 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <body>
+
+      <h:head>
+         <title>Novo Produto</title>
+         #{farmConsultaCategoriaMedicamentoBean.pesquisarCategorias()}
+      </h:head>
+
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <f:metadata>
+            <f:viewAction action="#{farmConsultaCategoriaMedicamentoBean.pesquisarCategorias()}"/>
+         </f:metadata>
+         <ui:define name="center">
+            <h2>Farmácia -> Novo Produto</h2>
+            <p:messages autoUpdate="true" closable="true"/>  
+            <p:growl autoUpdate="true"/>
+            <p></p>
+            <p:fieldset>
+               <h:form id="formPrincipal">
+                  <center>
+                     <h:panelGrid width="50%" columns="2">
+                        <p style="font-size: 14px"><strong>Tipo de Produto * : </strong></p>
+                        <p:selectOneMenu style="width: 95%; text-align: center"
+                                         value="#{farmProdutoNovoBean.produto.fkIdTipoProduto.pkIdTipoProduto}"
+                                         required="true" requiredMessage="Escolha o tipo de produto.">
+                           <f:selectItems value="#{farmListasUteisBean.todosTiposDeProduto}"/>
+                           <f:ajax event="change" execute="@this"
+                                   render="formPrincipal"/>
+                        </p:selectOneMenu>
+                     </h:panelGrid>
+                     <p:separator/>
+                     <h:panelGrid id="painelTipoM" width="95%"
+                                  rendered="#{farmProdutoNovoBean.renderizarPainelTipoM()}">
+                        <p:tabView id="tabViewM">
+                           <p:tab title="Atributos Gerais">
+                              <h:panelGrid columns="4" width="100%">
+                                 <h:outputText value="Descrição *:"/>
+                                 <p:inputText style="width: 77%" value="#{farmProdutoNovoBean.produto.descricao}" label="Descrição"  
+                                              required="true" requiredMessage="A descrição é obrigatória."/>
+
+                                 <h:outputText value="Nome Genérico *:"/>
+                                 <p:inputText  style="width: 77%" value="#{farmProdutoNovoBean.produto.nomeGenerico}"  
+                                               required="true" requiredMessage="O nome Genérico é obrigatório."/>
+
+                                 <p:outputLabel value="Via de Administração *:"/>
+                                 <h:panelGrid id="painelViaAdminM" style="width: 77%">
+                                    <h:selectOneMenu  value="#{farmProdutoNovoBean.produto.fkIdViaAdministracao.pkIdViaAdministracao}"
+                                                      required="true" requiredMessage="A Via de Administração é obrigatória.">
+                                       <f:selectItem itemLabel="-------- Seleccione --------" itemValue="#{null}"/>
+                                       <f:selectItems value="#{farmListasUteisBean.todasViasAdmin}"/>
+                                    </h:selectOneMenu>
+
+                                    <p:commandButton value=" + " onclick="PF('dialogNovaViaAdmin').show()"
+                                                     process="@this"  rendered="false"/>
+                                 </h:panelGrid>
+
+                                 <p:outputLabel value="Forma Farmacêutica *:"/>
+                                 <h:panelGrid columns="2"  style="width: 83%">
+                                    <h:selectOneMenu id="painelFormaFarmaceuticaM" style="width: 95%" value="#{farmProdutoNovoBean.produto.fkIdFormaFarmaceutica.pkIdFormaFarmaceutica}"
+                                                     required="true" requiredMessage="A Forma Farmcêutica é obrigatória.">
+                                       <f:selectItem itemLabel="-------- Seleccione --------" itemValue="#{null}"/>
+                                       <f:selectItems value="#{farmListasUteisBean.todasFormasFarmaceuticas}"/>
+                                    </h:selectOneMenu>
+
+                                    <p:commandButton value=" + " onclick="PF('dialogNovaFormaFarmaceutica').show()"
+                                                     process="@this" rendered="false"/>
+                                 </h:panelGrid>
+
+                                 <h:outputText value="Dosagem *:" />
+
+                                 <p:inputText style="width: 77%" value="#{farmProdutoNovoBean.produto.dosagem}" 
+                                              required="true"
+                                              requiredMessage="A dosagem é obrigatória."/>
+                                 <h:selectOneMenu valueChangeListener="#{farmProdutoNovoBean.getUnidadeesMedida(farmProdutoNovoBean.produto)}"
+                                                  rendered="false"
+                                                  value="#{farmProdutoNovoBean.produto.fkIdUnidadeMedida.fkIdTipoUnidadeMedida.pkIdTipoUnidadeMedida}">
+                                    <f:selectItem itemLabel="-------- Tipo de Unidade --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmListasUteisBean.todosTiposUnidadeMedida}"/>
+                                    <f:ajax event="change" execute="@this" render="unidadeMedidaM" />
+                                 </h:selectOneMenu>
+
+                                 <h:selectOneMenu  id="unidadeMedidaM" value="#{farmProdutoNovoBean.produto.fkIdUnidadeMedida.pkIdUnidadeMedida}">
+                                    <f:selectItem itemLabel="-------- Unidade de Medida --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmListasUteisBean.todasUnidadeesMedida}"/>
+                                 </h:selectOneMenu>
+                                 <h:panelGrid columns="1" style="width: 85%">
+
+                                    <h:panelGrid columns="2"  id="painelUnidadeMedidaM">
+
+                                       <p:commandButton value=" + " onclick="PF('dialogNovAUnidadeMedida').show()"
+                                                        process="@this" rendered="false"/>
+                                    </h:panelGrid>
+                                 </h:panelGrid>
+
+                              </h:panelGrid>
+
+                              <p:separator/>
+                              <!--<h:panelGrid columns="4" cellspacing="10" width="100%">
+                                 <h:outputText value="Avisos "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produto.avisos}"/>
+
+                                 <h:outputText value="Indicações "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produto.indicacoes}"/>
+
+                                 <h:outputText value="Contra-Indicações "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produto.contraIndicacoes}"/>
+
+                                 <h:outputText value="Observações "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produto.observacoes}"/>
+                              </h:panelGrid>-->
+
+                           </p:tab>
+
+                           <p:tab title="Categoria de Medicamento">
+                              <p:panel>
+                                 <center><h2>Seleccione a categoria a que pertence o medicamento</h2></center>
+                                 <p></p>
+                                 <p:commandButton value="Nova Categoria" icon="ui-icon-plus" rendered="false"/>
+                                 <p></p>
+                                 <p:tree selectionMode="single" style="width: 100%" 
+                                         selection="#{farmProdutoNovoBean.categoriaTreeNode}"
+                                         required="true" requiredMessage="A categoria é necessária."
+                                         value="#{farmConsultaCategoriaMedicamentoBean.raiz}" var="categoria">
+                                    <p:treeNode>
+                                       <h:outputText value="#{categoria.capitulo} - #{categoria.descricao}"/> 
+                                    </p:treeNode>
+                                    <p:ajax event="select" listener="#{farmProdutoNovoBean.onNodeSelect}"/>
+                                 </p:tree>
+
+                              </p:panel>
+                           </p:tab>
+
+                           <p:tab title="Fármacos">
+                              <p></p>
+                              <center>
+                                 <h2>Seleccione os Fármacos presentes no medicamento</h2>
+                              </center>
+                              <p></p>
+                              <p:commandButton value="Novo Fármaco" icon="ui-icon-plus" rendered="false"/>
+                              <p></p>
+                              <h:panelGrid columnClasses="label, value">
+                                 <h:panelGrid width="100%" columns="2">
+                                    <p:selectManyMenu id="listaFarmacos" style="width: 250px; height: 200px" 
+                                                      value="#{farmProdutoNovoBean.listaFarmacos}">
+                                       <f:selectItems value="#{farmListasUteisBean.todosFarmacos}" var="farmaco"
+                                                      itemLabel="#{farmaco.descricao}" 
+                                                      itemValue="#{farmaco.pkIdFarmaco}"/>
+                                    </p:selectManyMenu>
+                                    <p></p>
+                                 </h:panelGrid>
+                              </h:panelGrid>
+                           </p:tab>
+
+                           <p:tab title="Efeitos Secundários">
+                              <p></p>
+                              <center>
+                                 <h2>Seleccione os Efeitos Secundários que o medicamento pode causar</h2>
+                              </center>
+                              <p></p>
+                              <p:commandButton value="Novo Efeito" icon="ui-icon-plus" rendered="false"/>
+                              <p></p>
+                              <h:panelGrid columnClasses="label, value">
+                                 <h:panelGrid width="100%" columns="2">
+                                    <p:selectManyMenu id="listaEfeitos" style="width: 250px; height: 200px" 
+                                                      value="#{farmProdutoNovoBean.listaEfeitosSecundarios}">
+                                       <f:selectItems value="#{farmListasUteisBean.todosEfeitosSecundarios}" var="efeito"
+                                                      itemLabel="#{efeito.descricaoEfeitoSecundario}" 
+                                                      itemValue="#{efeito.pkIdEfeitoSecundario}"/>
+                                    </p:selectManyMenu>
+                                    <p></p>
+                                 </h:panelGrid>
+                              </h:panelGrid>
+                           </p:tab>
+
+                           <p:tab title="Outros Componentes">
+                              <p></p>
+                              <center>
+                                 <h2>Seleccione os outros componentes presentes no medicamento</h2>
+                              </center>
+                              <p></p>
+                              <p:commandButton value="Novo Componente" icon="ui-icon-plus" rendered="false"/>
+                              <p></p>
+                              <h:panelGrid columnClasses="label, value">
+                                 <h:panelGrid width="100%" columns="2">
+                                    <p:selectManyMenu id="listaComponentes" style="width: 250px; height: 200px" 
+                                                      value="#{farmProdutoNovoBean.listaOutrosComponentes}">
+                                       <f:selectItems value="#{farmListasUteisBean.todosOutrosComponentes}" var="componente"
+                                                      itemLabel="#{componente.descricaoComponente}" 
+                                                      itemValue="#{componente.pkIdComponente}"/>
+                                    </p:selectManyMenu>
+                                    <p></p>
+                                 </h:panelGrid>
+                              </h:panelGrid>
+                           </p:tab>
+
+                           <p:tab title="Outros Atributos">
+                              <p:tabView>
+                                 <p:tab title="Avisos">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione os avisos para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaAviso}">
+                                             <f:selectItems value="#{farmListasUteisBean.todosAvisos}" var="aviso"
+                                                            itemLabel="#{aviso.descricao}" 
+                                                            itemValue="#{aviso.pkIdAviso}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                                 <p:tab title="Indicações">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione as indicações para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaIndicacao}">
+                                             <f:selectItems value="#{farmListasUteisBean.todasIndicacoes}" var="indicacao"
+                                                            itemLabel="#{indicacao.descricao}" 
+                                                            itemValue="#{indicacao.pkIdIndicacao}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                                 <p:tab title="Contra Indicações">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione as contra indicações para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaContraIndicacao}">
+                                             <f:selectItems value="#{farmListasUteisBean.todasIndicacoes}" var="contraIndicacao"
+                                                            itemLabel="#{contraIndicacao.descricao}" 
+                                                            itemValue="#{contraIndicacao.pkIdIndicacao}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                                 <p:tab title="Observações">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione as observações para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaObservacao}">
+                                             <f:selectItems value="#{farmListasUteisBean.todasObservacoes}" var="obs"
+                                                            itemLabel="#{obs.descricao}" 
+                                                            itemValue="#{obs.pkIdObservacao}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+                              </p:tabView>
+                           </p:tab>
+                        </p:tabView>
+                     </h:panelGrid>
+
+                     <h:panelGrid id="painelTipoMG" width="95%"
+                                  rendered="#{farmProdutoNovoBean.renderizarPainelTipoMG()}">
+                        <p:tabView id="tabViewMG">
+                           <p:tab title="Atributos Gerais">
+                              <h:panelGrid columns="4" width="100%">
+                                 <h:outputText value="Descrição *: "/>
+                                 <p:inputText style="width: 77%" value="#{farmProdutoNovoBean.produtoMG.descricao}" label="Descrição"  
+                                              required="true" requiredMessage="A descrição é obrigatória."/>
+
+                                 <h:outputText value="Tamanho *:" />
+                                 <h:panelGrid columns="2" style="width: 75%">
+                                    <p:inputText value="#{farmProdutoNovoBean.produtoMG.dosagem}" 
+                                                 required="true" style="width: 92%"
+                                                 requiredMessage="O Tamanho é obrigatória."/>
+
+                                    <h:panelGrid columns="2" style="width: 85%" id="painelUnidadeMedidaMG">
+                                       <h:selectOneMenu value="#{farmProdutoNovoBean.produtoMG.fkIdUnidadeMedida.pkIdUnidadeMedida}">
+                                          <f:selectItem itemLabel="-------- Unidade de Medida --------" itemValue="#{null}"/>
+                                          <f:selectItems value="#{farmListasUteisBean.todasUnidadeesMedida}"/>
+                                       </h:selectOneMenu>
+
+                                       <p:commandButton value=" + " onclick="PF('dialogNovAUnidadeMedida').show()"
+                                                        process="@this" rendered="false"/>
+                                    </h:panelGrid>
+                                 </h:panelGrid>
+
+                              </h:panelGrid>
+
+                              <p:separator/>
+                              <!--<h:panelGrid columns="4" cellspacing="10" width="100%">
+                                 <h:outputText value="Avisos "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produtoMG.avisos}"/>
+
+                                 <h:outputText value="Indicações "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produtoMG.indicacoes}"/>
+
+                                 <h:outputText value="Contra-Indicações "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produtoMG.contraIndicacoes}"/>
+
+                                 <h:outputText value="Observações "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produtoMG.observacoes}"/>
+                              </h:panelGrid>-->
+
+                           </p:tab>
+
+                           <p:tab title="Efeitos Secundários">
+                              <p></p>
+                              <center>
+                                 <h2>Seleccione os Efeitos Secundários que o produto pode causar</h2>
+                              </center>
+                              <p></p>
+                              <p:commandButton value="Novo Efeito" icon="ui-icon-plus" rendered="false"/>
+                              <p></p>
+                              <h:panelGrid columnClasses="label, value">
+                                 <h:panelGrid width="100%" columns="2">
+                                    <p:selectManyMenu id="listaEfeitos" style="width: 250px; height: 200px" 
+                                                      value="#{farmProdutoNovoBean.listaEfeitosSecundariosMG}">
+                                       <f:selectItems value="#{farmListasUteisBean.todosEfeitosSecundarios}" var="efeito"
+                                                      itemLabel="#{efeito.descricaoEfeitoSecundario}" 
+                                                      itemValue="#{efeito.pkIdEfeitoSecundario}"/>
+                                    </p:selectManyMenu>
+                                    <p></p>
+                                 </h:panelGrid>
+                              </h:panelGrid>
+                           </p:tab>
+
+                           <p:tab title="Outros Componentes">
+                              <p></p>
+                              <center>
+                                 <h2>Seleccione os outros componentes presentes no produto</h2>
+                              </center>
+                              <p></p>
+                              <p:commandButton value="Novo Componente" icon="ui-icon-plus" rendered="false"/>
+                              <p></p>
+                              <h:panelGrid columnClasses="label, value">
+                                 <h:panelGrid width="100%" columns="2">
+                                    <p:selectManyMenu id="listaComponentes" style="width: 250px; height: 200px" 
+                                                      value="#{farmProdutoNovoBean.listaOutrosComponentesMG}">
+                                       <f:selectItems value="#{farmListasUteisBean.todosOutrosComponentes}" var="componente"
+                                                      itemLabel="#{componente.descricaoComponente}" 
+                                                      itemValue="#{componente.pkIdComponente}"/>
+                                    </p:selectManyMenu>
+                                    <p></p>
+                                 </h:panelGrid>
+                              </h:panelGrid>
+                           </p:tab>
+
+                           <p:tab title="Outros Atributos">
+                              <p:tabView>
+                                 <p:tab title="Avisos">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione os avisos para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaAvisoMG}">
+                                             <f:selectItems value="#{farmListasUteisBean.todosAvisos}" var="aviso"
+                                                            itemLabel="#{aviso.descricao}" 
+                                                            itemValue="#{aviso.pkIdAviso}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                                 <p:tab title="Indicações">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione as indicações para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaIndicacaoMG}">
+                                             <f:selectItems value="#{farmListasUteisBean.todasIndicacoes}" var="indicacao"
+                                                            itemLabel="#{indicacao.descricao}" 
+                                                            itemValue="#{indicacao.pkIdIndicacao}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                                 <p:tab title="Contra Indicações">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione as contra indicações para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaContraIndicacaoMG}">
+                                             <f:selectItems value="#{farmListasUteisBean.todasIndicacoes}" var="contraIndicacao"
+                                                            itemLabel="#{contraIndicacao.descricao}" 
+                                                            itemValue="#{contraIndicacao.pkIdIndicacao}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                                 <p:tab title="Observações">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione as observações para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaObservacaoMG}">
+                                             <f:selectItems value="#{farmListasUteisBean.todasObservacoes}" var="obs"
+                                                            itemLabel="#{obs.descricao}" 
+                                                            itemValue="#{obs.pkIdObservacao}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                              </p:tabView>
+                           </p:tab>
+                        </p:tabView>
+                     </h:panelGrid>
+
+                     <h:panelGrid id="painelTipoMGV" width="95%"
+                                  rendered="#{farmProdutoNovoBean.renderizarPainelTipoMGV()}">
+                        <p:tabView id="tabViewMGV">
+                           <p:tab title="Atributos Gerais">
+                              <h:panelGrid columns="4" width="100%">
+                                 <h:outputText value="Descrição *"/>
+                                 <p:inputText style="width: 77%" value="#{farmProdutoNovoBean.produtoMGV.descricao}" label="Descrição"  
+                                              required="true" requiredMessage="A descrição é obrigatória."/>
+
+                                 <h:outputText value="Nome Genérico *:"/>
+                                 <p:inputText  style="width: 77%" value="#{farmProdutoNovoBean.produtoMGV.nomeGenerico}"  
+                                               required="true" requiredMessage="O nome Genérico é obrigatório."/>
+
+                                 <p:outputLabel value="Forma Farmacêutica *:"/>
+                                 <h:panelGrid columns="2" id="painelFormaFarmaceuticaMGV" style="width: 83%">
+                                    <h:selectOneMenu  style="width: 95%" value="#{farmProdutoNovoBean.produtoMGV.fkIdFormaFarmaceutica.pkIdFormaFarmaceutica}"
+                                                      required="true" requiredMessage="A Forma Farmcêutica é obrigatória.">
+                                       <f:selectItem itemLabel="-------- Seleccione --------" itemValue="#{null}"/>
+                                       <f:selectItems value="#{farmListasUteisBean.todasFormasFarmaceuticas}"/>
+                                    </h:selectOneMenu>
+
+                                    <p:commandButton value=" + " onclick="PF('dialogNovaFormaFarmaceutica').show()"
+                                                     process="@this" rendered="false"/>
+                                 </h:panelGrid>
+
+                                 <h:outputText value="Dosagem *:" />
+                                 <h:panelGrid columns="1" style="width: 85%">
+                                    <p:inputText value="#{farmProdutoNovoBean.produtoMGV.dosagem}" 
+                                                 required="true" style="width: 92%"
+                                                 requiredMessage="A dosagem é obrigatória."/>
+
+                                    <h:panelGrid columns="2"  style="width: 85%" id="painelUnidadeMedidaMGV">
+                                       <h:selectOneMenu value="#{farmProdutoNovoBean.produtoMGV.fkIdUnidadeMedida.pkIdUnidadeMedida}">
+                                          <f:selectItem itemLabel="-------- Unidade de Medida --------" itemValue="#{null}"/>
+                                          <f:selectItems value="#{farmListasUteisBean.todasUnidadeesMedida}"/>
+                                       </h:selectOneMenu>
+
+                                       <p:commandButton value=" + " onclick="PF('dialogNovAUnidadeMedida').show()"
+                                                        process="@this" rendered="false"/>
+                                    </h:panelGrid>
+                                 </h:panelGrid>
+
+                              </h:panelGrid>
+
+                              <p:separator/>
+                             <!-- <h:panelGrid columns="4" cellspacing="10" width="100%">
+                                 <h:outputText value="Avisos "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produtoMGV.avisos}"/>
+
+                                 <h:outputText value="Indicações "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produtoMGV.indicacoes}"/>
+
+                                 <h:outputText value="Contra-Indicações "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produtoMGV.contraIndicacoes}"/>
+
+                                 <h:outputText value="Observações "/>
+                                 <p:inputTextarea  style="width: 250px" value="# {farmProdutoNovoBean.produtoMGV.observacoes}"/>
+                              </h:panelGrid>-->
+
+                           </p:tab>
+
+                           <p:tab title="Categoria de Medicamento">
+                              <p:panel>
+                                 <center><h2>Seleccione a categoria a que pertence o medicamento</h2></center>
+                                 <p></p>
+                                 <p:commandButton value="Nova Categoria" icon="ui-icon-plus" rendered="false"/>
+                                 <p></p>
+                                 <p:tree selectionMode="single" style="width: 100%" 
+                                         selection="#{farmProdutoNovoBean.categoriaTreeNode}"
+                                         required="true" requiredMessage="A categoria é necessária."
+                                         value="#{farmConsultaCategoriaMedicamentoBean.raiz}" var="categoria">
+                                    <p:treeNode>
+                                       <h:outputText value="#{categoria.descricao} (#{categoria.capitulo})"/> 
+                                    </p:treeNode>
+                                    <p:ajax event="select" listener="#{farmProdutoNovoBean.onNodeSelect}"/>
+                                 </p:tree>
+
+                              </p:panel>
+                           </p:tab>
+
+                           <p:tab title="Fármacos">
+                              <p></p>
+                              <center>
+                                 <h2>Seleccione os Fármacos presentes no medicamento</h2>
+                              </center>
+                              <p></p>
+                              <p:commandButton value="Novo Fármaco" icon="ui-icon-plus" rendered="false"/>
+                              <p></p>
+                              <h:panelGrid columnClasses="label, value">
+                                 <h:panelGrid width="100%" columns="2">
+                                    <p:selectManyMenu id="listaFarmacos" style="width: 250px; height: 200px" 
+                                                      value="#{farmProdutoNovoBean.listaFarmacosMGV}">
+                                       <f:selectItems value="#{farmListasUteisBean.todosFarmacos}" var="farmaco"
+                                                      itemLabel="#{farmaco.descricao}" 
+                                                      itemValue="#{farmaco.pkIdFarmaco}"/>
+                                    </p:selectManyMenu>
+                                    <p></p>
+                                 </h:panelGrid>
+                              </h:panelGrid>
+                           </p:tab>
+
+                           <p:tab title="Efeitos Secundários">
+                              <p></p>
+                              <center>
+                                 <h2>Seleccione os Efeitos Secundários que o medicamento pode causar</h2>
+                              </center>
+                              <p></p>
+                              <p:commandButton value="Novo Efeito" icon="ui-icon-plus" rendered="false"/>
+                              <p></p>
+                              <h:panelGrid columnClasses="label, value">
+                                 <h:panelGrid width="100%" columns="2">
+                                    <p:selectManyMenu id="listaEfeitos" style="width: 250px; height: 200px" 
+                                                      value="#{farmProdutoNovoBean.listaEfeitosSecundariosMGV}">
+                                       <f:selectItems value="#{farmListasUteisBean.todosEfeitosSecundarios}" var="efeito"
+                                                      itemLabel="#{efeito.descricaoEfeitoSecundario}" 
+                                                      itemValue="#{efeito.pkIdEfeitoSecundario}"/>
+                                    </p:selectManyMenu>
+                                    <p></p>
+                                 </h:panelGrid>
+                              </h:panelGrid>
+                           </p:tab>
+                           <p:tab title="Outros Componentes">
+                              <p></p>
+                              <center>
+                                 <h2>Seleccione os outros componentes presentes no medicamento</h2>
+                              </center>
+                              <p></p>
+                              <p:commandButton value="Novo Componente" icon="ui-icon-plus" rendered="false"/>
+                              <p></p>
+                              <h:panelGrid columnClasses="label, value">
+                                 <h:panelGrid width="100%" columns="2">
+                                    <p:selectManyMenu id="listaComponentes" style="width: 250px; height: 200px" 
+                                                      value="#{farmProdutoNovoBean.listaOutrosComponentesMGV}">
+                                       <f:selectItems value="#{farmListasUteisBean.todosOutrosComponentes}" var="componente"
+                                                      itemLabel="#{componente.descricaoComponente}" 
+                                                      itemValue="#{componente.pkIdComponente}"/>
+                                    </p:selectManyMenu>
+                                    <p></p>
+                                 </h:panelGrid>
+                              </h:panelGrid>
+                           </p:tab>
+
+                           <p:tab title="Outros Atributos">
+                              <p:tabView>
+                                 <p:tab title="Avisos">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione os avisos para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaAvisoMGV}">
+                                             <f:selectItems value="#{farmListasUteisBean.todosAvisos}" var="aviso"
+                                                            itemLabel="#{aviso.descricao}" 
+                                                            itemValue="#{aviso.pkIdAviso}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                                 
+                                 <p:tab title="Indicações">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione as indicações para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaIndicacaoMGV}">
+                                             <f:selectItems value="#{farmListasUteisBean.todasIndicacoes}" var="indicacao"
+                                                            itemLabel="#{indicacao.descricao}" 
+                                                            itemValue="#{indicacao.pkIdIndicacao}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                                 <p:tab title="Contra Indicações">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione as contra indicações para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaContraIndicacaoMGV}">
+                                             <f:selectItems value="#{farmListasUteisBean.todasIndicacoes}" var="contraIndicacao"
+                                                            itemLabel="#{contraIndicacao.descricao}" 
+                                                            itemValue="#{contraIndicacao.pkIdIndicacao}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+
+                                 <p:tab title="Observações">
+                                    <p></p>
+                                    <center>
+                                       <h2>Seleccione as observações para o produto</h2>
+                                    </center>
+                                    <p></p>
+                                    <p></p>
+                                    <h:panelGrid columnClasses="label, value">
+                                       <h:panelGrid width="100%" columns="2">
+                                          <p:selectManyMenu style="width: 250px; height: 200px" 
+                                                            value="#{farmProdutoNovoBean.listaObservacaoMGV}">
+                                             <f:selectItems value="#{farmListasUteisBean.todasObservacoes}" var="obs"
+                                                            itemLabel="#{obs.descricao}" 
+                                                            itemValue="#{obs.pkIdObservacao}"/>
+                                          </p:selectManyMenu>
+                                          <p></p>
+                                       </h:panelGrid>
+                                    </h:panelGrid>
+                                 </p:tab>
+                              </p:tabView>
+                           </p:tab>
+                        </p:tabView>
+                     </h:panelGrid>
+
+                     <p:commandButton value="Guardar Produto" update=":formPrincipal"
+                                      rendered="#{farmProdutoNovoBean.renderizarPainelTipoM()}"
+                                      icon="ui-icon-disk" action="#{farmProdutoNovoBean.criarProdutoM()}" 
+                                      ajax="true" process=""/>
+
+                     <p:commandButton value="Guardar Produto" update=":formPrincipal" 
+                                      rendered="#{farmProdutoNovoBean.renderizarPainelTipoMG()}"
+                                      icon="ui-icon-disk" action="#{farmProdutoNovoBean.criarProdutoMG()}" ajax="true"/>
+
+                     <p:commandButton value="Guardar Produto" update=":formPrincipal"
+                                      rendered="#{farmProdutoNovoBean.renderizarPainelTipoMGV()}"
+                                      icon="ui-icon-disk" action="#{farmProdutoNovoBean.criarProdutoMGV()}" ajax="true"/>
+                  </center>
+                  <p:outputLabel value="Campos de Preenchimento Obrigatório (*)"/>
+                  <p></p>
+                  <p:commandButton value="Voltar" process="@this"
+                                   icon="ui-icon-seek-prev" action="produtosListar.xhtml?faces-redirect=true"/>
+               </h:form>
+               <ui:include src="../farmTabelasAuxiliares/dialogsUteisFarm.xhtml"/>
+
+            </p:fieldset>
+         </ui:define>
+      </ui:composition>
+   </body>
+</html>

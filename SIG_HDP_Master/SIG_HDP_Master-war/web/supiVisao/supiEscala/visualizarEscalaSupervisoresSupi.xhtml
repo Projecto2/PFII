@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <p:messages id="ms" autoUpdate="true" closable="true" />
+                <p:growl id="ms2" autoUpdate="true"/>
+                <h:form prependId="false">
+                    <p:commandButton id="btn" value="Imprimir" ajax="false">
+                        <p:printer class="ui-datatable" target="painelImpressao"/>
+                    </p:commandButton>
+                    <p:panel id="painelImpressao" style="width: 100%; overflow-x: scroll">
+
+                        <center>
+                            <h:panelGrid columns="2" cellpadding="7">
+                                <p:outputLabel value="Ano: #{supiVisualizarSuperviorBean.escalaVisualizar.ano}"/>
+                                <p:outputLabel value="Mês: #{supiVisualizarSuperviorBean.visualizarMes(supiVisualizarSuperviorBean.escalaVisualizar)}"/>
+                            </h:panelGrid>
+                        </center>
+                        <div class="ui-datatable ui-widget">
+                            <div class="ui-datatable-tablewrapper">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="ui-state-default">
+                                                <span>
+                                                    <ui:repeat value="#{supiEscalaTesteBean.diasDoMesList}" var="dia">
+                                                        <p:panel style="display: inline-block; width: 65px; margin-left: 17px; margin-right: 21px">
+                                                            #{dia}
+                                                        </p:panel>
+                                                    </ui:repeat>
+                                                </span>
+                                            </th>
+                                        </tr>
+                                        
+                                    </thead>
+
+                                    <tbody class="ui-datatable-data ui-widget-content">
+
+                                        <p:dataGrid value="#{supiEscalaTesteBean.escalaMensalList}"
+                                                    var="item" 
+                                                    columns="#{supiEscalaTesteBean.diasDoMesList.size()}" 
+                                                    style="display: inline-block; ">
+                                            <p:panel>
+
+                                                <p style="text-align: center">
+                                                    #{item.fkIdFuncionario.fkIdPessoa.nome} 
+                                                </p> 
+                                                <p style="text-align: center">
+                                                    #{item.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                </p> 
+                                                <center>
+                                                    <p:commandButton value="#{item.fkIdTurno.descricao}" 
+                                                                     disabled="#{supiEscalaTesteBean.habilitarBotaoTurno(item)}"
+                                                                     onclick="dialogTurno.show()"
+                                                                     actionListener="#{supiEscalaTesteBean.setEscalaSupervisor(item)}"/>
+                                                </center>
+
+                                            </p:panel>
+                                        </p:dataGrid>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </body>
+</html>

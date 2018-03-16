@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form id="formListarHistoricoGeralInternamento">
+            <div class="ui-fluid">
+                <br/>
+                <p:tabView id="tvListarHistoricoGeralInternamento" styleClass="ui-noborder" style="height: 550px; width: 950px">
+                    
+                    <p:tab title="Internamento">
+
+                        <center>
+                            <span style="font-size: 16pt">
+
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} 
+                                                      #{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                     "
+                                               style="color: #0088cc"/>
+
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} // "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                                <br/>
+                                <p:outputLabel value="Tipo Solicitação Serviço: "/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.fkIdTipoSolicitacao.descricaoTipoSolicitacaoServico}"/>
+
+                            </span>
+                        </center>
+
+                        <p:fieldset style="height: 385px">
+
+                            <h:panelGrid id="gridInternamento" columns="2" styleClass="ui-noborder" style="width: 100%">
+
+                                <p:outputLabel value="Data:" style="margin-right: 0px"/>
+                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdRegistoInternamento.dataRegisto)}"/>
+
+                                <p:outputLabel value="Enfermeiro:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdRegistoInternamento.fkIdFuncionarioEnfermeiro.fkIdPessoa.nome}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdRegistoInternamento.fkIdFuncionarioEnfermeiro.fkIdPessoa.nomeDoMeio}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdRegistoInternamento.fkIdFuncionarioEnfermeiro.fkIdPessoa.sobreNome}
+                                                     "/>   
+
+                                <p:outputLabel value="Doença:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.lerDoencaInternamento(ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdRegistoInternamento.pkIdRegistoInternamento)}"/> 
+
+                                <p:outputLabel value="Sala:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdRegistoInternamento.fkIdCamaInternamento.fkIdSalaInternamento.nomeSala}"/>                    
+
+                                <p:outputLabel value="Cama:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdRegistoInternamento.fkIdCamaInternamento.descricaoCamaInternamento}"/> 
+
+                                <p:outputLabel value="Data da Medicação:"/>
+                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataHora)}"/> 
+
+                                <p:outputLabel value="Funcionário que medicou (Enfermeiro):"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nome}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                     "/>  
+
+                                <p:outputLabel value="Receita:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.lerRemedioInternamentoAmbulatorio(ambHistoricoMetodosUteisBean.listarDadosInterMedicacaoHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).pkIdMedicacao)}"/>
+
+                                <p:outputLabel value="Data da Alta:"/>
+                                <p:outputLabel value="#{ambTriagemListarBean.dateToString(ambHistoricoMetodosUteisBean.listarDadosInterTituloAltaHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).dataAlta)}"/>
+
+                                <p:outputLabel value="Número Título Alta:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterTituloAltaHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).numeroTituloAlta}"/>
+
+                                <p:outputLabel value="Funcionário que deu a Alta:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterTituloAltaHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nome}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosInterTituloAltaHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                      #{ambHistoricoMetodosUteisBean.listarDadosInterTituloAltaHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdFuncionario.fkIdPessoa.sobreNome}
+                                                     "/>  
+
+                                <p:outputLabel value="Resumo Clínico:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterTituloAltaHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).resumoClinico}"/>
+
+                                <p:outputLabel value="Diagnóstico:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterTituloAltaHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).diagnosticoAlta}"/>
+
+                                <p:outputLabel value="Tipo Alta:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterTituloAltaHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).fkIdTipoAlta.descricao}"/>
+
+                                <p:outputLabel value="Observação:"/>
+                                <p:outputLabel value="#{ambHistoricoMetodosUteisBean.listarDadosInterTituloAltaHistoricoGeral(ambHistoricoMetodosUteisBean.admsServicoEfetuado.fkIdServicoSolicitado.pkIdServicoSolicitado).obs}"/>
+
+                            </h:panelGrid>
+
+                        </p:fieldset>
+
+                    </p:tab> 
+
+                </p:tabView>
+                
+                <br/>
+                <center>
+                    <p:commandButton value="#{msgs.fechar}" icon="ui-icon-close" onclick="PF('dialogListarHistoricoGeralInternamento').hide()" partialSubmit="true" process="@this" style="margin-bottom: 15px;" styleClass="ui-noborder"/> 
+                </center>
+                
+            </div>
+        </h:form>
+    </h:body>
+</html>

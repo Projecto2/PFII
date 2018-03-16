@@ -1,0 +1,192 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <body>
+
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Pedidos -> Atendimento</h2>
+            <h:form id="formPrincipal">
+
+               <p:fieldset style=" margin: auto">
+                  <p></p>
+                  <center style="width: 90%; margin: auto"><h2>Confirmação de Pedido</h2></center>
+                  <p></p>
+                  <h:panelGrid columns="8" width="80%" style="margin: auto">
+                     <p:outputLabel><h3>Origem: </h3></p:outputLabel>
+                     <p:outputLabel value="#{farmPedidoAtenderBean.pedido.fkLocalOrigemPedido.descricao}" />
+                     <p:outputLabel><h3>Destino: </h3></p:outputLabel>
+                     <p:outputLabel value="#{farmPedidoAtenderBean.pedido.fkLocalDestinoPedido.descricao}" />
+
+                     <p:outputLabel><h3>Data: </h3></p:outputLabel>
+                     <h:outputText style="color: #002142" value="#{farmPedidoAtenderBean.pedido.dataHoraPedido}">
+                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+                     </h:outputText>
+
+                     <p:outputLabel><h3>Remetente: </h3></p:outputLabel>
+                     <p:outputLabel value="#{farmPedidoAtenderBean.pedido.fkIdFuncionarioSolicitou.fkIdPessoa.nome} #{farmPedidoAtenderBean.pedido.fkIdFuncionarioSolicitou.fkIdPessoa.sobreNome}" />
+                  </h:panelGrid>
+                  <p></p><p></p><p></p><p></p><p></p><p></p>
+                  <p:separator style="width: 90%; margin: auto"/>
+                  <p></p><p></p><p></p><p></p><p></p><p></p>
+                  <p:messages id="msg" autoUpdate="true" closable="true"/>
+                  <h:panelGrid columns="3" style="margin: auto" width="90%">
+                     <p:dataTable style="" id="resultado" var="item" value="#{farmPedidoAtenderBean.itensPedido}"
+                                  rows="4" paginator="true" emptyMessage="Nenhum Produto encontrado."
+                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+                                  {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                                  {RowsPerPageDropdown}" rowsPerPageTemplate="4,8,12">
+
+                        <f:facet name="header">
+                           Itens do Pedido
+                        </f:facet>  
+
+                        <p:column headerText="">
+                           <p:outputLabel style="font-size: 17px; color: #00172F" value="#{item.fkIdProduto.descricao} #{item.fkIdProduto.dosagem} #{item.fkIdProduto.fkIdUnidadeMedida.abreviatura} - "/>
+                           <p:outputLabel style="font-size: 15px; color: #008866; margin-top: -50px" value="#{item.quantidade} unidade(s) solicitada(s)" />
+                           <p:fieldset legend="Lotes Disponíveis" toggleable="true">
+                              <p:dataTable var="lote" id="tabelaLote"
+                                           emptyMessage="Sem quantidade disponível no(a) #{farmPedidoAtenderBean.pedido.fkLocalDestinoPedido.descricao}"
+                                           value="#{farmPedidoAtenderBean.getLotesProdutoDisponiveisNoLocal(item.fkIdProduto)}">
+                                 <p:column headerText="Nº de Lote">
+                                    <p:outputLabel value="#{lote.fkIdLoteProduto.numeroLote}"/>
+                                 </p:column>
+
+                                 <p:column headerText="Validade">
+                                    <center><h:outputText style="color: #{farmStockValidadeProdutosBean.getValidadeItemColor(lote.fkIdLoteProduto)}" value="#{lote.fkIdLoteProduto.dataValidade}">
+                                          <f:convertDateTime pattern="dd-MM-yyyy" />
+                                       </h:outputText></center>
+                                 </p:column>
+
+                                 <p:column headerText="Quantidade disponível">
+                                    <center><p:outputLabel value="#{lote.quantidadeStock}"/></center>
+                                 </p:column>
+
+                                 <p:column headerText="Adicionar">
+                                    <center>
+                                       <p:commandButton icon="ui-icon-check" process="@this" update="tabelaLote :formPrincipal:confirmado"
+                                                        actionListener="#{farmPedidoAtenderBean.setLote(lote.fkIdLoteProduto)}"
+                                                        action="#{farmPedidoAtenderBean.adicionarProduto()}"/>
+                                    </center>
+                                 </p:column>
+                              </p:dataTable>
+                           </p:fieldset>
+                        </p:column>
+                     </p:dataTable>
+                     <p:separator style="width: 80%;" />
+
+                     <p:dataTable style="" id="confirmado" var="itemConfirmado" value="#{farmPedidoAtenderBean.lotesProdutoMovimento}"
+                                  rows="12" paginator="true" emptyMessage="Nenhum item confirmado."
+                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+                                  {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                                  {RowsPerPageDropdown}" rowsPerPageTemplate="12,18,22">
+
+                        <f:facet name="header">
+                           Itens Confirmados
+                        </f:facet> 
+
+                        <p:column headerText="Descriçao">
+                           <p:outputLabel value="#{itemConfirmado.fkIdLoteProduto.numeroLote} - #{itemConfirmado.fkIdLoteProduto.fkIdProduto.descricao} 
+                                          #{itemConfirmado.fkIdLoteProduto.fkIdProduto.dosagem} 
+                                          #{itemConfirmado.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/>
+                        </p:column>
+
+                        <p:column headerText="Quantidade">
+                           <center>
+                              <p:inputText type="number" style="width: 55%"
+                                           requiredMessage="a quantidade não pode ser nula."
+                                           value="#{itemConfirmado.quantidadeMovimentada}" >
+                                 <f:ajax event="change" execute="@this" render="confirmado"/>
+                              </p:inputText>
+                              <p></p>
+                              <p:panelGrid columns="2" id="painelTipoQuant">
+                                 <h:selectOneMenu id="tipoQuant" style="width: 100%"
+                                                  value="#{itemConfirmado.fkIdTipoQuantidade.pkIdTipoQuantidade}">
+                                    <f:selectItems value="#{farmListasUteisBean.todosTiposQuantidade}"/>
+                                    <f:ajax event="change" execute="@this" render="confirmado"/>
+                                 </h:selectOneMenu>
+
+                                 <p:commandButton value="Outro"
+                                                  onclick="PF('dialogNovo').show()">
+                                 </p:commandButton>
+
+                              </p:panelGrid>
+                           </center>
+                        </p:column>
+
+
+                        <p:column headerText="Remover">
+                           <center>
+                              <p:commandButton icon="ui-icon-close" process="@this" update="confirmado"
+                                               actionListener="#{farmPedidoAtenderBean.setLote(itemConfirmado.fkIdLoteProduto)}"
+                                               action="#{farmPedidoAtenderBean.removerProduto()}" ajax="true"/>
+                           </center>
+                        </p:column>
+                     </p:dataTable>
+
+                  </h:panelGrid>
+                  <center>
+                     <p></p>  
+                     <p:dialog  widgetVar="w_dlgLoading" header="A processar" modal="true" closable="false" resizable="false">
+                        <center>
+                           <img src="../../resources/Imagens/loading.gif" style="margin: auto" width="128" height="128" alt="loading"/>
+                        </center>
+                        <br/>
+                        <p>Pode demorar alguns segundos. Por favor aguarde....</p>
+                     </p:dialog>
+                     <p:commandButton value="Voltar" icon="ui-icon-seek-prev"
+                                      process="@this" actionListener="#{farmPedidoPesquisaBean.setListaPedidosPendentesPesquisados(null)}"
+                                      action="#{farmRedireccionarBean.red_PedidosPendentes()}"/>
+
+                     <p:commandButton value="Confirmar" icon="ui-icon-disk"
+                                      onstart="PF('w_dlgLoading').show()" oncomplete="PF('w_dlgLoading').hide()"
+                                      update="confirmado resultado" process="@this resultado"
+                                      action="#{farmPedidoAtenderBean.criar()}"/>
+                  </center>
+               </p:fieldset>
+
+            </h:form> 
+            <center>
+               <p:dialog header="Novo Tipo de Quantidade" closable="false" showEffect="fade"
+                         widgetVar="dialogNovo" modal="true" closeOnEscape="true">
+                  <h:form id="formNovo">
+                     <p:growl autoUpdate="true"/>
+                     <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="2">
+                           <p:outputLabel value="Descrição"/>
+                           <p:inputText id="descricao" value="#{farmPedidoAtenderBean.tipoQuantidade.descricao}"
+                                        required="true" requiredMessage="Por favor descreva o tipo de quantidade"/>
+
+                           <p:commandButton value="Guardar" icon="ui-icon-disk"
+                                            action="#{farmPedidoAtenderBean.criarNovoTipoQuantidade()}" 
+                                            onclick="PF('dialogNovo').hide()" 
+                                            process="@form" update=":formPrincipal:confirmado">
+                           </p:commandButton>
+
+                           <p:commandButton value="Fechar" icon="ui-icon-close"
+                                            onclick="PF('dialogNovo').hide()" 
+                                            partialSubmit="true" process="@this"
+                                            type="reset"/> 
+                        </h:panelGrid>
+                     </p:fieldset>
+                  </h:form>
+               </p:dialog>
+            </center>
+         </ui:define>
+      </ui:composition>
+   </body>
+</html>

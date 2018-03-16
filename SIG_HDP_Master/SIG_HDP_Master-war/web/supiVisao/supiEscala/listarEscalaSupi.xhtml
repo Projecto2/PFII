@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form acceptcharset="ISO-8859-1">
+           
+                <p:messages id="messagens" closable="true"/>
+                <center><h1> Escala -> Nova Escala</h1></center>
+            
+                                    <h:form acceptcharset="ISO-8859-1">
+                                    <p:growl autoUpdate="true"/>
+                                     <p:fieldset>
+                                         <h:panelGrid columns="2" cellpadding="3">
+                                                
+                                                       <p:outputLabel value="Turno: *"/>
+                                                       <p:selectOneMenu id="comboTurno" style="width: 100%" value="#{supiEnfermeiroSupiBean.turno.pkIdTurno}"
+                                                                        required="true" requiredMessage="É necessário inserir o turno">
+                                                            <f:selectItem itemLabel="Selecione" noSelectionOption="true"/>
+                                                            <f:selectItems value="#{supiEnfermeiroSupiBean.listarTurno()}" var="turno" itemLabel="#{turno.descricaoTurno}" itemValue="#{turno.pkIdTurno}"/>
+                                                        </p:selectOneMenu>
+                                             
+                                                       <p:outputLabel value="Secção: *"/>
+                                                       <p:selectOneMenu id="comboSeccao" style="width: 100%"  value="#{supiEnfermeiroSupiBean.supiSeccao.pkIdSeccao}"
+                                                                        required="true" requiredMessage="É necessário inserir a seccao">
+                                                            <f:selectItem itemLabel="Selecione" noSelectionOption="true"/>
+                                                            <f:selectItems value="#{supiEnfermeiroSupiBean.listarSeccao()}" var="seccao" itemLabel="#{seccao.descricao}" itemValue="#{seccao.pkIdSeccao}"/>
+                                                       </p:selectOneMenu>
+                                                       
+                                                       <f:validateBean disabled="true">
+                                                            <p:outputLabel value="Data da escala"/>
+                                                            <p:calendar id="dataNascimento" style="width: 100%" navigator="true" value="#{supiEnfermeiroSupiBean.escala.dataEscala}"/>
+                                                       </f:validateBean>
+                                                   <br/>    
+                                                 <h:panelGrid columns="2" cellpadding="3">
+                                            
+                                                    <p:commandButton value="Pesquisar Escala" actionListener="#{supiEnfermeiroSupiBean.pesquisarEscala()}" icon="ui-icon-search" ajax="true" partialSubmit="true" update="tabela"/>
+                                                    <p:commandButton value="Nova Escala" ajax="false" immediate="true" icon="ui-icon-plus" action="escalaNovoSupi"/> 
+                                            
+                                            
+                                            
+                                                </h:panelGrid>
+                                             
+                                         </h:panelGrid>
+                               
+                                                      
+                              
+                                </p:fieldset>
+                              <p:separator/>
+                          <center>
+                              <h:panelGrid width="90%">
+                                   
+                                  <!-- <p:dataTable id="tabela" var="escala" value="#{supiEnfermeiroSupiBean.listarFuncionarioHasEscala()}" sortMode="multiple"  paginator="true" rows="3"
+                                               selectionMode="single"  selection="#{supiEnfermeiroSupiBean.enfermeirosSeleccionados}" rowKey="#{escala.pkIdEscala}">
+                                -->
+                                  
+                                  
+                                <p:dataTable id="tabela" var="escala" value="#{supiEnfermeiroSupiBean.listarEscala()}" sortMode="multiple"  paginator="true" rows="3"
+                                               selectionMode="single"  selection="#{supiEnfermeiroSupiBean.enfermeirosSeleccionados}" rowKey="#{escala.pkIdEscala}">
+                               
+                    <p:column  headerText="Código">
+                        <h:outputText value="#{escala.pkIdEscala}"/>
+                    </p:column>
+                     
+                    <p:column headerText="secção" filterBy="#{enfermeiro.fkIdTurno.descricaoTurno}">
+                        <h:outputText value="#{escala.fkIdSeccao.descricao}"/>
+                    </p:column>                  
+
+                  <!-- <p:column  headerText="Nome Enfermeiro" filterBy="#{enfermeiro.fkIdFuncionario.fkIdPessoa.nomeCompleto}">
+                        <h:outputText value="#{escala.fkIdPessoa.nomeCompleto}" />
+                    </p:column>
+                                      
+                   <p:column headerText="Nome Supervisor" filterBy="#{enfermeiro.fkIdFuncionario.fkIdPessoa.nomeCompleto}">
+                        <h:outputText value="#{escala.fkIdFuncionarioSupervisor.fkIdPessoa.nomeCompleto}"/>
+                    </p:column> -->
+                                      
+                    <p:column headerText="Turno" filterBy="#{enfermeiro.fkIdTurno.descricaoTurno}">
+                        <h:outputText value="#{escala.fkIdTurno.descricaoTurno}"/>
+                    </p:column>
+                                      
+                    <p:column headerText="Carga Horária">
+                        <h:outputText value="#{escala.fkIdTurno.cargaHoraria}"/>
+                    </p:column>
+                          
+                    <p:column headerText="Data de Escala">
+                        <h:outputText value="#{escala.dataEscala}">
+                            <f:convertDateTime pattern="dd/MM/yyy" locale="pt"/>
+                        </h:outputText>
+                    </p:column>
+                                        <h:form acceptcharset="ISO-8859-1">
+                           <f:facet name="footer">
+                    <p:commandButton  type="button" value="Visualizar" icon="ui-icon-info"
+                                      onclick="PF('visualizar').show();">
+
+                    </p:commandButton>
+                     
+                               <p:commandButton  ajax="false" action="#{supiEnfermeiroSupiBean.eliminarEnfermeiro(supiEnfermeiroSupiBean.escala.pkIdEscala)}" value="Remover" icon="ui-icon-trash">
+
+                    </p:commandButton>
+
+                    
+                    </f:facet>
+                 </p:dataTable>
+                                  
+                              </h:panelGrid>
+                              
+                          </center>
+                         
+            </h:form>
+                    
+                
+        </h:form>
+                <p:separator/>
+                
+                
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

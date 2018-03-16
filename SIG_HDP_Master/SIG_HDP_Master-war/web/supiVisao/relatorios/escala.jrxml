@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="escala" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dcb8a36f-272c-4d4a-b13d-75914204ccc3">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select idPeriodoTrabalhoEscala,descricaoSemana,horaDeEntrada,horaDeSaida, siglaHorario,idSemanaEscalado, idEscala,primeiroNome,ultimoNome, descricao
+from SU_PeriodoTrabalhoEscala, DiaSemana, horario, SU_SemanaEscalado, SU_Escala,SU_GrupoFuncionario, SU_Grupo, grh_funcionario, grh_pessoa
+
+where fk_idEscala = idEscala and idSemanaEscalado = fk_idSemanaEscalado
+and SU_GrupoFuncionario.fk_idGrupo = idGrupo and SU_Escala.fk_idGrupo = idGrupo
+and SU_GrupoFuncionario.fk_idFuncionario = idFuncionario
+and grh_funcionario.grh_pessoa_idPessoa = grh_pessoa.idPessoa
+
+and fk_idDiaSemana=idDiaSemana and fk_idHorario = idHorario order by idEscala;]]>
+	</queryString>
+	<field name="idPeriodoTrabalhoEscala" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descricaoSemana" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="horaDeEntrada" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="horaDeSaida" class="java.sql.Time">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="siglaHorario" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="idSemanaEscalado" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="idEscala" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="primeiroNome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ultimoNome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="89" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="16c3373f-d2a4-483a-8db7-2cea12d0ffea" key="staticText-17" x="152" y="29" width="418" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="24" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[HOSPITAL DIVINA PROVIDÊNCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="48bc51d7-e369-4430-9c81-0d1342e9d0d2" key="staticText-16" x="284" y="-1" width="171" height="32"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA  MINISTÉRIO DA SAÚDE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6cc658f9-1df1-44c8-9833-dd3c0192449b" key="staticText-18" x="185" y="58" width="362" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AVENIDA PEDRO DE CASTRO VANDUNÉM "LOY" - K. KIAXE - LUANDA TEL-FAX (02) 470781 470507 EMAIL: hospdp@bonet.net]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="27" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="27b3ac02-110a-4918-a87e-82fc598d40b3" key="staticText-6" x="207" y="1" width="349" height="25" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Escala de]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="5e37adce-50f9-44d2-8bac-aec3af531215" x="0" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Equipa]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8fce6226-a924-4364-bf29-7d51cdca74fa" x="116" y="0" width="177" height="20"/>
+				<textElement/>
+				<text><![CDATA[Funcionário]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e2cb1908-0fb9-430c-b953-ff851538a601" x="330" y="1" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Horário]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d61b4f3c-c4a9-4d85-b6fd-e62c00e4b9c3" x="436" y="1" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[horaDeEntrada]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e69eed7f-a3af-442a-8f1f-6e325d76a08e" x="544" y="1" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[horaDeSaida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0c1aa3c3-f728-4f03-9474-efd546da10d9" x="652" y="0" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Dia da Semana]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement uuid="afd0899f-c71c-45eb-a4d0-8136aa060129" x="116" y="2" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{primeiroNome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="99dd1eec-664b-4dd8-b7cd-bf14538f2880" x="204" y="2" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ultimoNome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1638d500-38fe-4092-ad5e-05ccc32cebfa" x="329" y="2" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{siglaHorario}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="89a4ce5b-b2b2-493d-865a-0e93a77303eb" x="438" y="1" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{horaDeEntrada}]]></textFieldExpression>
+			</textField>
+			
+				<reportElement uuid="280338fc-9fec-4e37-bcd8-32646a3fcd84" x="549" y="2" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{horaDeSaida}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6ab66f86-2e05-4f1a-b368-b78953a79450" x="653" y="2" width="96" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{descricaoSemana}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

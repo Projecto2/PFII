@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="doacao" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="24be543c-6c44-4b65-9ea0-e5ec14e3eaef">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="183"/>
+	<property name="ireport.y" value="0"/>
+	<field name="fkIdDoacao.dataCadastro" class="java.util.Date"/>
+	<field name="fkIdLoteProduto.fkIdProduto.descricao" class="java.lang.String"/>
+	<field name="fkIdLoteProduto.fkIdProduto.dosagem" class="java.lang.String"/>
+	<field name="fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura" class="java.lang.String"/>
+	<field name="fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao" class="java.lang.String"/>
+	<field name="fkIdLoteProduto.numeroLote" class="java.lang.String"/>
+	<field name="fkIdLoteProduto.dataValidade" class="java.util.Date"/>
+	<field name="fkIdDoacao.fkIdLocalArmazenamento.descricao" class="java.lang.String"/>
+	<field name="quantidade" class="java.lang.String"/>
+	<field name="fkIdDoacao.fkIdInstituicao.descricao" class="java.lang.String"/>
+	<field name="fkIdDoacao.fkIdFuncionario.fkIdPessoa.nome" class="java.lang.String"/>
+	<field name="fkIdDoacao.fkIdFuncionario.fkIdPessoa.nomeDoMeio" class="java.lang.String"/>
+	<field name="fkIdDoacao.fkIdFuncionario.fkIdPessoa.sobreNome" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="110" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="93" width="801" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="18111e9c-7df3-4e31-a074-51b158986c1f"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Controlo do Golf - K. Kiaxi - LUANDA Tel-Fax(02) 470781 - 470507 E-mail:hospdp@ebonet.net]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="89" y="3" width="634" height="30" forecolor="#0000FF" uuid="30f4c433-57ca-4c09-9fe8-a63f738c5125"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="15"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="89" y="33" width="634" height="20" forecolor="#0000FF" uuid="41c017f2-71f6-4cf1-a08d-144f81c2b782"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<text><![CDATA[GABINETE PROVINCIAL DE  DE LUANDA]]></text>
+			</staticText>
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="7" y="16" width="239" height="60" uuid="0d253dff-ad0a-4a1a-9359-a83e52e9924a"/>
+				<imageExpression><![CDATA["LogotipoDivina.jpg"]]></imageExpression>
+			</image>
+			<image vAlign="Middle">
+				<reportElement x="737" y="16" width="65" height="60" uuid="601b960d-c457-4bad-b8fc-fad066301131"/>
+				<imageExpression><![CDATA["insigniaAngola.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="89" y="57" width="634" height="30" forecolor="#0000FF" uuid="5d979850-989a-4ccd-805a-0faa1178bf09"/>
+				<textElement textAlignment="Center">
+					<font fontName="Abyssinica SIL" size="18" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="39" splitType="Stretch">
+			<staticText>
+				<reportElement x="172" y="8" width="439" height="20" forecolor="#3677E7" uuid="38029ec6-6ccb-4c90-83dd-b09752c7c909"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lista de Produtos Doados]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="32" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="89" height="29" backcolor="#51C2EE" uuid="5c1bc2e4-2649-4525-9bd2-0a2c2a828e55"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#131198"/>
+					<topPen lineWidth="1.0" lineColor="#131198"/>
+					<leftPen lineWidth="1.0" lineColor="#131198"/>
+					<bottomPen lineWidth="1.0" lineColor="#131198"/>
+					<rightPen lineWidth="1.0" lineColor="#131198"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="89" y="0" width="89" height="29" backcolor="#51C2EE" uuid="88c93cea-7429-45e1-85cf-89ca5c75d034"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#131198"/>
+					<topPen lineWidth="1.0" lineColor="#131198"/>
+					<leftPen lineWidth="1.0" lineColor="#131198"/>
+					<bottomPen lineWidth="1.0" lineColor="#131198"/>
+					<rightPen lineWidth="1.0" lineColor="#131198"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Descrição do Produto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="178" y="0" width="89" height="29" backcolor="#51C2EE" uuid="c0bc0d85-dc7d-487b-9227-fc62fb1dd5dd"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#131198"/>
+					<topPen lineWidth="1.0" lineColor="#131198"/>
+					<leftPen lineWidth="1.0" lineColor="#131198"/>
+					<bottomPen lineWidth="1.0" lineColor="#131198"/>
+					<rightPen lineWidth="1.0" lineColor="#131198"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Forma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="267" y="0" width="89" height="29" backcolor="#51C2EE" uuid="fcc85308-0711-4320-a4c2-80d8a0b9621c"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#131198"/>
+					<topPen lineWidth="1.0" lineColor="#131198"/>
+					<leftPen lineWidth="1.0" lineColor="#131198"/>
+					<bottomPen lineWidth="1.0" lineColor="#131198"/>
+					<rightPen lineWidth="1.0" lineColor="#131198"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº de Lote]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="356" y="0" width="89" height="29" backcolor="#51C2EE" uuid="c29d5c4d-7f00-4d0f-944d-943306ee3d16"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#131198"/>
+					<topPen lineWidth="1.0" lineColor="#131198"/>
+					<leftPen lineWidth="1.0" lineColor="#131198"/>
+					<bottomPen lineWidth="1.0" lineColor="#131198"/>
+					<rightPen lineWidth="1.0" lineColor="#131198"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data de Validade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="445" y="0" width="89" height="29" backcolor="#51C2EE" uuid="dc87a36b-7690-4cd5-9084-3c3f8ead8699"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#131198"/>
+					<topPen lineWidth="1.0" lineColor="#131198"/>
+					<leftPen lineWidth="1.0" lineColor="#131198"/>
+					<bottomPen lineWidth="1.0" lineColor="#131198"/>
+					<rightPen lineWidth="1.0" lineColor="#131198"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Local de Origem]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="534" y="0" width="89" height="29" backcolor="#51C2EE" uuid="9c444184-4b60-4e3f-9667-efd3f4ffc174"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#131198"/>
+					<topPen lineWidth="1.0" lineColor="#131198"/>
+					<leftPen lineWidth="1.0" lineColor="#131198"/>
+					<bottomPen lineWidth="1.0" lineColor="#131198"/>
+					<rightPen lineWidth="1.0" lineColor="#131198"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quantidade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="623" y="0" width="89" height="29" backcolor="#51C2EE" uuid="79a065e7-242d-4ee6-849b-5005073c55be"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#131198"/>
+					<topPen lineWidth="1.0" lineColor="#131198"/>
+					<leftPen lineWidth="1.0" lineColor="#131198"/>
+					<bottomPen lineWidth="1.0" lineColor="#131198"/>
+					<rightPen lineWidth="1.0" lineColor="#131198"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Instituição de Destno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="712" y="0" width="89" height="29" backcolor="#51C2EE" uuid="78753053-111c-4e21-b567-bcccf5a63a2a"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#131198"/>
+					<topPen lineWidth="1.0" lineColor="#131198"/>
+					<leftPen lineWidth="1.0" lineColor="#131198"/>
+					<bottomPen lineWidth="1.0" lineColor="#131198"/>
+					<rightPen lineWidth="1.0" lineColor="#131198"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Responsável]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="89" height="40" uuid="b57f68de-cbbd-4b66-a57b-3526ed134df6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdDoacao.dataCadastro}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="89" y="0" width="89" height="40" uuid="8a74f96b-5c60-4427-b338-cd4bee07959c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdLoteProduto.fkIdProduto.descricao}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="178" y="0" width="89" height="40" uuid="40b61a3e-bfd4-4d8e-adcd-edc6433198b7"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="267" y="0" width="89" height="40" uuid="52094df0-2b9b-4876-937b-8a89d6f416bf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdLoteProduto.numeroLote}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="356" y="0" width="89" height="40" uuid="5e9d6eaf-133b-40c2-856d-95551ff8c76a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdLoteProduto.dataValidade}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="445" y="0" width="89" height="40" uuid="347e0faf-a667-4b0e-bbbe-cda13a4977bf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdDoacao.fkIdLocalArmazenamento.descricao}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="534" y="0" width="89" height="40" uuid="9cf9b83a-66ed-4514-8253-61d1b69ae5bb"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="623" y="0" width="89" height="40" uuid="b82a8e5d-60b8-49cd-ac3a-ce32964bfafe"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdDoacao.fkIdInstituicao.descricao}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="712" y="0" width="89" height="40" uuid="27393365-7cd4-42a8-8593-e04e7dffcf5b"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fkIdDoacao.fkIdFuncionario.fkIdPessoa.nome} + " "
++ $F{fkIdDoacao.fkIdFuncionario.fkIdPessoa.nomeDoMeio} + " "
++ $F{fkIdDoacao.fkIdFuncionario.fkIdPessoa.sobreNome} ]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="49" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="6" width="801" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="8834db68-0199-4f10-afb9-777b369bc169"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<textField>
+				<reportElement mode="Transparent" x="240" y="24" width="342" height="14" uuid="12e1985f-0636-4334-a184-36afb3411f90"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

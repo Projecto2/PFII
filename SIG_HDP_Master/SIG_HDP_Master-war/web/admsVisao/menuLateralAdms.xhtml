@@ -1,0 +1,20 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+    <!-- Definindo a cor da barra lateral-->
+    <h:form style="background-color: rgba(230,230,230,0.05); height: 1000px">
+        <p:panelMenu style="width: 100%">
+            <p:submenu label="#{msgs.pacientes}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeADMS[1])}">
+                    <p:menuitem ajax="false" value="#{msgs.pacientes}" url="/faces/admsVisao/paciente/pacienteAdms.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeADMS[3])}"/>
+                    <p:menuitem ajax="false" value="#{msgs.solicitacoes}" url="/faces/admsVisao/solicitacoes/pacienteSolicitacaoAdms.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeADMS[4])}"/>
+                    <p:menuitem ajax="false" value="#{msgs.agendamentos}" url="/faces/admsVisao/agendamentos/pacienteAgendamentoAdms.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeADMS[5])}"/>
+                </p:submenu>
+                <p:submenu label="#{msgs.listagens}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeADMS[2])}">
+                    <p:menuitem ajax="false" value="#{msgs.solicitacoes}" url="/faces/admsVisao/solicitacoes/solicitacoesGeraisAdms.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeADMS[6])}"/>
+                    <p:menuitem ajax="false" value="#{msgs.agendamentos}" url="/faces/admsVisao/agendamentos/agendamentosAdms.xhtml" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeADMS[7])}"/>
+                </p:submenu>
+        </p:panelMenu>
+    </h:form>
+</ui:composition>

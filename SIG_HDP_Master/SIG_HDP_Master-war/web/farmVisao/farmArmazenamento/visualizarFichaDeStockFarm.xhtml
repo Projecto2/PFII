@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Locais de Armazenamento -> Ficha de stock</h2>
+            <h:form id="formPrincipal">
+               <p:messages id="msg" autoUpdate="true" closable="true"/>
+
+
+               <p:fieldset id="tabVisualizar"  style="border: none">
+
+                  <p></p>
+                  <center style="width: 80%; margin: auto">
+                     <h1>FICHA DE STOCK</h1>
+                  </center>
+                  <p></p>
+                  <p:fieldset id="norte" style="width: 90%; margin: auto;">
+                     <p:panelGrid columns="3" style="margin: auto; width: 100%">
+                        <p:fieldset style="border: none;">
+                           <div style="margin: auto; background-color: #ffffff; width: 40%;">
+                              <p:graphicImage style="width:45px"
+                                              url="/resources/img_divina/insigniaAngola.jpg"/>
+                           </div>
+                        </p:fieldset> 
+                        <p:fieldset style="border: none; text-align: center">
+                           <h:outputText style="" value="REPÚBLICA DE ANGOLA"/><p></p>
+                           <h:outputText style="" value="MINISTÉRIO DA SAÚDE"/><p></p>
+                           <h:outputText style="" value="PROGRAMA NACIONAL DE MEDICAMENTOS ESSENCIAIS"/>
+                        </p:fieldset> 
+                        <p:fieldset style="border: none">
+                           <div style="margin: auto; background-color: #ffffff; width: 40%;">
+                              <p:graphicImage style="width:45px"
+                                              url="/resources/img_divina/insigniaAngola.jpg"/>
+                           </div>
+                        </p:fieldset>                           
+                     </p:panelGrid>
+
+                     <p:panelGrid columns="3" style="margin: auto; width: 100%">
+                        <p:fieldset style="border: none">
+                           <center><h3>Estrutura Sanitária: <h:outputText 
+                                    value="#{farmVisualizarFichaStockBean.local.fkIdInstituicao.codigoInstituicao}"/></h3></center>
+                        </p:fieldset> 
+                        <p:fieldset style="border: none">
+                           <center><h3>Município: <h:outputText 
+                                    value="#{farmVisualizarFichaStockBean.local.fkIdInstituicao.fkIdEndereco.fkIdMunicipio.nomeMunicipio}"/></h3></center>
+                        </p:fieldset> 
+                        <p:fieldset style="border: none">
+                           <center><h3>Província: <h:outputText value="#{farmVisualizarFichaStockBean.local.fkIdInstituicao.fkIdEndereco.fkIdMunicipio.fkIdProvincia.nomeProvincia}"/></h3></center>
+                        </p:fieldset>                           
+                     </p:panelGrid>
+
+                     <p></p>
+                     <center style="width: 80%; margin: auto">
+                        <h2>#{farmVisualizarFichaStockBean.local.descricao} (#{farmVisualizarFichaStockBean.local.abreviatura})</h2>
+                     </center>
+                     <p></p>
+                     <p:dataTable id="ficha" sortMode="multiple" paginatorPosition="bottom"
+                                  var="item" paginator="true" rows="30" rowsPerPageTemplate="30,50,70,100"
+                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} 
+                                  {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                  emptyMessage="Nenhum movimento efectuado para este produto." 
+                                  value="#{farmVisualizarFichaStockBean.listaItems}">
+                        <f:facet name="header">
+                           <h:outputText style="font-size: 17px" 
+                                         value="#{farmVisualizarFichaStockBean.produto.descricao} 
+                                         #{farmVisualizarFichaStockBean.produto.dosagem} 
+                                         #{farmVisualizarFichaStockBean.produto.fkIdUnidadeMedida.abreviatura}" />
+                        </f:facet>
+
+                        <p:column headerText="Data do Movimento" sortBy="#{item.dataMovimento}">
+                           <center>
+                              <h:outputText value="#{item.dataMovimento}">
+                                 <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                              </h:outputText>
+                           </center>
+                        </p:column>
+                        <p:column headerText="Origem/Destino"  sortBy="#{item.origemOuDestino}">
+                           <center><p:outputLabel value="#{item.origemOuDestino}"/></center>
+                        </p:column>
+                        <p:column headerText="Nº de Lote" sortBy="#{item.fkIdLoteProduto.numeroLote}">
+                           <center><p:outputLabel value="#{item.fkIdLoteProduto.numeroLote}"/></center>
+                        </p:column>
+                        <p:column headerText="Data de Validade">
+                           <center><h:outputText value="#{item.fkIdLoteProduto.dataValidade}">
+                                 <f:convertDateTime pattern="dd-MM-yyyy"/>
+                              </h:outputText>
+                           </center>
+                        </p:column>
+                        <p:column headerText="Entradas">
+                           <center><p:outputLabel value="#{item.entradas}"/></center>
+                        </p:column>
+                        <p:column headerText="Saídas">
+                           <center><p:outputLabel value="#{item.saidas}"/></center>
+                        </p:column>
+                        <p:column headerText="Stock Existente">
+                           <center><p:outputLabel value="#{item.quantidadeRestante}"/></center>
+                        </p:column>
+                        <p:column headerText="Responsável" sortBy="#{item.fkIdFuncionario.fkIdPessoa.nome}">
+                           <center><p:outputLabel value="#{item.fkIdFuncionario.fkIdPessoa.nome} 
+                                                  #{item.fkIdFuncionario.fkIdPessoa.nomeDoMeio} 
+                                                  #{item.fkIdFuncionario.fkIdPessoa.sobreNome}"/></center>
+                        </p:column>
+                     </p:dataTable>
+                  </p:fieldset>
+               </p:fieldset>
+               <center>
+                  <p:commandButton value="Imprimir Ficha de Stock" icon="ui-icon-print"
+                                   ajax="false" onclick="this.form.target = '_blank'"
+                                   actionListener="#{farmVisualizarFichaStockBean.imprimirRelatorio()}"/>
+               </center>
+               <br/>
+            </h:form> 
+         </ui:define>
+      </ui:composition>
+   </body>
+</html>

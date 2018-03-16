@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="distribuicao" language="groovy" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9825a010-be44-4309-ad09-4aab6ac6b58e">
+	<property name="ireport.zoom" value="0.75"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select nomecompleto, primeiroNome, ultimoNome, quantidadeRecebida,dataDeDistibuicao,descricao from SU_ControloMosquiteiroReparticao,
+AE_Paciente, grh_funcionario, grh_pessoa, grh_seccaoTrabalho where
+SU_ControloMosquiteiroReparticao.fk_idPaciente = AE_Paciente.numProcesso and
+SU_ControloMosquiteiroReparticao.fk_idFuncionario = grh_funcionario.idFuncionario
+and grh_pessoa.idPessoa = grh_funcionario.grh_pessoa_idPessoa and
+SU_ControloMosquiteiroReparticao.fk_idSeccaoTrabalho = grh_seccaoTrabalho.idSeccaoTrabalho;]]>
+	</queryString>
+	<field name="nomecompleto" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="primeiroNome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="ultimoNome" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="quantidadeRecebida" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="dataDeDistibuicao" class="java.sql.Date">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="descricao" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="Valor_Acumulado" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{quantidadeRecebida}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="96" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="cae2db6a-7653-4e13-b06c-71a65a1d96b2" key="staticText-18" x="176" y="63" width="362" height="29"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[AVENIDA PEDRO DE CASTRO VANDUNÉM "LOY" - K. KIAXE - LUANDA TEL-FAX (02) 470781 470507 EMAIL: hospdp@bonet.net]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c18ad3a6-78e4-4e9c-835d-5efbc1332e80" key="staticText-17" x="143" y="34" width="418" height="31"/>
+				<textElement textAlignment="Center">
+					<font size="24" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[HOSPITAL DIVINA PROVIDÊNCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="622c04ab-16aa-4d0f-b836-ac60bf40f925" key="staticText-16" x="275" y="3" width="171" height="32"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA  MINISTÉRIO DA SAÚDE]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="39" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="21601b52-a1a6-4885-b3a1-14192785e406" key="staticText-6" x="189" y="6" width="349" height="25" forecolor="#006699"/>
+				<textElement textAlignment="Center">
+					<font size="15" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lista de Distribuições de Mosquiteiros]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="4407883e-3546-4210-bfae-3e74d0f83418" x="2" y="2" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Paciente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="701f9815-c787-47fe-b238-78fe770f9f9e" x="202" y="2" width="153" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Qtd. Recebida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="76836d58-c25b-460e-91ba-be5c072321ab" x="102" y="2" width="100" height="18"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Secção]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="aecfcfd9-ec48-4456-8c88-fb8e35e05faa" x="-41" y="18" width="816" height="4"/>
+			</line>
+			<staticText>
+				<reportElement uuid="82dfa635-5e80-4cc9-b742-3977d244051d" x="518" y="2" width="73" height="20"/>
+				<textElement textAlignment="Left">
+					<font isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[Técnico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="77329ab0-3b5d-4b99-a5c0-d82f2ead9801" x="355" y="2" width="156" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Data De Distibuição]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="866e271b-cf43-495a-b1c0-1a8d1f25fdce" x="2" y="0" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{nomecompleto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="6b590b3b-9a50-4637-b5fd-d95324ff0320" x="102" y="-2" width="100" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ac81c004-9e90-4116-8de3-90e4dad427c1" x="202" y="-1" width="153" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{quantidadeRecebida}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="fb72f002-1e8f-48c9-89e6-1b8107aecc97" x="361" y="-1" width="146" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{dataDeDistibuicao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="524de1f8-4850-43ed-a760-430405234ffa" x="512" y="-2" width="119" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{primeiroNome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7c5f20c0-0cd5-4c1f-9931-412be1a49ba5" x="607" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{ultimoNome}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="26" splitType="Stretch">
+			<textField>
+				<reportElement uuid="648856e5-0cf8-4ff2-90a2-beb56973affc" x="561" y="-2" width="48" height="20"/>
+				<textElement>
+					<font fontName="DejaVu Sans" size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Valor_Acumulado}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="b0f45d0a-998a-420c-9bab-c5746c176d95" x="429" y="-2" width="132" height="20"/>
+				<textElement textAlignment="Justified">
+					<font size="12" isBold="true" isUnderline="true" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[Total Distribuído]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="eafa70bb-c564-45fc-b060-fe538e7bb3a7" x="330" y="3" width="27" height="18"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="087f094b-8065-40f8-867d-8667a5cb5d7a" x="307" y="3" width="35" height="20"/>
+				<textElement/>
+				<text><![CDATA[Pág]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

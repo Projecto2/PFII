@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="listaParaCartoes" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d2dbc5f0-ffb7-4b7f-8bd9-39f6d35bc421">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="exemplo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="fkIdPessoa.nome" class="java.lang.Integer"/>
+	<field name="fkIdPessoa.nomeDoMeio" class="java.lang.String"/>
+	<field name="fkIdPessoa.sobreNome" class="java.lang.String"/>
+	<field name="numeroCartao" class="java.lang.String"/>
+	<field name="fkIdCategoria.fkIdProfissao.descricao" class="java.lang.String"/>
+	<field name="fkIdFuncao.fkIdAreaTrabalho.descricao" class="java.lang.String"/>
+	<field name="fkIdFuncao.descricao" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="124" splitType="Stretch">
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="10" y="13" width="95" height="61" uuid="91d95549-1053-4688-a759-a496a0075feb"/>
+				<imageExpression><![CDATA["LogotipoDivina.jpg"]]></imageExpression>
+			</image>
+			<image vAlign="Middle">
+				<reportElement x="453" y="10" width="71" height="63" uuid="c8dbfcfa-c413-445a-8a6e-b23f66eda8ff"/>
+				<imageExpression><![CDATA["insigniaAngola.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="51" y="11" width="422" height="25" forecolor="#0000FF" uuid="2181f466-d7b2-4c4b-bf85-2f1a04035f23"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="15"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="37" width="422" height="20" forecolor="#0000FF" uuid="c034395d-e8f0-4c47-8af6-d1b5d287e5c6"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<text><![CDATA[GABINETE PROVINCIAL DE  LUANDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="54" width="422" height="30" forecolor="#0000FF" uuid="c57e9042-4ebf-498d-960d-ad1a6c285f9b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Abyssinica SIL" size="18" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="90" width="514" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="f7d94b0b-892e-4cc3-a7e3-8ea4282b26c9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Controlo do Golf - K. Kiaxi - LUANDA Tel-Fax(02) 470781 - 470507 E-mail:hospdp@ebonet.net]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="10" y="90" width="515" height="16" uuid="d33f7101-324e-4140-8b49-b63f46e03072"/>
+			</rectangle>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="67" y="6" width="406" height="20" uuid="65c97a5c-189f-434f-a7f6-d0c771336a79"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Lista de funcionários para emissão de cartões]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement x="11" y="7" width="170" height="20" backcolor="#0000FF" uuid="c1e4ef93-e8db-4c8e-9470-8b0594ac4d7f"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Nome Completo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="181" y="7" width="88" height="20" uuid="b476b341-6fce-44ad-a296-888e2314a34d"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Nº do Cartão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="269" y="7" width="100" height="20" uuid="7757e4f5-1502-4fb2-a6df-597a2e7e119e"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Profissão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="369" y="7" width="100" height="20" uuid="35c30f87-abe5-4510-a977-38ccd0ef5249"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Área de Trabalho]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="469" y="7" width="56" height="20" uuid="ed99ee67-1097-4cd5-8c24-12151f9d5a44"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Função]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="181" y="0" width="88" height="20" uuid="f45068df-3df6-49eb-ac73-f3e75fb80942"/>
+				<textFieldExpression><![CDATA[$F{numeroCartao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="269" y="0" width="100" height="20" uuid="6cc938b9-9702-4af0-a5c3-2229c6b756b1"/>
+				<textFieldExpression><![CDATA[$F{fkIdCategoria.fkIdProfissao.descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="369" y="0" width="100" height="20" uuid="2be040c1-b475-46c4-b697-2da390dd2f0c"/>
+				<textFieldExpression><![CDATA[$F{fkIdFuncao.fkIdAreaTrabalho.descricao}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="467" y="0" width="58" height="20" uuid="c5488ffc-b631-4f2c-a1e1-bed910a7b1b6"/>
+				<textFieldExpression><![CDATA[$F{fkIdFuncao.descricao}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="10" y="3" width="515" height="16" uuid="3e49cc6d-ee03-4acb-8dfd-f5399dd4af4c"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Opaque" x="11" y="4" width="514" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="6bc9d0a5-4277-41b8-9b5f-026cc780be28"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="410" y="21" width="114" height="20" uuid="fea5899f-3a6a-4638-86f0-cae9176228b3"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="424" y="3" width="100" height="20" uuid="395f4811-5ce1-4bff-8575-8b3c7f629c5d"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

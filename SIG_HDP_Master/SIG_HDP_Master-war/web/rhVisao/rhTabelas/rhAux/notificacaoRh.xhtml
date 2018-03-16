@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Notificações</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Notificações</h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:growl id="msg2" autoUpdate="true"/>
+                    <br/>
+                    <center>
+                         <h:panelGrid width="98%">
+                              <h:form id="formPesquisa">
+                                   <p:fieldset style="width: 97%">
+                                        <h:panelGrid columns="4" cellpadding="5">
+                                             <p:calendar value="#{rhNotificacaoBean.dataPesquisa}" yearRange="c-100:c+20" 
+                                                         navigator="true" placeholder="Insira uma data" size="15"/>
+                                             <f:validateBean disabled="true">
+                                                  <p:inputText style="width: 380px" value="#{rhNotificacaoBean.textoPesquisa}" 
+                                                               placeholder="Insira um texto para pesquisar"/>
+                                             </f:validateBean>
+                                             <p:commandButton value="Pesquisar" icon="ui-icon-search" style="width: 140px"
+                                                              process="@form" update="dataTable" action="#{rhNotificacaoBean.pesquisarNotificacoes()}"/>
+                                             <h:panelGrid columns="2" cellpadding="5">
+                                                  <p:commandButton value="NÂO LIDAS" style="width: 130px;"
+                                                                   process="@this" update="dataTable" action="#{rhNotificacaoBean.verTodasNotificacoesNaoLidas()}"/>
+                                                  <p:commandButton value="VER TODAS" style="width: 130px;"
+                                                                   process="@this" update="dataTable" action="#{rhNotificacaoBean.verTodasNotificacoes()}"/>
+                                             </h:panelGrid>                                        </h:panelGrid>
+                                   </p:fieldset>
+                                   <p:dataTable id="dataTable" var="notificacao" value="#{rhNotificacaoBean.notificacoesPesquisadasList}"
+                                                emptyMessage="Nenhum registro de notificação encontrado" 
+                                                paginator="true" paginatorPosition="bottom" rows="10">
+                                        <p:column headerText="Data de Notificação">
+                                             <center>
+                                                  <h:inputText value="#{notificacao.dataDeNotificacao}" readonly="true"
+                                                               style="border: none; background: none; font-weight: #{notificacao.lida ? 'normal':'bold'}">
+                                                       <f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+                                                  </h:inputText>
+                                             </center>
+                                        </p:column>
+                                        <p:column headerText="Assunto">
+                                             <center>
+                                                  <p:outputLabel style="font-weight: #{notificacao.lida ? 'normal':'bold'}" value="#{notificacao.assunto}"/>
+                                             </center>
+                                        </p:column>
+                                        <p:column>
+                                             <center>
+                                                  <p:outputLabel value="#{notificacao.lida ? 'Lida':'Não Lida'}"/>
+                                             </center>
+                                        </p:column>
+                                        <p:column headerText="--------------------">
+                                             <center>
+                                                  <p:menuButton value="Opções">
+                                                       <p:menuitem value="Ler" icon="ui-icon-info" action="#{rhNotificacaoBean.prepararVisualizacao(notificacao)}"
+                                                                   onclick="PF('dialogNotificacao').show()" update="dataTable :formVisualizar:fieldset"/>
+                                                       <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                                                   action="#{rhNotificacaoBean.setNotificacaoRemover(notificacao)}"/>
+                                                  </p:menuButton>
+                                             </center>
+                                        </p:column>
+                                   </p:dataTable>
+                                   <p:confirmDialog message="Tem certeza que pretende remover a notificação selecionada ?"
+                                                    header="Remover Notificação" severity="alert" widgetVar="confirmDialogRemover">
+                                        <p:commandButton value="Sim" actionListener="#{rhNotificacaoBean.remove()}" process="@this"
+                                                         update="dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                                        <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                                   </p:confirmDialog>
+                              </h:form>
+                         </h:panelGrid>
+                    </center>
+
+                    <center>
+                         <p:dialog header="Visualizar Notificação" closable="true" showEffect="fade" width="50%" height="350px"
+                                   widgetVar="dialogNotificacao" modal="true" closeOnEscape="true">
+                              <h:form id="formVisualizar">
+                                   <p:fieldset id="fieldset" style="border: none; background: none">
+                                        <h:panelGrid width="100%">
+                                             <p:panel style="height: 75px">
+                                                  <h:panelGrid columns="2" cellpadding="5">
+                                                       <p:outputLabel style="font-weight: bold;" value="Data de Notificação:"/>
+                                                       <h:inputText value="#{rhNotificacaoBean.notificacao.dataDeNotificacao}" 
+                                                                    style="border: none; background: none" readonly="true">
+                                                            <f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+                                                       </h:inputText>
+
+                                                       <p:outputLabel style="font-weight: bold;" value="Assunto:"/>
+                                                       <p:outputLabel value="#{rhNotificacaoBean.notificacao.assunto}"/>
+                                                  </h:panelGrid>
+                                             </p:panel>
+                                             <br/>
+                                             <p:inputTextarea value="#{rhNotificacaoBean.notificacao.descricao}" readonly="true" autoResize="false"
+                                                              style="width: 98%; height: 100px; font-weight: normal; font-size: 13px"/>
+                                             <h:panelGrid class="float-right" cellpadding="5">
+                                                  <p:commandButton value="Marcar Como Não Lida" action="#{rhNotificacaoBean.marcarComoNaoLida()}"
+                                                                   process="@form" partialSubmit="true" onclick="PF('dialogNotificacao').hide()" 
+                                                                   update=":formPesquisa:dataTable"/>
+                                             </h:panelGrid>
+                                        </h:panelGrid>
+                                   </p:fieldset>
+                              </h:form>
+                         </p:dialog>
+                    </center>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

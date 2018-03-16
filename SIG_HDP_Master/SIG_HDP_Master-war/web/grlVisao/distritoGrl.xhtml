@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+     <h:head>
+          <title>Distritos</title>
+     </h:head>
+
+     <h:body>
+          <p:messages id="msg" autoUpdate="true" closable="true"/>
+          <p:growl id="msg2" autoUpdate="true"/>
+          <br/>
+          <center>
+               #{detetorAtualizacaoPagina.checkAtualizacao("")}
+               <h:panelGrid width="75%">
+                    <h:form id="formPesquisa">
+                         <p:fieldset style="width: 97%">
+                              <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                  <f:validateBean disabled="true">
+                                       <p:outputLabel for="comboPais" value="País: "/>
+                                   <p:selectOneMenu id="comboPais" style="width: 96%; text-align: center" filter="true" filterMatchMode="contains" 
+                                                    value="#{grlDistritoBean.distritoPesquisa.fkIdMunicipio.fkIdProvincia.fkIdPais.pkIdPais}"
+                                                    valueChangeListener="#{grlDistritoBean.changePaisPesquisa}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                       itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                        <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio"/>
+                                   </p:selectOneMenu>
+                                       <p:outputLabel for="comboProvincia" value="Província: "/>
+                                       <p:selectOneMenu id="comboProvincia" style="width: 96%; text-align: center" filter="true" filterMatchMode="contains"
+                                                    value="#{grlDistritoBean.distritoPesquisa.fkIdMunicipio.fkIdProvincia.pkIdProvincia}"
+                                                    valueChangeListener="#{grlDistritoBean.changeProvinciaPesquisa}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{grlDistritoBean.provinciasPorPaisList}" var="provin"
+                                                       itemLabel="#{provin.nomeProvincia}" itemValue="#{provin.pkIdProvincia}"/>
+                                        <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio"/>
+                                   </p:selectOneMenu>
+                                   <p:outputLabel for="comboMunicipio" value="Município: "/>
+                                   <p:selectOneMenu id="comboMunicipio" style="width: 96%; text-align: center" filter="true" filterMatchMode="contains"
+                                                    value="#{grlDistritoBean.distritoPesquisa.fkIdMunicipio.pkIdMunicipio}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                        <f:selectItems value="#{grlDistritoBean.municipiosPorProvinciasList}" var="muni"
+                                                       itemLabel="#{muni.nomeMunicipio}" itemValue="#{muni.pkIdMunicipio}"/>
+                                   </p:selectOneMenu>
+                                   <p:outputLabel value="Distrito: "/>
+                                        <p:inputText style="width: 100%" value="#{grlDistritoBean.distritoPesquisa.descricao}"/>
+                                   </f:validateBean>
+                                   <br/>
+                                   <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                        <p:commandButton value="Pesquisar" icon="ui-icon-search" style="width: 100%"
+                                                         process="@form" update="dataTable"
+                                                         action="#{grlDistritoBean.pesquisarDistritos()}"/>
+                                        <p:commandButton value="#{msgs.carregar}" style="width: 100%" icon="ui-icon-refresh" process="@this"
+                                                 actionListener="#{grlDistritoBean.carregar()}"/>
+                                   </p:panelGrid>
+                              </p:panelGrid>
+                         </p:fieldset>
+                         <p:dataTable id="dataTable" var="distrito" value="#{grlDistritoBean.distritosPesquisadosList}"
+                                      emptyMessage="Nenhum registro de distrito encontrado"
+                                      paginator="true" paginatorPosition="bottom" rows="10">
+                              <p:column headerText="País" filterBy="#{distrito.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}" filterMatchMode="contains">
+                                   <center>
+                                        #{distrito.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}
+                                   </center>
+                              </p:column>
+                              <p:column headerText="Província" filterBy="#{distrito.fkIdMunicipio.fkIdProvincia.nomeProvincia}" filterMatchMode="contains">
+                                   <center>
+                                        #{distrito.fkIdMunicipio.fkIdProvincia.nomeProvincia}
+                                   </center>
+                              </p:column>
+                              <p:column headerText="Município" filterBy="#{distrito.fkIdMunicipio.nomeMunicipio}" filterMatchMode="contains">
+                                   <center>
+                                        #{distrito.fkIdMunicipio.nomeMunicipio}
+                                   </center>
+                              </p:column>
+                              <p:column headerText="Distrito" filterBy="#{distrito.descricao}" filterMatchMode="contains">
+                                   <center>                                        
+                                        #{distrito.descricao}
+                                   </center>
+                              </p:column>
+                              <p:column headerText="--------------------">
+                                   <center>
+                                        <p:menuButton value="Opções">
+
+                                             <p:menuitem value="Editar" icon="ui-icon-pencil" onclick="PF('dialogDistrito').show();"
+                                                         action="#{grlDistritoBean.setDistrito(distrito)}" process="dataTable" 
+                                                         partialSubmit="true" update=":formulario:gridCampos :formulario:gridBotoes"/>
+                                             <p:menuitem value="Remover" onclick="PF('confirmDialogRemover').show()" icon="ui-icon-trash" 
+                                                         action="#{grlDistritoBean.setDistritoRemover(distrito)}"/>
+                                        </p:menuButton>
+                                   </center>
+                              </p:column>
+                         </p:dataTable>
+                         <p:confirmDialog message="Tem certeza que pretende remover o distrito selecionado ?"
+                                          header="Remover Distrito" severity="alert" widgetVar="confirmDialogRemover">
+                              <p:commandButton value="Sim" actionListener="#{grlDistritoBean.remove()}" process="@this"
+                                               update=":msg :msg2 dataTable" oncomplete="PF('confirmDialogRemover').hide()"/>
+                              <p:commandButton value="Não" onclick="PF('confirmDialogRemover').hide();" type="button" />
+                         </p:confirmDialog>
+                    </h:form>
+               </h:panelGrid>
+          </center>
+
+          <center>
+               <p:dialog header="Distrito" closable="false" showEffect="fade" width="35%"
+                         widgetVar="dialogDistrito" modal="true" closeOnEscape="true">
+                    <h:form id="formulario">
+                         <p:fieldset>
+                              <h:panelGrid id="gridCampos" columns="2" cellpadding="5">
+                                   <p:outputLabel value="País *"/>
+                                   <h:selectOneMenu id="comboPais" style="width: 240px" value="#{itensAjaxBean.pais}"
+                                                    valueChangeListener="#{itensAjaxBean.changePais}">
+                                        <f:selectItems value="#{itensAjaxBean.paisList}" var="pais"
+                                                       itemLabel="#{pais.nomePais}" itemValue="#{pais.pkIdPais}"/>
+                                        <f:ajax execute="@this" event="change" render="comboProvincia comboMunicipio"/>
+                                   </h:selectOneMenu>
+                                   <p:outputLabel value="Provícia *"/>
+                                   <h:selectOneMenu id="comboProvincia" style="width: 240px" 
+                                                    value="#{itensAjaxBean.provincia}"
+                                                    valueChangeListener="#{itensAjaxBean.changeProvincia}">
+                                        <f:selectItems value="#{itensAjaxBean.provinciaList}" var="prov"
+                                                       itemLabel="#{prov.nomeProvincia}" itemValue="#{prov.pkIdProvincia}"/>
+                                        <f:ajax execute="@this" event="change" render="comboMunicipio"/>
+                                   </h:selectOneMenu>
+                                   <p:outputLabel value="Município *"/>
+                                   <h:selectOneMenu id="comboMunicipio" style="width: 240px" 
+                                                    value="#{grlDistritoBean.distrito.fkIdMunicipio.pkIdMunicipio}"
+                                                    required="true" requiredMessage="Indique o município">
+                                        <f:selectItems value="#{itensAjaxBean.municipioList}" var="muni"
+                                                       itemLabel="#{muni.nomeMunicipio}" itemValue="#{muni.pkIdMunicipio}"/>
+                                   </h:selectOneMenu>
+                                   <p:outputLabel value="Distrito"/>
+                                   <p:inputText value="#{grlDistritoBean.distrito.descricao}" style="width: 235px" 
+                                                required="true" requiredMessage="Indique o nome do distrito"/>
+                              </h:panelGrid>
+
+                              <h:panelGrid id="gridBotoes" columns="2" cellpadding="5">
+                                   <p:commandButton value="Guardar" action="#{grlDistritoBean.create()}" style="width: 150px"
+                                                    rendered="#{grlDistritoBean.distrito.pkIdDistrito == null}" process="@form" partialSubmit="true"
+                                                    onclick="PF('dialogDistrito').hide()" update=":formPesquisa:dataTable"/>
+                                   <p:commandButton value="Guardar Edição" action="#{grlDistritoBean.edit()}" style="width: 150px"
+                                                    rendered="#{grlDistritoBean.distrito.pkIdDistrito != null}"  process="@form" partialSubmit="true"
+                                                    onclick="PF('dialogDistrito').hide()" update=":formPesquisa:dataTable"/>
+                                   <p:commandButton value="Fechar" onclick="PF('dialogDistrito').hide()" style="width: 150px" process="@this" 
+                                                    actionListener="#{grlDistritoBean.setDistrito(null)}"/>
+                              </h:panelGrid>
+                         </p:fieldset>
+                    </h:form>
+               </p:dialog>
+          </center>
+     </h:body>
+</html>

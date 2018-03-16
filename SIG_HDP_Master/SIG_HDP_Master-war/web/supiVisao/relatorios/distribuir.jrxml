@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="distribuir" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="14310d0f-ba1d-4b6e-bd1e-f109751bae88">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     grh_seccaoTrabalho.`descricao` AS grh_seccaoTrabalho_descricao,
+     SU_ControloMosquiteiroReparticao.`idControloMosquiteiroReparticao` AS SU_ControloMosquiteiroReparticao_idControloMosquiteiroReparticao,
+     SU_ControloMosquiteiroReparticao.`quantidadeRecebida` AS SU_ControloMosquiteiroReparticao_quantidadeRecebida,
+     SU_ControloMosquiteiroReparticao.`total` AS SU_ControloMosquiteiroReparticao_total,
+     SU_ControloMosquiteiroReparticao.`dataDeDistibuicao` AS SU_ControloMosquiteiroReparticao_dataDeDistibuicao,
+     AE_Paciente.`nomeCompleto` AS AE_Paciente_nomeCompleto,
+     AE_Paciente.`contactoTelefonico1` AS AE_Paciente_contactoTelefonico1,
+     Municipio.`nomeMunicipio` AS Municipio_nomeMunicipio,
+     grh_pessoa.`primeiroNome` AS grh_pessoa_primeiroNome,
+     grh_pessoa.`ultimoNome` AS grh_pessoa_ultimoNome,
+     Sexo.`descricaoSexo` AS Sexo_descricaoSexo
+FROM
+     `grh_seccaoTrabalho` grh_seccaoTrabalho INNER JOIN `SU_ControloMosquiteiroReparticao` SU_ControloMosquiteiroReparticao ON grh_seccaoTrabalho.`idSeccaoTrabalho` = SU_ControloMosquiteiroReparticao.`fk_idSeccaoTrabalho`
+     INNER JOIN `AE_Paciente` AE_Paciente ON SU_ControloMosquiteiroReparticao.`fk_idPaciente` = AE_Paciente.`numProcesso`
+     INNER JOIN `grh_funcionario` grh_funcionario ON SU_ControloMosquiteiroReparticao.`fk_idFuncionario` = grh_funcionario.`idFuncionario`
+     AND grh_funcionario.`idFuncionario` = AE_Paciente.`fk_idFuncionario`
+     INNER JOIN `grh_pessoa` grh_pessoa ON grh_funcionario.`grh_pessoa_idPessoa` = grh_pessoa.`idPessoa`
+     INNER JOIN `Municipio` Municipio ON grh_pessoa.`fk_idMunicipio` = Municipio.`idMunicipio`
+     INNER JOIN `Sexo` Sexo ON grh_pessoa.`fk_idSexo` = Sexo.`idSexo`
+     AND Sexo.`idSexo` = AE_Paciente.`fk_idSexo`
+     AND AE_Paciente.`fk_idMunicipio` = Municipio.`idMunicipio`]]>
+	</queryString>
+	<field name="SU_ControloMosquiteiroReparticao_idControloMosquiteiroReparticao" class="java.lang.Integer"/>
+	<field name="grh_seccaoTrabalho_descricao" class="java.lang.String"/>
+	<field name="AE_Paciente_nomeCompleto" class="java.lang.String"/>
+	<field name="Sexo_descricaoSexo" class="java.lang.String"/>
+	<field name="Municipio_nomeMunicipio" class="java.lang.String"/>
+	<field name="AE_Paciente_contactoTelefonico1" class="java.lang.String"/>
+	<field name="SU_ControloMosquiteiroReparticao_quantidadeRecebida" class="java.lang.Integer"/>
+	<field name="SU_ControloMosquiteiroReparticao_dataDeDistibuicao" class="java.sql.Date"/>
+	<field name="grh_pessoa_primeiroNome" class="java.lang.String"/>
+	<field name="grh_pessoa_ultimoNome" class="java.lang.String"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement uuid="59a51d99-7707-4805-acc1-60835ef30ebe" mode="Opaque" x="-20" y="-20" width="595" height="92" backcolor="#006699"/>
+				<staticText>
+					<reportElement uuid="3d1edd6b-454d-4697-83ca-0a389bf4c7f8" x="20" y="20" width="234" height="43" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[TITLE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="eaecd782-257c-486e-b16f-0196a261c5df" x="395" y="43" width="180" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[Add a description here]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21">
+			<line>
+				<reportElement uuid="d229f467-a271-4301-b114-090e66c041a4" x="-20" y="20" width="595" height="1" forecolor="#666666"/>
+			</line>
+			<staticText>
+				<reportElement uuid="04f90b82-fab3-4f71-84ed-f7bc2b8ae763" mode="Opaque" x="0" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SU_ControloMosquiteiroReparticao_idControloMosquiteiroReparticao]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b0fb4f20-ae11-493e-a5f2-19345e456b14" mode="Opaque" x="55" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[grh_seccaoTrabalho_descricao]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3336631b-4144-4a07-8938-4cf663c85a4b" mode="Opaque" x="110" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AE_Paciente_nomeCompleto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3d20029a-936b-497a-acad-c0b59dee8f30" mode="Opaque" x="165" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sexo_descricaoSexo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="99ac6663-c588-49d4-bbf8-3a854fd84082" mode="Opaque" x="220" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Municipio_nomeMunicipio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0c3e029c-1295-4319-965b-2cf9a6a20776" mode="Opaque" x="275" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AE_Paciente_contactoTelefonico1]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0b26207d-a27a-4208-931f-091dcb9724d7" mode="Opaque" x="330" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SU_ControloMosquiteiroReparticao_quantidadeRecebida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d9128d86-3853-49dc-8397-f59e63819770" mode="Opaque" x="385" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SU_ControloMosquiteiroReparticao_dataDeDistibuicao]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8110387a-47f8-4571-92f4-1165d868bcbd" mode="Opaque" x="440" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[grh_pessoa_primeiroNome]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7f6cffbe-3f37-450a-960a-1f95299c158b" mode="Opaque" x="495" y="0" width="55" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[grh_pessoa_ultimoNome]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<line>
+				<reportElement uuid="49024399-810e-46ce-944a-a96a33683fb7" positionType="FixRelativeToBottom" x="0" y="19" width="555" height="1"/>
+			</line>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="9a492322-0c72-4166-a8d8-986c1bc3c48f" x="0" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SU_ControloMosquiteiroReparticao_idControloMosquiteiroReparticao}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="aa6e3d51-ff87-463e-ad95-df79ea855614" x="55" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grh_seccaoTrabalho_descricao}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="62550c9b-3ba0-49bf-860d-74c527b4aa86" x="110" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AE_Paciente_nomeCompleto}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="6a0e44ac-5b0e-4adf-96ef-a195113cc4ba" x="165" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Sexo_descricaoSexo}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="bb63b9b1-e7fd-4250-b98a-173040d44ba6" x="220" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{Municipio_nomeMunicipio}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="db4c3c82-22d8-44b5-9f19-e1d26be5720a" x="275" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{AE_Paciente_contactoTelefonico1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="e68963a8-c946-477c-a8c5-f300be0e6522" x="330" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SU_ControloMosquiteiroReparticao_quantidadeRecebida}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="382acf3e-810e-4856-a395-9f5cdcff23f6" x="385" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SU_ControloMosquiteiroReparticao_dataDeDistibuicao}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="20ede966-aaff-4ad3-96f7-9ad747e3775d" x="440" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grh_pessoa_primeiroNome}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement uuid="3ae30dca-d42c-46da-82de-de7aab9dfe3c" x="495" y="0" width="55" height="20"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{grh_pessoa_ultimoNome}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement uuid="b84535f6-92e3-45f2-84b7-42e63ed5f326" mode="Opaque" x="0" y="4" width="515" height="13" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Pag"+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="16230ed4-a6d9-47ab-9fd3-6b1bdbc11901" mode="Opaque" x="515" y="4" width="40" height="13" backcolor="#E6E6E6"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="8acfbc4e-ed84-4287-bd50-c0c34acb06e2" x="0" y="4" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

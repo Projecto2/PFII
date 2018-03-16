@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <meta name="Revisit-after" content="15"></meta>
+            <h2>Farmácia -> Dispensas -> Atendimento</h2>
+            <h:form id="formPrincipal">
+               <p:growl autoUpdate="true"/>
+               <p:fieldset style="border: none">
+                  <br/>
+                  <center>
+                     <h1 style="width: 97%">#{farmDispensaNovaBean.dispensa.fkIdTurnoDispensa.fkIdLocalDeAtendimento.descricao}</h1>
+                     <h2 style="width: 97%">Nova Dispensa ao Utente</h2>
+                  </center>
+                  <br/>
+
+                  <p:messages id="msg" autoUpdate="true" closable="true"/>
+                  <p:panelGrid columns="2" style="width: 100%; border: none">
+                     <h:panelGrid columns="4">
+                        <p:commandButton style="width: 155px; height: 45px; color: #0052A4;"
+                                         icon="ui-icon-calendar" value="VER REALIZADAS"
+                                         partialSubmit="true" process="@this" disabled="false"
+                                         action="dispensaVerRealizadasFarm.xhtml?faces-redirect=true"
+                                         actionListener="#{farmTurnoDispensaBean.pesquisarItensDispensadosNoTurno(farmDispensaNovaBean.dispensa.fkIdTurnoDispensa)}"/>
+                        
+                        <p:commandButton style="width: 155px; height: 45px; color: #0052A4;"
+                                         icon="ui-icon-minusthick" value="FECHAR TURNO" 
+                                         partialSubmit="true" process="@this"
+                                         action="dispensaFecharTurnoFarm.xhtml?faces-redirect=true"/>
+                     </h:panelGrid>
+
+                     <h:panelGrid class="float-right">
+                        <p><strong>
+                              <h:outputText id="dataActual" style="color: #002142;font-size: 14px" value="#{farmDispensaNovaBean.dataHoje}">
+                                 <f:convertDateTime pattern="dd-MM-yyyy - HH:mm:ss" />
+                              </h:outputText>
+                           </strong>
+                        </p>
+                        <p style="color: #002142;font-size: 14px">Turno: <strong >#{farmDispensaNovaBean.dispensa.fkIdTurnoDispensa.fkIdTurno.descricao}</strong></p>
+                     </h:panelGrid>
+                  </p:panelGrid>
+                  <br/>
+                  <center>
+                     <p:separator/>
+                     <p></p>
+                     <h:panelGrid columns="4" width="70%">
+                        <p><strong>Paciente (Nº de Processo) *</strong></p>
+                        <p:inputText style="width: 90%" id="paciente" required="true" 
+                                     value="#{farmDispensaNovaBean.dispensa.fkIdPaciente.numeroPaciente}"
+                                     requiredMessage="Por favor, indique o número de processo do paciente."/>
+
+                        <p><strong>Prescrição Médica *</strong></p>
+                        <p:inputText style="width: 90%" id="precricao" required="true" 
+                                     value="#{farmDispensaNovaBean.dispensa.prescricaoMedica}"
+                                     requiredMessage="Por favor, indique a prescrição médica."/>
+                     </h:panelGrid>
+                     <p:separator/>
+
+                     <p:fieldset >
+                        <h:panelGrid columns="5" cellspacing="3" cellpadding="5">
+
+                           <p:inputText required="true" requiredMessage="Não inseriu nenhum critério de Pesquisa"
+                                        id="descricao" 
+                                        value="#{farmDispensaNovaBean.descricaoProdutoPesquisa}"/>
+
+                           <p:commandButton value="Pesquisar" icon="ui-icon-search" process="@this descricao"
+                                            action="#{farmDispensaNovaBean.pesquisarLotesProduto()}"
+                                            update="tabelaItensDisponiveis" partialSubmit="true" ajax="true"
+                                            />
+                           <p:watermark for="descricao" value="Pesquise medicamentos"/>
+                        </h:panelGrid>
+
+                        <p:dataTable id="tabelaItensDisponiveis" var="itemDisponivel" 
+                                     value="#{farmDispensaNovaBean.itensDisponiveis}" 
+                                     rows="4"
+                                     paginator="true" paginatorPosition="bottom"
+                                     emptyMessage="Aguardando pesquisa..." >
+
+                           <f:facet name="header">
+                              Medicamentos Disponíveis
+                           </f:facet>
+
+                           <p:column headerText="Lote">
+                              <h:outputText value="#{itemDisponivel.fkIdLoteProduto.numeroLote}"/>
+                           </p:column>
+
+                           <p:column headerText="Descrição">
+                              <h:outputText value="#{itemDisponivel.fkIdLoteProduto.fkIdProduto.descricao} 
+                                            #{itemDisponivel.fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao} 
+                                            #{itemDisponivel.fkIdLoteProduto.fkIdProduto.dosagem} 
+                                            #{itemDisponivel.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/>
+                           </p:column>
+                           <p:column headerText="Data de Expiração">
+                              <center>
+                                 <h:outputText value="#{itemDisponivel.fkIdLoteProduto.dataValidade}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy" />
+                                 </h:outputText>
+                              </center>
+
+                           </p:column>
+                           <p:column headerText="Quantidade em Stock">
+                              <center>                                    
+                                 <h:outputText value="#{itemDisponivel.quantidadeStock}"/>
+                              </center>
+                           </p:column>
+                           <p:column headerText="--------">
+                              <center>
+                                 <p:commandButton value="Adicionar" icon="ui-icon-transferthick-e-w" partialSubmit="true"
+                                                  process="@this" update="@this tabelaItensDisponiveis :formPrincipal:tabelaItensSeleccionados"
+                                                  action="#{farmDispensaNovaBean.adicionar()}" disabled="#{!(itemDisponivel.quantidadeStock > 0)}"
+                                                  actionListener="#{farmDispensaNovaBean.setItemAuxiliar(itemDisponivel.fkIdLoteProduto)}"
+                                                  />
+                              </center>
+                           </p:column>
+                        </p:dataTable>
+                        <p></p>
+
+                        <h:panelGrid columns="1" style="border: none">
+                           <p:dataTable id="tabelaItensSeleccionados" var="itemSeleccionado" 
+                                        value="#{farmDispensaNovaBean.itensDispensa}"
+                                        emptyMessage="Nenhum medicamento selecionado." >
+
+                              <f:facet name="header">
+                                 Medicamentos Seleccionados para Dispensa
+                              </f:facet>
+
+                              <p:column headerText="Lote">
+                                 <h:outputText value="#{itemSeleccionado.fkIdLoteProduto.numeroLote}"/>
+                              </p:column>
+
+                              <p:column headerText="Descrição">
+                                 <h:outputText value="#{itemSeleccionado.fkIdLoteProduto.fkIdProduto.descricao}
+                                               #{itemSeleccionado.fkIdLoteProduto.fkIdProduto.fkIdFormaFarmaceutica.descricao} 
+                                               #{itemSeleccionado.fkIdLoteProduto.fkIdProduto.dosagem} 
+                                               #{itemSeleccionado.fkIdLoteProduto.fkIdProduto.fkIdUnidadeMedida.abreviatura}"/>
+                              </p:column>
+                              <p:column headerText="Data de Expiração">
+                                 <center><h:outputText value="#{itemSeleccionado.fkIdLoteProduto.dataValidade}">
+                                       <f:convertDateTime pattern="dd-MM-yyyy" />
+                                    </h:outputText></center>
+                              </p:column>
+                              <p:column headerText="Quantidade">
+                                 <center>                                    
+                                    <p:inputText style="width: 50%" value="#{itemSeleccionado.quantidade}">
+                                       <f:ajax event="change" execute="@this" render="tabelaItensSeleccionados"/>
+                                    </p:inputText>
+                                 </center>
+                              </p:column>
+                              <p:column headerText="--------">
+                                 <center>
+                                    <p:commandButton value="Remover" icon="ui-icon-transferthick-e-w" partialSubmit="true"
+                                                     process="@this" update="@this tabelaItensSeleccionados :formPrincipal:tabelaItensDisponiveis" ajax="true"
+                                                     action="#{farmDispensaNovaBean.remover(itemSeleccionado)}"
+                                                     />
+                                 </center>
+                              </p:column>
+                           </p:dataTable>
+                        </h:panelGrid>
+                     </p:fieldset>
+
+                     <p:commandButton value="Concluir" icon="ui-icon-disk" ajax="true"
+                                      action="#{farmDispensaNovaBean.criar()}" 
+                                      update="tabelaItensSeleccionados dataActual tabelaItensDisponiveis
+                                      paciente precricao descricao" />    
+                  </center>
+               </p:fieldset>
+            </h:form>
+         </ui:define>
+      </ui:composition>
+
+   </body>
+</html>

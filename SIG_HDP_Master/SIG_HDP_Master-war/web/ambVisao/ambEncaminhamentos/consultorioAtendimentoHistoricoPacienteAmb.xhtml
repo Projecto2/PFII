@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <p:dataTable  id="tabelaHistoricoPacienteEncaminhamento" sortMode="multiple" var="itemHP" rows="8" paginator="true" paginatorPosition="bottom" 
+                      value="#{ambConsultorioAtendimentoListarBean.pesquisarPacienteEncaminhado(ambConsultorioAtendimentoListarBean.numeroPaciente)}"  
+                      reflow="true" emptyMessage="Nenhum registo encontrado."
+                      selectionMode="single" rowKey="#{itemHP.pkIdConsultorioAtendimento}">
+
+            <p:column headerText="Nº de Processo" sortBy="#{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"
+                      filterBy="#{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains">
+                <h:outputText value="#{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+            </p:column> 
+
+            <p:column headerText="Nº de Subprocesso">
+                <h:outputText value="#{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+            </p:column> 
+
+            <p:column headerText="Paciente" sortBy="#{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                    #{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                    #{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                   "
+                      filterBy="#{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                #{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                #{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                               " filterMatchMode="contains">
+                <h:outputText value="#{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                     #{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                     #{itemHP.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                    "/>
+            </p:column>
+
+            <p:column headerText="Médico">
+                <h:outputText value="#{itemHP.fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.nome}
+                                     #{itemHP.fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.nomeDoMeio}
+                                     #{itemHP.fkIdMedicoHasEscala.fkIdMedico.fkIdPessoa.sobreNome} 
+                                    "/>
+            </p:column>
+
+            <p:column headerText="Consultório">
+                <center>
+                    <h:outputText value="#{itemHP.fkIdMedicoHasEscala.fkIdConsultorio.nome}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Funcionário">
+                <h:outputText value="#{itemHP.fkIdFuncionario.fkIdPessoa.nome}
+                                     #{itemHP.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                     #{itemHP.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                    "/>
+            </p:column>
+
+            <p:column headerText="Data">
+                <h:outputText value="#{itemHP.dataHoraCadastro}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="------">
+                <center>
+                    <p:menuButton value="Opções">
+                        <p:separator/>
+                        <p:menuitem value="Dados Pessoais" icon="ui-icon-info" process="@this" partialSubmit="true" ajax="true" 
+                                    actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(ambConsultorioAtendimentoListarBean.seleccionarDetalhesEncaminhamento(itemHP).fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                    update=":formPacienteVisualizar" onclick="PF('dialogMaisDetalhes').show();"/>
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Editar" icon="ui-icon-pencil" process="@this" partialSubmit="true"
+                                    actionListener="#{ambConsultorioAtendimentoListarBean.seleccionar(itemHP)}" 
+                                    update=":formEditarConsultorioAtendimento:panelEditarConsultorioAtendimento" 
+                                    onclick="PF('dialogEditarConsultorioAtendimento').show()">
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Eliminar" icon="ui-icon-trash"
+                                    action="#{ambConsultorioAtendimentoEliminarBean.setAmbConsultorioAtendimentoEliminar(itemHP)}" 
+                                    onclick="PF('confirmDialogEliminar').show()">
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Mais detalhes" icon="ui-icon-info" process="@this" partialSubmit="true"  
+                                    actionListener="#{ambConsultorioAtendimentoListarBean.seleccionarDetalhesEncaminhamento(itemHP)}"
+                                    ajax="true" update=":formListarEncaminhamento" 
+                                    onclick="PF('dialogListarEncaminhamento').show()" 
+                                    />
+                        <p:separator/>
+                    </p:menuButton>
+                </center>
+            </p:column>
+
+        </p:dataTable>
+
+        <center>
+            <p:confirmDialog message="Tem certeza que pretende eliminar o item seleccionado?"
+                             header="Eliminar Paciente Encaminhado" severity="alert" widgetVar="confirmDialogEliminar">
+                <p:commandButton value="Sim" actionListener="#{ambConsultorioAtendimentoEliminarBean.removerRegisto(ambConsultorioAtendimentoEliminarBean.getAmbConsultorioAtendimentoEliminar())}" 
+                                 process="@this" update="tabelaHistoricoPacienteEncaminhamento" oncomplete="PF('confirmDialogEliminar').hide()"/>
+                <p:commandButton value="Não" onclick="PF('confirmDialogEliminar').hide();" type="button" />
+            </p:confirmDialog>
+        </center>
+
+    </h:body>
+</html>
+

@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+     <h:head>
+          <title>Níveis Acadêmicos</title>
+     </h:head>
+
+     <h:body>
+          <ui:composition template="/template/masterPage.xhtml">
+               <ui:define name="menuHorizontal">
+                    <ui:include src="./../../menuHorizontalRh.xhtml"/>
+               </ui:define>
+               <ui:define name="menuLateral">
+                    <ui:include src="./../../menuLateralRh.xhtml"/>
+               </ui:define>
+
+               <ui:define name="center">
+                    <h2>Recursos Humanos -> Níveis Acadêmicos</h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:growl id="msg2" autoUpdate="true"/>
+                    <br/>
+                    <center>
+                         <h:panelGrid columns="1" width="85%">
+                              <h:form id="formPesquisa">
+                                   <p:fieldset style="width: 97%">
+                                        <h:panelGrid columns="2" cellpadding="5" width="100%">
+                                             <br/>
+                                             <p:commandButton style="float: right" value="Carregar" icon="ui-icon-refresh" action="nivelAcademicoRh.xhtml?faces-redirect=true" 
+                                                              actionListener="#{rhNivelAcademicoExcelBean.carregarNivelAcademicoTabela()}"/>
+                                        </h:panelGrid>
+                                   </p:fieldset>  
+                                   <p:dataTable id="dataTable" var="nivelAcademico" value="#{rhNivelAcademicoBean.findAll()}"
+                                                emptyMessage="Nenhum registro de nível acadêmico encontrado"
+                                                paginator="true" paginatorPosition="bottom" rows="10">
+                                        <p:column sortBy="descSub" filterBy="#{nivelAcademico.descricaoNivelAcademico}">
+                                             <center>
+                                                  #{nivelAcademico.descricaoNivelAcademico}
+                                             </center>
+                                        </p:column>
+                                   </p:dataTable>
+                              </h:form>
+                         </h:panelGrid>
+                    </center>
+               </ui:define>
+          </ui:composition>
+     </h:body>
+</html>

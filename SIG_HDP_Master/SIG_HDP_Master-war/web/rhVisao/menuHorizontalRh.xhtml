@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+     <h:head>
+          <title>Facelet Title</title>
+     </h:head>
+     <h:body>
+          <li class="ic-home">
+               <h:link outcome="/rhVisao/homeRh.xhtml">
+                    <span>Página Inicial R.H.</span>
+               </h:link>
+          </li>
+          <li class="ic-grid-tables"><a href="javascript:"><span>Profissões</span></a>
+               <ul>
+                    <li><h:link value="Profissões" outcome="/rhVisao/rhTabelas/rhAux/profissaoRh"/></li>
+                    <li><h:link value="Especialidades de Profissões" outcome="/rhVisao/rhTabelas/rhGrl/especialidadeGrl"/></li>
+               </ul>
+          </li>
+          <li class="ic-grid-tables"><a href="javascript:"><span>Categorias e Subsídios</span></a>
+               <ul>
+                    <li><h:link value="Categorias" outcome="/rhVisao/rhTabelas/rhAux/categoriaRh"/></li>
+                    <li><h:link value="Subsídios" outcome="/rhVisao/rhTabelas/rhAux/subsidioRh"/></li>
+               </ul>
+          </li>
+          <li class="ic-grid-tables"><a href="javascript:"><span>Áreas de Trabalho</span></a>
+               <ul>
+                    <li><h:link value="Centros Hospitalares" outcome="/rhVisao/rhTabelas/rhGrl/centroHospitalarGrl"/></li>
+                    <!--                    <li><h:link value="Departamentos" outcome="/rhVisao/rhTabelas/rhAux/departamentoRh"/></li>-->
+                    <li><h:link value="Departamentos e Secções" outcome="/rhVisao/rhTabelas/rhAux/seccaoTrabalhoRh"/></li>
+                    <li><h:link value="Funções / Cargos" outcome="/rhVisao/rhTabelas/rhAux/funcaoRh"/></li>
+               </ul>
+          </li>
+          <li class="ic-grid-tables"><a href="javascript:"><span>Escolas/Universidades</span></a>
+               <ul>
+                    <li><h:link value="Escolas/Universidades" outcome="/rhVisao/rhTabelas/rhAux/escolaUniversidadeRh"/></li>
+                    <li><h:link value="Cursos" outcome="/rhVisao/rhTabelas/rhAux/cursoRh"/></li>
+               </ul>
+          </li>
+          <li class="ic-notifications">
+               <h:link outcome="/rhVisao/rhTabelas/rhAux/notificacaoRh" id="menuNotificacao">
+<!--
+                    <span>
+                         Notificações 
+                         <strong style="color: #{rhNotificacaoBean.getColorSize()}">
+                              (#{rhNotificacaoBean.numeroDeNotificacoesNaoLidas()})
+                         </strong>
+                    </span>
+-->
+                    <span>
+                         <label style="float: right; color: white; font-size: 15px; font-weight: bold; margin-left: 10px;">
+                              #{rhNotificacaoBean.numeroDeNotificacoesNaoLidas()}
+                         </label>
+                         Notificações
+                    </span>
+
+               </h:link>
+          </li>
+
+     </h:body>
+</html>

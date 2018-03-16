@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p:dialog header="Medicação" widgetVar="dlgMedicacaoTb" resizable="false" draggable="false" responsive="true" 
+                  showEffect="explode" hideEffect="explode" width="50%">
+            <h:form>
+                <p:panelGrid columns="2" layout="grid" styleClass="ui-panelgrid-blank" columnClasses="ui-grid-col-4,ui-grid-col-8">
+                    <p:outputLabel for="paciente" value="#{msn_tb.pac}" />
+                    <p:inputText id="paciente" value="#" style="width: 90%" disabled="true"/>
+
+                    <p:outputLabel for="idade" value="#{msn_tb.idade}" />
+                    <p:inputText id="idade" value="#" style="width: 90%" disabled="true"/>
+
+                    <f:facet name="footer">
+                        <p:panelGrid columns="2" styleClass="floatright">
+                            <p:commandButton value="#{msn_tb.bt_salvar}" type="button" onclick="PF('dlgMedicacaoTb').hide()" styleClass="botao"/>
+                            <p:commandButton value="#{msn_tb.bt_cancelar}" type="button" onclick="PF('dlgMedicacaoTb').hide()" styleClass="botao"/>
+                        </p:panelGrid>
+                    </f:facet>  
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+    </h:body>
+</html>
+

@@ -1,0 +1,159 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <p:messages id="msg" autoUpdate="true" closable="true"/>
+        <br/>
+        <center>
+            <h:panelGrid columns="1" width="75%">
+                <h:form id="formPesquisa">
+                    <p:growl autoUpdate="true"/>
+                    #{detetorAtualizacaoPagina.checkAtualizacao("")}
+                    <p:fieldset>
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+
+                            <p:outputLabel for="comboInstituicaoPesquisa" value="#{msgs.instituicao}: "/>
+                            <p:selectOneMenu id="comboInstituicaoPesquisa" value="#{grlConvenioBean.grlConvenioPesquisa.fkIdInstituicao.pkIdInstituicao}"                                                    
+                                             style="width: 95%">
+                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                <f:selectItems value="#{grlInstituicaoBean.findAll()}" var="instituicao" 
+                                               itemLabel="#{instituicao.descricao}" itemValue="#{instituicao.pkIdInstituicao}"/>
+                            </p:selectOneMenu>
+                            
+                            <p:outputLabel for="comboEstadoConvenio" value="#{msgs.estado}: "/>
+                            <p:selectOneMenu id="comboEstadoConvenio" value="#{grlConvenioBean.estado}"                                                    
+                                             style="width: 95%">
+                                <f:selectItem itemLabel="" itemValue="#{0}"/>
+                                <f:selectItem itemLabel="#{msgs.ativo}" itemValue="#{1}"/>
+                                <f:selectItem itemLabel="#{msgs.inativo}" itemValue="#{2}"/>
+                            </p:selectOneMenu>
+
+                            <f:validateBean disabled="true">
+                                <p:outputLabel for="nomeConvenioPesquisa" value="#{msgs.descricao}: "/>
+                                <p:inputText id="nomeConvenioPesquisa" style="width: 100%" value="#{grlConvenioBean.grlConvenioPesquisa.nomeConvenio}"/>
+                            </f:validateBean>
+
+                            <br/>
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                <p:commandButton value="#{msgs.pesquisar}" style="width: 100%" actionListener="#{grlConvenioBean.pesquisar()}" 
+                                                 icon="ui-icon-search" ajax="true" partialSubmit="true" update="comboInstituicaoPesquisa comboEstadoConvenio nomeConvenioPesquisa dataTable"/>
+                                <p:commandButton value="#{msgs.novo}" icon="ui-icon-plus" style="width: 100%" onclick="PF('dialogNovo').show();" partialSubmit="true" process="@this" update="@this"/>
+                            </p:panelGrid>
+                        </p:panelGrid>
+                    </p:fieldset>
+
+
+                    <p:dataTable id="dataTable" var="convenio" value="#{grlConvenioBean.getGrlConvenioLista()}"
+                                 style="width: 100%" emptyMessage="Não Existem Convénios"
+                                 paginator="true" paginatorPosition="bottom" rows="10">
+                        <p:column headerText="#{msgs.descricao} #{msgs.convenio}">
+                            <center>                                        
+                                #{convenio.nomeConvenio}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.instituicao}">
+                            <center>                                        
+                                #{convenio.fkIdInstituicao.descricao}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.estado}">
+                            <center>         
+                                #{grlConvenioBean.getEstadoDescricao(convenio.estadoConvenio)}
+                            </center>
+                        </p:column>
+                        <p:column headerText="#{msgs.opcoes}">
+                            <center>
+                                <p:commandButton value="#{msgs.editar}" icon="ui-icon-pencil" onclick="PF('dialogEditar').show();"
+                                                 action="#{grlConvenioBean.setGrlConvenioEditar(convenio)}"
+                                                 process="@this" partialSubmit="true" update=":formEditar:editarInstituicao :formEditar:editarDescricaoConvenio :formEditar:editarEstadoConvenio"/>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </h:panelGrid>
+        </center>
+
+
+            <p:dialog header="#{msgs.novo} #{msgs.convenio}" closable="false" showEffect="fade"
+                      widgetVar="dialogNovo" modal="true" closeOnEscape="true"
+                      width="50%" height="200px">
+                <h:form id="formNovoConvenio">
+                    <p:growl autoUpdate="true"/>
+                    <p:fieldset>
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                            <p:outputLabel for="comboInstituicao" value="#{msgs.instituicao}:"/>
+                            <p:selectOneMenu id="comboInstituicao" value="#{grlConvenioBean.grlConvenio.fkIdInstituicao.pkIdInstituicao}"                                                    
+                                             style="width: 96%" required="true" requiredMessage="Indique a Instituição">
+                                <f:selectItems value="#{grlInstituicaoBean.findAll()}" var="instituicao" 
+                                               itemLabel="#{instituicao.descricao}" itemValue="#{instituicao.pkIdInstituicao}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="descricaoConvenio" value="#{msgs.descricao}:"/>
+                            <p:inputText id="descricaoConvenio" style="width: 100%" value="#{grlConvenioBean.grlConvenio.nomeConvenio}"
+                                         required="true" requiredMessage="Indique a Descrição do Convénio"/>
+                            
+                            <p:outputLabel for="comboEstadoConvenio" value="#{msgs.estado}: "/>
+                            <p:selectOneMenu id="comboEstadoConvenio" value="#{grlConvenioBean.grlConvenio.estadoConvenio}"                                                    
+                                             style="width: 96%" required="true" requiredMessage="Indique o Estado">
+                                <f:selectItem itemLabel="#{msgs.ativo}" itemValue="#{true}"/>
+                                <f:selectItem itemLabel="#{msgs.inativo}" itemValue="#{false}"/>
+                            </p:selectOneMenu>
+
+                            <br/>
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                <p:commandButton value="#{msgs.gravar}" style="width: 100%" icon="ui-icon-disk" action="#{grlConvenioBean.create()}"
+                                                 partialSubmit="true" 
+                                                 process="@this comboInstituicao descricaoConvenio comboEstadoConvenio"
+                                                 update=":formPesquisa:dataTable comboInstituicao descricaoConvenio comboEstadoConvenio"/>
+                                <p:commandButton value="#{msgs.fechar}" style="width: 100%" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"
+                                                 action="#{grlConvenioBean.limpar()}"/>   
+                            </p:panelGrid>
+                        </p:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+
+
+            <p:dialog header="#{msgs.editar} #{msgs.convenio}" closable="false" showEffect="fade"
+                      widgetVar="dialogEditar" modal="true"  closeOnEscape="true" width="50%">
+                <h:form id="formEditar">
+                    <p:growl autoUpdate="true"/>
+                    <p:fieldset>
+                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                            <p:outputLabel for="editarInstituicao" value="#{msgs.instituicao}:"/>
+                            <p:selectOneMenu id="editarInstituicao" value="#{grlConvenioBean.grlConvenioEditar.fkIdInstituicao.pkIdInstituicao}"                                                    
+                                             style="width: 96%" required="true" requiredMessage="Indique a Instituição">
+                                <f:selectItems value="#{grlInstituicaoBean.findAll()}" var="instituicao" 
+                                               itemLabel="#{instituicao.descricao}" itemValue="#{instituicao.pkIdInstituicao}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel for="editarDescricaoConvenio" value="#{msgs.descricao}:"/>
+                            <p:inputText id="editarDescricaoConvenio" style="width: 100%" value="#{grlConvenioBean.grlConvenioEditar.nomeConvenio}"
+                                         required="true" requiredMessage="Indique a Descrição Do Convénio"/>
+                            
+                            <p:outputLabel for="editarEstadoConvenio" value="#{msgs.estado}:"/>
+                            <p:selectOneMenu id="editarEstadoConvenio" value="#{grlConvenioBean.grlConvenioEditar.estadoConvenio}"                                                    
+                                             style="width: 96%" required="true" requiredMessage="Indique o Estado">
+                                <f:selectItem itemLabel="#{msgs.ativo}" itemValue="#{true}"/>
+                                <f:selectItem itemLabel="#{msgs.inativo}" itemValue="#{false}"/>
+                            </p:selectOneMenu>
+
+                            <br/>
+                            <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                <p:commandButton value="#{msgs.gravarEdicao}" style="width: 100%" action="#{grlConvenioBean.editarConvenioPesquisar()}" partialSubmit="true"
+                                    process="@this editarInstituicao editarDescricaoConvenio editarEstadoConvenio" 
+                                    update=":formPesquisa:dataTable editarInstituicao editarDescricaoConvenio editarEstadoConvenio" icon="ui-icon-disk"/>
+                                <p:commandButton value="#{msgs.fechar}" style="width: 100%" onclick="PF('dialogEditar').hide()" partialSubmit="true" process="@this"
+                                                 action="#{grlConvenioBean.limpar()}"/>  
+                            </p:panelGrid>
+                        </p:panelGrid>
+                    </p:fieldset>
+                </h:form>
+            </p:dialog>
+
+    </body>
+</html>
+

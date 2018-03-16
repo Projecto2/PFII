@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalSupi.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralSupi.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h:form acceptcharset="ISO-8859-1">
+                    <h2>Escala de Supervisores </h2>
+                    <p:messages id="msg" autoUpdate="true" closable="true"/>
+                    <p:growl id="msg2" autoUpdate="true"/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="3">
+
+                            <p:outputLabel value="Ano: "/>
+                            <f:validateBean disabled="true">
+                                <p:inputText id="ano" value="#{supiEscalaSupervisorBean.escalaPesquisa.ano}" style="width: 250px"  />
+                            </f:validateBean>
+                            <p:outputLabel value="Mês: "/>
+                            <p:selectOneMenu id="comboMes" style="width: 100%" value="#{supiEscalaSupervisorBean.escalaPesquisa.mes}">
+                                <f:selectItem itemLabel="Selecione" itemValue="0"/>
+                                <f:selectItems value="#{supiEscalaSupervisorBean.selectMeses()}"/>
+                            </p:selectOneMenu>
+                            <br> </br>
+                            <h:panelGrid columns="3">
+                                <p:commandButton value="Pesquisar" action="#{supiEscalaSupervisorBean.pesquisarEscalas()}" 
+                                                 icon="ui-icon-search" update="tabela"/>
+                                <p:commandButton value="Nova Escala" ajax="false" immediate="true" icon="ui-icon-plus" 
+                                                 action="testeEscalaPac"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+
+                    </p:fieldset>
+
+                    <h:panelGrid width="90%">
+
+                        <p:dataTable id="tabela" var="escala" sortMode="multiple" paginator="true" rows="3"
+                                     value="#{supiEscalaSupervisorBean.escalasPesquisadasList}" selectionMode="single"  rowKey="#{escala.pkIdEscala}">
+
+                            <p:column headerText="secção" filterBy="#{enfermeiro.fkIdTurno.descricaoTurno}">
+                                <h:outputText value="#{escala.fkIdSeccao.descricao}"/>
+                            </p:column>                  
+
+                            <p:column headerText="Ano/Mês">
+                                <h:outputText value="#{escala.ano} / #{escala.mes}" />
+                                <h:outputText />
+                            </p:column>
+
+                            <p:column headerText="Data de Escala">
+                                <h:outputText value="#{escala.dataEscala}">
+                                    <f:convertDateTime pattern="dd/MM/yyy" locale="pt"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="-------">
+                                <center>
+                                             <p:menuButton value="Opções">
+                                                  <p:menuitem value="Visualizar" icon="ui-icon-info"/>
+                                                 
+                                             </p:menuButton>
+                                        </center>
+                                
+                               <!-- <p:commandButton  value="Visualizar" icon="ui-icon-info" process="@this"
+                                                  action="{supiVisualizarSuperviorBean.prepararVisualizacaoAssiduidade(escala)}"/>
+                                <p:commandButton  ajax="false"  value="Remover" icon="ui-icon-trash"/>-->
+
+                            </p:column>
+                        </p:dataTable>
+
+                    </h:panelGrid>
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

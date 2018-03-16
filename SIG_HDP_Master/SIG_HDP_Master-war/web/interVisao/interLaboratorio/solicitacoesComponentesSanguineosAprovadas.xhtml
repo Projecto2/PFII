@@ -1,0 +1,387 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <c:if test="${diagRequisicaoComponenteSanguineoBean.temMensagemPendente == true}">
+                    <c:if test="${diagRequisicaoComponenteSanguineoBean.tipoMensagemPendente == 'Sucesso'}">
+                        #{diagRequisicaoComponenteSanguineoBean.getMensagem()}
+                    </c:if>
+
+                    <c:if test="${diagRequisicaoComponenteSanguineoBean.tipoMensagemPendente == 'Erro'}">
+                        #{diagRequisicaoComponenteSanguineoBean.getMensagem()}
+                    </c:if>
+
+                </c:if>
+
+                <h2>#{interObjetosSessaoBean.menuTitulo} -> Laboratório -> Solicitações de Componentes Sanguíneos Aprovadas</h2>
+
+                <center>
+
+                    <p:growl sticky="true" id="ms" autoUpdate="true"/>
+                    <h:form prependId="false" >
+                        <p:button value="Voltar" styleClass="float-right" style="width: 130px;" outcome="/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+                        <center>
+                            <span style="font-size: 16pt">
+                                <p:commandLink style="color: #0088cc" value="#{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                               ajax="true" partialSubmit="true" process="@this" 
+                                               actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                               update=":formPacienteVisualizar" 
+                                               onclick="PF('dialogMaisDetalhes').show();"/>
+                                <br/>
+                                #{msgs.subProcesso}: #{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                                #{msgs.dataDaSolicitacao}: 
+                                <p:outputLabel value="#{interRequisicaoComponenteSanguineoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                            </span>
+                        </center>
+                        <br/>
+                        
+                        <p:dataTable  id="dataTable" rows="12" paginator="true" paginatorPosition="bottom" rowKey="#{pedido.pkIdRespostaRequisicaoComponenteSanguineo}" selectionMode="single"
+                                      var="pedido" value="#{diagTransfusaoBean.findSolicitacoesAprovadas()}"
+                                      emptyMessage="Nenhuma solicitação de componente sanguíneo aprovada encontrada.">
+
+                            <p:column headerText="Código da Solicitação">
+                                <center>
+                                    <h:outputText value="#{pedido.fkIdRequisicaoComponenteSanguineo.pkIdRequisicaoComponenteSanguineo}"/>
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Nº do Processo">
+                                <center>
+                                    <h:outputText value="#{pedido.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Nº do Subprocesso">
+                                <center>
+                                    <h:outputText value="#{pedido.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Paciente" filterBy="#{pedido.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}">
+                                <center>
+                                    #{pedido.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                    #{pedido.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                    #{pedido.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Solicitada Por" filterBy="#{pedido.fkIdRequisicaoComponenteSanguineo.fkIdMedico.fkIdPessoa.nome}">
+                                <center>
+                                    #{pedido.fkIdRequisicaoComponenteSanguineo.fkIdMedico.fkIdPessoa.nome} 
+                                    #{pedido.fkIdRequisicaoComponenteSanguineo.fkIdMedico.fkIdPessoa.nomeDoMeio}
+                                    #{pedido.fkIdRequisicaoComponenteSanguineo.fkIdMedico.fkIdPessoa.sobreNome}
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Data da Solicitação" >
+                                <center>
+                                    <h:outputText value="#{pedido.fkIdRequisicaoComponenteSanguineo.data}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>		
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Aprovada Por" filterBy="#{pedido.fkIdFuncionario.fkIdPessoa.nome}">
+                                <center>
+                                    #{pedido.fkIdFuncionario.fkIdPessoa.nome} 
+                                    #{pedido.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                    #{pedido.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Data da Aprovação" >
+                                <center>
+                                    <h:outputText value="#{pedido.dataResposta}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>		
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+
+                            <p:column>
+                                <center>
+                                    <p:menuButton value="Opções">
+                                        <p:separator/>
+                                        <p:menuitem value="Visualizar Dados" action="#{diagRespostaRequisicaoComponenteSanguineoBean.setDiagRespostaRequisicaoComponenteSanguineoVisualizar(pedido)}" 
+                                                    onclick="PF('dialogVisualizar').show();" process="@this" update=":formVisual" icon="ui-icon-info"/>
+                                        <p:separator/>
+                                        <p:menuitem value="Realizar Transfusão" action="#{diagTransfusaoBean.create(pedido)}" update="dataTable"/>
+                                        <p:separator/>
+                                    </p:menuButton>
+                                </center>
+                            </p:column>
+
+                        </p:dataTable>
+                        
+                        <h:panelGrid columns="2" class="float-right" rendered="true">
+                            <p:commandButton value="Nova Solicitação Componente Sanguínio" icon="ui-icon-plus" actionListener="#{diagRequisicaoComponenteSanguineoBean.setInterRegistoInternamento(interRequisicaoComponenteSanguineoBean.registoInternamento)}" action="solicitarComponenteSanguineoNovoInter.xhtml?faces-redirect=true"/>
+                        </h:panelGrid>
+                        <br/>
+                        <br/>
+                    </h:form>
+
+                </center>
+
+                <p:dialog closable="false" showEffect="fade" widgetVar="dialogVisualizar" modal="true" width="60%" resizable="false" position="top">
+                    <h:form id="formVisual">
+                        <h:panelGrid columns="2" class="float-right">
+                            <p:commandButton value="Fechar" onclick="dialogVisualizar.hide()" 
+                                             action="#{diagRespostaRequisicaoComponenteSanguineoBean.setDiagRespostaRequisicaoComponenteSanguineoVisualizar(null)}" process="@this" style="width: 100px"/>
+                        </h:panelGrid>
+
+                        <br/>
+                        <br/>
+
+                        <p:tabView id="tabVisualizarSolicitacao" style="height: 500%">
+                            <p:tab title="Dados do Paciente">
+                                <p:tabView id="tabDadosCandidatos" style="height: 70%">      
+                                    <p:tab title="Dados do Paciente">
+                                        <h:panelGrid columns="2" cellpadding="4">
+
+                                            <h3>Nº de Processo: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+
+                                            <h3>Nº de Subprocesso: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+
+                                            <h3>Grupo Sanguíneo: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo}"/>
+
+                                            <h3>Peso: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.peso} kg"/> 
+
+                                            <h3>Transfusão Anterior: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.transfusaoAnterior.descricao}"/>
+
+                                            <h3>Gravidez Anterior: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.gravidezAnterior.descricao}"/>
+
+                                            <h3>Sistomatologia Hemorrágica: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.sistomatologiaHemorragica.descricao}"/>
+
+                                            <h3>História Reacção Transfusional: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.historiaReaccaoTransfusional.descricao}"/>
+
+                                        </h:panelGrid>
+                                    </p:tab>
+                                    <p:tab title="Dados Pessoais">
+                                        <h:panelGrid columns="2" cellpadding="4">
+
+                                            <h3>Nome Completo: </h3>
+                                            <h:panelGrid columns="1" cellpadding="4">
+                                                #{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                                                #{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                #{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                            </h:panelGrid>
+
+                                            <h3>Data de Nascimento: </h3>
+                                            <h:outputText style="border: none" value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.dataNascimento}">
+                                                <f:convertDateTime pattern="dd-MM-yyyy"/>
+                                            </h:outputText>
+                                            <h3>Sexo: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdSexo.descricao}"/>
+                                            <h3>Nacionalidade: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdNacionalidade.nomePais}"/>
+                                            <h3>Estado Civil: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEstadoCivil.descricao}"/>
+                                        </h:panelGrid>
+                                    </p:tab>
+                                    <p:tab title="Filiação">
+                                        <h:panelGrid columns="2" cellpadding="7">
+                                            <h3>Nome do Pai: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomePai}"/>
+                                            <h3>Nome da Mãe: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeMae}"/>
+                                        </h:panelGrid>
+                                    </p:tab>
+                                    <p:tab title="Contacto">
+                                        <h:panelGrid columns="2" cellpadding="7">
+                                            <h3>Telefone 1: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.telefone1}"/>
+                                            <h3>Telefone 2: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.telefone2}"/>
+                                            <h3>Email 1: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.email1}"/>
+                                            <h3>Email 2: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdContacto.email2}"/>
+                                        </h:panelGrid>
+                                    </p:tab>
+                                    <p:tab title="Endereço">
+                                        <h:panelGrid columns="2" cellpadding="7">
+                                            <h3>País: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.fkIdPais.nomePais}"/>
+                                            <h3>Província: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.fkIdProvincia.nomeProvincia}"/>
+                                            <h3>Município: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.fkIdMunicipio.nomeMunicipio}"/>
+                                            <h3>Distrito: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdDistrito.descricao}"/>
+                                            <h3>Comuna: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.fkIdComuna.descricaoComuna}"/>
+                                            <h3>Bairro: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.bairro}"/>
+                                            <h3>Rua: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.rua}"/>
+                                            <h3>Nº Casa: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdEndereco.numeroCasa}"/>
+                                        </h:panelGrid>
+                                    </p:tab>
+                                    <p:tab title="Outros Dados">
+                                        <h:panelGrid columns="2" cellpadding="7">
+                                            <h3>Religião: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdReligiao.descricao}"/>
+                                        </h:panelGrid>
+                                    </p:tab>
+                                </p:tabView>
+                            </p:tab>
+
+                            <p:tab title="Dados da Solicitação">
+                                <p:tabView id="tabDadosSolicitacao" style="height: 70%">
+                                    <p:tab title="Dados da Solicitação da Transfusão">
+                                        <h:panelGrid columns="2" cellpadding="4">                            
+
+                                            <h3>Código da Solicitação: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.pkIdRequisicaoComponenteSanguineo}"/>
+
+                                            <h3>Data da Solicitação: </h3>
+                                            <h:outputLabel style="border: none" value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.data}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy - HH:mm"/>
+                                            </h:outputLabel>
+
+                                            <h3>Solicitada por: </h3>
+                                            <h:panelGrid columns="1" cellpadding="4">
+                                                #{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdMedico.fkIdPessoa.nome} 
+                                                #{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdMedico.fkIdPessoa.nomeDoMeio}
+                                                #{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdMedico.fkIdPessoa.sobreNome}
+                                            </h:panelGrid>
+
+                                            <h3>Aprovada por: </h3>
+                                            <h:panelGrid columns="1" cellpadding="4">
+                                                #{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdFuncionario.fkIdPessoa.nome} 
+                                                #{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                                #{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                            </h:panelGrid>
+
+                                            <h3>Carácter da Transfusão: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.fkIdCaracterTransfusao.descricao}"/>
+
+                                            <c:if test="${diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.dataProgramadaTransfusao != null}">
+                                                <h3>Data Programada: </h3>
+                                                <h:outputLabel style="border: none" value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.dataProgramadaTransfusao}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                                                </h:outputLabel>
+                                            </c:if>
+
+                                            <h3>Pesquisa de Anti-Corpos Irregulares: </h3>
+                                            <p:outputLabel value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.resultadoPesquisaAnticorposIrregulares.descricaoResultadoExameCandidato}"/>                            
+
+                                            <h3>Observações: </h3>
+                                            <p:inputTextarea style="width: 100%" cols="40" rows="4" value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.observacoes}" maxlength="255"/>
+
+                                        </h:panelGrid>
+                                    </p:tab>
+
+                                    <p:tab title="Componentes Requisitados">
+
+                                        <p:dataTable id="dataTable" rows="5" paginator="true" paginatorPosition="bottom" 
+                                                     var="componente" value="#{diagRespostaRequisicaoComponenteSanguineoBean.diagRespostaRequisicaoComponenteSanguineoVisualizar.fkIdRequisicaoComponenteSanguineo.diagRequisicaoComponenteSanguineoHasComponenteList}">
+
+                                            <p:column headerText="Tipo de Componente" filterBy="#{componente.fkIdComponente.descricaoComponenteSanguineo} ">
+                                                <center>
+                                                    #{componente.fkIdComponente.descricaoComponenteSanguineo} 
+                                                </center>
+                                            </p:column>
+
+                                            <p:column headerText="Quantidade">
+                                                <center>
+                                                    #{componente.quantidadeComponente} ml
+                                                </center>
+                                            </p:column>
+
+                                        </p:dataTable>
+
+                                    </p:tab>
+
+                                    <p:tab title="Bolsas Seleccionadas">
+
+                                        <p:dataTable id="dataTableB" rows="5" paginator="true" paginatorPosition="bottom" 
+                                                     var="bolsa" value="#{diagRespostaRequisicaoComponenteSanguineoBean.listaBolsas}">
+
+                                            <p:column headerText="Código da Bolsa">
+                                                <center>
+                                                    #{bolsa.fkIdTesteCompatibilidade.fkIdBolsaSangue.codigoColheita} 
+                                                </center>
+                                            </p:column>
+
+                                            <p:column headerText="Quantidade Utilizada">
+                                                <center>
+                                                    #{bolsa.quantidade} 
+                                                </center>
+                                            </p:column>
+
+                                            <p:column headerText="Código do Dador">
+                                                <center>
+                                                    #{bolsa.fkIdTesteCompatibilidade.fkIdBolsaSangue.fkIdCandidatoDador.codigoCandidatoDador}
+                                                </center>
+                                            </p:column>
+
+                                            <p:column headerText="Dador">
+                                                <center>
+                                                    #{bolsa.fkIdTesteCompatibilidade.fkIdBolsaSangue.fkIdCandidatoDador.fkIdPessoa.nome}
+                                                    #{bolsa.fkIdTesteCompatibilidade.fkIdBolsaSangue.fkIdCandidatoDador.fkIdPessoa.nomeDoMeio}
+                                                    #{bolsa.fkIdTesteCompatibilidade.fkIdBolsaSangue.fkIdCandidatoDador.fkIdPessoa.sobreNome}
+                                                </center>
+                                            </p:column>
+
+                                            <p:column headerText="Grupo Sanguíneo">
+                                                <center>
+                                                    #{bolsa.fkIdTesteCompatibilidade.fkIdBolsaSangue.fkIdCandidatoDador.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo} 
+                                                </center>
+                                            </p:column>
+
+                                            <p:column headerText="Tipo de Componente">
+                                                <center>
+                                                    #{bolsa.fkIdRespostaRequisicaoHasComponente.fkIdComponente.descricaoComponenteSanguineo} 
+                                                </center>
+                                            </p:column>
+                                        </p:dataTable>
+
+                                    </p:tab>
+                                </p:tabView>  
+                            </p:tab>
+                        </p:tabView>
+                    </h:form>
+                </p:dialog>
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

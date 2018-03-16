@@ -1,0 +1,273 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAmb.xhtml"/>
+            </ui:define>
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAmb.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h:form id="formularioId">
+
+                    <p:growl autoUpdate="true"/>
+
+                    <p:fieldset legend="Ambulatório -> CID10 -> Gerir Perfis">
+
+                        <div class="ui-fluid">
+
+
+
+                            <p:panelGrid 
+                                columns="2" 
+                                columnClasses="ui-grid-col-2,ui-grid-col-10"
+                                layout="grid" 
+                                styleClass="ui-panelgrid-blank"
+                                >
+
+                                <h:outputLabel value="Especialidade:" />        
+                                <p:selectOneMenu 
+                                    id="especialidadeSOM"  
+                                    value="#{ambCidPerfilGerirBean.ambCidPerfis.fkIdEspecialidades.pkIdEspecialidade}"
+                                    filter="true" filterMatchMode="contains"
+                                    >
+                                    <p:ajax
+                                        event="itemSelect"
+                                        update="perfilFS"
+                                        listener="#{ambCidPerfilGerirBean.installEspecialidade(ambCidPerfilGerirBean.ambCidPerfis.fkIdEspecialidades.pkIdEspecialidade)}"
+                                        />
+                                    
+                                    
+                                    <f:selectItems 
+                                        value="#{grlEspecialidadeBean.findAllOrderByDescricao(ambCidPerfilGerirBean.ambCidPerfis.fkIdEspecialidades.fkIdProfissao.pkIdProfissao)}"
+                                        var="especialidadeVar" 
+                                        itemLabel="#{especialidadeVar.descricao}"
+                                        itemValue="#{especialidadeVar.pkIdEspecialidade}" 
+                                        />
+                                </p:selectOneMenu>
+
+                            </p:panelGrid>
+
+                            <p:commandButton 
+                                value="Novo Perfil"
+                                action="/ambVisao/ambCid/perfilNovoAmb.xhtml?faces-redirect=true" 
+                                actionListener="#{ambCidPerfilNovoBean.init(ambCidPerfilGerirBean.ambCidPerfis)}"
+                                />
+
+                            <br /><br />
+                            
+                        </div>
+
+                        <p:fieldset 
+                            id="perfilFS" 
+                            legend="#{ambCidPerfilGerirBean.geraLegendaListaPerfis()}"
+                            >
+                            
+                            <div class="ui-fluid">
+
+                                <p:dataTable 
+                                    id="listaPerfisId" 
+                                    paginator="true" 
+                                    reflow="true"
+                                    rows="8" liveScroll="true"
+                                    emptyMessage="Não existem perfis registados!" 
+                                    var="perfilVar" 
+                                    value="#{ambCidPerfisBean.findAllAmbCidPerfisOrderByPkIdNome(ambCidPerfilGerirBean.ambCidPerfis.fkIdDono, ambCidPerfilGerirBean.ambCidPerfis.fkIdEspecialidades.pkIdEspecialidade)}" 
+                                    >
+                                    <p:column headerText="Perfil">
+                                        <h:outputText value="#{perfilVar.pkIdNome}" />
+                                    </p:column>
+
+                                    <p:column headerText="Especialidade">
+                                        <center>
+                                            <h:outputText value="#{perfilVar.fkIdEspecialidades.descricao}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Perfil Pai">
+                                        <h:outputText value="#{ambCidPerfisBean.obterNomePerfilPai(perfilVar)}" />
+                                    </p:column>
+
+                                    <p:column headerText="Tipo">
+                                        <center>
+                                            <h:outputText value="#{perfilVar.fkIdTipo.nome}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Dono">
+                                        <center>
+                                            <h:outputText value="#{perfilVar.fkIdDono.nomeUtilizador}" />
+                                        </center>
+                                    </p:column>
+
+                                    <p:column headerText="Alterar">
+                                        <center>
+                                            <p:commandButton 
+                                                value="Alterar"
+                                                disabled="#{ambCidPerfilGerirBean.isAlterarBtDisable(perfilVar)}" 
+                                                update=":formularioId:perfilAlterarDG"
+                                                actionListener="#{ambCidPerfilGerirBean.preAlterar(perfilVar)}"
+                                                oncomplete="PF('w_perfilAlterarId').show()"
+                                                process="@this"
+                                                />
+                                        </center>
+
+                                    </p:column>
+
+                                    <p:column headerText="Apagar">
+                                        <center>
+                                            <p:commandButton 
+                                                value="Apagar" 
+                                                disabled="#{ambCidPerfilGerirBean.isAlterarBtDisable(perfilVar)}" 
+                                                update="listaPerfisId"
+                                                actionListener="#{ambCidPerfilGerirBean.apagar(perfilVar.pkIdNome)}"
+                                                process="@this"
+                                                />
+                                        </center>
+                                    </p:column>
+
+                                </p:dataTable>
+
+                            </div>
+
+                            <p:dialog 
+                                id="perfilAlterarDG"  
+                                widgetVar="w_perfilAlterarId" 
+                                header="Alterar Perfil" 
+                                modal="true" 
+                                width="400"
+                                resizable="true" 
+                                responsive="true"
+                                >
+
+                                <div class="ui-fluid">
+
+                                    <p:panelGrid>
+
+                                        <p:row>
+                                            <p:column colspan="3">
+                                                <h:outputLabel value="Nome do Perfil:" />
+                                            </p:column>
+                                            <p:column colspan="3">
+                                                <p:outputLabel value="#{ambCidPerfilGerirBean.ambCidPerfis.pkIdNome}"/>
+                                            </p:column>
+                                        </p:row>
+
+                                        <p:row>
+                                            <p:column colspan="3">
+                                                <h:outputLabel value="Especialidade:" />
+                                            </p:column>
+
+                                            <p:column colspan="3">
+                                                <p:outputLabel value="#{ambCidPerfilGerirBean.ambCidPerfis.fkIdEspecialidades.descricao}" />
+                                            </p:column>
+                                        </p:row>
+
+                                        <p:row>
+                                            <p:column colspan="3">
+                                                <h:outputLabel value="Perfil baseado em:" />
+                                            </p:column>
+                                            <p:column>
+                                                <p:outputLabel value="#{ambCidPerfilGerirBean.obterPerfilPai()}" />
+                                            </p:column>
+                                        </p:row>
+
+                                        <p:row>
+                                            <p:column colspan="3">
+                                                <h:outputLabel value="Tipo do Perfil: " />
+                                            </p:column>
+                                            <p:column colspan="3">
+                                                <h:outputLabel 
+                                                    value="#{ambCidPerfilGerirBean.ambCidPerfis.fkIdTipo.nome}"  
+                                                    rendered="#{! ambCidPerfilGerirBean.tipoDoPerfilCanChange()}" 
+                                                    />
+                                                <p:selectOneRadio  
+                                                    value="#{ambCidPerfilGerirBean.ambCidPerfis.fkIdTipo.pkIdTipos}" 
+                                                    rendered="#{ambCidPerfilGerirBean.tipoDoPerfilCanChange()}"
+                                                    >
+                                                    <p:ajax
+                                                        update="doencasBtId, alterarBtId" 
+                                                        listener="#{ambCidPerfilGerirBean.installTipo(ambCidPerfilGerirBean.ambCidPerfis.fkIdTipo.pkIdTipos)}"
+                                                        />
+                                                    <f:selectItems 
+                                                        value="#{ambCidPerfilTiposBean.findAllOrderByNome()}"
+                                                        var="perfilTiposVar" 
+                                                        itemLabel="#{perfilTiposVar.nome}"
+                                                        itemValue="#{perfilTiposVar.pkIdTipos}" 
+                                                        />
+                                                </p:selectOneRadio>
+                                            </p:column>
+                                        </p:row>
+
+                                        <p:row>
+                                            <p:column colspan="3">
+                                                <h:outputLabel value="Este Perfil é o preferencial ?" />
+                                            </p:column>
+                                            <p:column colspan="3">
+                                                <h:selectBooleanCheckbox value="#{ambCidPerfilGerirBean.perfilPreferencialStatus}">
+                                                    <p:ajax 
+                                                        listener="#{ambCidPerfilGerirBean.installPerfilPreferencialStatus()}"
+                                                        />
+                                                </h:selectBooleanCheckbox>
+                                            </p:column>
+                                        </p:row>
+
+
+
+                                        <p:row>
+                                            <p:column colspan="2">
+                                                <p:commandButton
+                                                    id="doencasBtId"
+                                                    value="Doenças"
+                                                    process="@this" 
+                                                    action="./perfilNovoDoencasAmb.xhtml?faces-redirect=true"
+                                                    actionListener="#{ambCidPerfisDoencasBean.init(ambCidPerfilGerirBean.ambCidPerfis)}"
+                                                    />
+                                            </p:column>
+
+                                            <p:column colspan="2">
+                                                <p:commandButton 
+                                                    id="alterarBtId" 
+                                                    value="Alterar"  
+                                                    process="@this"
+                                                    update="doencasBtId" 
+                                                    actionListener="#{ambCidPerfilGerirBean.alterar()}"
+                                                    />
+                                            </p:column>
+
+                                            <p:column colspan="2">
+                                                <p:commandButton 
+                                                    value="Sair" 
+                                                    oncomplete="PF('w_perfilAlterarId').hide()" 
+                                                    />
+                                            </p:column>
+                                        </p:row>
+                                    </p:panelGrid>
+
+                                </div>
+
+                            </p:dialog>
+
+                        </p:fieldset>
+
+                    </p:fieldset>
+
+                </h:form>
+
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

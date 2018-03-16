@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <p:dataTable id="tabelaTransferencia" sortMode="multiple" var="itemTrsansferencia" rows="8" paginator="true" paginatorPosition="bottom"
+                     value="#{ambTransferenciaListarBean.findAll()}" reflow="true" emptyMessage="Nenhum registo encontrado."
+                     selectionMode="single" rowKey="#{itemTrsansferencia.pkIdTransferencia}">
+
+            <p:column headerText="Nº de Processo" sortBy="#{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"
+                      filterBy="#{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" filterMatchMode="contains">
+                <h:outputText value="#{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+            </p:column> 
+
+            <p:column headerText="Nº de Subprocesso">
+                <h:outputText value="#{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+            </p:column> 
+
+            <p:column headerText="Paciente" sortBy="#{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                                    #{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                                    #{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                                   "
+                      filterBy="#{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                #{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                #{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                               " filterMatchMode="contains">
+                <h:outputText value="#{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}
+                                     #{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                                     #{itemTrsansferencia.fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                    "/>
+            </p:column>
+
+            <p:column headerText="Instituição de Destino">
+                <center>
+                    <h:outputText value="#{itemTrsansferencia.fkIdInstituicao.descricao}"/>
+                </center>
+            </p:column>
+
+            <p:column headerText="Funcionário">
+                <h:outputText value="#{itemTrsansferencia.fkIdFuncionario.fkIdPessoa.nome}
+                                     #{itemTrsansferencia.fkIdFuncionario.fkIdPessoa.nomeDoMeio}
+                                     #{itemTrsansferencia.fkIdFuncionario.fkIdPessoa.sobreNome}
+                                    "/>
+            </p:column>
+
+            <p:column headerText="Data">
+                <h:outputText value="#{itemTrsansferencia.dataTransferencia}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss"/>
+                </h:outputText>
+            </p:column>
+
+            <p:column headerText="------">
+                <center>
+                    <p:menuButton value="Opções">
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Dados Pessoais" icon="ui-icon-info" process="@this" partialSubmit="true" ajax="true" 
+                                    actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(ambTransferenciaListarBean.seleccionarDetalhesTransferencia(itemTrsansferencia).fkIdConsultorioAtendimento.fkIdTriagem.fkIdAgendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                    update=":formPacienteVisualizar" onclick="PF('dialogMaisDetalhes').show();"/>
+                        <p:separator/>
+                        <p:menuitem value="Editar" icon="ui-icon-pencil" process="@this" partialSubmit="true"
+                                    actionListener="#{ambTransferenciaListarBean.seleccionar(itemTrsansferencia)}" 
+                                    
+                                    onclick="PF('dialogEditarConsultorioAtendimento').show()" >
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:menuitem value="Eliminar" icon="ui-icon-trash"
+                                    action="#{ambTransferenciaEliminarBean.setAmbTransferenciaEliminar(itemTrsansferencia)}" 
+                                    onclick="PF('confirmDialogEliminar').show()" >
+                        </p:menuitem>
+                        <p:separator/>
+                        <p:separator/>
+                        <p:menuitem value="Mais detalhes" icon="ui-icon-info" process="@this" partialSubmit="true"  
+                                    actionListener="#{ambTransferenciaListarBean.seleccionarDetalhesTransferencia(itemTrsansferencia)}"
+
+                                    onclick="PF('dialogListarEncaminhamento').show()" 
+                                    />
+                        <p:separator/>
+                    </p:menuButton>
+                </center>
+            </p:column>
+
+        </p:dataTable>
+
+        <center>
+            <p:confirmDialog message="Tem certeza que pretende eliminar o item seleccionado?"
+                             header="Eliminar Paciente Encaminhado" severity="alert" widgetVar="confirmDialogEliminar">
+                <p:commandButton value="Sim" actionListener="#{ambTransferenciaEliminarBean.removerRegisto(ambTransferenciaEliminarBean.getAmbTransferenciaEliminar())}" 
+                                 process="@this" update="tabelaTransferencia" oncomplete="PF('confirmDialogEliminar').hide()"/>
+                <p:commandButton value="Não" onclick="PF('confirmDialogEliminar').hide();" type="button" />
+            </p:confirmDialog>
+        </center>
+
+    </h:body>
+</html>
+

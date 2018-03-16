@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Listagem de Fornecimentos</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalFarm.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralFarm.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>Farmácia -> Fornecimentos</h2>
+                <p:messages id="msg" autoUpdate="true" closable="true"/>
+                <p:fieldset>
+                    <h:form id="formPrincipal">  
+                        <p:fieldset>
+                            <h:panelGrid columns="2" cellpadding="3" id="gridCamposPesquisa">
+                                <p:outputLabel value="Tipo de Fornecimento"/>
+                                <f:validateBean disabled="true">
+
+                                    <p:selectOneMenu id="tipoFornecimento" style="width: 91%" 
+                                                     value="#{farmFornecimentoListarBean.fornecimento.fkIdTipoFornecimento.pkIdTipoFornecimento}">
+                                        <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                        <f:selectItems value="#{farmListasUteisBean.todosTipoFornecimento}"/>
+                                    </p:selectOneMenu>
+                                </f:validateBean>
+
+                                <p:outputLabel value="Fornecedor"/>
+                                <p:selectOneMenu id="tipoFornecedor" style="width: 91%"
+                                                 value="#{farmFornecimentoListarBean.fornecimento.fkIdFornecedor.pkIdFornecedor}">
+                                    <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                    <f:selectItems value="#{farmListasUteisBean.todosFornecedores}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Datas entre"/>
+                                <h:panelGrid columns="5">
+                                    <p:calendar id="dataInicio" value="#{farmFornecimentoListarBean.dataInicio}" /> 
+                                    <p:outputLabel value="e"/> 
+                                    <p:calendar id="dataFim" value="#{farmFornecimentoListarBean.dataFim}" 
+                                                maxdate="#{farmFornecimentoListarBean.hoje}" />
+                                    <p:watermark for="dataInicio" value="Data Inicial"/>
+                                    <p:watermark for="dataFim" value="Data Final"/>
+                                </h:panelGrid>
+                                <p></p>
+                                <p></p><p></p>
+                                <h:panelGrid columns="3">
+
+
+                                    <p:commandButton value="Pesquisar" icon="ui-icon-search" ajax="true"
+                                                     action="#{farmFornecimentoListarBean.pesquisarFornecimentos()}" update="resultado"
+                                                     process="gridCamposPesquisa" />
+
+                                    <p:commandButton value="Limpar" icon="ui-icon-close" ajax="true"
+                                                     action="#{farmFornecimentoListarBean.limparCampos()}" 
+                                                     update="resultado gridCamposPesquisa"
+                                                     process="gridCamposPesquisa" />
+
+                                    <p:commandButton value="Novo" icon="ui-icon-plus"
+                                                     process="@this" action="#{farmFornecimentoListarBean.novoFornecimento()}"/>
+
+                                </h:panelGrid>                                                      
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <p:dataTable id="resultado" var="item" value="#{farmFornecimentoListarBean.listaFornecimentos}"
+                                     rows="12" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+                                     {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                                     {RowsPerPageDropdown}" rowsPerPageTemplate="12,16,20" paginatorPosition="bottom"
+                                     emptyMessage="Nenhum Fornecimento encontrado de momento. Tente pesquisar.">
+
+                            <p:column headerText="Tipo" sortBy="#{item.fkIdTipoFornecimento.descricaoTipoFornecimento}">
+                                <center><p:outputLabel value="#{item.fkIdTipoFornecimento.descricaoTipoFornecimento}" /></center>
+                            </p:column>                                         
+
+                            <p:column headerText="Fornecedor" sortBy="#{item.fkIdFornecedor.fkIdInstituicao.descricao}">
+                                <center><p:outputLabel value="#{item.fkIdFornecedor.fkIdInstituicao.descricao}" /></center>
+                            </p:column>        
+
+                            <p:column headerText="Custo Total" sortBy="#{item.custoTotal}">
+                                <center>
+                                    <p:outputLabel value="#{item.custoTotal}" />                         
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Data" sortBy="#{item.dataFornecimento}">
+                                <center>
+                                    <h:outputText value="#{item.dataFornecimento}" >
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+
+                            <p:column headerText="Responsável" sortBy="#{item.fkIdFuncionarioCadastrou.fkIdPessoa.nome}">
+                                <center><p:outputLabel value="#{item.fkIdFuncionarioCadastrou.fkIdPessoa.nome} #{item.fkIdFuncionarioCadastrou.fkIdPessoa.sobreNome}" /></center>
+                            </p:column>
+
+                            <p:column headerText="------">
+                                <center>
+                                    <p:menuButton value="Opções">
+                                        <p:menuitem value="Ver itens" partialSubmit="true" process="@this" 
+                                                    icon="ui-icon-zoomin" 
+                                                    action="#{farmRedireccionarBean.red_VisualizarIntesFornecimento()}"
+                                                    actionListener="#{farmFornecimentoVerItensBean.setFornecimento(item)}">
+                                        </p:menuitem>
+
+                                    </p:menuButton>
+                                </center>
+
+                            </p:column>
+
+                        </p:dataTable>
+                    </h:form>
+                </p:fieldset>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

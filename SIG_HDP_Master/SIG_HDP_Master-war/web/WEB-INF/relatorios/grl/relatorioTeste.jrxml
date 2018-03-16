@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="relatorioTeste" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d2dbc5f0-ffb7-4b7f-8bd9-39f6d35bc421">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="exemplo" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="pkIdProvincia" class="java.lang.Integer"/>
+	<field name="nomeProvincia" class="java.lang.String"/>
+	<field name="fkIdPais.nomePais" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="131" splitType="Stretch">
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="10" y="13" width="95" height="61" uuid="91d95549-1053-4688-a759-a496a0075feb"/>
+				<imageExpression><![CDATA["LogotipoDivina.jpg"]]></imageExpression>
+			</image>
+			<image vAlign="Middle">
+				<reportElement x="453" y="10" width="71" height="63" uuid="c8dbfcfa-c413-445a-8a6e-b23f66eda8ff"/>
+				<imageExpression><![CDATA["insigniaAngola.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="51" y="11" width="422" height="25" forecolor="#0000FF" uuid="2181f466-d7b2-4c4b-bf85-2f1a04035f23"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="15"/>
+				</textElement>
+				<text><![CDATA[REPÚBLICA DE ANGOLA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="37" width="422" height="20" forecolor="#0000FF" uuid="c034395d-e8f0-4c47-8af6-d1b5d287e5c6"/>
+				<textElement textAlignment="Center">
+					<font fontName="DejaVu Serif" size="12"/>
+				</textElement>
+				<text><![CDATA[GABINETE PROVINCIAL DE  LUANDA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="54" width="422" height="30" forecolor="#0000FF" uuid="c57e9042-4ebf-498d-960d-ad1a6c285f9b"/>
+				<textElement textAlignment="Center">
+					<font fontName="Abyssinica SIL" size="18" isBold="false" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="10" y="90" width="514" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="f7d94b0b-892e-4cc3-a7e3-8ea4282b26c9"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Controlo do Golf - K. Kiaxi - LUANDA Tel-Fax(02) 470781 - 470507 E-mail:hospdp@ebonet.net]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="10" y="90" width="515" height="16" uuid="d33f7101-324e-4140-8b49-b63f46e03072"/>
+			</rectangle>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="184" y="6" width="168" height="20" uuid="65c97a5c-189f-434f-a7f6-d0c771336a79"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Título do Relatório]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement x="67" y="6" width="117" height="20" uuid="1ea9e77b-1045-455d-aaa2-54464f169772"/>
+				<text><![CDATA[ID DA PROVÍNCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="234" y="6" width="118" height="20" uuid="7c310572-4c15-420e-9d42-3fb1c7f1f552"/>
+				<text><![CDATA[NOME DA PROVÍNCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="374" y="6" width="118" height="20" uuid="0adaceb9-0ffd-4fca-8b39-455a004aaf8a"/>
+				<text><![CDATA[NOME DO PAÍS]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="36" splitType="Stretch">
+			<textField>
+				<reportElement x="67" y="2" width="117" height="20" uuid="ecaec466-3cef-4e59-b374-fae5864c72b7"/>
+				<textFieldExpression><![CDATA[$F{pkIdProvincia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="234" y="2" width="118" height="20" uuid="599105b9-c2a9-4e90-b01f-77ea8d3fd5c2"/>
+				<textFieldExpression><![CDATA[$F{nomeProvincia}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="374" y="0" width="118" height="20" uuid="0a9c29b8-4341-49b5-90a0-3dc8e441aff2"/>
+				<textFieldExpression><![CDATA[$F{fkIdPais.nomePais}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<rectangle>
+				<reportElement mode="Transparent" x="10" y="3" width="515" height="16" uuid="3e49cc6d-ee03-4acb-8dfd-f5399dd4af4c"/>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Opaque" x="11" y="4" width="514" height="15" forecolor="#0000FF" backcolor="#C0C0C0" uuid="6bc9d0a5-4277-41b8-9b5f-026cc780be28"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<text><![CDATA[Hospital Divina Providência]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="410" y="21" width="114" height="20" uuid="fea5899f-3a6a-4638-86f0-cae9176228b3"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="424" y="3" width="100" height="20" uuid="395f4811-5ce1-4bff-8575-8b3c7f629c5d"/>
+				<textElement textAlignment="Right">
+					<font fontName="DejaVu Serif"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

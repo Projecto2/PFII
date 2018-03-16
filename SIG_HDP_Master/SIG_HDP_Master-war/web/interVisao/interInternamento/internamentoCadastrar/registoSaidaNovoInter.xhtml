@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <body>        
+
+        <ui:composition template="./../../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h:form id="registoSaida">  
+                    <h2>#{interObjetosSessaoBean.menuTitulo} -> Pacientes -> Internados -> Registar Saída</h2>
+                    <p:separator/>
+                    <p:commandButton value="Voltar" style="width: 130px;" styleClass="float-right" action="/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" partialSubmit="true" process="@this" icon="ui-icon-arrowreturnthick-1-w"/>
+                    <center>
+                        <span style="font-size: 16pt">
+                            <p:commandLink style="color: #0088cc" id="pac" value="#{interRegistoSaidaNovoBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interRegistoSaidaNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interRegistoSaidaNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interRegistoSaidaNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                           ajax="true" partialSubmit="true" process="@this" 
+                                           actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interRegistoSaidaNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                           update=":formPacienteVisualizar" 
+                                           onclick="PF('dialogMaisDetalhes').show();"/>
+                            <br/>
+                            #{msgs.subProcesso}: #{interRegistoSaidaNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                            #{msgs.dataDaSolicitacao}: 
+                            <p:outputLabel value="#{interRegistoSaidaNovoBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </p:outputLabel>
+                        </span>
+                    </center>
+                    <br/>
+                    <p:growl id="ms" autoUpdate="true" />
+                    <p:panel>
+
+                        <p:tabView>
+                            <p:tab title="Saída">
+                                <h:panelGrid columns="1" cellpadding="2" cellspacing="2">                    
+
+                                    <h:outputLabel value="Tipo de Saída * "/>
+                                    <p:selectOneMenu id="talta" value="#{interRegistoSaidaNovoBean.interRegistoSaida.fkIdTipoAlta.pkIdTipoAlta}" 
+                                                     required="true" requiredMessage="Deve selecionar o Tipo de Saída" style=" border-radius:10%;font-weight:500;width:93%">
+                                        <f:selectItem itemLabel="" itemValue="" />
+                                        <f:selectItems value="#{interTipoAltaListarBean.listarTodos}" 
+                                                       var="t"
+                                                       itemLabel="#{t.descricao}"
+                                                       itemValue="#{t.pkIdTipoAlta}" 
+                                                       />
+                                    </p:selectOneMenu> 
+
+                                    <h:panelGrid columns="2">                    
+                                        <h:outputLabel value="Data Saída "/>
+                                        <h:outputLabel value="Data Internamento "/>                                        
+                                        <p:inputText value="#{interRegistoSaidaNovoBean.interRegistoSaida.dataRegistoSaida}" readonly="true"  style="width: 95%">
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </p:inputText>
+                                        <p:inputText value="#{interRegistoSaidaNovoBean.registoInternamento.dataRegisto}" readonly="true"  style="width: 100%">
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </p:inputText>
+                                    </h:panelGrid>
+
+                                    <h:outputLabel value="Total de Dias de Hospitalização"/>
+                                    <p:inputText value="#{interRegistoSaidaNovoBean.findTotalDiasHospitalizacao(interRegistoSaidaNovoBean.registoInternamento.dataRegisto)}" readonly="true" style="width: 97%" id="diasHospitalizado"/>
+
+                                    <h:outputLabel value="Diagnóstico Definitivo * "/>
+                                    <p:inputTextarea rows="6" cols="44" value="#{interRegistoSaidaNovoBean.interRegistoSaida.diagnosticoDefinitivo}" required="true" requiredMessage="O diagnóstico definitivo é obrigatório!"/>
+
+                                </h:panelGrid>
+                            </p:tab>    
+                            <p:tab title="Resultado das Doenças">
+                                <p:panel id="resultado" style="border: 0px;">
+                                    <p:dataTable  var="ficha"  scrollWidth="31%"  value="#{interDoencaInternamentoPacienteBean.findAllDoencasPaciente(interRegistoSaidaNovoBean.registoInternamento.pkIdRegistoInternamento)}" 
+                                                  emptyMessage="Nenhum registo de doenças encontrado" selectionMode="single" rowKey="#{ficha.pkIdDoencaInternamentoPaciente}" paginator="true" paginatorPosition="bottom" rows="10" editable="true" id="tableEdit1" >
+
+                                        <p:ajax event="rowEdit" listener="#{interRegistoSaidaNovoBean.onRowEdit}" update="tableEdit1" />
+
+                                        <p:column headerText="Doença" width="200">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{ficha.fkIdCidSubcategorias.nome}"/>
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                    <h:inputText value="#{ficha.fkIdCidSubcategorias.nome}" readonly="true"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column> 
+
+                                        <p:column headerText="Tipo de Doença" width="150" sortBy="#{ficha.fkIdTipoDoencaIntenamento.descricao}">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{ficha.fkIdTipoDoencaIntenamento.descricao}"/>
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                    <h:inputText value="#{ficha.fkIdTipoDoencaIntenamento.descricao}" readonly="true"/>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column> 
+
+                                        <p:column headerText="Infomação Adicional" width="180">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{ficha.informacaoAdicional}"/>
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                    <center>
+                                                        <p:inputTextarea rows="2" value="#{interRegistoSaidaNovoBean.informacaoAdicional}"/>
+                                                    </center>
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column>
+
+                                        <p:column headerText="Resultado * ">
+                                            <p:cellEditor>
+                                                <f:facet name="output">
+                                                    <h:outputText value="#{ficha.fkIdResultadoDoenca.descricao}"/>
+                                                </f:facet>
+                                                <f:facet name="input">
+                                                    <center>
+                                                        <p:selectOneMenu value="#{interRegistoSaidaNovoBean.fkIdResultado}" style=" border-radius:10%;font-weight:500;width:75%;" filter="true"  required="true" requiredMessage="O resultado é obrigatório!">
+                                                            <f:selectItems value="#{interResultadoDoencaListarBean.findAll()}" 
+                                                                           var="r"
+                                                                           itemLabel="#{r.descricao}"
+                                                                           itemValue="#{r.pkIdResultadoDoenca}" 
+                                                                           />
+                                                        </p:selectOneMenu>   
+                                                    </center>  
+                                                </f:facet>
+                                            </p:cellEditor>
+                                        </p:column> 
+
+                                        <p:column>
+                                            <p:rowEditor />
+                                        </p:column>                                
+
+                                    </p:dataTable>
+                                </p:panel>
+                            </p:tab>  
+                        </p:tabView>
+                        <p:outputLabel value=" * Campos obrigatórios !" style="color: red"/>
+                        <p:separator />
+                        <p:separator />  
+                        <p:commandButton style=" border-radius:10%;font-weight:700; width: 130px" value="Salvar" action="#{interRegistoSaidaNovoBean.salvar()}"/> 
+                    </p:panel>  
+                    <br/>
+                </h:form>
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+            </ui:define>   
+
+        </ui:composition>
+    </body>
+</html>

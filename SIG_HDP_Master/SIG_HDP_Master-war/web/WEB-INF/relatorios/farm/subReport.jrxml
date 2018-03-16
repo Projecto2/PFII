@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subReport" language="groovy" printOrder="Horizontal" pageWidth="555" pageHeight="802" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="dc8f3ba4-541b-4245-b81e-7291c5d11b0c">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="codigoLocal" class="java.lang.Integer"/>
+	<parameter name="codigoProduto" class="java.lang.Integer"/>
+	<parameter name="dataInicial" class="java.util.Date"/>
+	<parameter name="dataFinal" class="java.util.Date"/>
+	<queryString>
+		<![CDATA[SELECT
+     farm_ficha_stock."data_movimento" AS farm_ficha_stock_data_movimento,
+     farm_ficha_stock."entradas" AS farm_ficha_stock_entradas,
+     farm_ficha_stock."saidas" AS farm_ficha_stock_saidas,
+     farm_ficha_stock."quantidade_restante" AS farm_ficha_stock_quantidade_restante,
+     farm_ficha_stock."origem_ou_destino" AS farm_ficha_stock_origem_ou_destino,
+     farm_lote_produto."data_validade" AS farm_lote_produto_data_validade,
+     farm_lote_produto."numero_lote" AS farm_lote_produto_numero_lote,
+     grl_pessoa."sobre_nome" AS grl_pessoa_sobre_nome,
+     grl_pessoa."nome_do_meio" AS grl_pessoa_nome_do_meio,
+     grl_pessoa."nome" AS grl_pessoa_nome
+FROM
+     "public"."farm_local_armazenamento" farm_local_armazenamento INNER JOIN "public"."farm_ficha_stock" farm_ficha_stock ON farm_local_armazenamento."pk_id_local_armazenamento" = farm_ficha_stock."fk_id_local_armazenamento"
+     INNER JOIN "public"."farm_lote_produto" farm_lote_produto ON farm_ficha_stock."fk_id_lote_produto" = farm_lote_produto."pk_id_lote_produto"
+     INNER JOIN "public"."rh_funcionario" rh_funcionario ON farm_ficha_stock."fk_id_funcionario" = rh_funcionario."pk_id_funcionario"
+     INNER JOIN "public"."grl_pessoa" grl_pessoa ON rh_funcionario."fk_id_pessoa" = grl_pessoa."pk_id_pessoa"
+WHERE
+     farm_ficha_stock."fk_id_local_armazenamento" = $P{codigoLocal}
+ AND farm_lote_produto."fk_id_produto" = $P{codigoProduto}]]>
+	</queryString>
+	<field name="farm_ficha_stock_data_movimento" class="java.sql.Timestamp"/>
+	<field name="farm_ficha_stock_entradas" class="java.lang.Integer"/>
+	<field name="farm_ficha_stock_saidas" class="java.lang.Integer"/>
+	<field name="farm_ficha_stock_quantidade_restante" class="java.lang.Integer"/>
+	<field name="farm_ficha_stock_origem_ou_destino" class="java.lang.String"/>
+	<field name="farm_lote_produto_data_validade" class="java.sql.Date"/>
+	<field name="farm_lote_produto_numero_lote" class="java.lang.String"/>
+	<field name="grl_pessoa_sobre_nome" class="java.lang.String"/>
+	<field name="grl_pessoa_nome_do_meio" class="java.lang.String"/>
+	<field name="grl_pessoa_nome" class="java.lang.String"/>
+	<variable name="totalEntradas" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{farm_ficha_stock_entradas}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="totalSaidas" class="java.lang.Integer" calculation="Sum">
+		<variableExpression><![CDATA[$F{farm_ficha_stock_saidas}]]></variableExpression>
+		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="quantidadeActual" class="java.lang.Integer">
+		<variableExpression><![CDATA[$F{farm_ficha_stock_quantidade_restante}]]></variableExpression>
+		<initialValueExpression><![CDATA[$V{totalEntradas}-$V{totalSaidas}]]></initialValueExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="34">
+			<staticText>
+				<reportElement mode="Opaque" x="1" y="2" width="70" height="30" backcolor="#97CDEF" uuid="41e956be-e5b5-4c19-84de-754439d5c333"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#102EF4"/>
+					<topPen lineWidth="1.0" lineColor="#102EF4"/>
+					<leftPen lineWidth="1.0" lineColor="#102EF4"/>
+					<bottomPen lineWidth="1.0" lineColor="#102EF4"/>
+					<rightPen lineWidth="1.0" lineColor="#102EF4"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data do Movimento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="72" y="2" width="82" height="30" backcolor="#97CDEF" uuid="44afe6b3-f747-44d3-8064-91281d097579"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#102EF4"/>
+					<topPen lineWidth="1.0" lineColor="#102EF4"/>
+					<leftPen lineWidth="1.0" lineColor="#102EF4"/>
+					<bottomPen lineWidth="1.0" lineColor="#102EF4"/>
+					<rightPen lineWidth="1.0" lineColor="#102EF4"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Origem/Destino]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="155" y="2" width="78" height="30" backcolor="#97CDEF" uuid="6201d276-2748-4f74-a707-4cd8640800ab"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#102EF4"/>
+					<topPen lineWidth="1.0" lineColor="#102EF4"/>
+					<leftPen lineWidth="1.0" lineColor="#102EF4"/>
+					<bottomPen lineWidth="1.0" lineColor="#102EF4"/>
+					<rightPen lineWidth="1.0" lineColor="#102EF4"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº de Lote]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="234" y="2" width="70" height="30" backcolor="#97CDEF" uuid="36462a0b-45bc-4c13-926d-158f82681a26"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#102EF4"/>
+					<topPen lineWidth="1.0" lineColor="#102EF4"/>
+					<leftPen lineWidth="1.0" lineColor="#102EF4"/>
+					<bottomPen lineWidth="1.0" lineColor="#102EF4"/>
+					<rightPen lineWidth="1.0" lineColor="#102EF4"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Data de Validade]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="304" y="2" width="56" height="30" backcolor="#97CDEF" uuid="ed0b0871-8f8e-49f7-9fa4-df7f46125dee"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#102EF4"/>
+					<topPen lineWidth="1.0" lineColor="#102EF4"/>
+					<leftPen lineWidth="1.0" lineColor="#102EF4"/>
+					<bottomPen lineWidth="1.0" lineColor="#102EF4"/>
+					<rightPen lineWidth="1.0" lineColor="#102EF4"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Entradas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="360" y="2" width="56" height="30" backcolor="#97CDEF" uuid="3cc8557b-209d-438d-8f66-2e18ee622065"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#102EF4"/>
+					<topPen lineWidth="1.0" lineColor="#102EF4"/>
+					<leftPen lineWidth="1.0" lineColor="#102EF4"/>
+					<bottomPen lineWidth="1.0" lineColor="#102EF4"/>
+					<rightPen lineWidth="1.0" lineColor="#102EF4"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saídas]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="416" y="2" width="56" height="30" backcolor="#97CDEF" uuid="ea02fb66-1b16-45a9-9555-3130babb099e"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#102EF4"/>
+					<topPen lineWidth="1.0" lineColor="#102EF4"/>
+					<leftPen lineWidth="1.0" lineColor="#102EF4"/>
+					<bottomPen lineWidth="1.0" lineColor="#102EF4"/>
+					<rightPen lineWidth="1.0" lineColor="#102EF4"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Stock Existente]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="472" y="2" width="82" height="30" backcolor="#97CDEF" uuid="ed903147-8d0a-42e5-9909-6a309d50eefe"/>
+				<box>
+					<pen lineWidth="1.0" lineColor="#102EF4"/>
+					<topPen lineWidth="1.0" lineColor="#102EF4"/>
+					<leftPen lineWidth="1.0" lineColor="#102EF4"/>
+					<bottomPen lineWidth="1.0" lineColor="#102EF4"/>
+					<rightPen lineWidth="1.0" lineColor="#102EF4"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="DejaVu Serif" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Responsável]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="43" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="71" height="40" uuid="3ea68369-08b2-4006-a570-1eb3f58fd019"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{farm_ficha_stock_data_movimento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="72" y="0" width="84" height="40" uuid="43d6e3b7-ca4a-4357-9f8b-da9bcaf08c80"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{farm_ficha_stock_origem_ou_destino}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="155" y="0" width="81" height="40" uuid="c8bc523e-7aff-474b-8bd8-a153de7c8772"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{farm_lote_produto_numero_lote}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="305" y="0" width="55" height="40" uuid="239def0f-dac1-405a-b1de-a0499529f61c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{farm_ficha_stock_entradas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="0" width="56" height="40" uuid="c8e845c6-36b0-440c-a773-0cdc72620212"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{farm_ficha_stock_saidas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="416" y="0" width="56" height="40" uuid="df64f3fd-dfc0-4ecc-97cb-03a2d2a9aff6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{farm_ficha_stock_quantidade_restante}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="236" y="0" width="69" height="40" uuid="76f9a7fa-1f23-42cf-a220-1e1ca912d4a5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{farm_lote_produto_data_validade}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="472" y="0" width="82" height="40" isRemoveLineWhenBlank="true" uuid="00e1589d-7928-4749-84cd-92610847ecd4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{grl_pessoa_nome}  + " " + $F{grl_pessoa_nome_do_meio} + " " + $F{grl_pessoa_sobre_nome}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="59">
+			<textField>
+				<reportElement x="1" y="4" width="219" height="13" uuid="2f490ac3-f297-4b8c-85fe-50c54c41b3b8"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total de Entradas: " + $V{totalEntradas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="17" width="219" height="20" uuid="6a7c8a33-7735-4253-a048-f3f41811ce13"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Total de Saídas: " + $V{totalSaidas}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="37" width="219" height="20" uuid="f34c7c9f-a273-4b5b-ad6d-c3035a4aaa8a"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Quantidade Actual: " + $V{quantidadeActual}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

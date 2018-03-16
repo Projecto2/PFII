@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"                
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="./../../../../../template/masterPage.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="menuHorizontal">
+        <ui:include src="./../../../../menuHorizontalDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="menuLateral">
+        <ui:include src="./../../../../menuLateralDiag.xhtml"/>
+    </ui:define>
+
+    <ui:define name="center">
+
+        <h2>Laboratório -> Hemoterápia -> Transfusões -> Histórico de Entrada e Saída</h2> 
+
+        <center>
+            <p:growl sticky="true" id="ms" autoUpdate="true"/>
+            <h:form prependId="false" >
+                <br/>
+                <p:fieldset>
+                    <h:panelGrid columns="2" width="100%">
+                        <h:panelGrid columns="2" id="gridCamposPesquisa">
+
+                            <f:validateBean disabled="true">
+                                <h:outputLabel value="Nº de Registos: "/>
+                                <p:spinner id="numRegistos" value="#{diagTransfusaoBean.numeroRegistos}" 
+                                           min="1" required="true" requiredMessage="É necessário informar o número de registos a retornar."/>
+
+                                <p:outputLabel value="Nº de Processo: "/>
+                                <f:validateBean disabled="true">
+                                    <p:inputText id="numProcesso" style="width: 100%" value="#{diagTransfusaoBean.diagTransfusaoPesquisar.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}" />
+                                </f:validateBean>
+
+                                <p:outputLabel value="Paciente: "/>
+                                <h:panelGrid columns="4" width="100%" cellpadding="3">
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="nome" style="width: 100%; margin-left: -5px" value="#{diagTransfusaoBean.diagTransfusaoPesquisar.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="nome" value="Nome" />
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="sobreNome" style="width: 105%" value="#{diagTransfusaoBean.diagTransfusaoPesquisar.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="sobreNome" value="Sobrenome" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="Nacionalidade: "/>
+                                <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagTransfusaoBean.diagTransfusaoPesquisar.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdNacionalidade.pkIdPais}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{diagCandidatoDadorBean.listaPais}" var="pais"
+                                                   itemLabel="#{pais.nacionalidade}" itemValue="#{pais.pkIdPais}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Sexo: "/>
+                                <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagTransfusaoBean.diagTransfusaoPesquisar.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdSexo.pkIdSexo}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{itensAjaxBean.sexoList}" var="sexo"
+                                                   itemLabel="#{sexo.descricao}" itemValue="#{sexo.pkIdSexo}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Grupo Sanguíneo: "/>
+                                <p:selectOneMenu style="width: 95%; text-align: center" value="#{diagTransfusaoBean.diagTransfusaoPesquisar.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo}">
+                                    <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                    <f:selectItems value="#{diagGrupoSanguineoBean.findAll()}" var="grupo"
+                                                   itemLabel="#{grupo.descricaoGrupoSanguineo}" itemValue="#{grupo.pkIdGrupoSanguineo}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Realizada por: "/>
+                                <h:panelGrid columns="4" width="100%" cellpadding="3">
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="nomeFuncionario" style="width: 100%; margin-left: -5px" value="#{diagTransfusaoBean.diagTransfusaoPesquisar.fkRealizadoPor.fkIdPessoa.nome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="nomeFuncionario" value="Nome" />
+
+                                    <f:validateBean disabled="true">
+                                        <p:inputText id="sobreNomeFuncionario" style="width: 105%" value="#{diagTransfusaoBean.diagTransfusaoPesquisar.fkRealizadoPor.fkIdPessoa.sobreNome}" />
+                                    </f:validateBean>
+                                    <p:watermark for="sobreNomeFuncionario" value="Sobrenome" />
+                                </h:panelGrid>
+
+                                <p:outputLabel value="Realizada entre: "/>
+                                <h:panelGrid columns="3" width="100%" cellpadding="5">
+
+                                    <p:calendar id="dataInicio" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}" value="#{diagTransfusaoBean.dataInicioPesquisaResultado}" locale="pt"/> 
+                                    <p:outputLabel value="e"/> 
+                                    <p:calendar id="dataFim" navigator="true" maxdate="#{diagResultadosExameRealizadoBean.momentoActual}" value="#{diagTransfusaoBean.dataFimPesquisaResultado}" locale="pt"/>
+                                </h:panelGrid>
+
+                                <p:watermark for="dataInicio" value="Data Inicial" />
+                                <p:watermark for="dataFim" value="Data Final" />
+
+                            </f:validateBean>
+
+                            <br/>
+                            <h:panelGrid columns="2" width="100%">
+                                <p:commandButton style="width: 100%" value="Pesquisar" icon="ui-icon-search"
+                                                 action="#{diagTransfusaoBean.pesquisarTransfusoes()}" 
+                                                 partialSubmit="true" process="gridCamposPesquisa" update="dataTable"/>
+                                <p:commandButton value="Limpar" icon="ui-icon-close" action="#{diagTransfusaoBean.limparPesquisa()}" 
+                                                 partialSubmit="true" process="@this" style="width: 100%"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </p:fieldset>
+
+                <p:dataTable id="dataTable" rows="10" paginator="true" paginatorPosition="bottom" rowKey="#{pes.pkIdTransfusao}" selectionMode="single"
+                             var="pes" value="#{diagTransfusaoBean.itens}"
+                             emptyMessage="Nenhum registo de tipagem sanguínea encontrado.">
+
+                    <p:column headerText="Nº Processo">
+                        <center>
+                            <h:outputText value="#{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nº Subprocesso">
+                        <center>
+                            <h:outputText value="#{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso}"/>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nome Completo" filterBy="#{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome}">
+                        <center>
+                            #{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} 
+                            #{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio}
+                            #{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Nacionalidade" filterBy="#{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdNacionalidade.nomePais}">
+                        <center>
+                            #{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdNacionalidade.nomePais}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data Nasc">
+                        <center>
+                            <h:outputText value="#{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.dataNascimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Sexo" filterBy="#{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdSexo.descricao}">
+                        <center>
+                            #{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdSexo.descricao}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Grupo Sanguineo" filterBy="#{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo}">
+                        <center>
+                            #{pes.fkIdRespostaRequisicaoComponenteSanguineo.fkIdRequisicaoComponenteSanguineo.fkIdRegistoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.fkIdGrupoSanguineo.descricaoGrupoSanguineo}
+                        </center>
+                    </p:column>
+
+                    <p:column headerText="Data Transfusão">
+                        <center>
+                            <h:outputText value="#{pes.dataTransfusao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy - HH:mm:ss"/>
+                            </h:outputText>
+                        </center>
+                    </p:column>
+                    
+                    <p:column>
+                        <center>
+
+                            <p:commandButton value="Visualizar" icon="ui-icon-info" actionListener="#{diagTransfusaoBean.setDiagTransfusaoVisualizar(pes)}"
+                                             action="visualizarHistoricoTransfusao.xhtml?faces-redirect=true" process="@this"/>
+                        </center>
+                    </p:column>
+                </p:dataTable>
+
+            </h:form>
+        </center>
+
+    </ui:define>
+
+</ui:composition>

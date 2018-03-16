@@ -1,0 +1,18 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <h:form style="background-color: rgba(230,230,230,0.05); height: 620px">
+        <p:panelMenu style="width: 100%">
+            <p:submenu label="Navegação Segurança" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeSEG[0])}">
+                <p:menuitem value="Conta" action="/faces/segVisao/segUtilizador/utilizadoresListarSeg.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeSEG[1])}"/>
+                <p:menuitem value="Funcionalidades" action="/segVisao/segFuncionalidades/funcionalidadesGerirSeg.xhtml?faces-redirect=true" actionListener="#{segFuncionalidadeGerirBean.init()}" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeSEG[2])}"/>
+                <p:menuitem value="Perfis" action="/segVisao/segPerfil/perfilListarSeg.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeSEG[3])}"/>
+                <p:menuitem value="Privilegios" action="/segVisao/segPrivilegio/privilegioListarSeg.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeSEG[4])}"/>
+                <p:menuitem value="Permissões" action="/segVisao/segPermissao/permissaoSeg.xhtml?faces-redirect=true" rendered="#{segLoginBean.renderedFormulario(segLoginBean.controloDeAcesso.funcionalidadeSEG[5])}"/>
+            </p:submenu>
+        </p:panelMenu>
+    </h:form>
+</ui:composition>

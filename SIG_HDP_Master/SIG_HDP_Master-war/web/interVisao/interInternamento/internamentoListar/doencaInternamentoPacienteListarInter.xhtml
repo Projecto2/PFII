@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h2>#{interObjetosSessaoBean.menuTitulo} -> Listagem de Doenças Registadas no Paciente</h2> 
+                <br/>
+                <h:form id="paciente">
+                    <p:growl id="ms" autoUpdate="true" />
+                    <p:button value="Voltar" styleClass="float-right" style="width: 130px;" outcome="registoInternamentoListarInter" icon="ui-icon-arrowreturnthick-1-w"/>
+                    <center>
+                        <span style="font-size: 16pt">
+                            <p:commandLink style="color: #0088cc" value="#{interDoencaInternamentoPacienteBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                           ajax="true" partialSubmit="true" process="@this" 
+                                           actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                           update=":formPacienteVisualizar" 
+                                           onclick="PF('dialogMaisDetalhes').show();"/>
+                            <br/>
+                            #{msgs.subProcesso}: #{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                            #{msgs.dataDaSolicitacao}: 
+                            <p:outputLabel value="#{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </p:outputLabel>
+                        </span>
+                    </center>
+                    <br/>
+                    <p:fieldset>
+                        <h:panelGrid columns="2">
+
+                            <p:outputLabel value="Data Diagnóstico"/>
+                            <h:panelGrid columns="4">
+                                <p:calendar navigator="true" id="de" size="37" value="#{interDoencaInternamentoPacienteBean.dataRegisto1}" /> 
+                                <p:watermark for="de" value="De" />
+                                <p:calendar navigator="true" id="a" size="38" value="#{interDoencaInternamentoPacienteBean.dataRegisto2}" /> 
+                                <p:watermark for="a" value="A" />
+                            </h:panelGrid>
+
+                            <p:outputLabel value="Doença"/>
+                            <p:inputText style="width: 99%" value="#{interDoencaInternamentoPacienteBean.doencaPesq}"/>   
+
+                            <p:outputLabel value="Tipo de Doença"/>   
+                            <p:selectOneMenu id="tDoenca" value="#{interDoencaInternamentoPacienteBean.tipoDoenca}" 
+                                             style=" border-radius:10%;font-weight:500;width:96%;">
+                                <f:selectItem itemLabel="" />
+                                <f:selectItems value="#{interTipoDoencaInternamentoListarBean.findAll()}" 
+                                               var="td"
+                                               itemLabel="#{td.descricao}"
+                                               itemValue="#{td.pkIdTipoDoencaInternamento}" 
+                                               />
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Diagnósticado Por (Médico / Enfermeiro)"/>
+                            <p:inputText style="width: 99%" id="nome" value="#{interDoencaInternamentoPacienteBean.nomeFuncionario}"/>
+
+                            <p></p><p></p>                               
+                            <h:panelGrid columns="3" cellpadding="0" width="100%">
+                                <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#{interDoencaInternamentoPacienteBean.pesquisar(interDoencaInternamentoPacienteBean.registoInternamento.pkIdRegistoInternamento, 1)}" update="resultado" style="width: 180px"/>
+                                <p:commandButton value="Registar Doenças Intercorrentes" icon="ui-icon-plus" id="adicionar2" onclick="PF('selecionarDoenca').show();" style="width: 100%" update=":doencas:pac :doencas:tituloDialog :doencas:formularioId:hipoteseDiagnosticoFS :doencas:numeroSupProcesso :doencas:dataSolicitacao">
+                                    <p:tooltip id="toolTipAdicionar2" for="adicionar2" value="Doença Intercorrente" />
+                                </p:commandButton>
+                            </h:panelGrid>       
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:panel id="resultado" style="border: 0px;">
+                        <p:dataTable  id="datatable" var="ficha"  scrollWidth="31%"  value="#{interDoencaInternamentoPacienteBean.listaDoencasPaciente}" 
+                                      emptyMessage="Nenhum registo de doença coexistente / intercorrente encontrado" selectionMode="single" rowKey="#{ficha.pkIdDoencaInternamentoPaciente}" paginator="true" paginatorPosition="bottom" rows="10" >  
+
+                            <p:column headerText="Doença">
+                                <h:outputText value="#{ficha.fkIdCidSubcategorias.nome}"/>
+                            </p:column>  
+
+                            <p:column headerText="Tipo de Doença" filterBy="#{ficha.fkIdTipoDoencaIntenamento.descricao}" filterMatchMode="contains" sortBy="#{ficha.fkIdTipoDoencaIntenamento.descricao}">
+                                <h:outputText value="#{ficha.fkIdTipoDoencaIntenamento.descricao}"/>
+                            </p:column>  
+
+                            <p:column headerText="Diagnósticado por" filterBy="#{ficha.fkIdFuncionario.fkIdPessoa.nome} #{ficha.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{ficha.fkIdFuncionario.fkIdPessoa.sobreNome}" filterMatchMode="contains" sortBy="#{ficha.fkIdFuncionario.fkIdPessoa.nome} #{ficha.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{ficha.fkIdFuncionario.fkIdPessoa.sobreNome}">
+                                <h:outputText value="#{ficha.fkIdFuncionario.fkIdPessoa.nome} #{ficha.fkIdFuncionario.fkIdPessoa.nomeDoMeio} #{ficha.fkIdFuncionario.fkIdPessoa.sobreNome}"/>
+                            </p:column>
+
+                            <p:column headerText="Data / Hora de Registo" sortBy="#{ficha.dataDiagnostico}">
+                                <h:outputText value="#{ficha.dataDiagnostico}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy hh:mm:ss"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Infomação Adicional" rendered="false">
+                                <h:outputText value="#{ficha.informacaoAdicional}"/>
+                            </p:column>     
+
+                            <p:column headerText="------">
+                                <center>
+                                    <p:menuButton value="Opções">
+                                        <p:menuitem value="Editar" icon="ui-icon-pencil" action="#" disabled=""/>
+                                        <p:menuitem value="Eliminar" icon="ui-icon-trash"/>
+                                    </p:menuButton>  
+                                </center>    
+                            </p:column>  
+
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+
+                <!--FORMULARIO PARA CADASTRO DOENÇAS-->
+                <h:form id="doencas" >
+                    <p:dialog id="selecionarDoenca" widgetVar="selecionarDoenca" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade" width="1100" height="600">
+
+                        <p:outputLabel id="tituloDialog">
+                            <h2>#{interObjetosSessaoBean.menuTitulo} -> Registar Doenças Intercorrentes</h2>
+                        </p:outputLabel>
+                        <br/>
+                        <center>
+                            <span style="font-size: 16pt">
+                                <p:commandLink style="color: #0088cc" id="pac" value="#{interDoencaInternamentoPacienteBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                               ajax="true" partialSubmit="true" process="@this" 
+                                               actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                               update=":formPacienteVisualizar" 
+                                               onclick="PF('dialogMaisDetalhes').show();"/>
+                                <br/>
+                                #{msgs.subProcesso}:
+                                <p:outputLabel value="#{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //" id="numeroSupProcesso"/>
+                                #{msgs.dataDaSolicitacao}: 
+                                <p:outputLabel value="#{interDoencaInternamentoPacienteBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                    <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                </p:outputLabel>
+                            </span>
+                        </center>
+                        <ui:include src="./../internamentoCadastrar/hipoteseDiagnosticoInter.xhtml"/>
+
+                        <center>
+                            <h:panelGrid style=" font-family: cursive;" columns="2">
+                                <p:commandButton style=" border-radius:10%;font-weight:700;width: 100%" value="Salvar" actionListener="#{interDoencaInternamentoPacienteBean.salvarDoencaIntercorrente()}" update="formularioId:hipoteseDiagnosticoFS"/> 
+                                <p:commandButton value="Fechar" onclick="PF('selecionarDoenca').hide()"
+                                                 action="#{interDoencaInternamentoPacienteBean.limparCampos()}" process="@this" style="width: 100%"/>             
+                            </h:panelGrid>
+                        </center>                        
+
+                    </p:dialog>    
+                </h:form>
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

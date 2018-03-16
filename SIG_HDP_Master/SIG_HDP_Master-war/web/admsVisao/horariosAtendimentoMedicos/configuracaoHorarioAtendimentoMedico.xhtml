@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralAdms.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+                <h1>#{msgs.admissoes} -> Conf. Dias de Atendimento #{msgs.medico}</h1>
+                <p:messages id="ms" autoUpdate="true" closable="true"/>
+                <p:growl id="ms2" autoUpdate="true"/>
+
+                <h:form prependId="false" >
+                    <br/>
+
+                    <p:fieldset>
+                        <div class="ui-fluid">
+                            <p:panelGrid id="gridPesquisarFuncionario" columns="1" layout="grid" styleClass="ui-noborder">
+
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                    <f:validateBean disabled="true">
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                            <p:outputLabel for="primeiroNome" value="#{msgs.primeiroNome}: "/>
+                                            <p:inputText id="primeiroNome" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdPessoa.nome}"
+                                                         validator="tres-caracteres-validator" />
+                                            <p:outputLabel for="nomeDoMeio" value="#{msgs.nomeDoMeio}: "/>
+                                            <p:inputText id="nomeDoMeio" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdPessoa.nomeDoMeio}"/>
+                                            <p:outputLabel for="sobreNome" value="#{msgs.sobreNome}: "/>
+                                            <p:inputText id="sobreNome" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdPessoa.sobreNome}"/>
+                                        </p:panelGrid>
+                                        <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+
+                                            <p:outputLabel for="numeroCartao" value="Nº Cartão: "/>
+                                            <p:inputNumber id="numeroCartao" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.numeroCartao}" decimalPlaces="0" thousandSeparator="" minValue="0"/>
+
+                                            <p:outputLabel for="tipoFuncionario" value="Tipo Funcionário: "/>
+                                            <p:selectOneMenu id="tipoFuncionario" style="width: 100%; text-align: center" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdTipoFuncionario.pkIdTipoFuncionario}"
+                                                             filter="true" filterMatchMode="contains">
+                                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                                <f:selectItems value="#{itensAjaxBean.tipoFuncionarioList}" var="tipo"
+                                                               itemLabel="#{tipo.descricao}" itemValue="#{tipo.pkIdTipoFuncionario}"/>
+                                            </p:selectOneMenu>
+
+                                            <p:outputLabel for="especialidade" value="Especialidade Médica: "/>
+                                            <p:selectOneMenu id="especialidade" style="width: 100%; text-align: center" value="#{rhFuncionarioPesquisarBean.funcionarioPesquisa.fkIdEspecialidade1.pkIdEspecialidade}" 
+                                                             autoWidth="false" filter="true" filterMatchMode="contains">
+                                                <f:selectItem itemLabel="" itemValue="#{null}"/>
+                                                <f:selectItems value="#{grlEspecialidadeBean.pesquisaPorEspecialidadeMedica()}" var="esp"
+                                                               itemLabel="#{esp.descricao}" itemValue="#{esp.pkIdEspecialidade}"/>
+                                            </p:selectOneMenu>
+
+                                        </p:panelGrid>
+                                    </f:validateBean>
+                                </p:panelGrid>
+
+
+                                <p:panelGrid columns="4" layout="grid" styleClass="ui-noborder">
+                                    <p:commandButton style="width: 100%" icon="ui-icon-search" value="Pesquisar" 
+                                                     action="#{rhFuncionarioPesquisarBean.pesquisarFuncionariosMedicosActivos()}" 
+                                                     process="gridPesquisarFuncionario" update="dataTable"/>
+                                    <p:commandButton value="Limpar" action="#{rhFuncionarioPesquisarBean.limparPesquisaMedicos()}"
+                                                     process="@this" update="gridPesquisarFuncionario dataTable" style="width: 100%"/>
+                                </p:panelGrid>
+
+                            </p:panelGrid>
+                        </div>
+                    </p:fieldset>
+
+                    <p:dataTable id="dataTable" rows="10" paginator="true" paginatorPosition="bottom" style="width: 100%"
+                                 var="funcionario" value="#{rhFuncionarioPesquisarBean.funcionariosMedicosPesquisadosList}" emptyMessage="Nenhum registro de funcionário encontrado">
+                        <p:column filterBy="#{funcionario.numeroCartao}" filterMatchMode="contains" headerText="Número do Cartão">
+                            <p:outputLabel value="#{funcionario.numeroCartao}"/>
+                        </p:column>
+                        <p:column filterBy="#{funcionario.fkIdPessoa.nome} #{funcionario.fkIdPessoa.nomeDoMeio} #{funcionario.fkIdPessoa.sobreNome}" filterMatchMode="contains" headerText="Nome Completo">
+                            <p:outputLabel value="#{funcionario.fkIdPessoa.nome} #{funcionario.fkIdPessoa.nomeDoMeio} #{funcionario.fkIdPessoa.sobreNome}"/>
+                        </p:column>
+                        <p:column filterBy="#{funcionario.fkIdCentroHospitalar.fkIdInstituicao.descricao}" filterMatchMode="contains" headerText="Unidade Hospitalar">
+                            #{funcionario.fkIdCentroHospitalar.fkIdInstituicao.descricao}
+                        </p:column>
+                        <p:column filterBy="#{funcionario.fkIdProfissao.descricao}" filterMatchMode="contains" headerText="Profissão">
+                            #{funcionario.fkIdProfissao.descricao}
+                        </p:column>
+                        <p:column headerText="Especialidades">
+                            <p:outputLabel rendered="#{funcionario.fkIdEspecialidade1 != null}" value="#{funcionario.fkIdEspecialidade1.descricao}"/>
+                            <p:outputLabel rendered="#{funcionario.fkIdEspecialidade2 != null}" value=", #{funcionario.fkIdEspecialidade2.descricao}"/>
+                        </p:column>
+                        <p:column filterBy="#{funcionario.fkIdTipoFuncionario.descricao}" filterMatchMode="contains" headerText="Tipo">
+                            #{funcionario.fkIdTipoFuncionario.descricao}
+                        </p:column>
+                        <p:column filterBy="#{funcionario.fkIdEstadoFuncionario.descricao}" filterMatchMode="contains" headerText="Estado">
+                            #{funcionario.fkIdEstadoFuncionario.descricao}
+                        </p:column>
+                        <p:column headerText="#{msgs.opcoes} Horário de Atendimento">
+                            <center>
+                                <p:menuButton value="#{msgs.opcoes}">
+                                    <p:menuitem value="#{msgs.editar} #{msgs.horariosAtendimento}" icon="ui-icon-pencil"
+                                                actionListener="#{admsDiaHoraDeAtendimentoDoMedicoBean.setMedicoSelecionado(funcionario)}"
+                                                partialSubmit="true"
+                                                onclick="PF('dialogConfiguracao').show()"
+                                                process="@this" update=":configuracao:dia_semana :configuracao:hora_inicio :configuracao:hora_fim :configuracao:numero_maximo_pacientes :configuracao:dataTable"/>
+                                </p:menuButton>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+
+
+                </h:form>
+
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+
+
+
+                <p:dialog widgetVar="dialogConfiguracao" header="Dias e Horários de Atendimento"
+                          width="50%" height="630px" showEffect="fade"
+                          hideEffect="fade" modal="true" position="center">
+                    <h:form id="configuracao">
+                        <p:fieldset>
+                            <div class="ui-fluid">
+                                <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+
+                                    <p:outputLabel for="dia_semana" value="#{msgs.diaSemana}: "/>
+                                    <p:selectOneMenu id="dia_semana" required="true" value="#{admsDiaHoraDeAtendimentoDoMedicoBean.admsDiaHoraDeAtendimentoDoMedico.fkIdDiaDaSemana.pkIdDiaSemana}">
+                                        <f:selectItems value="#{grlDiaSemanaBean.findAll()}" var="diaSemana"
+                                                       itemLabel="#{diaSemana.descricao}" itemValue="#{diaSemana.pkIdDiaSemana}"/>
+                                    </p:selectOneMenu>
+
+                                    <p:outputLabel for="hora_inicio" value="#{msgs.horaInicio}: "/>
+                                    <p:calendar id="hora_inicio" locale="pt" required="true" value="#{admsDiaHoraDeAtendimentoDoMedicoBean.admsDiaHoraDeAtendimentoDoMedico.horaInicioTrabalho}"
+                                                pattern="HH:mm" timeOnly="true"/>
+
+                                    <p:outputLabel for="hora_fim" value="#{msgs.horaFim}: "/>
+                                    <p:calendar id="hora_fim" locale="pt" required="true" value="#{admsDiaHoraDeAtendimentoDoMedicoBean.admsDiaHoraDeAtendimentoDoMedico.horaFimTrabalho}" 
+                                                pattern="HH:mm" timeOnly="true"/>
+
+                                    <p:outputLabel for="numero_maximo_pacientes" value="#{msgs.numeroMaximoPacientes}: "/>
+                                    <p:inputNumber id="numero_maximo_pacientes" required="true" value="#{admsDiaHoraDeAtendimentoDoMedicoBean.admsDiaHoraDeAtendimentoDoMedico.numeroMaximoPaciente}" 
+                                                   minValue="1" decimalPlaces="0"/>
+
+                                    <br/>
+                                    <p:panelGrid columns="2" layout="grid" styleClass="ui-noborder">
+                                        <p:commandButton icon="ui-icon-plus" value="#{msgs.gravar}" 
+                                                         actionListener="#{admsDiaHoraDeAtendimentoDoMedicoBean.gravarHorarioDeAtendimentoMedico()}"
+                                                         partialSubmit="true" process="@this dia_semana hora_inicio hora_fim numero_maximo_pacientes" 
+                                                         update="dataTable dia_semana hora_inicio hora_fim numero_maximo_pacientes"/>
+                                        <p:commandButton icon="ui-icon-plus" value="#{msgs.gravarEdicao}" disabled="true" 
+                                                         partialSubmit="true" process="@this hora_inicio hora_fim numero_maximo_pacientes dia_semana" 
+                                                         update="dataTable hora_inicio hora_fim numero_maximo_pacientes"/>
+                                    </p:panelGrid>
+                                </p:panelGrid>
+                            </div>
+                        </p:fieldset>
+
+                        <p:dataTable id="dataTable" value="#{admsDiaHoraDeAtendimentoDoMedicoBean.medicoSelecionado.admsDiaHoraDeAtendimentoDoMedicoList}" 
+                                     var="atendimento"
+                                     style="width: 100%" emptyMessage="Não Existem Documentos"
+                                     paginator="true" paginatorPosition="bottom" rows="7">
+                            <p:column headerText="#{msgs.diaSemana}">
+                                <center>                                        
+                                    #{atendimento.fkIdDiaDaSemana.descricao}
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.codigo}">
+                                <center>                                        
+                                    #{atendimento.fkIdDiaDaSemana.codigoDiaSemana}
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.horaInicio}">
+                                <center>         
+                                    <h:outputText value="#{atendimento.horaInicioTrabalho}">
+                                        <f:convertDateTime pattern="HH:mm"/>
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.horaFim}">
+                                <center>  
+                                    <h:outputText value="#{atendimento.horaFimTrabalho}">
+                                        <f:convertDateTime pattern="HH:mm"/>
+                                    </h:outputText>
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.numeroMaximoPacientes}">
+                                <center>  
+                                    <h:outputText value="#{atendimento.numeroMaximoPaciente}"/>
+                                </center>
+                            </p:column>
+                            <p:column headerText="#{msgs.eliminar}">
+                                <center>                                        
+                                    <p:commandButton style="width: 100%" icon="ui-icon-trash" value="#{msgs.eliminar}" partialSubmit="true" 
+                                        actionListener="#{admsDiaHoraDeAtendimentoDoMedicoBean.setAdmsDiaHoraDeAtendimentoDoMedicoEliminar(atendimento)}" 
+                                        process="@this" update="@this :formEliminarHorarioAtendimento:dataTableAgendamentosNesteDiaParaOMedico"
+                                        onclick="PF('eliminarHorarioAtendimento').show();"/>
+                                </center>
+                            </p:column>
+                        </p:dataTable>
+
+                        <br/>
+                        <!--<center>
+                            <p:commandButton value="# {msgs.fechar}" partialSubmit="true" process="@this" onclick="PF('dialogConfiguracao').close()"/>
+                        </center>-->
+
+                    </h:form>
+                </p:dialog>
+                
+                
+                    <p:confirmDialog message="Horário de Atendimento Será Eliminado, Tem a Certeza Que Pretende Continuar!"
+                                     header="Tem a Certeza Que Pretende Eliminar Este Horário de Atendimento?" severity="alert"
+                                     widgetVar="eliminarHorarioAtendimento" width="50%">
+                        <h:form id="formEliminarHorarioAtendimento">
+                            <p:commandButton value="Sim" partialSubmit="true" process="@this" update=":configuracao:dataTable" 
+                                             oncomplete="PF('eliminarHorarioAtendimento').hide()" actionListener="#{admsDiaHoraDeAtendimentoDoMedicoBean.eliminarHorarioDeAtendimentoMedico()}"/>
+                            <p:commandButton partialSubmit="true" process="@this" value="Não" onclick="PF('eliminarHorarioAtendimento').hide();" type="button" />
+                            <br/>
+                            <br/>
+                            <p:dataTable id="dataTableAgendamentosNesteDiaParaOMedico" rows="7" paginator="true" paginatorPosition="bottom" style="width: 100%"
+                                 var="agendamento" value="#{admsDiaHoraDeAtendimentoDoMedicoBean.getListaAgendamentosMarcadosNesteDiaDeSemanaParaOMedico()}" emptyMessage="Nenhum Agendamento Pendente">
+                                <f:facet name="header">
+                                    Agendamentos do Médico Para Este Dia de Semana
+                                </f:facet>
+                                <p:column headerText="#{msgs.paciente}">
+                                    #{agendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.numeroPaciente} #{agendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{agendamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}
+                                </p:column>
+                                <p:column headerText="#{msgs.dataAgendada}">
+                                    <h:outputText value="#{agendamento.dataHoraInicio}" >
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm" />
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="#{msgs.estadoDoAgendamento}">
+                                    #{agendamento.fkIdEstadoAgendamento.descricaoEstadoAgendamento}
+                                </p:column>
+                            </p:dataTable>
+                        </h:form>
+                    </p:confirmDialog>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

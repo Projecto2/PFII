@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+   <h:head>
+      <title>Gerir Lotes do Produto</title>
+   </h:head>
+
+   <h:body>
+      <ui:composition template="./../../template/masterPage.xhtml">
+
+         <ui:define name="menuHorizontal">
+            <ui:include src="./../menuHorizontalFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="menuLateral">
+            <ui:include src="./../menuLateralFarm.xhtml"/>
+         </ui:define>
+
+         <ui:define name="center">
+            <h2>Farmácia -> Lotes de Produtos</h2>
+            <p:messages id="msg" autoUpdate="true" closable="true"/>
+            <p:fieldset>
+               <h:form id="formPrincipal">                        
+                  <p:dataTable id="resultado" var="loteProduto" rows="6" paginator="true" 
+                               value="#{farmProdutoGerirLotesBean.getLoteByProduto()}"
+                               paginatorPosition="bottom" paginatorTemplate="{CurrentPageReport}  
+                               {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} 
+                               {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" 
+                               emptyMessage="Não há Histórico de lotes para este produto.">
+                     <f:facet name="header">
+                        Histórico de Lotes de <p:outputLabel style="color: #0052A4"
+                                                             value="#{farmProdutoGerirLotesBean.produto.descricao}
+                                                             #{farmProdutoGerirLotesBean.produto.dosagem}
+                                                             #{farmProdutoGerirLotesBean.produto.fkIdUnidadeMedida.abreviatura}"/>
+                     </f:facet>                                            
+
+                     <p:column headerText="Número de Lote">
+                        <center>
+                           <p:outputLabel value="#{loteProduto.numeroLote}" />
+                        </center>
+                     </p:column>
+
+                     <p:column headerText="Data de Cadastro">
+                        <center><h:outputText value="#{loteProduto.dataCadastro}">
+                              <f:convertDateTime pattern="dd-MM-yyyy" />
+                           </h:outputText></center>
+                     </p:column>
+
+                     <p:column headerText="Marca (Laboratório)">
+                        <center>
+                           <p:outputLabel value="#{loteProduto.fkIdMarca.descricao}" />
+                        </center>
+                     </p:column>
+
+                     <p:column headerText="Data de Fabrico">
+                        <center><h:outputText value="#{loteProduto.dataFabrico}">
+                              <f:convertDateTime pattern="dd-MM-yyyy" />
+                           </h:outputText></center>
+                     </p:column>
+
+                     <p:column headerText="Data de Validade">
+                        <center><h:outputText style="color: #{farmStockValidadeProdutosBean.getValidadeItemColor(loteProduto)}" value="#{loteProduto.dataValidade}">
+                              <f:convertDateTime pattern="dd-MM-yyyy" />
+                           </h:outputText></center>
+                     </p:column>
+                     
+                     <p:column headerText="------">
+                        <center>
+
+                           <p:commandButton value="Eliminar" partialSubmit="true" process="@this" icon="ui-icon-trash"
+                                            actionListener="#{farmProdutoListarBean.setProdutoPesquisa(item)}"
+                                            onclick="PF('dialogEliminar').show()" update="resultado">
+                           </p:commandButton>                              
+                        </center>
+                     </p:column>                         
+                  </p:dataTable>
+                  <p></p><p></p>
+                  <h:panelGrid columns="2" cellpadding="3" id="gridCamposPesquisa">
+
+                     <h:panelGrid columns="3">
+                        <p:commandButton value="Voltar" icon="ui-icon-seek-prev"
+                                         process="@this" action="#{farmProdutoGerirLotesBean.voltar()}"/>
+
+                        <p:commandButton value="Novo Lote" icon="ui-icon-plus" onclick="PF('dialogNovo').show();"
+                                         process="@this" partialSubmit="true" 
+                                         update=":formNovo:numeroLoteNovo :formNovo:dataFabricoNova :formNovo:dataValidadeNova"/>
+                     </h:panelGrid> 
+
+                  </h:panelGrid>
+
+                  <h:panelGrid columns="2" class="float-right">
+                     <div style="width: 25px; height: 10px; background-color: red; border-radius: 5px"></div>
+                     <p>Expirado.</p>
+
+                     <div style="width: 25px; height: 10px; background-color: orange; border-radius: 5px"></div>
+                     <p> Expira em 3 meses.</p>
+
+                     <div style="width: 25px; height: 10px; background-color: green; border-radius: 5px"></div>
+                     <p> Validade acima de 3 meses.</p>
+                  </h:panelGrid>
+               </h:form>
+
+               <center>
+                  <p:dialog header="Novo Lote para o produto" closable="false" showEffect="fade"
+                            widgetVar="dialogNovo" modal="true" closeOnEscape="true" width="50%">
+                     <h:form id="formNovo">
+                        <p:growl autoUpdate="true"/>
+                        <p:fieldset>
+                           <h:panelGrid columns="4" cellpadding="2" width="100%">
+                              <p:outputLabel value="Data de Fabrico" />
+                              <p:calendar id="dataFabricoNova" maxdate="#{farmDispensaNovaBean.getDataHoje()}"
+                                          value="#{farmProdutoGerirLotesBean.loteProduto.dataFabrico}"
+                                          style="width: 78%" locale="pt"/>
+                              <p:outputLabel value="Número de Lote *"/>
+                              <p:inputText id="numeroLoteNovo" value="#{farmProdutoGerirLotesBean.loteProduto.numeroLote}"
+                                           required="true" requiredMessage="Indique o número de lote" style="width: 78%"/>
+
+                              <p:outputLabel value="Data de Validade *"/>
+                              <p:calendar id="dataValidadeNova" locale="pt"
+                                          value="#{farmProdutoGerirLotesBean.loteProduto.dataValidade}"
+                                          required="true" requiredMessage="Indique a data de Validade" style="width: 78%" />
+
+                              <p:outputLabel value="Nome Comercial"/>
+                              <p:inputText id="nomeComercial" value="#{farmProdutoGerirLotesBean.loteProduto.nomeComercial}"
+                                           style="width: 78%"/>
+
+                              <p:outputLabel value="Marca (Laboratório)"/>
+                              <p:selectOneMenu id="marca" filter="true" filterMatchMode="contains" style="width: 50%"
+                                               value="#{farmProdutoGerirLotesBean.loteProduto.fkIdMarca.pkIdMarca}">
+                                 <f:selectItem itemLabel="-------- Selecione --------" itemValue="#{null}"/>
+                                 <f:selectItems value="#{farmListasUteisBean.todasMarcas}"/>
+                              </p:selectOneMenu>
+
+                           </h:panelGrid>
+                           <p:commandButton value="Guardar" icon="ui-icon-disk" action="#{farmProdutoGerirLotesBean.criar()}" 
+                                            process="@this numeroLoteNovo dataFabricoNova dataValidadeNova marca"
+                                            onclick="PF('dialogNovo').hide()" update=":formPrincipal:resultado"/>
+
+                           <p:commandButton value="Fechar" icon="ui-icon-close" onclick="PF('dialogNovo').hide()" partialSubmit="true" process="@this"
+                                            type="reset"/> 
+                        </p:fieldset>
+                     </h:form>
+                     <p:outputLabel value="Campos de Preenchimento Obrigatórios (*)"/>
+                  </p:dialog>
+               </center>
+               <center>
+                  <h:form id="formEliminar">
+                     <p:confirmDialog message="Deseja eliminar o produto? Pode estar a ser utilizado... "
+                                      header="Eliminar Produto" severity="alert"
+                                      widgetVar="dialogEliminar">
+
+                        <p:commandButton value="Sim" icon="ui-icon-check" actionListener="#{farmProdutoListarBean.eliminar()}"
+                                         update=":formPrincipal:resultado" 
+                                         oncomplete="produtosListarFarm.xhtml?faces-redirect=true"/>
+
+                        <p:commandButton value="Não" icon="ui-icon-cancel" onclick="PF('dialogEliminar').hide();" type="button" />
+                     </p:confirmDialog>
+                  </h:form>
+               </center>
+
+               <center>                    
+                  <p:dialog header="Editar dados do Produto" closable="true" showEffect="fade" 
+                            widgetVar="dialogEditar" modal="true" width="60%" height="430px"
+                            resizable="false">
+                     <h:form id="formEditar">
+                        <h:panelGrid id="tabEditar">
+
+                        </h:panelGrid>
+
+                        <p:commandButton value="Guardar alterações" icon="ui-icon-disk" ajax="true"
+                                         action="#{farmProdutoEditarBean.editar()}" process="@this"
+                                         onclick="PF('dialogEditar').hide()"/>
+                     </h:form>                                 
+                  </p:dialog>
+               </center>
+            </p:fieldset>
+         </ui:define>
+      </ui:composition>
+   </h:body>
+</html>

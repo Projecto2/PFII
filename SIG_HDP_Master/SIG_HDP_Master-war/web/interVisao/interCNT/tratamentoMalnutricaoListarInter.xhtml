@@ -1,0 +1,281 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../template/masterPage.xhtml">
+
+            <ui:define name="menuHorizontal">
+                <ui:include src="./../menuHorizontalInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="menuLateral">
+                <ui:include src="./../menuLateralInter.xhtml"/>
+            </ui:define>
+
+            <ui:define name="center">
+
+                <h2>#{interObjetosSessaoBean.menuTitulo} -> Ficha Terapeutica. Tratamento de Malnutricao Severa</h2>
+                <br/>
+                <h:form id="ficha">
+                    <p:button value="Voltar" styleClass="float-right" style="width: 130px;" outcome="/interVisao/interInternamento/internamentoListar/registoInternamentoListarInter.xhtml?faces-redirect=true" icon="ui-icon-arrowreturnthick-1-w"/>
+                    <center>
+                        <span style="font-size: 16pt">
+                            <p:commandLink style="color: #0088cc" value="#{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                           ajax="true" partialSubmit="true" process="@this" 
+                                           actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                           update=":formPacienteVisualizar" 
+                                           onclick="PF('dialogMaisDetalhes').show();"/>
+                            <br/>
+                            #{msgs.subProcesso}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //
+                            #{msgs.dataDaSolicitacao}: 
+                            <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}">
+                                <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                            </p:outputLabel>
+                        </span>
+                    </center>
+                    <p:fieldset>
+                        <h:panelGrid columns="2" cellpadding="0">
+
+                            <p:outputLabel value="Data de Registo"/>
+                            <h:panelGrid columns="4">
+                                <p:calendar navigator="true" id="de" size="25" value="#{interTratamentoMalnutricaoListarBean.dataRegistoPesq1}" /> 
+                                <p:watermark for="de" value="De" />
+                                <p:calendar navigator="true" id="a" size="26" value="#{interTratamentoMalnutricaoListarBean.dataRegistoPesq2}" /> 
+                                <p:watermark for="a" value="A" />
+                            </h:panelGrid>
+
+                            <p:outputLabel value="Enfermeiro"/>
+                            <p:inputText style="width: 97%" id="nome" value="#{interTratamentoMalnutricaoListarBean.nomeEnfermeiro}"/> 
+
+                            <p></p><p></p>
+
+                            <h:panelGrid columns="2" width="100%" cellpadding="0">
+                                <p:commandButton value="Pesquisar" icon="ui-icon-search" action="#" update="resultado" ajax="true"/>
+                                <p:commandButton value="Preencher Ficha Terapeutica" icon="ui-icon-plus" type="button" id="adicionar" onclick="PF('addFicha').show();" update=":cadastro:pac :cadastro:numeroSupProcesso :cadastro:dataSolicitacao :cadastro:tab:antropometria :cadastro:tab:dieta :cadastro:tab:tabelaVigilancia :cadastro:tab:sistematico :cadastro:tab:especifico :cadastro:tab:diagrama :cadastro:botao">
+                                    <p:tooltip id="toolTipAdicionar" for="adicionar" value="Preencher Ficha Terapeutica" />
+                                </p:commandButton>
+                            </h:panelGrid>       
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:separator />
+
+                    <p:panel id="resultado" style="border: 0px;">
+                        <p:dataTable  id="datatable" var="ficha"  scrollWidth="31%"  value="#" 
+                                      emptyMessage="Nenhuma ficha de tratamento de malnutrição severa encontrado" selectionMode="single" 
+                                      rowKey="#" paginator="true" rows="10" >
+
+                            <p:column headerText="Data de Registo">
+                                <h:outputText value="#"/>
+                            </p:column>  
+
+                            <p:column headerText="Enferemeiro">
+                                <h:outputText value="#"/>
+                            </p:column>
+
+                            <p:column headerText="Ficha">
+                                <center>
+                                    <p:commandButton value="Visualizar" icon="ui-icon-search"  process="@this"
+                                                     type="button"  onclick="PF('addFicha').show();"/>
+                                </center> 
+                            </p:column>      
+
+                        </p:dataTable>
+                    </p:panel>
+                </h:form>
+
+                <!--FORMULARIO PARA REGISTO-->
+                <h:form id="cadastro">
+                    <p:dialog id="addFicha" widgetVar="addFicha" closable="true"  
+                              modal="true" showEffect="fade" hideEffect="fade">
+                        <h2>#{interObjetosSessaoBean.menuTitulo} -> Programa Nacional de Nutrição</h2>
+                        <br/>
+                        <p:panel header="Ficha Terapeutica. Tratamento de Malnutricao Severa">
+                            <p:growl id="ms" autoUpdate="true" />
+                            <br/>
+                            
+                            <center>
+                                <span style="font-size: 16pt">
+                                    <p:commandLink style="color: #0088cc" id="pac" value="#{interControloDiarioBean.registoInternamento.fkIdInscricaoInternamento.numeroInscricao}: #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nome} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.nomeDoMeio} #{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente.fkIdPessoa.sobreNome}" 
+                                                   ajax="true" partialSubmit="true" process="@this" 
+                                                   actionListener="#{admsPacienteVisualizarBean.setAdmsPaciente(interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdPaciente)}" 
+                                                   update=":formPacienteVisualizar" 
+                                                   onclick="PF('dialogMaisDetalhes').show();"/>
+                                    <br/>
+                                    #{msgs.subProcesso}:
+                                    <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.fkIdSubprocesso.numeroSubprocesso} //" id="numeroSupProcesso"/>
+                                    #{msgs.dataDaSolicitacao}: 
+                                    <p:outputLabel value="#{interControloDiarioBean.registoInternamento.fkIdServicoSolicitado.fkIdSolicitacao.data}" id="dataSolicitacao">
+                                        <f:convertDateTime pattern="dd-MM-yyyy HH:mm"/>
+                                    </p:outputLabel>
+                                </span>
+                            </center>                           
+                            <br/>                            
+
+                            <p:tabView style="width: 100%; height: 280px" id="tab">
+
+                                <p:tab title="ANTROPOMENTRIA">
+                                    <h:panelGrid columns="4" width="100%" cellspacing="1" cellpadding="1" style=" font-family: cursive; alignment-adjust: central; " id="antropometria">                    
+                                        <h:outputLabel value="Altura (cm)" for="alt"/>
+                                        <p:inputText id="alt" value="#{interTratamentoMalnutricaoNovoBean.antropometria.alturaCm}"/> 
+                                        <h:outputLabel value="Peso (kg)" for="peso"/>
+                                        <p:inputText id="peso" value="#{interTratamentoMalnutricaoNovoBean.antropometria.pesoKg}"/> 
+                                        <h:outputLabel value="P/A %" for="pa"/>
+                                        <p:inputText id="pa" value="#{interTratamentoMalnutricaoNovoBean.antropometria.PA}"/> 
+                                        <h:outputLabel value="P.B (mm)" for="pb"/>
+                                        <p:inputText id="pb" value="#{interTratamentoMalnutricaoNovoBean.antropometria.pbMm}"/> 
+                                        <h:outputLabel value="Edemas (-a +++)" for="ed"/>
+                                        <p:inputText id="ed" value="#{interTratamentoMalnutricaoNovoBean.antropometria.edemas}"/> 
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="DIETA TERAPEUTICA">
+
+                                    <h:panelGrid columns="4" width="100%" cellspacing="3" cellpadding="2" style=" font-family: cursive; alignment-adjust: central; " id="dieta">                    
+                                        <h:outputLabel value="Fase" for="fase"/>
+                                        <p:inputText id="fase" value="#{interTratamentoMalnutricaoNovoBean.dietaTerapeutica.fase}"/> 
+                                        <h:outputLabel value="Nome Alimento" for="al"/>
+                                        <p:inputText id="al" value="#{interTratamentoMalnutricaoNovoBean.dietaTerapeutica.alimento}"/> 
+                                        <h:outputLabel value="ml/Refeicao" for="mlref"/>
+                                        <p:inputText id="mlref" value="#{interTratamentoMalnutricaoNovoBean.dietaTerapeutica.mlRefeicao}"/> 
+                                        <h:outputLabel value="Nº/Refeição/dia" for="nrefdia"/>
+                                        <p:inputText id="nrefdia" value="#{interTratamentoMalnutricaoNovoBean.dietaTerapeutica.NRefeicaoDia}"/> 
+                                        <h:outputLabel value="ml/dia" for="mldia"/>
+                                        <p:inputText id="mldia" value="#{interTratamentoMalnutricaoNovoBean.dietaTerapeutica.mlDia}"/> 
+                                        <h:outputLabel value="Ferro" for="ferro"/>
+                                        <p:inputText id="ferro" value="#{interTratamentoMalnutricaoNovoBean.dietaTerapeutica.ferro}"/> 
+                                        <h:outputLabel value="Estado" for="estcon"/>
+                                        <p:selectOneMenu id="estcon" value="#" style=" border-radius:10%;font-weight:500;width:48%;">
+                                            <f:selectItem itemLabel="Ausente" itemValue="1"/>
+                                            <f:selectItem itemLabel="Vomito" itemValue= "2"/>
+                                            <f:selectItem itemLabel="Rejeicao" itemValue="3"/>
+                                            <f:selectItem itemLabel="Sonda G" itemValue= "4"/>
+                                            <f:selectItem itemLabel="Endoven." itemValue= "5"/>
+                                        </p:selectOneMenu> 
+                                        <h:outputLabel value="Quantidade Tomada" for="qt"/>
+                                        <p:selectOneMenu id="qt" value="#{interTratamentoMalnutricaoNovoBean.dietaTerapeutica.quantidadeTomada}" style=" border-radius:10%;font-weight:500;width:48%;">
+                                            <f:selectItem itemLabel="100%" itemValue="1"/>
+                                            <f:selectItem itemLabel="3/4" itemValue= "2"/>
+                                            <f:selectItem itemLabel="1/2" itemValue="3"/>
+                                            <f:selectItem itemLabel="1/4" itemValue= "4"/>
+                                        </p:selectOneMenu> 
+                                        <h:outputLabel value="Hora" for="hora"/>
+                                        <p:calendar id="hora"
+                                                    required="true"
+                                                    requiredMessage="É necessário informar a hora"
+                                                    converterMessage="Data no formato inválido. utilize HH:mm:ss"
+                                                    pattern="HH:mm:ss">
+                                            <f:convertDateTime  pattern="HH:mm:ss" type="time"/>
+                                        </p:calendar>
+                                        <h:outputLabel value="Papa" for="papa"/>
+                                        <p:inputText id="papa" value="#{interTratamentoMalnutricaoNovoBean.dietaTerapeutica.papa}"/> 
+                                        <h:outputLabel value="Outros" for="outt"/>
+                                        <p:inputText id="outt" value="#{interTratamentoMalnutricaoNovoBean.dietaTerapeutica.outros}"/> 
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="TABELA DE VIGILâNCIA">
+                                    <h:panelGrid columns="4" width="100%" cellspacing="3" cellpadding="2" style=" font-family: cursive; alignment-adjust: central; " id="tabelaVigilancia">                    
+                                        <h:outputLabel value="Fezes " for="fezes"/>
+                                        <p:inputText id="fezes" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.fezes}"/> 
+                                        <h:outputLabel value="Vomitos" for="vomitos"/>
+                                        <p:inputText id="vomitos" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.vomitos}"/> 
+                                        <h:outputLabel value="Resp/min*" for="resp"/>
+                                        <p:inputText id="resp" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.respMin}"/> 
+                                        <h:outputLabel value="Tosse -a+++" for="tsse"/>
+                                        <p:inputText id="tsse" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.tosse}"/> 
+                                        <h:outputLabel value="Desidrat/-a+++" for="desi"/>
+                                        <p:inputText id="desi" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.desidrat}"/> 
+                                        <h:outputLabel value="Choq. Sep.-a+++" for="ch"/>
+                                        <p:inputText id="ch" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.choqSep}"/> 
+                                        <h:outputLabel value="Anemia -a+++" for="anemia"/>
+                                        <p:inputText id="anemia" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.anemia}"/>
+                                        <h:outputLabel value="Tº Matin Ax/Rec" for="tmar"/>
+                                        <p:inputText id="tmar" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.TMatinAxRec}"/> 
+                                        <h:outputLabel value="Tº noitinha Ax/Rec" for="tnar"/>
+                                        <p:inputText id="tnar" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.TNoitinhaAxRec}"/> 
+                                        <h:outputLabel value="Sarna -a+++" for="sarna"/>
+                                        <p:inputText id="sarna" value="#{interTratamentoMalnutricaoNovoBean.tabelaVigilancia.sarna}"/> 
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="TRATAMENTO SISTEMÁTICO">
+                                    <h:panelGrid columns="4" width="100%" cellspacing="3" cellpadding="2" style=" font-family: cursive; alignment-adjust: central; " id="sistematico">                    
+                                        <h:outputLabel value="Vit A......UI" for="vit"/>
+                                        <p:inputText id="vit" value="#{interTratamentoMalnutricaoNovoBean.tratamentoSistematico.vita}"/> 
+                                        <h:outputLabel value="Ácido Fólico 5mg" for="acido"/>
+                                        <p:inputText id="acido" value="#{interTratamentoMalnutricaoNovoBean.tratamentoSistematico.acidoFolico}"/> 
+                                        <h:outputLabel value="Antibiótico 1 (Hora)" for="glicemia"/>
+                                        <p:inputText id="glicemia" value="#{interTratamentoMalnutricaoNovoBean.tratamentoSistematico.antibiotico1}"/> 
+                                        <h:outputLabel value="Amociclina (Hora)"/>
+                                        <p:inputText value="#{interTratamentoMalnutricaoNovoBean.tratamentoSistematico.amoxicilina}"/> 
+                                        <h:outputLabel value="Cloroquina mg"/>
+                                        <p:inputText value="#{interTratamentoMalnutricaoNovoBean.tratamentoSistematico.cloroquina}"/> 
+                                        <h:outputLabel value="Mabendazole mg (Fase II)"/>
+                                        <p:inputText value="#{interTratamentoMalnutricaoNovoBean.tratamentoSistematico.mebendazole}"/>                                             
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="TRATAMENTO ESPECÍFICO">
+                                    <h:panelGrid columns="4" width="100%" cellspacing="3" cellpadding="2" style=" font-family: cursive; alignment-adjust: central; " id="especifico">                    
+                                        <h:outputLabel value="Antibiótico 2 (Hora)"/>
+                                        <p:inputText value="#{interTratamentoMalnutricaoNovoBean.tratamentoEspecifico.antibiotico2}"/> 
+                                        <h:outputLabel value="Antibiótico 3 (Hora)"/>
+                                        <p:inputText value="#{interTratamentoMalnutricaoNovoBean.tratamentoEspecifico.antibiotico3}"/> 
+                                        <h:outputLabel value="Resomal ml"/>
+                                        <p:inputText value="#{interTratamentoMalnutricaoNovoBean.tratamentoEspecifico.resomal}"/> 
+                                        <h:outputLabel value="Sonda NG"/>
+                                        <p:inputText value="#{interTratamentoMalnutricaoNovoBean.tratamentoEspecifico.sondang}"/> 
+                                        <h:outputLabel value="Transf."/>
+                                        <p:inputText value="#{interTratamentoMalnutricaoNovoBean.tratamentoEspecifico.transf}"/> 
+                                        <h:outputLabel value="Perf."/>
+                                        <p:inputText value="#{interTratamentoMalnutricaoNovoBean.tratamentoEspecifico.perf}"/>                                            
+                                    </h:panelGrid>
+                                </p:tab>
+
+                                <p:tab title="DIAGRAMA DE PESO">
+
+                                    <h:panelGrid columns="2" width="50%" cellspacing="3" cellpadding="2" style=" font-family: cursive; alignment-adjust: central; " id="diagrama">
+                                        <h:outputLabel value="Peso Alvo (%)" for="palvo"/>
+                                        <p:inputText id="palvo" value="#{interTratamentoMalnutricaoNovoBean.antropometria.pesoAlvo}"/> 
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="4" width="50%" cellspacing="3" cellpadding="2" style=" font-family: cursive; alignment-adjust: central; ">                    
+
+                                        <h:outputLabel value="Diagrama de Peso" for="medi"/>
+
+                                    </h:panelGrid>
+                                </p:tab>
+
+
+                            </p:tabView>
+                            <p:separator />
+                            <p:separator />       
+                            <br/>
+                            <center>
+                                <h:panelGrid columns="2" id="botao">
+                                    <p:commandButton value="Salvar" action="#{interTratamentoMalnutricaoNovoBean.salvar()}" style="width: 130px" update="botao tab:antropometria tab:dieta tab:tabelaVigilancia tab:sistematico tab:especifico tab:diagrama"/>
+                                    <p:commandButton value="Fechar" onclick="PF('addFicha').hide()"
+                                                     action="#{interTratamentoMalnutricaoNovoBean.limparCampos()}" process="@this" style="width: 130px"/>             
+                                </h:panelGrid>
+                            </center>
+                        </p:panel>          
+                    </p:dialog>
+                </h:form>
+
+                <center>
+                    <p:dialog header="#{msgs.detalhesPaciente}" closable="false" showEffect="fade"
+                              widgetVar="dialogMaisDetalhes" modal="true" closeOnEscape="true" width="60%" height="300px">
+                        <ui:include src="./../../admsVisao/paciente/pacienteVisualizarAdms.xhtml"/>
+                    </p:dialog>
+                </center>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
